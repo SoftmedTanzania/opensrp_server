@@ -101,7 +101,7 @@ public class UserController {
         JSONObject tm = null;
         try{
         	tm = openmrsUserService.getTeamMember(u.getAttribute("_PERSON_UUID").toString());
-        	JSONArray locs = tm.getJSONArray("location");
+        	JSONArray locs = tm.getJSONArray("locations");
         	for (int i = 0; i < locs.length(); i++) {
 				lid += locs.getJSONObject(i).getString("uuid")+";;";
 			}

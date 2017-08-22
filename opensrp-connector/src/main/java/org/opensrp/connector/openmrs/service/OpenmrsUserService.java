@@ -16,7 +16,7 @@ public class OpenmrsUserService extends OpenmrsService{
 	private static final String AUTHENTICATION_URL = "ws/rest/v1/session";
 	private static final String USER_URL = "ws/rest/v1/user";
 	private static final String PROVIDER_URL = "ws/rest/v1/provider";
-	private static final String TEAM_MEMBER_URL = "ws/rest/v1/teammodule/member";
+	private static final String TEAM_MEMBER_URL = "ws/rest/v1/team/teammember";
 	private static Logger logger = LoggerFactory.getLogger(OpenmrsUserService.class.toString());
 
     public OpenmrsUserService() { }

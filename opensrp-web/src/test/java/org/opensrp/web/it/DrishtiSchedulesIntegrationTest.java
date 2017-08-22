@@ -391,18 +391,18 @@ public class DrishtiSchedulesIntegrationTest extends BaseUnitTest {
 
     @Test
     public void shouldProvideAlertsForIUDFollowupAtTheRightTimes() throws Exception {
-        schedule.enrollFor("IUD Followup", newDate(2012, JANUARY, 1), new Time(14, 0));
+        schedule.enrollFor("IUD Followup", newDate(2018, JANUARY, 1), new Time(14, 0));
 
-        schedule.assertAlertsStartWith("IUD Followup 1", earliest, dateWithYear(1, JANUARY, 2012), dateWithYear(2, JANUARY, 2012), dateWithYear(3, JANUARY, 2012));
-        schedule.assertAlertsStartWith("IUD Followup 1", due, dateWithYear(1, FEBRUARY, 2012), dateWithYear(2, FEBRUARY, 2012), dateWithYear(3, FEBRUARY, 2012));
-        schedule.assertAlertsStartWith("IUD Followup 1", late, dateWithYear(8, FEBRUARY, 2012), dateWithYear(9, FEBRUARY, 2012),
-                dateWithYear(10, FEBRUARY, 2012), dateWithYear(11, FEBRUARY, 2012), dateWithYear(12, FEBRUARY, 2012), dateWithYear(13, FEBRUARY, 2012));
+        schedule.assertAlertsStartWith("IUD Followup 1", earliest, dateWithYear(1, JANUARY, 2017), dateWithYear(2, JANUARY, 2017), dateWithYear(3, JANUARY, 2017));
+        schedule.assertAlertsStartWith("IUD Followup 1", due, dateWithYear(1, FEBRUARY, 2017), dateWithYear(2, FEBRUARY, 2017), dateWithYear(3, FEBRUARY, 2017));
+        schedule.assertAlertsStartWith("IUD Followup 1", late, dateWithYear(8, FEBRUARY, 2017), dateWithYear(9, FEBRUARY, 2017),
+                dateWithYear(10, FEBRUARY, 2017), dateWithYear(11, FEBRUARY, 2017), dateWithYear(12, FEBRUARY, 2017), dateWithYear(13, FEBRUARY, 2017));
         schedule.assertNoAlerts("IUD Followup 1", max);
 
         schedule.assertNoAlerts("IUD Followup 2", earliest);
-        schedule.assertAlertsStartWith("IUD Followup 2", due, dateWithYear(1, MAY, 2012), dateWithYear(2, MAY, 2012), dateWithYear(3, MAY, 2012));
-        schedule.assertAlertsStartWith("IUD Followup 2", late, dateWithYear(8, MAY, 2012), dateWithYear(9, MAY, 2012), dateWithYear(10, MAY, 2012)
-                , dateWithYear(11, MAY, 2012), dateWithYear(12, MAY, 2012), dateWithYear(13, MAY, 2012), dateWithYear(14, MAY, 2012), dateWithYear(15, MAY, 2012));
+        schedule.assertAlertsStartWith("IUD Followup 2", due, dateWithYear(1, MAY, 2017), dateWithYear(2, MAY, 2017), dateWithYear(3, MAY, 2017));
+        schedule.assertAlertsStartWith("IUD Followup 2", late, dateWithYear(8, MAY, 2017), dateWithYear(9, MAY, 2017), dateWithYear(10, MAY, 2017)
+                , dateWithYear(11, MAY, 2017), dateWithYear(12, MAY, 2017), dateWithYear(13, MAY, 2017), dateWithYear(14, MAY, 2017), dateWithYear(15, MAY, 2017));
         schedule.assertNoAlerts("IUD Followup 2", max);
 
         visualization.outputTo("ec-iud-followup.html", 1);

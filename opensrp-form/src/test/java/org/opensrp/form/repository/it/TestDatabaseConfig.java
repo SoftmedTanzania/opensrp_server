@@ -17,7 +17,7 @@ public class TestDatabaseConfig {
         initMocks(this);
         HttpClient httpClient = new StdHttpClient.Builder() 
             .host("localhost") 
-            .username("rootuser").password("adminpass")
+            .username("admin").password("kingkive123")
             .port(5984)
             .socketTimeout(1000) 
             .build(); 
