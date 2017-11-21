@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 
 @Service
-public class CTC2Service {
+public class ReferralPatientsService {
 
-	private static Logger logger = LoggerFactory.getLogger(CTC2Service.class.toString());
+	private static Logger logger = LoggerFactory.getLogger(ReferralPatientsService.class.toString());
 
 	private HttpClient client;
 
@@ -22,38 +22,9 @@ public class CTC2Service {
 	private PatientsRepository patientsRepository;
 
 
-	public CTC2Service() {
+	public ReferralPatientsService() {
 		this.client = HttpClientBuilder.create().build();
 	}
-	
-//	public List<String> downloadOpenmrsIds(int size) {
-//		List<String> ids = new ArrayList<String>();
-//		String openmrsQueryUrl = this.openmrsUrl + OPENMRS_IDGEN_URL;
-//		// Add query parameters
-//		openmrsQueryUrl += "?source=" + this.openmrsSourceId + "&numberToGenerate=" + size;
-//		openmrsQueryUrl += "&username=" + this.openmrsUserName + "&password=" + this.openmrsPassword;
-//
-//		HttpGet get = new HttpGet(openmrsQueryUrl);
-//		try {
-//			HttpResponse response = client.execute(get);
-//			String jsonResponse = EntityUtils.toString(response.getEntity());
-//
-//			JSONObject responseJson = new JSONObject(jsonResponse);
-//			JSONArray jsonArray = responseJson.getJSONArray("identifiers");
-//
-//			if (jsonArray != null && jsonArray.length() > 0) {
-//				for (int i = 0; i < jsonArray.length(); i++) {
-//					ids.add(jsonArray.getString(i));
-//				}
-//			}
-//		}
-//		catch (IOException | JSONException e) {
-//			logger.error("", e);
-//			return null;
-//		}
-//		// import IDs and client data to database together with assignments
-//		return ids;
-//	}
 
 	public void storeCTCPatients(ReferralPatients patient) throws SQLException {
 		// create jdbc template to persist the ids
@@ -79,7 +50,7 @@ public class CTC2Service {
 			logger.info(
 					"[checkIfClientExists] - Card Number:" + args[0] + " - [Exists] " + (rowCount == 0 ? "false" : "true"));
 
-			return rowCount >= 1 ? true : false;
+			return rowCount >= 1;
 		}
 		catch (Exception e) {
 			logger.error("", e);

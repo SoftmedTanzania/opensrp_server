@@ -2,7 +2,7 @@ package org.opensrp.service;
 
 import com.google.gson.Gson;
 import org.opensrp.domain.ReferralPatients;
-import org.opensrp.dto.CTCPatientsDTO;
+import org.opensrp.dto.ReferralPatientsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.form.domain.FormInstance;
 import org.opensrp.form.domain.FormSubmission;
@@ -14,22 +14,22 @@ import java.text.MessageFormat;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 
-public class CTC2PatientsConverter {
-    private static Logger logger = LoggerFactory.getLogger(CTC2PatientsConverter.class.toString());
+public class ReferralPatientsConverter {
+    private static Logger logger = LoggerFactory.getLogger(ReferralPatientsConverter.class.toString());
 
 
-    public static ReferralPatients toCTCPatients(CTCPatientsDTO ctcPatientsDTO) {
+    public static ReferralPatients toCTCPatients(ReferralPatientsDTO referralPatientsDTO) {
         try {
             ReferralPatients patients = new ReferralPatients();
 
-            patients.setPatientId(ctcPatientsDTO.getPatientId());
-            patients.setPatientFirstName(ctcPatientsDTO.getPatientFirstName());
-            patients.setPatientSurname(ctcPatientsDTO.getPatientSurname());
+            patients.setPatientId(referralPatientsDTO.getPatientId());
+            patients.setPatientFirstName(referralPatientsDTO.getPatientFirstName());
+            patients.setPatientSurname(referralPatientsDTO.getPatientSurname());
             //TODO COZE: FINALIZE CTC2PATIENTS CONVERTER
 
             return patients;
         } catch (Exception e) {
-            logger.error(MessageFormat.format("Converting CTCPatientDTO :{0}, failed with error: {1}.", ctcPatientsDTO, e));
+            logger.error(MessageFormat.format("Converting CTCPatientDTO :{0}, failed with error: {1}.", referralPatientsDTO, e));
             throw e;
         }
     }

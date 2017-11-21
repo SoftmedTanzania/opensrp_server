@@ -8,7 +8,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import java.util.Date;
 import java.util.Map;
 
-public class CTCPatientsDTO {
+public class ReferralPatientsDTO {
     @JsonProperty
     private String patientId;
 
@@ -39,7 +39,7 @@ public class CTCPatientsDTO {
     @JsonProperty
     private Date dateOfDeath;
 
-    public CTCPatientsDTO(String patientId, String patientFirstName, String contacts, Date dateOfBirth, String patientSurname, String gender, String transferInId, Date dateOfFirstPositiveHIVTest, Date dateOfConfirmedHIVPositive, Date dateOfDeath) {
+    public ReferralPatientsDTO(String patientId, String patientFirstName, String contacts, Date dateOfBirth, String patientSurname, String gender, String transferInId, Date dateOfFirstPositiveHIVTest, Date dateOfConfirmedHIVPositive, Date dateOfDeath) {
         this.patientId = patientId;
         this.patientFirstName = patientFirstName;
         this.contacts = contacts;
@@ -52,7 +52,7 @@ public class CTCPatientsDTO {
         this.dateOfDeath = dateOfDeath;
     }
 
-    public CTCPatientsDTO() {
+    public ReferralPatientsDTO() {
     }
 
     public String getPatientId() {
