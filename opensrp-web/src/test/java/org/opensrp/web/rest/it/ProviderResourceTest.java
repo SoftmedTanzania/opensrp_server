@@ -59,7 +59,7 @@ public class ProviderResourceTest {
 		  mockRequest.setMethod("GET");
 		  mockRequest.setRequestURI("/rest/provider/authenticate");
 		  mockRequest.setAttribute(HandlerMapping.class.getName() + ".introspectTypeLevelMapping", true);
-		mockRequest.addParameter("u", "deomotest");
+		mockRequest.addParameter("u", "demotest");
 		mockRequest.addParameter("p", "Admin123");
 	
 		AnnotationMethodHandlerAdapter handlerAdapter = new AnnotationMethodHandlerAdapter();
