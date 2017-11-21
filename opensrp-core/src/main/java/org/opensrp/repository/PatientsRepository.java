@@ -1,6 +1,6 @@
 package org.opensrp.repository;
 
-import org.opensrp.domain.ReferalPatients;
+import org.opensrp.domain.ReferralPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
 
-//import org.opensrp.domain.ReferalPatients;
+//import org.opensrp.domain.ReferralPatients;
 
 @Repository
 public class PatientsRepository {
@@ -21,19 +21,16 @@ public class PatientsRepository {
 	JdbcTemplate jdbcTemplate;
 
 	
-	public int save(ReferalPatients patients) throws Exception {
-		String insertQuery = "insert into " + ReferalPatients.tbName + " (" +
-				ReferalPatients.COL_PATIENT_ID + "," +
-				ReferalPatients.COL_PATIENT_FIRST_NAME + "," +
-				ReferalPatients.COL_PATIENT_SURNAME + "," +
-				ReferalPatients.COL_CONTACTS + "," +
-				ReferalPatients.COL_DATE_OF_BIRTH + "," +
-				ReferalPatients.COL_GENDER + "," +
-				ReferalPatients.COL_TRANSFER_IN_ID + "," +
-				ReferalPatients.COL_DATE_OF_FIRST_POSITIVE_HIV_TEST + "," +
-				ReferalPatients.COL_DATE_OF_CONFIRMED_HIV_POSITIVE + "," +
-				ReferalPatients.COL_DATE_OF_DEATH + "," +
-				ReferalPatients.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?) ";
+	public int save(ReferralPatients patients) throws Exception {
+		String insertQuery = "insert into " + ReferralPatients.tbName + " (" +
+				ReferralPatients.COL_PATIENT_ID + "," +
+				ReferralPatients.COL_PATIENT_FIRST_NAME + "," +
+				ReferralPatients.COL_PATIENT_SURNAME + "," +
+				ReferralPatients.COL_CONTACTS + "," +
+				ReferralPatients.COL_DATE_OF_BIRTH + "," +
+				ReferralPatients.COL_GENDER + "," +
+				ReferralPatients.COL_DATE_OF_DEATH + "," +
+				ReferralPatients.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				patients.getPatientId(),
@@ -42,9 +39,6 @@ public class PatientsRepository {
 		        patients.getContacts(),
 		        patients.getDateOfBirth(),
 		        patients.getGender(),
-		        patients.getTransferInId(),
-		        patients.getDateOfFirstPositiveHIVTest(),
-		        patients.getDateOfConfirmedHIVPositive(),
 		        patients.getDateOfDeath(),
 				patients.getCreatedAt() };
 		int[] types = new int[] {
@@ -74,26 +68,23 @@ public class PatientsRepository {
 	}
 	
 	public void clearTable() throws Exception {
-		String query = "DELETE FROM " + ReferalPatients.tbName;
+		String query = "DELETE FROM " + ReferralPatients.tbName;
 		executeQuery(query);
 	}
 	
 
 	
-	public class CTC_patientsRowMapper implements RowMapper<ReferalPatients> {
-		public ReferalPatients mapRow(ResultSet rs, int rowNum) throws SQLException {
-			ReferalPatients patients = new ReferalPatients();
-			patients.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ReferalPatients.COL_CREATED_AT)).getTime()));
-			patients.setPatientId(rs.getString(rs.findColumn(ReferalPatients.COL_PATIENT_ID)));
-			patients.setPatientFirstName(rs.getString(rs.findColumn(ReferalPatients.COL_PATIENT_FIRST_NAME)));
-			patients.setPatientSurname(rs.getString(rs.findColumn(ReferalPatients.COL_PATIENT_SURNAME)));
-			patients.setContacts(rs.getString(rs.findColumn(ReferalPatients.COL_CONTACTS)));
-			patients.setDateOfBirth(rs.getDate(rs.findColumn(ReferalPatients.COL_DATE_OF_BIRTH)));
-			patients.setGender(rs.getString(rs.findColumn(ReferalPatients.COL_GENDER)));
-			patients.setTransferInId(rs.getString(rs.findColumn(ReferalPatients.COL_TRANSFER_IN_ID)));
-			patients.setDateOfFirstPositiveHIVTest(rs.getDate(rs.findColumn(ReferalPatients.COL_DATE_OF_FIRST_POSITIVE_HIV_TEST)));
-			patients.setDateOfConfirmedHIVPositive(rs.getDate(rs.findColumn(ReferalPatients.COL_DATE_OF_CONFIRMED_HIV_POSITIVE)));
-			patients.setDateOfDeath(rs.getDate(rs.findColumn(ReferalPatients.COL_DATE_OF_DEATH)));
+	public class CTC_patientsRowMapper implements RowMapper<ReferralPatients> {
+		public ReferralPatients mapRow(ResultSet rs, int rowNum) throws SQLException {
+			ReferralPatients patients = new ReferralPatients();
+			patients.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ReferralPatients.COL_CREATED_AT)).getTime()));
+			patients.setPatientId(rs.getString(rs.findColumn(ReferralPatients.COL_PATIENT_ID)));
+			patients.setPatientFirstName(rs.getString(rs.findColumn(ReferralPatients.COL_PATIENT_FIRST_NAME)));
+			patients.setPatientSurname(rs.getString(rs.findColumn(ReferralPatients.COL_PATIENT_SURNAME)));
+			patients.setContacts(rs.getString(rs.findColumn(ReferralPatients.COL_CONTACTS)));
+			patients.setDateOfBirth(rs.getDate(rs.findColumn(ReferralPatients.COL_DATE_OF_BIRTH)));
+			patients.setGender(rs.getString(rs.findColumn(ReferralPatients.COL_GENDER)));
+			patients.setDateOfDeath(rs.getDate(rs.findColumn(ReferralPatients.COL_DATE_OF_DEATH)));
 			return patients;
 		}
 		

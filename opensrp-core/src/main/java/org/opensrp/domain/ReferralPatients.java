@@ -5,9 +5,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tbl_patients")
-public class ReferalPatients {
+public class ReferralPatients {
 
-	public static final String tbName = "tbl_patients";
+	public static final String tbName = "tbl_referral_patients";
 
 	public static final String COL_PATIENT_ID = "patient_id";
 

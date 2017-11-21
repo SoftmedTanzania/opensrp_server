@@ -2,7 +2,7 @@ package org.opensrp.service;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.opensrp.domain.ReferalPatients;
+import org.opensrp.domain.ReferralPatients;
 import org.opensrp.repository.PatientsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ public class CTC2Service {
 //		return ids;
 //	}
 
-	public void storeCTCPatients(ReferalPatients patient) throws SQLException {
+	public void storeCTCPatients(ReferralPatients patient) throws SQLException {
 		// create jdbc template to persist the ids
 		try {
 			if (!this.checkIfClientExists(patient)) {
@@ -68,9 +68,9 @@ public class CTC2Service {
 		}
 	}
 
-	public Boolean checkIfClientExists(ReferalPatients patient) throws SQLException {
+	public Boolean checkIfClientExists(ReferralPatients patient) throws SQLException {
 		try {
-			String checkIfExistQuery = "SELECT count(*) from " + ReferalPatients.tbName + " WHERE " + ReferalPatients.COL_PATIENT_ID +" = ?";
+			String checkIfExistQuery = "SELECT count(*) from " + ReferralPatients.tbName + " WHERE " + ReferralPatients.COL_PATIENT_ID +" = ?";
 			String[] args = new String[1];
 			args[0] = (String) patient.getPatientId();
 
