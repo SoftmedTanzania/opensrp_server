@@ -174,7 +174,9 @@ public class AllConstants {
 		public static final String OPENSRP_ERRORTRACE_DATABASE = "opensrpErrorTraceDatabaseConnector";
 		
 		public static final String FORM_SUBMISSION = "FORM_SUBMISSION";
-		
+		public static final String REFERRED_PATIENTS_SUBMISSION = "REFERRED_PATIENTS_SUBMISSION";
+		public static final String HEALTH_FACILITY_SUBMISSION = "HEALTH_FACILITY_SUBMISSION";
+
 		public static class BaseEntity {
 			
 			public static final String BASE_ENTITY_ID = "baseEntityId";
