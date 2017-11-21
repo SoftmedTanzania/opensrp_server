@@ -1,21 +1,17 @@
 package org.opensrp.repository;
 
-import org.opensrp.domain.CTC_patients;
-import org.opensrp.domain.CTC_patients;
+import org.opensrp.domain.ReferalPatients;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
-import java.util.List;
 
-//import org.opensrp.domain.CTC_patients;
+//import org.opensrp.domain.ReferalPatients;
 
 @Repository
 public class PatientsRepository {
@@ -25,19 +21,19 @@ public class PatientsRepository {
 	JdbcTemplate jdbcTemplate;
 
 	
-	public int save(CTC_patients patients) throws Exception {
-		String insertQuery = "insert into " + CTC_patients.tbName + " (" +
-				CTC_patients.COL_PATIENT_ID + "," +
-				CTC_patients.COL_PATIENT_FIRST_NAME + "," +
-				CTC_patients.COL_PATIENT_SURNAME + "," +
-				CTC_patients.COL_CONTACTS + "," +
-				CTC_patients.COL_DATE_OF_BIRTH + "," +
-				CTC_patients.COL_GENDER + "," +
-				CTC_patients.COL_TRANSFER_IN_ID + "," +
-				CTC_patients.COL_DATE_OF_FIRST_POSITIVE_HIV_TEST + "," +
-				CTC_patients.COL_DATE_OF_CONFIRMED_HIV_POSITIVE + "," +
-				CTC_patients.COL_DATE_OF_DEATH + "," +
-				CTC_patients.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?) ";
+	public int save(ReferalPatients patients) throws Exception {
+		String insertQuery = "insert into " + ReferalPatients.tbName + " (" +
+				ReferalPatients.COL_PATIENT_ID + "," +
+				ReferalPatients.COL_PATIENT_FIRST_NAME + "," +
+				ReferalPatients.COL_PATIENT_SURNAME + "," +
+				ReferalPatients.COL_CONTACTS + "," +
+				ReferalPatients.COL_DATE_OF_BIRTH + "," +
+				ReferalPatients.COL_GENDER + "," +
+				ReferalPatients.COL_TRANSFER_IN_ID + "," +
+				ReferalPatients.COL_DATE_OF_FIRST_POSITIVE_HIV_TEST + "," +
+				ReferalPatients.COL_DATE_OF_CONFIRMED_HIV_POSITIVE + "," +
+				ReferalPatients.COL_DATE_OF_DEATH + "," +
+				ReferalPatients.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				patients.getPatientId(),
@@ -78,26 +74,26 @@ public class PatientsRepository {
 	}
 	
 	public void clearTable() throws Exception {
-		String query = "DELETE FROM " + CTC_patients.tbName;
+		String query = "DELETE FROM " + ReferalPatients.tbName;
 		executeQuery(query);
 	}
 	
 
 	
-	public class CTC_patientsRowMapper implements RowMapper<CTC_patients> {
-		public CTC_patients mapRow(ResultSet rs, int rowNum) throws SQLException {
-			CTC_patients patients = new CTC_patients();
-			patients.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(CTC_patients.COL_CREATED_AT)).getTime()));
-			patients.setPatientId(rs.getString(rs.findColumn(CTC_patients.COL_PATIENT_ID)));
-			patients.setPatientFirstName(rs.getString(rs.findColumn(CTC_patients.COL_PATIENT_FIRST_NAME)));
-			patients.setPatientSurname(rs.getString(rs.findColumn(CTC_patients.COL_PATIENT_SURNAME)));
-			patients.setContacts(rs.getString(rs.findColumn(CTC_patients.COL_CONTACTS)));
-			patients.setDateOfBirth(rs.getDate(rs.findColumn(CTC_patients.COL_DATE_OF_BIRTH)));
-			patients.setGender(rs.getString(rs.findColumn(CTC_patients.COL_GENDER)));
-			patients.setTransferInId(rs.getString(rs.findColumn(CTC_patients.COL_TRANSFER_IN_ID)));
-			patients.setDateOfFirstPositiveHIVTest(rs.getDate(rs.findColumn(CTC_patients.COL_DATE_OF_FIRST_POSITIVE_HIV_TEST)));
-			patients.setDateOfConfirmedHIVPositive(rs.getDate(rs.findColumn(CTC_patients.COL_DATE_OF_CONFIRMED_HIV_POSITIVE)));
-			patients.setDateOfDeath(rs.getDate(rs.findColumn(CTC_patients.COL_DATE_OF_DEATH)));
+	public class CTC_patientsRowMapper implements RowMapper<ReferalPatients> {
+		public ReferalPatients mapRow(ResultSet rs, int rowNum) throws SQLException {
+			ReferalPatients patients = new ReferalPatients();
+			patients.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ReferalPatients.COL_CREATED_AT)).getTime()));
+			patients.setPatientId(rs.getString(rs.findColumn(ReferalPatients.COL_PATIENT_ID)));
+			patients.setPatientFirstName(rs.getString(rs.findColumn(ReferalPatients.COL_PATIENT_FIRST_NAME)));
+			patients.setPatientSurname(rs.getString(rs.findColumn(ReferalPatients.COL_PATIENT_SURNAME)));
+			patients.setContacts(rs.getString(rs.findColumn(ReferalPatients.COL_CONTACTS)));
+			patients.setDateOfBirth(rs.getDate(rs.findColumn(ReferalPatients.COL_DATE_OF_BIRTH)));
+			patients.setGender(rs.getString(rs.findColumn(ReferalPatients.COL_GENDER)));
+			patients.setTransferInId(rs.getString(rs.findColumn(ReferalPatients.COL_TRANSFER_IN_ID)));
+			patients.setDateOfFirstPositiveHIVTest(rs.getDate(rs.findColumn(ReferalPatients.COL_DATE_OF_FIRST_POSITIVE_HIV_TEST)));
+			patients.setDateOfConfirmedHIVPositive(rs.getDate(rs.findColumn(ReferalPatients.COL_DATE_OF_CONFIRMED_HIV_POSITIVE)));
+			patients.setDateOfDeath(rs.getDate(rs.findColumn(ReferalPatients.COL_DATE_OF_DEATH)));
 			return patients;
 		}
 		

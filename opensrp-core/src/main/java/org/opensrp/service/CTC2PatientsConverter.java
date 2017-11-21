@@ -1,7 +1,7 @@
 package org.opensrp.service;
 
 import com.google.gson.Gson;
-import org.opensrp.domain.CTC_patients;
+import org.opensrp.domain.ReferalPatients;
 import org.opensrp.dto.CTCPatientsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.form.domain.FormInstance;
@@ -18,9 +18,9 @@ public class CTC2PatientsConverter {
     private static Logger logger = LoggerFactory.getLogger(CTC2PatientsConverter.class.toString());
 
 
-    public static CTC_patients toCTCPatients(CTCPatientsDTO ctcPatientsDTO) {
+    public static ReferalPatients toCTCPatients(CTCPatientsDTO ctcPatientsDTO) {
         try {
-            CTC_patients patients = new CTC_patients();
+            ReferalPatients patients = new ReferalPatients();
 
             patients.setPatientId(ctcPatientsDTO.getPatientId());
             patients.setPatientFirstName(ctcPatientsDTO.getPatientFirstName());

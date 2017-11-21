@@ -2,7 +2,7 @@ package org.opensrp.web.controller;
 
 import ch.lambdaj.function.convert.Converter;
 import org.opensrp.common.AllConstants;
-import org.opensrp.domain.CTC_patients;
+import org.opensrp.domain.ReferalPatients;
 import org.opensrp.dto.CTCPatientsDTO;
 import org.opensrp.repository.PatientsRepository;
 import org.opensrp.scheduler.SystemEvent;
@@ -49,14 +49,14 @@ public class CTCPatientsSubmissionController {
             
             try{
 
-				List<CTC_patients>patients = with(ctcPatientsDTOS).convert(new Converter<CTCPatientsDTO, CTC_patients>() {
+				List<ReferalPatients>patients = with(ctcPatientsDTOS).convert(new Converter<CTCPatientsDTO, ReferalPatients>() {
 					@Override
-					public CTC_patients convert(CTCPatientsDTO submission) {
+					public ReferalPatients convert(CTCPatientsDTO submission) {
 						return CTC2PatientsConverter.toCTCPatients(submission);
 					}
 				});
 
-				for(CTC_patients ctcPatients:patients){
+				for(ReferalPatients ctcPatients:patients){
 					ctc2Service.storeCTCPatients(ctcPatients);
 				}
             }

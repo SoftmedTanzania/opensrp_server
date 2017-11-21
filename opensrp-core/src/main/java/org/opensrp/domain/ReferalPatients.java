@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tbl_patients")
-public class CTC_patients {
+public class ReferalPatients {
 
 	public static final String tbName = "tbl_patients";
 
@@ -20,12 +20,6 @@ public class CTC_patients {
 	public static final String COL_DATE_OF_BIRTH = "date_of_birth";
 
 	public static final String COL_GENDER = "gender";
-
-	public static final String COL_TRANSFER_IN_ID= "transfer_in_id";
-
-	public static final String COL_DATE_OF_FIRST_POSITIVE_HIV_TEST= "date_of_first_positive_HIV_test";
-
-	public static final String COL_DATE_OF_CONFIRMED_HIV_POSITIVE= "date_of_confirmed_HIV_positive";
 
 	public static final String COL_DATE_OF_DEATH= "date_of_death";
 
@@ -55,15 +49,6 @@ public class CTC_patients {
 
 	@Column(name = COL_GENDER)
 	private String gender;
-
-	@Column(name = COL_TRANSFER_IN_ID)
-	private String transferInId;
-
-	@Column(name = COL_DATE_OF_FIRST_POSITIVE_HIV_TEST)
-	private Date dateOfFirstPositiveHIVTest;
-
-	@Column(name = COL_DATE_OF_CONFIRMED_HIV_POSITIVE)
-	private Date dateOfConfirmedHIVPositive;
 
 	@Column(name = COL_DATE_OF_DEATH)
 	private Date dateOfDeath;
@@ -132,30 +117,6 @@ public class CTC_patients {
 
 	public void setGender(String gender) {
 		this.gender = gender;
-	}
-
-	public String getTransferInId() {
-		return transferInId;
-	}
-
-	public void setTransferInId(String transferInId) {
-		this.transferInId = transferInId;
-	}
-
-	public Date getDateOfFirstPositiveHIVTest() {
-		return dateOfFirstPositiveHIVTest;
-	}
-
-	public void setDateOfFirstPositiveHIVTest(Date dateOfFirstPositiveHIVTest) {
-		this.dateOfFirstPositiveHIVTest = dateOfFirstPositiveHIVTest;
-	}
-
-	public Date getDateOfConfirmedHIVPositive() {
-		return dateOfConfirmedHIVPositive;
-	}
-
-	public void setDateOfConfirmedHIVPositive(Date dateOfConfirmedHIVPositive) {
-		this.dateOfConfirmedHIVPositive = dateOfConfirmedHIVPositive;
 	}
 
 	public Date getDateOfDeath() {

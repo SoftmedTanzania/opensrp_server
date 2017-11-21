@@ -1,29 +1,15 @@
 package org.opensrp.service;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.opensrp.domain.CTC_patients;
-import org.opensrp.domain.Client;
-import org.opensrp.domain.UniqueId;
+import org.opensrp.domain.ReferalPatients;
 import org.opensrp.repository.PatientsRepository;
-import org.opensrp.repository.UniqueIdRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class CTC2Service {
@@ -69,7 +55,7 @@ public class CTC2Service {
 //		return ids;
 //	}
 
-	public void storeCTCPatients(CTC_patients patient) throws SQLException {
+	public void storeCTCPatients(ReferalPatients patient) throws SQLException {
 		// create jdbc template to persist the ids
 		try {
 			if (!this.checkIfClientExists(patient)) {
@@ -82,9 +68,9 @@ public class CTC2Service {
 		}
 	}
 
-	public Boolean checkIfClientExists(CTC_patients patient) throws SQLException {
+	public Boolean checkIfClientExists(ReferalPatients patient) throws SQLException {
 		try {
-			String checkIfExistQuery = "SELECT count(*) from " + CTC_patients.tbName + " WHERE " + CTC_patients.COL_PATIENT_ID +" = ?";
+			String checkIfExistQuery = "SELECT count(*) from " + ReferalPatients.tbName + " WHERE " + ReferalPatients.COL_PATIENT_ID +" = ?";
 			String[] args = new String[1];
 			args[0] = (String) patient.getPatientId();
 
