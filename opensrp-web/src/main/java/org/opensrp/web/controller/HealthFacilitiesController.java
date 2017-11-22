@@ -33,13 +33,13 @@ public class HealthFacilitiesController {
     private static Logger logger = LoggerFactory.getLogger(HealthFacilitiesController.class.toString());
     private HealthFacilitiesService healthFacilitiesService;
     private HealthFacilityRepository facilityRepository;
-	private TaskSchedulerService scheduler;
+    private TaskSchedulerService scheduler;
 
     @Autowired
     public HealthFacilitiesController(HealthFacilitiesService healthFacilitiesService, HealthFacilityRepository facilityRepository, TaskSchedulerService scheduler) {
         this.healthFacilitiesService = healthFacilitiesService;
         this.facilityRepository = facilityRepository;
-		this.scheduler = scheduler;
+        this.scheduler = scheduler;
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/health_facilities")
@@ -49,23 +49,17 @@ public class HealthFacilitiesController {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, healthFacilitiesDTOS));
-            
-            try{
+            List<HealthFacilities> healthFacilities = with(healthFacilitiesDTOS).convert(new Converter<HealthFacilitiesDTO, HealthFacilities>() {
+                @Override
+                public HealthFacilities convert(HealthFacilitiesDTO submission) {
+                    return HealthFacilitiesConverter.toHealthFacilities(submission);
+                }
+            });
 
-				List<HealthFacilities>healthFacilities = with(healthFacilitiesDTOS).convert(new Converter<HealthFacilitiesDTO, HealthFacilities>() {
-					@Override
-					public HealthFacilities convert(HealthFacilitiesDTO submission) {
-						return HealthFacilitiesConverter.toHealthFacilities(submission);
-					}
-				});
+            for (HealthFacilities healthFacility : healthFacilities) {
+                healthFacilitiesService.storeHealthFacilities(healthFacility);
+            }
 
-				for(HealthFacilities healthFacility:healthFacilities){
-					healthFacilitiesService.storeHealthFacilities(healthFacility);
-				}
-            }
-            catch(Exception e){
-            	e.printStackTrace();
-            }
             logger.debug(format("Saved Health Facility to queue.\nSubmissions: {0}", healthFacilitiesDTOS));
         } catch (Exception e) {
             logger.error(format("Health Facility processing failed with exception {0}.\nSubmissions: {1}", e, healthFacilitiesDTOS));
