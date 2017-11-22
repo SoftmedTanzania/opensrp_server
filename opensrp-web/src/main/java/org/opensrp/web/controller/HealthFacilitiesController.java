@@ -1,11 +1,14 @@
 package org.opensrp.web.controller;
 
 import ch.lambdaj.function.convert.Converter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.HealthFacilities;
 import org.opensrp.domain.ReferralPatients;
 import org.opensrp.dto.HealthFacilitiesDTO;
 import org.opensrp.dto.ReferralPatientsDTO;
+import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.repository.HealthFacilityRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
@@ -50,9 +53,12 @@ public class HealthFacilitiesController {
             }
 
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, healthFacilitiesDTOS));
-            List<HealthFacilities> healthFacilities =  HealthFacilitiesConverter.toHealthFacilities(healthFacilitiesDTOS);
 
+            String json = new Gson().toJson(healthFacilitiesDTOS);
+            List<HealthFacilitiesDTO> healthFacilitiesDTOs = new Gson().fromJson(json, new TypeToken<List<HealthFacilitiesDTO>>() {
+            }.getType());
 
+            List<HealthFacilities> healthFacilities =  HealthFacilitiesConverter.toHealthFacilities(healthFacilitiesDTOs);
 
             for (HealthFacilities healthFacility : healthFacilities) {
                 healthFacilitiesService.storeHealthFacilities(healthFacility);
