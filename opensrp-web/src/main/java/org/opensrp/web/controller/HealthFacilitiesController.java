@@ -45,17 +45,14 @@ public class HealthFacilitiesController {
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/health_facilities")
     public ResponseEntity<HttpStatus> savePatient(@RequestBody List<HealthFacilitiesDTO> healthFacilitiesDTOS) {
         try {
-            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, healthFacilitiesDTOS));
-            List<HealthFacilities> healthFacilities = with(healthFacilitiesDTOS).convert(new Converter<HealthFacilitiesDTO, HealthFacilities>() {
-                @Override
-                public HealthFacilities convert(HealthFacilitiesDTO submission) {
-                    return HealthFacilitiesConverter.toHealthFacilities(submission);
-                }
-            });
-
-            if (healthFacilities.isEmpty()) {
+            if (healthFacilitiesDTOS.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
+
+            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, healthFacilitiesDTOS));
+            List<HealthFacilities> healthFacilities =  HealthFacilitiesConverter.toHealthFacilities(healthFacilitiesDTOS);
+
+
 
             for (HealthFacilities healthFacility : healthFacilities) {
                 healthFacilitiesService.storeHealthFacilities(healthFacility);
