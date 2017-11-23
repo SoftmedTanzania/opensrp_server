@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
+import java.util.Calendar;
 
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
@@ -25,6 +26,9 @@ public class ReferralPatientsConverter {
             patients.setPatientId(referralPatientsDTO.getPatientId());
             patients.setPatientFirstName(referralPatientsDTO.getPatientFirstName());
             patients.setPatientSurname(referralPatientsDTO.getPatientSurname());
+
+
+            patients.setCreatedAt(Calendar.getInstance().getTime());
             //TODO COZE: FINALIZE CTC2PATIENTS CONVERTER
 
             return patients;

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static java.lang.Long.parseLong;
@@ -29,6 +30,7 @@ public class HealthFacilitiesConverter {
             healthFacilities.setParentId(healthFacilitiesDTO.getParentId());
             healthFacilities.setFacilityName(healthFacilitiesDTO.getFacilityName());
             healthFacilities.setFacilityCode(healthFacilitiesDTO.getFacilityCode());
+            healthFacilities.setCreatedAt(Calendar.getInstance().getTime());
 
             return healthFacilities;
         } catch (Exception e) {

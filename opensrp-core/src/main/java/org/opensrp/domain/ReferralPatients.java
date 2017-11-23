@@ -15,7 +15,13 @@ public class ReferralPatients {
 
 	public static final String COL_PATIENT_SURNAME = "patient_surname";
 
-	public static final String COL_CONTACTS = "contacts";
+	public static final String COL_PHONE_NUMBER = "phone_number";
+
+	public static final String COL_WARD = "ward";
+
+	public static final String COL_VILLAGE = "village";
+
+	public static final String COL_HAMLET = "hamlet";
 
 	public static final String COL_DATE_OF_BIRTH = "date_of_birth";
 
@@ -41,8 +47,17 @@ public class ReferralPatients {
 	@Column(name = COL_PATIENT_SURNAME)
 	private String patientSurname;
 
-	@Column(name = COL_CONTACTS)
-	private String contacts;
+	@Column(name = COL_PHONE_NUMBER)
+	private String phone_number;
+
+	@Column(name = COL_WARD)
+	private String ward;
+
+	@Column(name = COL_VILLAGE)
+	private String village;
+
+	@Column(name = COL_HAMLET)
+	private String hamlet;
 
 	@Column(name = COL_DATE_OF_BIRTH)
 	private Date dateOfBirth;
@@ -54,7 +69,7 @@ public class ReferralPatients {
 	private Date dateOfDeath;
 
 
-	@Column(name = COL_CREATED_AT, columnDefinition = "DATETIME")
+	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
 
@@ -95,12 +110,36 @@ public class ReferralPatients {
 		this.patientSurname = patientSurname;
 	}
 
-	public String getContacts() {
-		return contacts;
+	public String getPhone_number() {
+		return phone_number;
 	}
 
-	public void setContacts(String contacts) {
-		this.contacts = contacts;
+	public void setPhone_number(String phone_number) {
+		this.phone_number = phone_number;
+	}
+
+	public String getWard() {
+		return ward;
+	}
+
+	public void setWard(String ward) {
+		this.ward = ward;
+	}
+
+	public String getVillage() {
+		return village;
+	}
+
+	public void setVillage(String village) {
+		this.village = village;
+	}
+
+	public String getHamlet() {
+		return hamlet;
+	}
+
+	public void setHamlet(String hamlet) {
+		this.hamlet = hamlet;
 	}
 
 	public Date getDateOfBirth() {

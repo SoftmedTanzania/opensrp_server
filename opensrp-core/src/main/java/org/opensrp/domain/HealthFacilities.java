@@ -40,7 +40,7 @@ public class HealthFacilities {
 
 
 
-	@Column(name = COL_CREATED_AT, columnDefinition = "DATETIME")
+	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
 

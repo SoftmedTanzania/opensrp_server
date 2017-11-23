@@ -26,7 +26,7 @@ public class PatientsRepository {
 				ReferralPatients.COL_PATIENT_ID + "," +
 				ReferralPatients.COL_PATIENT_FIRST_NAME + "," +
 				ReferralPatients.COL_PATIENT_SURNAME + "," +
-				ReferralPatients.COL_CONTACTS + "," +
+				ReferralPatients.COL_PHONE_NUMBER + "," +
 				ReferralPatients.COL_DATE_OF_BIRTH + "," +
 				ReferralPatients.COL_GENDER + "," +
 				ReferralPatients.COL_DATE_OF_DEATH + "," +
@@ -36,7 +36,7 @@ public class PatientsRepository {
 				patients.getPatientId(),
 				patients.getPatientFirstName(),
 				patients.getPatientSurname(),
-		        patients.getContacts(),
+		        patients.getPhone_number(),
 		        patients.getDateOfBirth(),
 		        patients.getGender(),
 		        patients.getDateOfDeath(),
@@ -81,7 +81,7 @@ public class PatientsRepository {
 			patients.setPatientId(rs.getString(rs.findColumn(ReferralPatients.COL_PATIENT_ID)));
 			patients.setPatientFirstName(rs.getString(rs.findColumn(ReferralPatients.COL_PATIENT_FIRST_NAME)));
 			patients.setPatientSurname(rs.getString(rs.findColumn(ReferralPatients.COL_PATIENT_SURNAME)));
-			patients.setContacts(rs.getString(rs.findColumn(ReferralPatients.COL_CONTACTS)));
+			patients.setPhone_number(rs.getString(rs.findColumn(ReferralPatients.COL_PHONE_NUMBER)));
 			patients.setDateOfBirth(rs.getDate(rs.findColumn(ReferralPatients.COL_DATE_OF_BIRTH)));
 			patients.setGender(rs.getString(rs.findColumn(ReferralPatients.COL_GENDER)));
 			patients.setDateOfDeath(rs.getDate(rs.findColumn(ReferralPatients.COL_DATE_OF_DEATH)));

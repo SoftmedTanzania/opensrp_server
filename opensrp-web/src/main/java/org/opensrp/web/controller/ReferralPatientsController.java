@@ -1,12 +1,17 @@
 package org.opensrp.web.controller;
 
 import ch.lambdaj.function.convert.Converter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
+import org.opensrp.domain.HealthFacilities;
 import org.opensrp.domain.ReferralPatients;
+import org.opensrp.dto.HealthFacilitiesDTO;
 import org.opensrp.dto.ReferralPatientsDTO;
 import org.opensrp.repository.PatientsRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
+import org.opensrp.service.HealthFacilitiesConverter;
 import org.opensrp.service.ReferralPatientsConverter;
 import org.opensrp.service.ReferralPatientsService;
 import org.slf4j.Logger;
@@ -46,10 +51,12 @@ public class ReferralPatientsController {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralPatientsDTOS));
-            
+            String json = new Gson().toJson(referralPatientsDTOS);
+            List<ReferralPatientsDTO> healthFacilitiesDTOs = new Gson().fromJson(json, new TypeToken<List<ReferralPatientsDTO>>() {}.getType());
+
             try{
 
-				List<ReferralPatients>patients = with(referralPatientsDTOS).convert(new Converter<ReferralPatientsDTO, ReferralPatients>() {
+				List<ReferralPatients>patients = with(healthFacilitiesDTOs).convert(new Converter<ReferralPatientsDTO, ReferralPatients>() {
 					@Override
 					public ReferralPatients convert(ReferralPatientsDTO submission) {
 						return ReferralPatientsConverter.toCTCPatients(submission);
