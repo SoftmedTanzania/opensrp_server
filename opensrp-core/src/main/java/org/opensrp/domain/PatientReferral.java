@@ -4,10 +4,14 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_health_facility_referral")
-public class HealthFacilityReferral {
+@Table(name = "tbl_patient_referral")
+public class PatientReferral {
 
-	public static final String tbName = "tbl_health_facility_referral";
+	public static final String tbName = "tbl_patient_referral";
+
+	public static final String COL_PATIENT_ID = "patient_id";
+
+	public static final String COL_REFERRAL_ID = "referral_id";
 
 	public static final String COL_COMMUNITY_BASED_HIV_SERVICE = "community_based_hiv_service";
 
@@ -37,6 +41,8 @@ public class HealthFacilityReferral {
 
 	public static final String COL_VILLAGE_LEADER= "village_leader";
 
+	public static final String COL_REFERRAL_STATUS= "referral_status";
+
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
@@ -46,6 +52,12 @@ public class HealthFacilityReferral {
 	@Column(name = "_id")
 	private Long id;
 
+	@Column(name = COL_PATIENT_ID)
+	private String patient_id;
+
+	@Column(name = COL_REFERRAL_ID)
+	private String referral_id;
+
 	@Column(name = COL_COMMUNITY_BASED_HIV_SERVICE)
 	private String communityBasedHivService;
 
@@ -53,40 +65,48 @@ public class HealthFacilityReferral {
 	private String referralReason;
 
 	@Column(name = COL_SERVICE_ID)
-	private String serviceId;
+	private int serviceId;
 
 	@Column(name = COL_CTC_NUMBER)
 	private String ctcNumber;
 
 	@Column(name = COL_HAS_2WEEKS_COUGH)
-	private String has2WeeksCough;
+	private Boolean has2WeeksCough;
 
 	@Column(name = COL_HAS_BLOOD_COUGH)
-	private String hasBloodCough;
+	private Boolean hasBloodCough;
 
 	@Column(name = COL_HAS_SEVERE_SWEATING)
-	private String hasSevereSweating;
+	private Boolean hasSevereSweating;
 
 	@Column(name = COL_HAS_FEVER)
-	private Date hasFever;
+	private Boolean hasFever;
 
 	@Column(name = COL_HAD_WEIGHT_LOSS)
-	private String hadWeightLoss;
+	private Boolean hadWeightLoss;
 
 	@Column(name = COL_SERVICE_PROVIDER_UIID)
-	private Date serviceProviderUIID;
+	private String serviceProviderUIID;
 
 	@Column(name = COL_SERVICE_PROVIDER_GROUP)
-	private Date serviceProviderGroup;
+	private String serviceProviderGroup;
 
 	@Column(name = COL_VILLAGE_LEADER)
-	private Date villageLeader;
+	private String villageLeader;
 
 	@Column(name = COL_REFERRAL_DATE)
 	private Date referralDate;
 
 	@Column(name = COL_FACILITY_ID)
-	private Date facilityId;
+	private String facilityId;
+
+	/*
+	 *  0 = new
+	 * -1 = rejected/discarded
+	 *  1 = complete referral
+	 */
+	@Column(name = COL_REFERRAL_STATUS)
+	private int referralStatus;
 
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
@@ -105,6 +125,22 @@ public class HealthFacilityReferral {
 		this.id = id;
 	}
 
+	public String getPatient_id() {
+		return patient_id;
+	}
+
+	public void setPatient_id(String patient_id) {
+		this.patient_id = patient_id;
+	}
+
+	public String getReferral_id() {
+		return referral_id;
+	}
+
+	public void setReferral_id(String referral_id) {
+		this.referral_id = referral_id;
+	}
+
 	public String getCommunityBasedHivService() {
 		return communityBasedHivService;
 	}
@@ -121,11 +157,11 @@ public class HealthFacilityReferral {
 		this.referralReason = referralReason;
 	}
 
-	public String getServiceId() {
+	public int getServiceId() {
 		return serviceId;
 	}
 
-	public void setServiceId(String serviceId) {
+	public void setServiceId(int serviceId) {
 		this.serviceId = serviceId;
 	}
 
@@ -137,67 +173,67 @@ public class HealthFacilityReferral {
 		this.ctcNumber = ctcNumber;
 	}
 
-	public String getHas2WeeksCough() {
+	public Boolean getHas2WeeksCough() {
 		return has2WeeksCough;
 	}
 
-	public void setHas2WeeksCough(String has2WeeksCough) {
+	public void setHas2WeeksCough(Boolean has2WeeksCough) {
 		this.has2WeeksCough = has2WeeksCough;
 	}
 
-	public String getHasBloodCough() {
+	public Boolean getHasBloodCough() {
 		return hasBloodCough;
 	}
 
-	public void setHasBloodCough(String hasBloodCough) {
+	public void setHasBloodCough(Boolean hasBloodCough) {
 		this.hasBloodCough = hasBloodCough;
 	}
 
-	public String getHasSevereSweating() {
+	public Boolean getHasSevereSweating() {
 		return hasSevereSweating;
 	}
 
-	public void setHasSevereSweating(String hasSevereSweating) {
+	public void setHasSevereSweating(Boolean hasSevereSweating) {
 		this.hasSevereSweating = hasSevereSweating;
 	}
 
-	public Date getHasFever() {
+	public Boolean getHasFever() {
 		return hasFever;
 	}
 
-	public void setHasFever(Date hasFever) {
+	public void setHasFever(Boolean hasFever) {
 		this.hasFever = hasFever;
 	}
 
-	public String getHadWeightLoss() {
+	public Boolean getHadWeightLoss() {
 		return hadWeightLoss;
 	}
 
-	public void setHadWeightLoss(String hadWeightLoss) {
+	public void setHadWeightLoss(Boolean hadWeightLoss) {
 		this.hadWeightLoss = hadWeightLoss;
 	}
 
-	public Date getServiceProviderUIID() {
+	public String getServiceProviderUIID() {
 		return serviceProviderUIID;
 	}
 
-	public void setServiceProviderUIID(Date serviceProviderUIID) {
+	public void setServiceProviderUIID(String serviceProviderUIID) {
 		this.serviceProviderUIID = serviceProviderUIID;
 	}
 
-	public Date getServiceProviderGroup() {
+	public String getServiceProviderGroup() {
 		return serviceProviderGroup;
 	}
 
-	public void setServiceProviderGroup(Date serviceProviderGroup) {
+	public void setServiceProviderGroup(String serviceProviderGroup) {
 		this.serviceProviderGroup = serviceProviderGroup;
 	}
 
-	public Date getVillageLeader() {
+	public String getVillageLeader() {
 		return villageLeader;
 	}
 
-	public void setVillageLeader(Date villageLeader) {
+	public void setVillageLeader(String villageLeader) {
 		this.villageLeader = villageLeader;
 	}
 
@@ -209,12 +245,20 @@ public class HealthFacilityReferral {
 		this.referralDate = referralDate;
 	}
 
-	public Date getFacilityId() {
+	public String getFacilityId() {
 		return facilityId;
 	}
 
-	public void setFacilityId(Date facilityId) {
+	public void setFacilityId(String facilityId) {
 		this.facilityId = facilityId;
+	}
+
+	public int getReferralStatus() {
+		return referralStatus;
+	}
+
+	public void setReferralStatus(int referralStatus) {
+		this.referralStatus = referralStatus;
 	}
 
 	public Date getCreatedAt() {

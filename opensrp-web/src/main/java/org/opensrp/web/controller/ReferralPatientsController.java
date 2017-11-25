@@ -4,15 +4,16 @@ import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
-import org.opensrp.domain.HealthFacilities;
-import org.opensrp.domain.ReferralPatients;
-import org.opensrp.dto.HealthFacilitiesDTO;
-import org.opensrp.dto.ReferralPatientsDTO;
+import org.opensrp.domain.Patients;
+import org.opensrp.dto.PatientReferralsDTO;
+import org.opensrp.dto.PatientsDTO;
+import org.opensrp.dto.form.FormSubmissionDTO;
+import org.opensrp.form.domain.FormSubmission;
+import org.opensrp.form.service.FormSubmissionConverter;
 import org.opensrp.repository.PatientsRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
-import org.opensrp.service.HealthFacilitiesConverter;
-import org.opensrp.service.ReferralPatientsConverter;
+import org.opensrp.service.PatientsConverter;
 import org.opensrp.service.ReferralPatientsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,59 +23,70 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 import static ch.lambdaj.collection.LambdaCollections.with;
 import static java.text.MessageFormat.format;
 import static org.springframework.http.HttpStatus.*;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
 public class ReferralPatientsController {
     private static Logger logger = LoggerFactory.getLogger(ReferralPatientsController.class.toString());
-    private ReferralPatientsService ctc2Service;
+    private ReferralPatientsService patientsService;
     private PatientsRepository patientsRepository;
 	private TaskSchedulerService scheduler;
 
     @Autowired
-    public ReferralPatientsController(ReferralPatientsService ctc2Service, PatientsRepository patientsRepository, TaskSchedulerService scheduler) {
-        this.ctc2Service = ctc2Service;
+    public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler) {
+        this.patientsService = patientsService;
         this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/ctc_patients")
-    public ResponseEntity<HttpStatus> savePatient(@RequestBody List<ReferralPatientsDTO> referralPatientsDTOS) {
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_patients")
+    public ResponseEntity<HttpStatus> savePatient(@RequestBody List<PatientsDTO> patientsDTOS) {
         try {
-            if (referralPatientsDTOS.isEmpty()) {
+            if (patientsDTOS.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
-            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralPatientsDTOS));
-            String json = new Gson().toJson(referralPatientsDTOS);
-            List<ReferralPatientsDTO> healthFacilitiesDTOs = new Gson().fromJson(json, new TypeToken<List<ReferralPatientsDTO>>() {}.getType());
+            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
+            String json = new Gson().toJson(patientsDTOS);
+            List<PatientsDTO> healthFacilitiesDTOs = new Gson().fromJson(json, new TypeToken<List<PatientsDTO>>() {}.getType());
 
             try{
 
-				List<ReferralPatients>patients = with(healthFacilitiesDTOs).convert(new Converter<ReferralPatientsDTO, ReferralPatients>() {
+				List<Patients>patients = with(healthFacilitiesDTOs).convert(new Converter<PatientsDTO, Patients>() {
 					@Override
-					public ReferralPatients convert(ReferralPatientsDTO submission) {
-						return ReferralPatientsConverter.toCTCPatients(submission);
+					public Patients convert(PatientsDTO submission) {
+						return PatientsConverter.toPatients(submission);
 					}
 				});
 
-				for(ReferralPatients ctcPatients:patients){
-					ctc2Service.storeCTCPatients(ctcPatients);
+				for(Patients ctcPatients:patients){
+					patientsService.storeCTCPatients(ctcPatients);
 				}
             }
             catch(Exception e){
             	e.printStackTrace();
             }
-            logger.debug(format("Added CTC2 Patient to queue.\nSubmissions: {0}", referralPatientsDTOS));
+            logger.debug(format("Added  Patient to queue.\nSubmissions: {0}", patientsDTOS));
         } catch (Exception e) {
-            logger.error(format("CTC2 Patients processing failed with exception {0}.\nSubmissions: {1}", e, referralPatientsDTOS));
+            logger.error(format("Patients processing failed with exception {0}.\nSubmissions: {1}", e, patientsDTOS));
             return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(CREATED);
     }
+
+
+	@RequestMapping(method = GET, value="/all-patients-referrals")
+	@ResponseBody
+	private List<PatientReferralsDTO> getAllPatientsReferrals() {
+		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getAllPatientReferrals();
+		return patientReferralsDTOS;
+	}
 }

@@ -1,19 +1,14 @@
 package org.opensrp.web.controller;
 
-import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.HealthFacilities;
-import org.opensrp.domain.ReferralPatients;
 import org.opensrp.dto.HealthFacilitiesDTO;
-import org.opensrp.dto.ReferralPatientsDTO;
-import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.repository.HealthFacilityRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
 import org.opensrp.service.HealthFacilitiesConverter;
-import org.opensrp.service.ReferralPatientsConverter;
 import org.opensrp.service.HealthFacilitiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

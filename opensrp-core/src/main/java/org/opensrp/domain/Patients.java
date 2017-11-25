@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tbl_patients")
-public class ReferralPatients {
+public class Patients {
 
 	public static final String tbName = "tbl_referral_patients";
 

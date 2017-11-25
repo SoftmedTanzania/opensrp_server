@@ -1,13 +1,7 @@
 package org.opensrp.service;
 
-import com.google.gson.Gson;
 import org.opensrp.domain.HealthFacilities;
-import org.opensrp.domain.ReferralPatients;
 import org.opensrp.dto.HealthFacilitiesDTO;
-import org.opensrp.dto.ReferralPatientsDTO;
-import org.opensrp.dto.form.FormSubmissionDTO;
-import org.opensrp.form.domain.FormInstance;
-import org.opensrp.form.domain.FormSubmission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
