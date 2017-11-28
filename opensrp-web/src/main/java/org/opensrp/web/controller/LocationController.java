@@ -34,4 +34,11 @@ public class LocationController {
 	public ResponseEntity<String> getLocationTree(@PathVariable("uuid") String uuid) throws JSONException {
 		return new ResponseEntity<>(new Gson().toJson(openmrsLocationService.getLocationTreeOf(uuid)),HttpStatus.OK);
 	}
+
+
+	@RequestMapping("location-children-tree/{uuid}")
+	@ResponseBody
+	public ResponseEntity<String> getLocationChildrenTree(@PathVariable("uuid") String uuid) throws JSONException {
+		return new ResponseEntity<>(new Gson().toJson(openmrsLocationService.getLocationAndChildTreeOf(uuid)),HttpStatus.OK);
+	}
 }

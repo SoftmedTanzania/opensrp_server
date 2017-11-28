@@ -87,6 +87,13 @@ public class OpenmrsLocationService extends OpenmrsService{
 		
 		return ltr;
 	}
+
+
+	public LocationTree getLocationAndChildTreeOf(String locationIdOrName) throws JSONException {
+		LocationTree ltr = new LocationTree();
+		fillTreeWithHierarchy(ltr, locationIdOrName);
+		return ltr;
+	}
 	
 	public LocationTree getLocationTreeOf(String[] locationIdsOrNames) throws JSONException {
 		LocationTree ltr = new LocationTree();
