@@ -20,16 +20,15 @@ import org.opensrp.connector.openmrs.constants.OpenmrsHouseHold;
 import org.opensrp.connector.openmrs.service.EncounterService;
 import org.opensrp.connector.openmrs.service.HouseholdService;
 import org.opensrp.connector.openmrs.service.PatientService;
-import org.opensrp.domain.Client;
-import org.opensrp.domain.ErrorTrace;
-import org.opensrp.domain.Event;
-import org.opensrp.domain.Multimedia;
+import org.opensrp.domain.*;
+import org.opensrp.dto.PatientsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.dto.form.MultimediaDTO;
 import org.opensrp.form.domain.FormSubmission;
 import org.opensrp.form.service.FormSubmissionConverter;
 import org.opensrp.form.service.FormSubmissionService;
 import org.opensrp.repository.MultimediaRepository;
+import org.opensrp.repository.PatientsRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
 import org.opensrp.service.ErrorTraceService;
@@ -63,12 +62,13 @@ public class FormSubmissionController {
     private ErrorTraceService errorTraceService;
     private MultimediaService multimediaService;
     private MultimediaRepository multimediaRepository;
-    
+    private PatientsRepository patientsRepository;
+
     @Autowired
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
     		EncounterService encounterService, FormEntityConverter formEntityConverter, PatientService patientService, 
     		HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
-    		ErrorTraceService errorTraceService) {
+    		ErrorTraceService errorTraceService,PatientsRepository patientsRepository) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService=errorTraceService;
@@ -78,6 +78,7 @@ public class FormSubmissionController {
         this.householdService = householdService;
         this.multimediaService = multimediaService;
         this.multimediaRepository = multimediaRepository;
+        this.patientsRepository = patientsRepository;
     }
 
     @RequestMapping(method = GET, value = "/form-submissions")
@@ -137,6 +138,7 @@ public class FormSubmissionController {
             });
 	            for (FormSubmission formSubmission : fsl) {
 	            	try{
+			            saveFormToOpenSRP(formSubmission);
 	            		addFormToOpenMRS(formSubmission);
 	            	}
 	            	catch(Exception e){
@@ -195,6 +197,19 @@ public class FormSubmissionController {
     		}
     	//}
     }
+
+	private void saveFormToOpenSRP(FormSubmission formSubmission) throws ParseException, IllegalStateException, JSONException{
+		Patients patients = formEntityConverter.getPatientFromFormSubmission(formSubmission);
+		try {
+			patientsRepository.save(patients);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
+
+		}
+
+
+	}
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/multimedia-file")
     @ResponseBody

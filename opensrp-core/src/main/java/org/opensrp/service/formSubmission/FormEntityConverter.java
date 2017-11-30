@@ -19,10 +19,8 @@ import org.opensrp.common.FormEntityConstants.Encounter;
 import org.opensrp.common.FormEntityConstants.FormEntity;
 import org.opensrp.common.FormEntityConstants.Person;
 import org.opensrp.common.util.DateUtil;
-import org.opensrp.domain.Address;
-import org.opensrp.domain.Client;
-import org.opensrp.domain.Event;
-import org.opensrp.domain.Obs;
+import org.opensrp.domain.*;
+import org.opensrp.dto.PatientsDTO;
 import org.opensrp.form.domain.FormSubmission;
 import org.opensrp.form.service.FormAttributeParser;
 import org.opensrp.form.service.FormFieldMap;
@@ -144,8 +142,8 @@ public class FormEntityConverter {
 	/**
 	 * Get field name for specified openmrs entity in given form submission for given subform
 	 * @param en
-	 * @param subform
-	 * @param fs
+	 * @param subf
+	 * @param en
 	 * @return
 	 */
 	String getFieldName(FormEntity en, SubformMap subf) {
@@ -331,7 +329,7 @@ public class FormEntityConverter {
 	
 	/**
 	 * Extract Client from given form submission
-	 * @param fs
+	 * @param fsubmission
 	 * @return
 	 * @throws ParseException
 	 */
@@ -344,9 +342,21 @@ public class FormEntityConverter {
 			throw new IllegalStateException(e);
 		}
 	}
-	
-	public Client getClientFromFormSubmission(FormSubmissionMap fsubmission) throws Exception {
-		return createBaseClient(fsubmission);
+
+
+	public Patients getPatientFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
+		FormSubmissionMap fs;
+		try {
+			fs = formAttributeParser.createFormSubmissionMap(fsubmission);
+			return createBasePatient(fs);
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+
+	public Patients getClientFromFormSubmission(FormSubmissionMap fsubmission) throws Exception {
+		return createBasePatient(fsubmission);
 
 	}
 	
@@ -396,6 +406,54 @@ public class FormEntityConverter {
 				.withAttributes(extractAttributes(fs))
 				.withIdentifiers(extractIdentifiers(fs));
 		return c;
+	}
+
+	public Patients createBasePatient(FormSubmissionMap fs) throws ParseException {
+		Patients patients = new Patients();
+		String firstName = fs.getFieldValue(getFieldName(Person.first_name, fs));
+		String middleName = fs.getFieldValue(getFieldName(Person.middle_name, fs));
+		String lastName = fs.getFieldValue(getFieldName(Person.last_name, fs));
+		String phoneNumber = fs.getFieldValue(getFieldName(Person.phone_number, fs));
+		String bd = fs.getFieldValue(getFieldName(Person.birthdate, fs));
+		DateTime birthdate = bd==null?null:new DateTime(bd).withTimeAtStartOfDay();
+		String dd = fs.getFieldValue(getFieldName(Person.deathdate, fs));
+		DateTime deathdate = dd==null?null:new DateTime(dd).withTimeAtStartOfDay();
+		String aproxbd = fs.getFieldValue(getFieldName(Person.birthdate_estimated, fs));
+		Boolean birthdateApprox = false;
+		if(!StringUtils.isEmptyOrWhitespaceOnly(aproxbd) && NumberUtils.isNumber(aproxbd)){
+			int bde = 0;
+			try {
+				bde = Integer.parseInt(aproxbd);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			birthdateApprox = bde > 0 ? true:false;
+		}
+		String aproxdd = fs.getFieldValue(getFieldName(Person.deathdate_estimated, fs));
+		Boolean deathdateApprox = false;
+		if(!StringUtils.isEmptyOrWhitespaceOnly(aproxdd) && NumberUtils.isNumber(aproxdd)){
+			int dde = 0;
+			try {
+				dde = Integer.parseInt(aproxdd);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			deathdateApprox = dde > 0 ? true:false;
+		}
+		String gender = fs.getFieldValue(getFieldName(Person.gender, fs));
+
+
+
+
+		patients.setPatientFirstName(firstName);
+		patients.setPatientMiddleName(middleName);
+		patients.setPatientSurname(lastName);
+		patients.setDateOfBirth(birthdate.toDate());
+		patients.setDateOfDeath(deathdate.toDate());
+		patients.setGender(gender);
+		patients.setPhone_number(phoneNumber);
+
+		return patients;
 	}
 	
 	
@@ -459,7 +517,7 @@ public class FormEntityConverter {
 	/**
 	 * Extract Client and Event from given form submission for entities dependent on main beneficiary (excluding main beneficiary). 
 	 * The dependent entities are specified via subforms (repeat groups) in xls forms.
-	 * @param fs
+	 * @param fsubmission
 	 * @return The clients and events Map with id of dependent entity as key. Each entry in Map contains an 
 	 * internal map that holds Client and Event info as "client" and "event" respectively for that 
 	 * dependent entity (whose id is the key of main Map).

@@ -13,6 +13,8 @@ public class Patients {
 
 	public static final String COL_PATIENT_FIRST_NAME = "patient_first_name";
 
+	public static final String COL_PATIENT_MIDDLE_NAME = "patient_middle_name";
+
 	public static final String COL_PATIENT_SURNAME = "patient_surname";
 
 	public static final String COL_PHONE_NUMBER = "phone_number";
@@ -43,6 +45,10 @@ public class Patients {
 
 	@Column(name = COL_PATIENT_FIRST_NAME)
 	private String patientFirstName;
+
+
+	@Column(name = COL_PATIENT_MIDDLE_NAME)
+	private String patientMiddleName;
 
 	@Column(name = COL_PATIENT_SURNAME)
 	private String patientSurname;
@@ -100,6 +106,14 @@ public class Patients {
 
 	public void setPatientFirstName(String patientFirstName) {
 		this.patientFirstName = patientFirstName;
+	}
+
+	public String getPatientMiddleName() {
+		return patientMiddleName;
+	}
+
+	public void setPatientMiddleName(String patientMiddleName) {
+		this.patientMiddleName = patientMiddleName;
 	}
 
 	public String getPatientSurname() {
