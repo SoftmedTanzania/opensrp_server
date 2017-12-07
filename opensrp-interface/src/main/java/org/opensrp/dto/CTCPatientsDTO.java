@@ -1,136 +1,125 @@
 package org.opensrp.dto;
 
-        import org.apache.commons.lang3.builder.EqualsBuilder;
-        import org.apache.commons.lang3.builder.HashCodeBuilder;
-        import org.apache.commons.lang3.builder.ToStringBuilder;
-        import org.codehaus.jackson.annotate.JsonProperty;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.codehaus.jackson.annotate.JsonProperty;
 
-        import java.util.Date;
-        import java.util.Map;
+import java.util.Date;
+import java.util.Map;
 
 public class CTCPatientsDTO {
-    @JsonProperty
-    private String firstName;
+	@JsonProperty
+	private String firstName;
 
-    @JsonProperty
-    private String middleName;
+	@JsonProperty
+	private String middleName;
 
-    @JsonProperty
-    private String phoneNumber;
+	@JsonProperty
+	private String ctc_number;
 
-    @JsonProperty
-    private String ctc_number;
+	@JsonProperty
+	private String contact;
 
-    @JsonProperty
-    private String contact;
+	@JsonProperty
+	private Date dateOfBirth;
 
-    @JsonProperty
-    private Date dateOfBirth;
+	@JsonProperty
+	private String surname;
 
-    @JsonProperty
-    private String surname;
+	@JsonProperty
+	private String gender;
 
-    @JsonProperty
-    private String gender;
+	@JsonProperty
+	private Date dateOfDeath;
 
-    @JsonProperty
-    private Date dateOfDeath;
+	@JsonProperty
+	private CTCPatientsAppointmesDTO[] appointments;
 
-    @JsonProperty
-    private Map<String, String> appointments;
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public String getFirstName() {
-        return firstName;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	public String getMiddleName() {
+		return middleName;
+	}
 
-    public String getMiddleName() {
-        return middleName;
-    }
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
 
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
+	public String getCtc_number() {
+		return ctc_number;
+	}
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+	public void setCtc_number(String ctc_number) {
+		this.ctc_number = ctc_number;
+	}
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+	public String getContact() {
+		return contact;
+	}
 
-    public String getCtc_number() {
-        return ctc_number;
-    }
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
 
-    public void setCtc_number(String ctc_number) {
-        this.ctc_number = ctc_number;
-    }
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
 
-    public String getContact() {
-        return contact;
-    }
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
 
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
+	public String getSurname() {
+		return surname;
+	}
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
 
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
+	public String getGender() {
+		return gender;
+	}
 
-    public String getSurname() {
-        return surname;
-    }
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
+	public Date getDateOfDeath() {
+		return dateOfDeath;
+	}
 
-    public String getGender() {
-        return gender;
-    }
+	public void setDateOfDeath(Date dateOfDeath) {
+		this.dateOfDeath = dateOfDeath;
+	}
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
+	public CTCPatientsAppointmesDTO[] getAppointments() {
+		return appointments;
+	}
 
-    public Date getDateOfDeath() {
-        return dateOfDeath;
-    }
+	public void setAppointments(CTCPatientsAppointmesDTO[] appointments) {
+		this.appointments = appointments;
+	}
 
-    public void setDateOfDeath(Date dateOfDeath) {
-        this.dateOfDeath = dateOfDeath;
-    }
+	@Override
+	public final boolean equals(Object o) {
+		return EqualsBuilder.reflectionEquals(this, o);
+	}
 
-    public Map<String, String> getOptions() {
-        return appointments;
-    }
+	@Override
+	public final int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
 
-    public void setOptions(Map<String, String> options) {
-        this.appointments = options;
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public final int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 }

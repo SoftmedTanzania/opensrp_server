@@ -44,7 +44,7 @@ public class PatientAppointments implements Serializable {
 	private String status;
 
 	@Column(name = COL_ROW_VERSION)
-	private String row_version;
+	private Date rowVersion;
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -94,12 +94,12 @@ public class PatientAppointments implements Serializable {
 		this.status = status;
 	}
 
-	public String getRow_version() {
-		return row_version;
+	public Date getRowVersion() {
+		return rowVersion;
 	}
 
-	public void setRow_version(String row_version) {
-		this.row_version = row_version;
+	public void setRowVersion(Date rowVersion) {
+		this.rowVersion = rowVersion;
 	}
 
 	public Date getCreatedAt() {

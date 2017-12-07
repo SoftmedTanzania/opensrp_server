@@ -1,7 +1,10 @@
 package org.opensrp.service;
 
+import org.opensrp.domain.PatientAppointments;
 import org.opensrp.domain.PatientReferral;
 import org.opensrp.domain.Patients;
+import org.opensrp.dto.CTCPatientsAppointmesDTO;
+import org.opensrp.dto.CTCPatientsDTO;
 import org.opensrp.dto.PatientsDTO;
 import org.opensrp.dto.ReferralsDTO;
 import org.slf4j.Logger;
@@ -11,6 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
@@ -38,6 +42,55 @@ public class PatientsConverter {
             patients.setUpdatedAt(Calendar.getInstance().getTime());
 
             return patients;
+        } catch (Exception e) {
+            logger.error(MessageFormat.format("Converting CTCPatientDTO :{0}, failed with error: {1}.", patientsDTO, e));
+            throw e;
+        }
+    }
+
+
+
+    public static Patients toPatients(CTCPatientsDTO patientsDTO) {
+        try {
+            Patients patients = new Patients();
+
+
+            patients.setFirstName(patientsDTO.getFirstName());
+            patients.setSurname(patientsDTO.getSurname());
+            patients.setPhoneNumber(patientsDTO.getContact());
+            patients.setDateOfBirth(patientsDTO.getDateOfBirth());
+            patients.setGender(patientsDTO.getGender());
+            patients.setDateOfDeath(patientsDTO.getDateOfDeath());
+            patients.setCreatedAt(Calendar.getInstance().getTime());
+            patients.setUpdatedAt(Calendar.getInstance().getTime());
+
+            return patients;
+        } catch (Exception e) {
+            logger.error(MessageFormat.format("Converting CTCPatientDTO :{0}, failed with error: {1}.", patientsDTO, e));
+            throw e;
+        }
+    }
+
+
+
+    public static List<PatientAppointments> toPatientsAppointments(CTCPatientsDTO patientsDTO) {
+        try {
+
+            List<PatientAppointments> patientAppointments = new ArrayList<>();
+            CTCPatientsAppointmesDTO[] appointments = patientsDTO.getAppointments();
+
+            int count = appointments.length;
+            for(int i=0;i<count;i++){
+                PatientAppointments patientAppointment = new PatientAppointments();
+                patientAppointment.setAppointmentDate(appointments[i].getDateOfAppointment());
+                patientAppointment.setIsCancelled(appointments[i].getCancelled());
+                patientAppointment.setRowVersion(appointments[i].getRowVersion());
+                patientAppointment.setStatus("0");
+                patientAppointments.add(patientAppointment);
+            }
+
+            return patientAppointments;
+
         } catch (Exception e) {
             logger.error(MessageFormat.format("Converting CTCPatientDTO :{0}, failed with error: {1}.", patientsDTO, e));
             throw e;
