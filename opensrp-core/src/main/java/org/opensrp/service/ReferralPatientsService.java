@@ -41,7 +41,7 @@ public class ReferralPatientsService {
         try {
             if (!this.checkIfClientExists(patient)) {
                 patientsRepository.save(patient);
-                logger.info("Successfully saved client " + patient.getPatientFirstName());
+                logger.info("Successfully saved client " + patient.getFirstName());
             }
         } catch (Exception e) {
             logger.error("", e);
@@ -71,7 +71,7 @@ public class ReferralPatientsService {
 
                 String getReferralPatientsSQL = "SELECT * from " + PatientReferral.tbName+" WHERE "+PatientReferral.COL_PATIENT_ID +" =?";
                 String[] args = new String[1];
-                args[0] = (String) patient.getPatientId();
+                args[0] =  patient.getPatientId()+"";
 
                 List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(patientReferralRepository.getReferrals(getReferralPatientsSQL,args));
                 patientReferralsDTO.setPatientReferralsList(referralsDTOS);
@@ -88,7 +88,7 @@ public class ReferralPatientsService {
         try {
             String checkIfExistQuery = "SELECT count(*) from " + Patients.tbName + " WHERE " + Patients.COL_PATIENT_ID + " = ?";
             String[] args = new String[1];
-            args[0] = (String) patient.getPatientId();
+            args[0] = patient.getPatientId()+"";
 
             int rowCount = patientsRepository.checkIfExists(checkIfExistQuery, args);
 

@@ -8,14 +8,12 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import java.util.Date;
 
 public class ReferralsDTO {
-    @JsonProperty
-    private Long id;
 
     @JsonProperty
     private String referralId;
 
     @JsonProperty
-    private String patientId;
+    private Long patientId;
 
     @JsonProperty
     private String communityBasedHivService;
@@ -74,14 +72,6 @@ public class ReferralsDTO {
     @JsonProperty
     private Date updatedAt;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getReferralId() {
         return referralId;
     }
@@ -91,11 +81,11 @@ public class ReferralsDTO {
     }
 
 
-    public String getPatientId() {
+    public Long getPatientId() {
         return patientId;
     }
 
-    public void setPatientId(String patientId) {
+    public void setPatientId(Long patientId) {
         this.patientId = patientId;
     }
 

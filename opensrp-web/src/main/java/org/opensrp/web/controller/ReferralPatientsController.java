@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.Patients;
+import org.opensrp.dto.CTCPatientsDTO;
 import org.opensrp.dto.PatientReferralsDTO;
 import org.opensrp.dto.PatientsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
@@ -82,8 +83,42 @@ public class ReferralPatientsController {
         return new ResponseEntity<>(CREATED);
     }
 
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_ctc_patients")
+    public ResponseEntity<HttpStatus> saveCtcPatients(@RequestBody List<CTCPatientsDTO> ctcPatientsDTOS) {
+//        try {
+//            if (patientsDTOS.isEmpty()) {
+//                return new ResponseEntity<>(BAD_REQUEST);
+//            }
+//            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
+//            String json = new Gson().toJson(patientsDTOS);
+//            List<PatientsDTO> healthFacilitiesDTOs = new Gson().fromJson(json, new TypeToken<List<PatientsDTO>>() {}.getType());
+//
+//            try{
+//
+//                List<Patients>patients = with(healthFacilitiesDTOs).convert(new Converter<PatientsDTO, Patients>() {
+//                    @Override
+//                    public Patients convert(PatientsDTO submission) {
+//                        return PatientsConverter.toPatients(submission);
+//                    }
+//                });
+//
+//                for(Patients ctcPatients:patients){
+//                    patientsService.storeCTCPatients(ctcPatients);
+//                }
+//            }
+//            catch(Exception e){
+//                e.printStackTrace();
+//            }
+//            logger.debug(format("Added  Patient to queue.\nSubmissions: {0}", patientsDTOS));
+//        } catch (Exception e) {
+//            logger.error(format("Patients processing failed with exception {0}.\nSubmissions: {1}", e, patientsDTOS));
+//            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+//        }
+//        return new ResponseEntity<>(CREATED);
+    }
 
-	@RequestMapping(method = GET, value="/all-patients-referrals")
+
+    @RequestMapping(method = GET, value="/all-patients-referrals")
 	@ResponseBody
 	private List<PatientReferralsDTO> getAllPatientsReferrals() {
 		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getAllPatientReferrals();

@@ -25,9 +25,9 @@ public class PatientsConverter {
 
 
             patients.setPatientId(patientsDTO.getPatientId());
-            patients.setPatientFirstName(patientsDTO.getPatientFirstName());
-            patients.setPatientSurname(patientsDTO.getPatientSurname());
-            patients.setPhone_number(patientsDTO.getPhoneNumber());
+            patients.setFirstName(patientsDTO.getFirstName());
+            patients.setSurname(patientsDTO.getSurname());
+            patients.setPhoneNumber(patientsDTO.getPhoneNumber());
             patients.setDateOfBirth(patientsDTO.getDateOfBirth());
             patients.setGender(patientsDTO.getGender());
             patients.setWard(patientsDTO.getWard());
@@ -50,9 +50,9 @@ public class PatientsConverter {
             PatientsDTO patientsDTO = new PatientsDTO();
 
             patientsDTO.setPatientId(patients.getPatientId());
-            patientsDTO.setPatientFirstName(patients.getPatientFirstName());
-            patientsDTO.setPatientSurname(patients.getPatientSurname());
-            patientsDTO.setPhoneNumber(patients.getPhone_number());
+            patientsDTO.setFirstName(patients.getFirstName());
+            patientsDTO.setSurname(patients.getSurname());
+            patientsDTO.setPhoneNumber(patients.getPhoneNumber());
             patientsDTO.setDateOfBirth(patients.getDateOfBirth());
             patientsDTO.setGender(patients.getGender());
             patientsDTO.setWard(patients.getWard());
@@ -106,8 +106,6 @@ public class PatientsConverter {
         try {
             PatientReferral referral = new PatientReferral();
 
-
-            referral.setId(referralsDTO.getId());
             referral.setPatient_id(referralsDTO.getPatientId());
             referral.setReferral_id(referralsDTO.getReferralId());
             referral.setCommunityBasedHivService(referralsDTO.getCommunityBasedHivService());
@@ -141,8 +139,6 @@ public class PatientsConverter {
         try {
             ReferralsDTO referralsDTO = new ReferralsDTO();
 
-
-            referralsDTO.setId(referral.getId());
             referralsDTO.setPatientId(referral.getPatient_id());
             referralsDTO.setReferralId(referral.getReferral_id());
             referralsDTO.setCommunityBasedHivService(referral.getCommunityBasedHivService());

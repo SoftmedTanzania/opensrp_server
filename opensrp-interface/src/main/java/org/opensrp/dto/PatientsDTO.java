@@ -6,14 +6,16 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.Date;
-import java.util.Map;
 
 public class PatientsDTO {
     @JsonProperty
-    private String patientId;
+    private Long patientId;
 
     @JsonProperty
-    private String patientFirstName;
+    private String firstName;
+
+    @JsonProperty
+    private String middleName;
 
     @JsonProperty
     private String phoneNumber;
@@ -31,7 +33,7 @@ public class PatientsDTO {
     private Date dateOfBirth;
 
     @JsonProperty
-    private String patientSurname;
+    private String surname;
 
     @JsonProperty
     private String gender;
@@ -42,33 +44,33 @@ public class PatientsDTO {
     public PatientsDTO() {
     }
 
-    public PatientsDTO(String patientId, String patientFirstName, String phoneNumber, String ward, String village, String hamlet, Date dateOfBirth, String patientSurname, String gender, Date dateOfDeath) {
+    public PatientsDTO(Long patientId, String firstName, String phoneNumber, String ward, String village, String hamlet, Date dateOfBirth, String surname, String gender, Date dateOfDeath) {
         this.patientId = patientId;
-        this.patientFirstName = patientFirstName;
+        this.firstName = firstName;
         this.phoneNumber = phoneNumber;
         this.ward = ward;
         this.village = village;
         this.hamlet = hamlet;
         this.dateOfBirth = dateOfBirth;
-        this.patientSurname = patientSurname;
+        this.surname = surname;
         this.gender = gender;
         this.dateOfDeath = dateOfDeath;
     }
 
-    public String getPatientId() {
+    public Long getPatientId() {
         return patientId;
     }
 
-    public void setPatientId(String patientId) {
+    public void setPatientId(Long patientId) {
         this.patientId = patientId;
     }
 
-    public String getPatientFirstName() {
-        return patientFirstName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setPatientFirstName(String patientFirstName) {
-        this.patientFirstName = patientFirstName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getPhoneNumber() {
@@ -111,12 +113,12 @@ public class PatientsDTO {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getPatientSurname() {
-        return patientSurname;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setPatientSurname(String patientSurname) {
-        this.patientSurname = patientSurname;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getGender() {
@@ -133,6 +135,14 @@ public class PatientsDTO {
 
     public void setDateOfDeath(Date dateOfDeath) {
         this.dateOfDeath = dateOfDeath;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     @Override

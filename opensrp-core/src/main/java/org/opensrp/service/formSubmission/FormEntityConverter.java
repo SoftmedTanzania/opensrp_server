@@ -2,7 +2,9 @@
 package org.opensrp.service.formSubmission;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import org.opensrp.common.FormEntityConstants.Person;
 import org.opensrp.common.util.DateUtil;
 import org.opensrp.domain.*;
 import org.opensrp.dto.PatientsDTO;
-import org.opensrp.form.domain.FormSubmission;
+import org.opensrp.form.domain.*;
 import org.opensrp.form.service.FormAttributeParser;
 import org.opensrp.form.service.FormFieldMap;
 import org.opensrp.form.service.FormSubmissionMap;
@@ -119,7 +121,7 @@ public class FormEntityConverter {
 	/**
 	 * Extract Event for given subform with given data mapped to specified Encounter Type.
 	 * @param fs
-	 * @param subform
+	 * @param eventType
 	 * @param eventType
 	 * @param subformInstance
 	 * @return
@@ -345,20 +347,114 @@ public class FormEntityConverter {
 
 
 	public Patients getPatientFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
-		FormSubmissionMap fs;
+		Patients patients = new Patients();
 		try {
-			fs = formAttributeParser.createFormSubmissionMap(fsubmission);
-			return createBasePatient(fs);
+			FormData formData = fsubmission.instance().form();
+			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
+			for(org.opensrp.form.domain.FormField formField : formFields){
+				if(formField.name().equals(Patients.COL_PATIENT_FIRST_NAME))
+					patients.setFirstName(formField.value());
+
+				if(formField.name().equals(Patients.COL_PATIENT_MIDDLE_NAME))
+					patients.setMiddleName(formField.value());
+
+				if(formField.name().equals(Patients.COL_PATIENT_SURNAME))
+					patients.setSurname(formField.value());
+
+				if(formField.name().equals(Patients.COL_PHONE_NUMBER))
+					patients.setPhoneNumber(formField.value());
+
+				if(formField.name().equals(Patients.COL_DATE_OF_BIRTH)) {
+					DateFormat df = new SimpleDateFormat("dd MMM yyyy");
+					Date startDate;
+					try {
+						startDate = df.parse(formField.value());
+						patients.setDateOfBirth(startDate);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+				}
+
+				if(formField.name().equals(Patients.COL_GENDER))
+					patients.setGender(formField.value());
+			}
+
+			return patients;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public PatientReferral getPatientReferralFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
+		PatientReferral patientReferral = new PatientReferral();
+		try {
+			patientReferral.setReferral_id(fsubmission.entityId());
+			FormData formData = fsubmission.instance().form();
+			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
+			for(org.opensrp.form.domain.FormField formField : formFields){
+				if(formField.name().equals(PatientReferral.COL_CTC_NUMBER))
+					patientReferral.setCtcNumber(formField.value());
+
+				if(formField.name().equals(PatientReferral.COL_COMMUNITY_BASED_HIV_SERVICE))
+					patientReferral.setCommunityBasedHivService(formField.value());
+
+				if(formField.name().equals(PatientReferral.COL_FACILITY_ID))
+					patientReferral.setFacilityId(formField.value());
+
+				if(formField.name().equals(PatientReferral.COL_HAD_WEIGHT_LOSS))
+					patientReferral.setHadWeightLoss(Boolean.parseBoolean(formField.value()));
+
+				if(formField.name().equals(PatientReferral.COL_HAS_2WEEKS_COUGH))
+					patientReferral.setHas2WeeksCough(Boolean.parseBoolean(formField.value()));
+
+				if(formField.name().equals(PatientReferral.COL_HAS_BLOOD_COUGH))
+					patientReferral.setHasBloodCough(Boolean.parseBoolean(formField.value()));
+
+				if(formField.name().equals(PatientReferral.COL_HAS_FEVER))
+					patientReferral.setHasFever(Boolean.parseBoolean(formField.value()));
+
+				if(formField.name().equals(PatientReferral.COL_HAS_SEVERE_SWEATING))
+					patientReferral.setHasSevereSweating(Boolean.parseBoolean(formField.value()));
+
+
+				if(formField.name().equals(PatientReferral.COL_REFERRAL_DATE)) {
+					DateFormat df = new SimpleDateFormat("dd MMM yyyy");
+					Date startDate;
+					try {
+						startDate = df.parse(formField.value());
+						patientReferral.setReferralDate(startDate);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+				}
+
+				if(formField.name().equals(PatientReferral.COL_REFERRAL_REASON))
+					patientReferral.setReferralReason(formField.value());
+
+				if(formField.name().equals(PatientReferral.COL_VILLAGE_LEADER))
+					patientReferral.setVillageLeader(formField.value());
+
+				if(formField.name().equals(PatientReferral.COL_SERVICE_PROVIDER_GROUP))
+					patientReferral.setServiceProviderGroup(formField.value());
+
+				if(formField.name().equals(PatientReferral.COL_SERVICE_PROVIDER_UIID))
+					patientReferral.setServiceProviderUIID(formField.value());
+
+				if(formField.name().equals(PatientReferral.COL_SERVICE_ID))
+					patientReferral.setServiceId(Integer.parseInt(formField.value()));
+
+				if(formField.name().equals(PatientReferral.COL_REFERRAL_STATUS))
+					patientReferral.setReferralStatus(0);
+
+			}
+
+			return patientReferral;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
 
-	public Patients getClientFromFormSubmission(FormSubmissionMap fsubmission) throws Exception {
-		return createBasePatient(fsubmission);
-
-	}
 	
 	public Client createBaseClient(FormSubmissionMap fs) throws ParseException {
 		String firstName = fs.getFieldValue(getFieldName(Person.first_name, fs));
@@ -408,54 +504,6 @@ public class FormEntityConverter {
 		return c;
 	}
 
-	public Patients createBasePatient(FormSubmissionMap fs) throws ParseException {
-		Patients patients = new Patients();
-		String firstName = fs.getFieldValue(getFieldName(Person.first_name, fs));
-		String middleName = fs.getFieldValue(getFieldName(Person.middle_name, fs));
-		String lastName = fs.getFieldValue(getFieldName(Person.last_name, fs));
-		String phoneNumber = fs.getFieldValue(getFieldName(Person.phone_number, fs));
-		String bd = fs.getFieldValue(getFieldName(Person.birthdate, fs));
-		DateTime birthdate = bd==null?null:new DateTime(bd).withTimeAtStartOfDay();
-		String dd = fs.getFieldValue(getFieldName(Person.deathdate, fs));
-		DateTime deathdate = dd==null?null:new DateTime(dd).withTimeAtStartOfDay();
-		String aproxbd = fs.getFieldValue(getFieldName(Person.birthdate_estimated, fs));
-		Boolean birthdateApprox = false;
-		if(!StringUtils.isEmptyOrWhitespaceOnly(aproxbd) && NumberUtils.isNumber(aproxbd)){
-			int bde = 0;
-			try {
-				bde = Integer.parseInt(aproxbd);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			birthdateApprox = bde > 0 ? true:false;
-		}
-		String aproxdd = fs.getFieldValue(getFieldName(Person.deathdate_estimated, fs));
-		Boolean deathdateApprox = false;
-		if(!StringUtils.isEmptyOrWhitespaceOnly(aproxdd) && NumberUtils.isNumber(aproxdd)){
-			int dde = 0;
-			try {
-				dde = Integer.parseInt(aproxdd);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			deathdateApprox = dde > 0 ? true:false;
-		}
-		String gender = fs.getFieldValue(getFieldName(Person.gender, fs));
-
-
-
-
-		patients.setPatientFirstName(firstName);
-		patients.setPatientMiddleName(middleName);
-		patients.setPatientSurname(lastName);
-		patients.setDateOfBirth(birthdate.toDate());
-		patients.setDateOfDeath(deathdate.toDate());
-		patients.setGender(gender);
-		patients.setPhone_number(phoneNumber);
-
-		return patients;
-	}
-	
 	
 	public Client createSubformClient(SubformMap subf) throws ParseException {
 		String firstName = subf.getFieldValue(getFieldName(Person.first_name, subf));

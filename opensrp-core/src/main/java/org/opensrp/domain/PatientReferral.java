@@ -47,14 +47,15 @@ public class PatientReferral {
 
 	public static final String COL_UPDATED_AT = "updated_at";
 
-	@Id
+
 	@GeneratedValue
 	@Column(name = "_id")
 	private Long id;
 
 	@Column(name = COL_PATIENT_ID)
-	private String patient_id;
+	private Long patient_id;
 
+	@Id
 	@Column(name = COL_REFERRAL_ID)
 	private String referral_id;
 
@@ -125,11 +126,11 @@ public class PatientReferral {
 		this.id = id;
 	}
 
-	public String getPatient_id() {
+	public Long getPatient_id() {
 		return patient_id;
 	}
 
-	public void setPatient_id(String patient_id) {
+	public void setPatient_id(Long patient_id) {
 		this.patient_id = patient_id;
 	}
 

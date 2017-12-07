@@ -28,6 +28,7 @@ import org.opensrp.form.domain.FormSubmission;
 import org.opensrp.form.service.FormSubmissionConverter;
 import org.opensrp.form.service.FormSubmissionService;
 import org.opensrp.repository.MultimediaRepository;
+import org.opensrp.repository.PatientReferralRepository;
 import org.opensrp.repository.PatientsRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
@@ -63,12 +64,13 @@ public class FormSubmissionController {
     private MultimediaService multimediaService;
     private MultimediaRepository multimediaRepository;
     private PatientsRepository patientsRepository;
+    private PatientReferralRepository patientReferralRepository;
 
     @Autowired
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
     		EncounterService encounterService, FormEntityConverter formEntityConverter, PatientService patientService, 
     		HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
-    		ErrorTraceService errorTraceService,PatientsRepository patientsRepository) {
+    		ErrorTraceService errorTraceService,PatientsRepository patientsRepository,PatientReferralRepository patientReferralRepository) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService=errorTraceService;
@@ -79,6 +81,7 @@ public class FormSubmissionController {
         this.multimediaService = multimediaService;
         this.multimediaRepository = multimediaRepository;
         this.patientsRepository = patientsRepository;
+        this.patientReferralRepository = patientReferralRepository;
     }
 
     @RequestMapping(method = GET, value = "/form-submissions")
@@ -120,7 +123,6 @@ public class FormSubmissionController {
             if (formSubmissionsDTO.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
-
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.FORM_SUBMISSION, formSubmissionsDTO));
             
             try{
@@ -199,9 +201,39 @@ public class FormSubmissionController {
     }
 
 	private void saveFormToOpenSRP(FormSubmission formSubmission) throws ParseException, IllegalStateException, JSONException{
-		Patients patients = formEntityConverter.getPatientFromFormSubmission(formSubmission);
+        System.out.println("Coze = saving patient into OpenSRP");
+        Patients patients = formEntityConverter.getPatientFromFormSubmission(formSubmission);
+        PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
 		try {
-			patientsRepository.save(patients);
+            /**
+             * Check if the patient already exists by comparing his/her names and phone numbers.
+             */
+
+            String query = "SELECT * FROM " + Patients.tbName + " WHERE " +
+                    Patients.COL_PATIENT_FIRST_NAME + " = ?     AND " +
+                    Patients.COL_PATIENT_MIDDLE_NAME + " = ?    AND " +
+                    Patients.COL_PATIENT_SURNAME + " = ?        AND " +
+                    Patients.COL_PHONE_NUMBER + " = ?" ;
+
+            Object[] params = new Object[] {
+                    patients.getFirstName(),
+                    patients.getMiddleName(),
+                    patients.getSurname(),
+                    patients.getPhoneNumber()};
+            List<Patients> patientsResults = patientsRepository.getPatientReferrals(query,params);
+            System.out.println("Coze = number of patients found = "+patientsResults.size());
+            Long id;
+            if(patientsResults.size()>0){
+                System.out.println("Coze = using the received patients");
+                id = patientsResults.get(0).getPatientId();
+            }else{
+                System.out.println("Coze = saving patient Data");
+                id = patientsRepository.save(patients);
+            }
+			patientReferral.setPatient_id(id);
+
+            System.out.println("Coze = saving referral Data");
+            patientReferralRepository.save(patientReferral);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));

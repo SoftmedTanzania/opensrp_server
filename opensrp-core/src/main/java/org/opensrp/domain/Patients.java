@@ -7,15 +7,15 @@ import java.util.Date;
 @Table(name = "tbl_patients")
 public class Patients {
 
-	public static final String tbName = "tbl_referral_patients";
+	public static final String tbName = "tbl_patients";
 
 	public static final String COL_PATIENT_ID = "patient_id";
 
-	public static final String COL_PATIENT_FIRST_NAME = "patient_first_name";
+	public static final String COL_PATIENT_FIRST_NAME = "first_name";
 
-	public static final String COL_PATIENT_MIDDLE_NAME = "patient_middle_name";
+	public static final String COL_PATIENT_MIDDLE_NAME = "middle_name";
 
-	public static final String COL_PATIENT_SURNAME = "patient_surname";
+	public static final String COL_PATIENT_SURNAME = "surname";
 
 	public static final String COL_PHONE_NUMBER = "phone_number";
 
@@ -37,24 +37,21 @@ public class Patients {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "_id")
-	private Long id;
-
 	@Column(name = COL_PATIENT_ID)
-	private String patientId;
+	private Long patientId;
 
 	@Column(name = COL_PATIENT_FIRST_NAME)
-	private String patientFirstName;
+	private String firstName;
 
 
 	@Column(name = COL_PATIENT_MIDDLE_NAME)
-	private String patientMiddleName;
+	private String middleName;
 
 	@Column(name = COL_PATIENT_SURNAME)
-	private String patientSurname;
+	private String surname;
 
 	@Column(name = COL_PHONE_NUMBER)
-	private String phone_number;
+	private String phoneNumber;
 
 	@Column(name = COL_WARD)
 	private String ward;
@@ -83,53 +80,44 @@ public class Patients {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getPatientId() {
+	public Long getPatientId() {
 		return patientId;
 	}
 
-	public void setPatientId(String patientId) {
+	public void setPatientId(Long patientId) {
 		this.patientId = patientId;
 	}
 
-	public String getPatientFirstName() {
-		return patientFirstName;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setPatientFirstName(String patientFirstName) {
-		this.patientFirstName = patientFirstName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getPatientMiddleName() {
-		return patientMiddleName;
+	public String getMiddleName() {
+		return middleName;
 	}
 
-	public void setPatientMiddleName(String patientMiddleName) {
-		this.patientMiddleName = patientMiddleName;
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
 	}
 
-	public String getPatientSurname() {
-		return patientSurname;
+	public String getSurname() {
+		return surname;
 	}
 
-	public void setPatientSurname(String patientSurname) {
-		this.patientSurname = patientSurname;
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
-	public String getPhone_number() {
-		return phone_number;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhone_number(String phone_number) {
-		this.phone_number = phone_number;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getWard() {
@@ -197,3 +185,4 @@ public class Patients {
 	}
 
 }
+

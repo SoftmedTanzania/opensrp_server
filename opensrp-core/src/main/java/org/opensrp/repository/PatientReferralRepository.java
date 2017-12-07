@@ -54,6 +54,7 @@ public class PatientReferralRepository {
 		        healthFacilities.getHas2WeeksCough(),
 		        healthFacilities.getHasBloodCough(),
 		        healthFacilities.getHasSevereSweating(),
+		        healthFacilities.getHasFever(),
 		        healthFacilities.getHadWeightLoss(),
 		        healthFacilities.getServiceProviderUIID(),
 		        healthFacilities.getServiceProviderGroup(),
@@ -62,9 +63,10 @@ public class PatientReferralRepository {
 		        healthFacilities.getReferralStatus(),
 		        healthFacilities.getUpdatedAt(),
 				healthFacilities.getCreatedAt() };
+
 		int[] types = new int[] {
 				Types.VARCHAR,
-				Types.VARCHAR,
+				Types.INTEGER,
 				Types.VARCHAR,
 				Types.VARCHAR,
 				Types.INTEGER,
@@ -115,7 +117,7 @@ public class PatientReferralRepository {
 
 			patientReferral.setId(rs.getLong(rs.findColumn("_id")));
 			patientReferral.setReferral_id(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_ID)));
-			patientReferral.setPatient_id(rs.getString(rs.findColumn(PatientReferral.COL_PATIENT_ID)));
+			patientReferral.setPatient_id(rs.getLong(rs.findColumn(PatientReferral.COL_PATIENT_ID)));
 			patientReferral.setCommunityBasedHivService(rs.getString(rs.findColumn(PatientReferral.COL_COMMUNITY_BASED_HIV_SERVICE)));
 			patientReferral.setReferralReason(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_REASON)));
 			patientReferral.setServiceId(rs.getInt(rs.findColumn(PatientReferral.COL_SERVICE_ID)));
