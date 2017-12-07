@@ -29,35 +29,6 @@ public class PatientsRepository {
 
 
 	public Long save(Patients patients) throws Exception {
-//		String insertQuery = "insert into " + Patients.tbName + " (" +
-//				Patients.COL_PATIENT_FIRST_NAME + "," +
-//				Patients.COL_PATIENT_SURNAME + "," +
-//				Patients.COL_PHONE_NUMBER + "," +
-//				Patients.COL_DATE_OF_BIRTH + "," +
-//				Patients.COL_GENDER + "," +
-//				Patients.COL_DATE_OF_DEATH + "," +
-//				Patients.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?) ";
-//
-//		Object[] params = new Object[]{
-//				patients.getFirstName(),
-//				patients.getSurname(),
-//				patients.getPhoneNumber(),
-//				patients.getDateOfBirth(),
-//				patients.getGender(),
-//				patients.getDateOfDeath(),
-//				patients.getCreatedAt()};
-//		int[] types = new int[]{
-//				Types.VARCHAR,
-//				Types.VARCHAR,
-//				Types.VARCHAR,
-//				Types.DATE,
-//				Types.VARCHAR,
-//				Types.DATE,
-//				Types.TIMESTAMP};
-//
-//
-//
-//		return Long.parseLong(jdbcTemplate.update(insertQuery, params, types)+"");
 		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(Patients.tbName).usingGeneratedKeyColumns(Patients.COL_PATIENT_ID);
 
 		Map<String, Object> parameters = new HashMap<>();

@@ -2,16 +2,20 @@ package org.opensrp.repository;
 
 import org.opensrp.domain.HealthFacilitiesPatients;
 import org.opensrp.domain.PatientReferral;
+import org.opensrp.domain.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Repository
@@ -20,31 +24,43 @@ public class HealthFacilitiesPatientsRepository {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+	private SimpleJdbcInsert insert;
 
 	
-	public int save(HealthFacilitiesPatients healthFacilitiesPatients) throws Exception {
-		String insertQuery = "insert into " + HealthFacilitiesPatients.tbName + " (" +
-				HealthFacilitiesPatients.COL_PATIENT_ID + "," +
-				HealthFacilitiesPatients.COL_FACILITY_ID + "," +
-				HealthFacilitiesPatients.COL_CTC_NUMBER + "," +
-				HealthFacilitiesPatients.COL_UPDATED_AT + "," +
-				HealthFacilitiesPatients.COL_CREATED_AT + ") values (?,?,?,?,?) ";
+	public Long save(HealthFacilitiesPatients healthFacilitiesPatients) throws Exception {
+//		String insertQuery = "insert into " + HealthFacilitiesPatients.tbName + " (" +
+//				HealthFacilitiesPatients.COL_PATIENT_ID + "," +
+//				HealthFacilitiesPatients.COL_FACILITY_ID + "," +
+//				HealthFacilitiesPatients.COL_CTC_NUMBER + "," +
+//				HealthFacilitiesPatients.COL_UPDATED_AT + "," +
+//				HealthFacilitiesPatients.COL_CREATED_AT + ") values (?,?,?,?,?) ";
+//
+//		Object[] params = new Object[] {
+//				healthFacilitiesPatients.getPatient_id(),
+//				healthFacilitiesPatients.getFacilityId(),
+//				healthFacilitiesPatients.getCtcNumber(),
+//				healthFacilitiesPatients.getUpdatedAt(),
+//				healthFacilitiesPatients.getCreatedAt() };
+//
+//		int[] types = new int[] {
+//				Types.INTEGER,
+//				Types.VARCHAR,
+//				Types.VARCHAR,
+//				Types.DATE,
+//				Types.TIMESTAMP };
+//
+//		return jdbcTemplate.update(insertQuery, params, types);
 
-		Object[] params = new Object[] {
-				healthFacilitiesPatients.getPatient_id(),
-				healthFacilitiesPatients.getFacilityId(),
-				healthFacilitiesPatients.getCtcNumber(),
-				healthFacilitiesPatients.getUpdatedAt(),
-				healthFacilitiesPatients.getCreatedAt() };
+		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(HealthFacilitiesPatients.tbName).usingGeneratedKeyColumns("_id");
 
-		int[] types = new int[] {
-				Types.INTEGER,
-				Types.VARCHAR,
-				Types.VARCHAR,
-				Types.DATE,
-				Types.TIMESTAMP };
-		
-		return jdbcTemplate.update(insertQuery, params, types);
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put(HealthFacilitiesPatients.COL_PATIENT_ID , healthFacilitiesPatients.getPatient_id());
+		parameters.put(HealthFacilitiesPatients.COL_FACILITY_ID  , healthFacilitiesPatients.getFacilityId());
+		parameters.put(HealthFacilitiesPatients.COL_CTC_NUMBER , healthFacilitiesPatients.getCtcNumber());
+		parameters.put(HealthFacilitiesPatients.COL_CREATED_AT , healthFacilitiesPatients.getCreatedAt());
+		parameters.put(HealthFacilitiesPatients.COL_UPDATED_AT , healthFacilitiesPatients.getCreatedAt());
+
+		return insert.executeAndReturnKey(parameters).longValue();
 		
 	}
 	
@@ -64,7 +80,7 @@ public class HealthFacilitiesPatientsRepository {
 
 
 
-	public List<HealthFacilitiesPatients> getReferrals(String sql, String[] args) throws Exception {
+	public List<HealthFacilitiesPatients> getHealthFacilityPatients(String sql, Object[] args) throws Exception {
 		return this.jdbcTemplate.query(sql,args, new HealthFacilityPatientsRowMapper());
 	}
 
@@ -77,7 +93,7 @@ public class HealthFacilitiesPatientsRepository {
 			facilitiesPatients.setId(rs.getLong(rs.findColumn("_id")));
 			facilitiesPatients.setPatient_id(rs.getLong(rs.findColumn(PatientReferral.COL_PATIENT_ID)));
 			facilitiesPatients.setCtcNumber(rs.getString(rs.findColumn(PatientReferral.COL_CTC_NUMBER)));
-			facilitiesPatients.setFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FACILITY_ID)));
+			facilitiesPatients.setFacilityId(rs.getLong(rs.findColumn(PatientReferral.COL_FACILITY_ID)));
 			facilitiesPatients.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientReferral.COL_CREATED_AT)).getTime()));
 			facilitiesPatients.setUpdatedAt(rs.getDate(rs.findColumn(PatientReferral.COL_UPDATED_AT)));
 			return facilitiesPatients;

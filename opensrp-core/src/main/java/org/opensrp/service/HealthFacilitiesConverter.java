@@ -20,10 +20,10 @@ public class HealthFacilitiesConverter {
         try {
             HealthFacilities healthFacilities = new HealthFacilities();
 
-            healthFacilities.setFacilityId(healthFacilitiesDTO.getFacilityId());
-            healthFacilities.setParentId(healthFacilitiesDTO.getParentId());
+            healthFacilities.setOpenMRSUIID(healthFacilitiesDTO.getFacilityId());
+            healthFacilities.setHfrCode(healthFacilitiesDTO.getParentId());
             healthFacilities.setFacilityName(healthFacilitiesDTO.getFacilityName());
-            healthFacilities.setFacilityCode(healthFacilitiesDTO.getFacilityCode());
+            healthFacilities.setFacilityCtcCode(healthFacilitiesDTO.getFacilityCode());
             healthFacilities.setCreatedAt(Calendar.getInstance().getTime());
 
             return healthFacilities;

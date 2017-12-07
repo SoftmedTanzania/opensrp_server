@@ -9,13 +9,13 @@ public class HealthFacilities {
 
 	public static final String tbName = "tbl_health_facilities";
 
-	public static final String COL_FACILITY_ID = "facility_id";
+	public static final String COL_OPENMRS_UIID = "openmrs_UIID";
 
 	public static final String COL_FACILITY_NAME = "facility_name";
 
-	public static final String COL_FACILITY_CODE = "facility_code";
+	public static final String COL_FACILITY_CTC_CODE = "facility_ctc_code";
 
-	public static final String COL_PARENT_ID = "parent_id";
+	public static final String COL_HFR_CODE = "HFR_code";
 
 	public static final String COL_CREATED_AT = "created_at";
 
@@ -26,19 +26,18 @@ public class HealthFacilities {
 	@Column(name = "_id")
 	private Long id;
 
-	@Column(name = COL_FACILITY_ID)
-	private String facilityId;
+	@Column(name = COL_OPENMRS_UIID,unique=true)
+	private String openMRSUIID;
 
 	@Column(name = COL_FACILITY_NAME)
 	private String facilityName;
 
-	@Column(name = COL_FACILITY_CODE)
-	private String facilityCode;
-
-	@Column(name = COL_PARENT_ID)
-	private String parentId;
+	@Column(name = COL_FACILITY_CTC_CODE,unique=true)
+	private String facilityCtcCode;
 
 
+	@Column(name = COL_HFR_CODE,unique=true)
+	private String hfrCode;
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -57,12 +56,12 @@ public class HealthFacilities {
 		this.id = id;
 	}
 
-	public String getFacilityId() {
-		return facilityId;
+	public String getOpenMRSUIID() {
+		return openMRSUIID;
 	}
 
-	public void setFacilityId(String facilityId) {
-		this.facilityId = facilityId;
+	public void setOpenMRSUIID(String openMRSUIID) {
+		this.openMRSUIID = openMRSUIID;
 	}
 
 	public String getFacilityName() {
@@ -73,20 +72,20 @@ public class HealthFacilities {
 		this.facilityName = facilityName;
 	}
 
-	public String getFacilityCode() {
-		return facilityCode;
+	public String getFacilityCtcCode() {
+		return facilityCtcCode;
 	}
 
-	public void setFacilityCode(String facilityCode) {
-		this.facilityCode = facilityCode;
+	public void setFacilityCtcCode(String facilityCtcCode) {
+		this.facilityCtcCode = facilityCtcCode;
 	}
 
-	public String getParentId() {
-		return parentId;
+	public String getHfrCode() {
+		return hfrCode;
 	}
 
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
+	public void setHfrCode(String hfrCode) {
+		this.hfrCode = hfrCode;
 	}
 
 	public Date getUpdatedAt() {

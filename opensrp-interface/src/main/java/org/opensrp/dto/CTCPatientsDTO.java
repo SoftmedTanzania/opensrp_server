@@ -33,6 +33,10 @@ public class CTCPatientsDTO {
 	@JsonProperty
 	private Date dateOfDeath;
 
+
+	@JsonProperty
+	private String healthFacilityCode;
+
 	@JsonProperty
 	private CTCPatientsAppointmesDTO[] appointments;
 
@@ -121,5 +125,13 @@ public class CTCPatientsDTO {
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+
+	public String getHealthFacilityCode() {
+		return healthFacilityCode;
+	}
+
+	public void setHealthFacilityCode(String healthFacilityCode) {
+		this.healthFacilityCode = healthFacilityCode;
 	}
 }

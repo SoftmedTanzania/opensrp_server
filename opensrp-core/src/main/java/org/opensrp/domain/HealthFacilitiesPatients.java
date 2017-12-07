@@ -32,7 +32,7 @@ public class HealthFacilitiesPatients {
 	private String ctcNumber;
 
 	@Column(name = COL_FACILITY_ID)
-	private String facilityId;
+	private Long facilityId;
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -66,11 +66,11 @@ public class HealthFacilitiesPatients {
 		this.ctcNumber = ctcNumber;
 	}
 
-	public String getFacilityId() {
+	public Long getFacilityId() {
 		return facilityId;
 	}
 
-	public void setFacilityId(String facilityId) {
+	public void setFacilityId(Long facilityId) {
 		this.facilityId = facilityId;
 	}
 

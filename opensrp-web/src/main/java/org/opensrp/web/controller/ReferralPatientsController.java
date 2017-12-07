@@ -5,16 +5,16 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.opensrp.common.AllConstants;
-import org.opensrp.domain.HealthFacilitiesPatients;
-import org.opensrp.domain.PatientAppointments;
-import org.opensrp.domain.PatientReferral;
-import org.opensrp.domain.Patients;
+import org.opensrp.domain.*;
 import org.opensrp.dto.CTCPatientsDTO;
 import org.opensrp.dto.PatientReferralsDTO;
 import org.opensrp.dto.PatientsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.form.domain.FormSubmission;
 import org.opensrp.form.service.FormSubmissionConverter;
+import org.opensrp.repository.HealthFacilitiesPatientsRepository;
+import org.opensrp.repository.HealthFacilityRepository;
+import org.opensrp.repository.PatientsAppointmentsRepository;
 import org.opensrp.repository.PatientsRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
@@ -45,13 +45,20 @@ public class ReferralPatientsController {
     private static Logger logger = LoggerFactory.getLogger(ReferralPatientsController.class.toString());
     private ReferralPatientsService patientsService;
     private PatientsRepository patientsRepository;
+    private HealthFacilityRepository healthFacilityRepository;
+    private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
+    private PatientsAppointmentsRepository patientsAppointmentsRepository;
 	private TaskSchedulerService scheduler;
 
     @Autowired
-    public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler) {
+    public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
+                                      HealthFacilityRepository healthFacilityRepository,HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository,PatientsAppointmentsRepository patientsAppointmentsRepository) {
         this.patientsService = patientsService;
         this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
+		this.healthFacilityRepository = healthFacilityRepository;
+		this.healthFacilitiesPatientsRepository = healthFacilitiesPatientsRepository;
+		this.patientsAppointmentsRepository = patientsAppointmentsRepository;
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_patients")
@@ -99,8 +106,6 @@ public class ReferralPatientsController {
             String json = new Gson().toJson(ctcPatientsDTOS);
             List<CTCPatientsDTO> patientsDTOS = new Gson().fromJson(json, new TypeToken<List<CTCPatientsDTO>>() {}.getType());
 
-
-
             for(CTCPatientsDTO dto: patientsDTOS){
 	            Patients patient = PatientsConverter.toPatients(dto);
 
@@ -120,41 +125,64 @@ public class ReferralPatientsController {
 	            Long id;
 
 
-	            //TODO finalize saving CTC patinents appointments
-//	            HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
-//	            if(patientsResults.size()>0){
-//		            System.out.println("Coze = using the received patients");
-//		            id = patientsResults.get(0).getPatientId();
-//	            }else{
-//		            System.out.println("Coze = saving patient Data");
-//		            id = patientsRepository.save(patient);
-//	            }
-//	            healthFacilitiesPatients.setPatient_id(id);
-//	            healthFacilitiesPatients.setCtcNumber(dto.getCtc_number());
-//	            healthFacilitiesPatients.setFacilityId(dto.getCtc_number());
+	            if(patientsResults.size()>0){
+		            System.out.println("Coze = using the received patients ");
+		            id = patientsResults.get(0).getPatientId();
+	            }else{
+		            System.out.println("Coze = saving patient Data ");
+		            id = patientsRepository.save(patient);
+	            }
+
+	            //Obtaining health facilityId from tbl_facilities
+	            String healthFacilitySql = "SELECT * FROM "+ HealthFacilities.tbName+" WHERE "+
+			            HealthFacilities.COL_FACILITY_CTC_CODE+" = ?";
+	            Object[] healthFacilityParams = new Object[] {
+			            dto.getHealthFacilityCode()};
+
+	            Long healthFacilityId=(long)0;
+	            List<HealthFacilities> healthFacilities = healthFacilityRepository.getHealthFacility(healthFacilitySql,healthFacilityParams);
+	            if(healthFacilities.size()==0){
+		            healthFacilityId = healthFacilities.get(0).getId();
+	            }
+
+	            HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
+	            healthFacilitiesPatients.setPatient_id(id);
+	            healthFacilitiesPatients.setCtcNumber(dto.getCtc_number());
+	            healthFacilitiesPatients.setFacilityId(healthFacilityId);
 
 
+	            String healthFacilityPatientsquery = "SELECT * FROM " + HealthFacilitiesPatients.tbName + " WHERE " +
+			            HealthFacilitiesPatients.COL_CTC_NUMBER +  " = ?    AND " +
+			            HealthFacilitiesPatients.COL_PATIENT_ID +  " = ?    AND " +
+			            HealthFacilitiesPatients.COL_FACILITY_ID + " = ?" ;
+
+	            Object[] healthFacilityPatientsparams = new Object[] {
+			            healthFacilitiesPatients.getCtcNumber(),
+			            healthFacilitiesPatients.getPatient_id(),
+			            healthFacilitiesPatients.getFacilityId()};
+
+	            List<HealthFacilitiesPatients> healthFacilitiesPatientsResults = healthFacilitiesPatientsRepository.getHealthFacilityPatients(healthFacilityPatientsquery,healthFacilityPatientsparams);
 
 
-
-
-
-	            patientsService.storeCTCPatients(patient);
+	            Long healthfacilityPatientId;
+	            if(healthFacilitiesPatientsResults.size()>0){
+		            healthfacilityPatientId = healthFacilitiesPatientsResults.get(0).getId();
+	            }else{
+		            healthfacilityPatientId = healthFacilitiesPatientsRepository.save(healthFacilitiesPatients);
+	            }
 
 	            List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
 
-	            for(PatientAppointments patientAppointments:appointments){
-
+	            for(PatientAppointments patientAppointment:appointments){
+	            	patientAppointment.setStatus("0");
+	            	patientAppointment.setHealthFacilityPatientId(healthfacilityPatientId);
+		            patientsAppointmentsRepository.save(patientAppointment);
 	            }
             }
 
 
 
-
-
-
-
-            logger.debug(format("Added  Patient to queue.\nSubmissions: {0}", patientsDTOS));
+            logger.debug(format("Added  Patients and their appointments from CTC to queue.\nSubmissions: {0}", ctcPatientsDTOS));
         } catch (Exception e) {
             logger.error(format("CTC Patients processing failed with exception {0}.\nSubmissions: {1}", e, ctcPatientsDTOS));
             return new ResponseEntity<>(INTERNAL_SERVER_ERROR);

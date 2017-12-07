@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
+import java.util.List;
 
 
 @Repository
@@ -21,18 +22,18 @@ public class HealthFacilityRepository {
 	
 	public int save(HealthFacilities healthFacilities) throws Exception {
 		String insertQuery = "insert into " + HealthFacilities.tbName + " (" +
-				HealthFacilities.COL_FACILITY_ID + "," +
+				HealthFacilities.COL_OPENMRS_UIID + "," +
 				HealthFacilities.COL_FACILITY_NAME + "," +
-				HealthFacilities.COL_FACILITY_CODE + "," +
-				HealthFacilities.COL_PARENT_ID + "," +
+				HealthFacilities.COL_FACILITY_CTC_CODE + "," +
+				HealthFacilities.COL_HFR_CODE + "," +
 				HealthFacilities.COL_UPDATED_AT + "," +
 				HealthFacilities.COL_CREATED_AT + ") values (?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
-				healthFacilities.getFacilityId(),
+				healthFacilities.getOpenMRSUIID(),
 				healthFacilities.getFacilityName(),
-				healthFacilities.getFacilityCode(),
-		        healthFacilities.getParentId(),
+				healthFacilities.getFacilityCtcCode(),
+		        healthFacilities.getHfrCode(),
 		        healthFacilities.getUpdatedAt(),
 				healthFacilities.getCreatedAt() };
 		int[] types = new int[] {
@@ -60,18 +61,23 @@ public class HealthFacilityRepository {
 		String query = "DELETE FROM " + HealthFacilities.tbName;
 		executeQuery(query);
 	}
-	
+
+
+	public List<HealthFacilities> getHealthFacility(String sql, Object[] args) throws Exception {
+		return this.jdbcTemplate.query(sql, args, new HealthFacilitiesRowMapper());
+	}
 
 	
 	public class HealthFacilitiesRowMapper implements RowMapper<HealthFacilities> {
 		public HealthFacilities mapRow(ResultSet rs, int rowNum) throws SQLException {
 			HealthFacilities healthFacilitie = new HealthFacilities();
 			healthFacilitie.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(HealthFacilities.COL_CREATED_AT)).getTime()));
-			healthFacilitie.setFacilityId(rs.getString(rs.findColumn(HealthFacilities.COL_FACILITY_ID)));
+			healthFacilitie.setOpenMRSUIID(rs.getString(rs.findColumn(HealthFacilities.COL_OPENMRS_UIID)));
 			healthFacilitie.setFacilityName(rs.getString(rs.findColumn(HealthFacilities.COL_FACILITY_NAME)));
-			healthFacilitie.setFacilityCode(rs.getString(rs.findColumn(HealthFacilities.COL_FACILITY_CODE)));
-			healthFacilitie.setParentId(rs.getString(rs.findColumn(HealthFacilities.COL_PARENT_ID)));
+			healthFacilitie.setFacilityCtcCode(rs.getString(rs.findColumn(HealthFacilities.COL_FACILITY_CTC_CODE)));
+			healthFacilitie.setHfrCode(rs.getString(rs.findColumn(HealthFacilities.COL_HFR_CODE)));
 			healthFacilitie.setUpdatedAt(rs.getDate(rs.findColumn(HealthFacilities.COL_UPDATED_AT)));
+			healthFacilitie.setId(rs.getLong(rs.findColumn("_id")));
 			return healthFacilitie;
 		}
 		
