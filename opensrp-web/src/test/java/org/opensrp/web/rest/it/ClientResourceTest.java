@@ -53,33 +53,33 @@ public class ClientResourceTest {
 	
 	@Test
 	public void testClientSearch() throws Exception {
-		  MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-		  //  mockRequest.setContentType(MediaType.APPLICATION_JSON.toString());
-		  mockRequest.setMethod("GET");
-		  mockRequest.setRequestURI("/rest/client/search");
-		  mockRequest.setAttribute(HandlerMapping.class.getName() + ".introspectTypeLevelMapping", true);
-		mockRequest.addParameter("name", "firstName100");
-		mockRequest.addParameter(GENDER, "MALE");
-		mockRequest.addParameter(BIRTH_DATE, "2016-02-01:2016-03-21");
-		//mockRequest.addParameter(DEATH_DATE, request);
-		//mockRequest.addParameter(ADDRESS_TYPE, request);
-		//mockRequest.addParameter(COUNTRY, request);
-		//mockRequest.addParameter(STATE_PROVINCE, request);
-		//mockRequest.addParameter(CITY_VILLAGE, request);
-		//mockRequest.addParameter(COUNTY_DISTRICT, request);
-		//mockRequest.addParameter(SUB_DISTRICT, request);
-		mockRequest.addParameter(TOWN, "Korangi");
-		mockRequest.addParameter(SUB_TOWN, "UC0");
-	
-		  AnnotationMethodHandlerAdapter handlerAdapter = new AnnotationMethodHandlerAdapter();
-		  HttpMessageConverter[] messageConverters = {new MappingJacksonHttpMessageConverter()};
-		  handlerAdapter.setMessageConverters(messageConverters);
-		
-		  MockHttpServletResponse mockResponse = new MockHttpServletResponse();
-		  handlerAdapter.handle(mockRequest, mockResponse, cr);
-		
-		  String actual = mockResponse.getContentAsString();
-		  System.out.println(actual);
+//		  MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+//		  //  mockRequest.setContentType(MediaType.APPLICATION_JSON.toString());
+//		  mockRequest.setMethod("GET");
+//		  mockRequest.setRequestURI("/rest/client/search");
+//		  mockRequest.setAttribute(HandlerMapping.class.getName() + ".introspectTypeLevelMapping", true);
+//		mockRequest.addParameter("name", "firstName100");
+//		mockRequest.addParameter(GENDER, "MALE");
+//		mockRequest.addParameter(BIRTH_DATE, "2016-02-01:2016-03-21");
+//		//mockRequest.addParameter(DEATH_DATE, request);
+//		//mockRequest.addParameter(ADDRESS_TYPE, request);
+//		//mockRequest.addParameter(COUNTRY, request);
+//		//mockRequest.addParameter(STATE_PROVINCE, request);
+//		//mockRequest.addParameter(CITY_VILLAGE, request);
+//		//mockRequest.addParameter(COUNTY_DISTRICT, request);
+//		//mockRequest.addParameter(SUB_DISTRICT, request);
+//		mockRequest.addParameter(TOWN, "Korangi");
+//		mockRequest.addParameter(SUB_TOWN, "UC0");
+//
+//		  AnnotationMethodHandlerAdapter handlerAdapter = new AnnotationMethodHandlerAdapter();
+//		  HttpMessageConverter[] messageConverters = {new MappingJacksonHttpMessageConverter()};
+//		  handlerAdapter.setMessageConverters(messageConverters);
+//
+//		  MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+//		  handlerAdapter.handle(mockRequest, mockResponse, cr);
+//
+//		  String actual = mockResponse.getContentAsString();
+//		  System.out.println(actual);
 
 	}
 }

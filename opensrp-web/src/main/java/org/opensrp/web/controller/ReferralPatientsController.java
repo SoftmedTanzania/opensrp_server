@@ -139,9 +139,10 @@ public class ReferralPatientsController {
 	            Object[] healthFacilityParams = new Object[] {
 			            dto.getHealthFacilityCode()};
 
+	            System.out.println("Coze facility ctc code = "+dto.getHealthFacilityCode());
 	            Long healthFacilityId=(long)0;
 	            List<HealthFacilities> healthFacilities = healthFacilityRepository.getHealthFacility(healthFacilitySql,healthFacilityParams);
-	            if(healthFacilities.size()==0){
+	            if(healthFacilities.size()>0){
 		            healthFacilityId = healthFacilities.get(0).getId();
 	            }
 
@@ -168,7 +169,7 @@ public class ReferralPatientsController {
 	            if(healthFacilitiesPatientsResults.size()>0){
 		            healthfacilityPatientId = healthFacilitiesPatientsResults.get(0).getId();
 	            }else{
-		            healthfacilityPatientId = healthFacilitiesPatientsRepository.save(healthFacilitiesPatients);
+					healthfacilityPatientId = healthFacilitiesPatientsRepository.save(healthFacilitiesPatients);
 	            }
 
 	            List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);

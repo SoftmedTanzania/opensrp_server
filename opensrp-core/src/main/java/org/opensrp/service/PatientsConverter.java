@@ -11,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
@@ -58,9 +55,15 @@ public class PatientsConverter {
             patients.setFirstName(patientsDTO.getFirstName());
             patients.setSurname(patientsDTO.getSurname());
             patients.setPhoneNumber(patientsDTO.getContact());
-            patients.setDateOfBirth(patientsDTO.getDateOfBirth());
+            Date dob = new Date();
+            dob.setTime(patientsDTO.getDateOfBirth());
+            patients.setDateOfBirth(dob);
             patients.setGender(patientsDTO.getGender());
-            patients.setDateOfDeath(patientsDTO.getDateOfDeath());
+
+            Date deathDate = new Date();
+            deathDate.setTime(patientsDTO.getDateOfDeath());
+
+            patients.setDateOfDeath(deathDate);
             patients.setCreatedAt(Calendar.getInstance().getTime());
             patients.setUpdatedAt(Calendar.getInstance().getTime());
 
@@ -82,9 +85,16 @@ public class PatientsConverter {
             int count = appointments.length;
             for(int i=0;i<count;i++){
                 PatientAppointments patientAppointment = new PatientAppointments();
-                patientAppointment.setAppointmentDate(appointments[i].getDateOfAppointment());
+                Date appointDate = new Date();
+                appointDate.setTime(appointments[i].getDateOfAppointment());
+
+                patientAppointment.setAppointmentDate(appointDate);
                 patientAppointment.setIsCancelled(appointments[i].getCancelled());
-                patientAppointment.setRowVersion(appointments[i].getRowVersion());
+
+                Date rowVersion = new Date();
+                rowVersion.setTime(appointments[i].getRowVersion());
+
+                patientAppointment.setRowVersion(rowVersion);
                 patientAppointment.setStatus("0");
                 patientAppointments.add(patientAppointment);
             }

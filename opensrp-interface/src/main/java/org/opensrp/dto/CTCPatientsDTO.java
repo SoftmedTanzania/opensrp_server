@@ -22,7 +22,7 @@ public class CTCPatientsDTO {
 	private String contact;
 
 	@JsonProperty
-	private Date dateOfBirth;
+	private Long dateOfBirth;
 
 	@JsonProperty
 	private String surname;
@@ -31,7 +31,7 @@ public class CTCPatientsDTO {
 	private String gender;
 
 	@JsonProperty
-	private Date dateOfDeath;
+	private Long dateOfDeath;
 
 
 	@JsonProperty
@@ -72,11 +72,11 @@ public class CTCPatientsDTO {
 		this.contact = contact;
 	}
 
-	public Date getDateOfBirth() {
+	public Long getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(Date dateOfBirth) {
+	public void setDateOfBirth(Long dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
@@ -96,11 +96,11 @@ public class CTCPatientsDTO {
 		this.gender = gender;
 	}
 
-	public Date getDateOfDeath() {
+	public Long getDateOfDeath() {
 		return dateOfDeath;
 	}
 
-	public void setDateOfDeath(Date dateOfDeath) {
+	public void setDateOfDeath(Long dateOfDeath) {
 		this.dateOfDeath = dateOfDeath;
 	}
 

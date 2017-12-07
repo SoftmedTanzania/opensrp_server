@@ -44,30 +44,5 @@ public class StockResourceTest {
 	      
 	        
 	    }
-	
-	@Test
-	public void testClientSearch() throws Exception {
-		  MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-		  //  mockRequest.setContentType(MediaType.APPLICATION_JSON.toString());
-		  mockRequest.setMethod("GET");
-		  mockRequest.setRequestURI("/rest/stock/sync/");
-		  mockRequest.setAttribute(HandlerMapping.class.getName() + ".introspectTypeLevelMapping", true);
-		mockRequest.addParameter(IDENTIFIER, "003");
-		mockRequest.addParameter(VACCINE_TYPE_ID, "VTID");
-		mockRequest.addParameter(PROVIDERID, "4-2");
-		
 
-		
-		  AnnotationMethodHandlerAdapter handlerAdapter = new AnnotationMethodHandlerAdapter();
-		  HttpMessageConverter[] messageConverters = {new MappingJacksonHttpMessageConverter()};
-		  handlerAdapter.setMessageConverters(messageConverters);
-		
-		  MockHttpServletResponse mockResponse = new MockHttpServletResponse();
-		  mockResponse.addHeader("chii", "noa");
-		  handlerAdapter.handle(mockRequest, mockResponse, ss);
-		
-		  String actual = mockResponse.getContentAsString();
-		  System.out.println(actual);
-
-	}
 }

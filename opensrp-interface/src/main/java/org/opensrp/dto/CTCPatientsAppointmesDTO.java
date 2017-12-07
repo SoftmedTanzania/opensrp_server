@@ -11,19 +11,19 @@ import java.util.Map;
 public class CTCPatientsAppointmesDTO {
 
     @JsonProperty
-    private Date RowVersion;
+    private Long RowVersion;
 
     @JsonProperty
     private String Cancelled;
 
     @JsonProperty
-    private Date DateOfAppointment;
+    private Long DateOfAppointment;
 
-    public Date getRowVersion() {
+    public Long getRowVersion() {
         return RowVersion;
     }
 
-    public void setRowVersion(Date rowVersion) {
+    public void setRowVersion(Long rowVersion) {
         RowVersion = rowVersion;
     }
 
@@ -35,11 +35,11 @@ public class CTCPatientsAppointmesDTO {
         Cancelled = cancelled;
     }
 
-    public Date getDateOfAppointment() {
+    public Long getDateOfAppointment() {
         return DateOfAppointment;
     }
 
-    public void setDateOfAppointment(Date dateOfAppointment) {
+    public void setDateOfAppointment(Long dateOfAppointment) {
         DateOfAppointment = dateOfAppointment;
     }
 

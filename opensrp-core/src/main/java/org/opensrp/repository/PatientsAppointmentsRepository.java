@@ -37,7 +37,7 @@ public class PatientsAppointmentsRepository {
 				patientAppointments.getAppointmentDate(),
 				patientAppointments.getIsCancelled(),
 				patientAppointments.getStatus(),
-				patientAppointments.getRow_version(),
+				patientAppointments.getRowVersion(),
 				patientAppointments.getUpdatedAt(),
 				patientAppointments.getCreatedAt() };
 
@@ -85,7 +85,7 @@ public class PatientsAppointmentsRepository {
 			patientAppointments.setAppointmentDate(rs.getDate(rs.findColumn(PatientAppointments.COL_APPOINTMENT_DATE)));
 			patientAppointments.setIsCancelled(rs.getString(rs.findColumn(PatientAppointments.COL_IS_CANCELLED)));
 			patientAppointments.setStatus(rs.getString(rs.findColumn(PatientAppointments.COL_STATUS)));
-			patientAppointments.setRow_version(rs.getString(rs.findColumn(PatientAppointments.COL_ROW_VERSION)));
+			patientAppointments.setRowVersion(rs.getDate(rs.findColumn(PatientAppointments.COL_ROW_VERSION)));
 			patientAppointments.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientAppointments.COL_CREATED_AT)).getTime()));
 			patientAppointments.setUpdatedAt(rs.getDate(rs.findColumn(PatientAppointments.COL_UPDATED_AT)));
 			return patientAppointments;

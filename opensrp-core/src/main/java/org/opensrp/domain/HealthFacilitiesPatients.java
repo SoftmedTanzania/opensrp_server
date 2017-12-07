@@ -20,6 +20,7 @@ public class HealthFacilitiesPatients {
 	public static final String COL_UPDATED_AT = "updated_at";
 
 
+	@Id
 	@GeneratedValue
 	@Column(name = "_id")
 	private Long id;
@@ -27,8 +28,8 @@ public class HealthFacilitiesPatients {
 	@Column(name = COL_PATIENT_ID)
 	private Long patient_id;
 
-	@Id
-	@Column(name = COL_CTC_NUMBER)
+
+	@Column(name = COL_CTC_NUMBER,unique=true)
 	private String ctcNumber;
 
 	@Column(name = COL_FACILITY_ID)
