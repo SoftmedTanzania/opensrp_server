@@ -25,7 +25,6 @@ public class GooglePushNotificationsUsers implements Serializable {
 	@Column(name = "_id")
 	private Long id;
 
-	@Id
 	@Column(name = COL_USER_UIID)
 	private String userUiid;
 
