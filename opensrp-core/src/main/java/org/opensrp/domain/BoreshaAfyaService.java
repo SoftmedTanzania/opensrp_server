@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tbl_service")
-public class Service implements Serializable {
+public class BoreshaAfyaService implements Serializable {
 
 	public static final String tbName = "tbl_service";
 
@@ -28,7 +28,7 @@ public class Service implements Serializable {
 	private String serviceName;
 
 	@Column(name = COL_IS_ACTIVE)
-	private String isActive;
+	private boolean isActive;
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -54,11 +54,11 @@ public class Service implements Serializable {
 		this.serviceName = serviceName;
 	}
 
-	public String getIsActive() {
+	public boolean getIsActive() {
 		return isActive;
 	}
 
-	public void setIsActive(String isActive) {
+	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
 	}
 

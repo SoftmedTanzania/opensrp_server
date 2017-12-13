@@ -57,7 +57,7 @@ public class GooglePushNotificationsUsersRepository {
 
 
 
-	public List<GooglePushNotificationsUsers> getHealthFacilityPatients(String sql, Object[] args) throws Exception {
+	public List<GooglePushNotificationsUsers> getGooglePushNotificationsUsers(String sql, Object[] args) throws Exception {
 		return this.jdbcTemplate.query(sql,args, new GooglePushNotificationsUsersRowMapper());
 	}
 
