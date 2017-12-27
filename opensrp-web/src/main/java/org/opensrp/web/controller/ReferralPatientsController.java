@@ -167,7 +167,7 @@ public class ReferralPatientsController {
 
 	            Long healthfacilityPatientId;
 	            if(healthFacilitiesPatientsResults.size()>0){
-		            healthfacilityPatientId = healthFacilitiesPatientsResults.get(0).getId();
+		            healthfacilityPatientId = healthFacilitiesPatientsResults.get(0).getHealthFacilityPatientId();
 	            }else{
 					healthfacilityPatientId = healthFacilitiesPatientsRepository.save(healthFacilitiesPatients);
 	            }

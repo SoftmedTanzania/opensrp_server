@@ -52,8 +52,12 @@ public class PatientReferral {
 	@Column(name = "_id")
 	private Long id;
 
-	@Column(name = COL_PATIENT_ID)
 	private Long patient_id;
+
+	@ManyToOne
+	@JoinColumn(name=COL_PATIENT_ID)
+	private Patients patient;
+
 
 	@Id
 	@Column(name = COL_REFERRAL_ID)

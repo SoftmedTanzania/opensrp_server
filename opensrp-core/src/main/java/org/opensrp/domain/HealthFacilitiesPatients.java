@@ -1,5 +1,8 @@
 package org.opensrp.domain;
 
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -8,6 +11,8 @@ import java.util.Date;
 public class HealthFacilitiesPatients {
 
 	public static final String tbName = "tbl_health_facility_patients";
+
+	public static final String COL_HEALTH_FACILITY_PATIENT_ID = "health_facility_patient_id";
 
 	public static final String COL_PATIENT_ID = "patient_id";
 
@@ -22,10 +27,13 @@ public class HealthFacilitiesPatients {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "_id")
-	private Long id;
+	@Column(name = COL_HEALTH_FACILITY_PATIENT_ID)
+	private Long healthFacilityPatientId;
 
-	@Column(name = COL_PATIENT_ID)
+	@ManyToOne
+	@JoinColumn(name=COL_PATIENT_ID)
+	private Patients patient;
+
 	private Long patient_id;
 
 
@@ -43,13 +51,22 @@ public class HealthFacilitiesPatients {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getId() {
-		return id;
+	public Long getHealthFacilityPatientId() {
+		return healthFacilityPatientId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setHealthFacilityPatientId(Long healthFacilityPatientId) {
+		this.healthFacilityPatientId = healthFacilityPatientId;
 	}
+
+	public Patients getPatient() {
+		return patient;
+	}
+
+	public void setPatient(Patients patient) {
+		this.patient = patient;
+	}
+
 
 	public Long getPatient_id() {
 		return patient_id;
