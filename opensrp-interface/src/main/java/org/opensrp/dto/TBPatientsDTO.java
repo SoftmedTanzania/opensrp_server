@@ -1,0 +1,179 @@
+package org.opensrp.dto;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.codehaus.jackson.annotate.JsonProperty;
+
+import java.util.Date;
+
+public class TBPatientsDTO {
+    @JsonProperty
+    private Long id;
+
+    @JsonProperty
+    private Long healthFacilityPatientId;
+
+    @JsonProperty
+    private int patientType;
+
+    @JsonProperty
+    private int transferType;
+
+    @JsonProperty
+    private int referralType;
+
+    @JsonProperty
+    private String veo;
+
+    @JsonProperty
+    private double weight;
+
+    @JsonProperty
+    private String xray;
+
+    @JsonProperty
+    private String makohozi;
+
+    @JsonProperty
+    private String otherTests;
+
+    @JsonProperty
+    private String treatment_type;
+
+    @JsonProperty
+    private String outcome;
+
+    @JsonProperty
+    private Date outcomeDate;
+
+    @JsonProperty
+    private String outcomeDetails;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getHealthFacilityPatientId() {
+		return healthFacilityPatientId;
+	}
+
+	public void setHealthFacilityPatientId(Long healthFacilityPatientId) {
+		this.healthFacilityPatientId = healthFacilityPatientId;
+	}
+
+	public int getPatientType() {
+		return patientType;
+	}
+
+	public void setPatientType(int patientType) {
+		this.patientType = patientType;
+	}
+
+	public int getTransferType() {
+		return transferType;
+	}
+
+	public void setTransferType(int transferType) {
+		this.transferType = transferType;
+	}
+
+	public int getReferralType() {
+		return referralType;
+	}
+
+	public void setReferralType(int referralType) {
+		this.referralType = referralType;
+	}
+
+	public String getVeo() {
+		return veo;
+	}
+
+	public void setVeo(String veo) {
+		this.veo = veo;
+	}
+
+	public double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
+	}
+
+	public String getXray() {
+		return xray;
+	}
+
+	public void setXray(String xray) {
+		this.xray = xray;
+	}
+
+	public String getMakohozi() {
+		return makohozi;
+	}
+
+	public void setMakohozi(String makohozi) {
+		this.makohozi = makohozi;
+	}
+
+	public String getOtherTests() {
+		return otherTests;
+	}
+
+	public void setOtherTests(String otherTests) {
+		this.otherTests = otherTests;
+	}
+
+	public String getTreatment_type() {
+		return treatment_type;
+	}
+
+	public void setTreatment_type(String treatment_type) {
+		this.treatment_type = treatment_type;
+	}
+
+	public String getOutcome() {
+		return outcome;
+	}
+
+	public void setOutcome(String outcome) {
+		this.outcome = outcome;
+	}
+
+	public Date getOutcomeDate() {
+		return outcomeDate;
+	}
+
+	public void setOutcomeDate(Date outcomeDate) {
+		this.outcomeDate = outcomeDate;
+	}
+
+	public String getOutcomeDetails() {
+		return outcomeDetails;
+	}
+
+	public void setOutcomeDetails(String outcomeDetails) {
+		this.outcomeDetails = outcomeDetails;
+	}
+
+	@Override
+    public final boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    @Override
+    public final int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+}

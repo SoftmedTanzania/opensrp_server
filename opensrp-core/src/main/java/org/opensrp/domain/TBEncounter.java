@@ -18,6 +18,8 @@ public class TBEncounter implements Serializable {
 
 	public static final String COL_ENCOUNTER_MONTH = "encounter_month";
 
+	public static final String COL_SCHEDULED_DATE = "scheduled_date";
+
 	public static final String COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION= "has_finished_previous_month_medication";
 
 	public static final String COL_CREATED_AT = "created_at";
@@ -45,6 +47,9 @@ public class TBEncounter implements Serializable {
 
 	@Column(name = COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION)
 	private boolean hasFinishedPreviousMonthMedication;
+
+	@Column(name = COL_SCHEDULED_DATE)
+	private Date scheduledDate;
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -101,6 +106,14 @@ public class TBEncounter implements Serializable {
 
 	public void setHasFinishedPreviousMonthMedication(boolean hasFinishedPreviousMonthMedication) {
 		this.hasFinishedPreviousMonthMedication = hasFinishedPreviousMonthMedication;
+	}
+
+	public Date getScheduledDate() {
+		return scheduledDate;
+	}
+
+	public void setScheduledDate(Date scheduledDate) {
+		this.scheduledDate = scheduledDate;
 	}
 
 	public Date getCreatedAt() {
