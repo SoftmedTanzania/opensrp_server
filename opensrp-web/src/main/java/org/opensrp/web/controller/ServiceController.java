@@ -6,9 +6,13 @@ import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.BoreshaAfyaService;
 import org.opensrp.domain.Multimedia;
+import org.opensrp.domain.TBPatient;
+import org.opensrp.domain.TBPatientType;
 import org.opensrp.dto.BoreshaAfyaServiceDTO;
+import org.opensrp.dto.TBPatientTypesDTO;
 import org.opensrp.dto.form.MultimediaDTO;
 import org.opensrp.repository.BoreshaAfyaServiceRepository;
+import org.opensrp.repository.TBPatientTypeRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
 import org.slf4j.Logger;
@@ -34,11 +38,13 @@ public class ServiceController {
     private static Logger logger = LoggerFactory.getLogger(ServiceController.class.toString());
     private BoreshaAfyaService boreshaAfyaService;
     private BoreshaAfyaServiceRepository boreshaAfyaServiceRepository;
+    private TBPatientTypeRepository tbPatientTypeRepository;
     private TaskSchedulerService scheduler;
 
     @Autowired
-    public ServiceController(BoreshaAfyaServiceRepository boreshaAfyaServiceRepository, TaskSchedulerService scheduler) {
+    public ServiceController(BoreshaAfyaServiceRepository boreshaAfyaServiceRepository, TaskSchedulerService scheduler,TBPatientTypeRepository tbPatientTypeRepository) {
         this.boreshaAfyaServiceRepository = boreshaAfyaServiceRepository;
+        this.tbPatientTypeRepository = tbPatientTypeRepository;
         this.scheduler = scheduler;
     }
 
@@ -93,6 +99,25 @@ public class ServiceController {
             @Override
             public BoreshaAfyaServiceDTO convert(BoreshaAfyaService boreshaAfyaService) {
                 return new BoreshaAfyaServiceDTO(boreshaAfyaService.getId(),boreshaAfyaService.getServiceName(),boreshaAfyaService.getIsActive(),boreshaAfyaService.getCreatedAt(),boreshaAfyaService.getUpdatedAt());
+            }
+        });
+    }
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/tb-patient-types")
+    @ResponseBody
+    public List<TBPatientTypesDTO> getTBPatientTypes() {
+
+        List<TBPatientType> tbPatientTypes = null;
+        try {
+            tbPatientTypes = tbPatientTypeRepository.getTBPatientTypes("Select * from "+ TBPatientType.tbName,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return with(tbPatientTypes).convert(new Converter<TBPatientType, TBPatientTypesDTO>() {
+            @Override
+            public TBPatientTypesDTO convert(TBPatientType tbPatientType) {
+                return new TBPatientTypesDTO(tbPatientType.getId(),tbPatientType.getPatientTypeName(),tbPatientType.getIsActive(),tbPatientType.getCreatedAt(),tbPatientType.getUpdatedAt());
             }
         });
     }
