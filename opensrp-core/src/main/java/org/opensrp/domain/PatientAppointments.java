@@ -12,6 +12,8 @@ public class PatientAppointments implements Serializable {
 
 	public static final String COL_HEALTH_FACILITY_PATIENT_ID = "health_facility_patient_id";
 
+	public static final String COL_APPOINTMENT_ID = "appointment_id";
+
 	public static final String COL_APPOINTMENT_DATE = "appointment_date";
 
 	public static final String COL_IS_CANCELLED = "is_cancelled";
@@ -26,19 +28,23 @@ public class PatientAppointments implements Serializable {
 
 
 	@GeneratedValue
-	@Column(name = "_id")
-	private Long id;
+	@Column(name = COL_APPOINTMENT_ID)
+	private Long appointment_id;
+
+	private Long healthFacilityPatientId;
 
 	@Id
-	@Column(name = COL_HEALTH_FACILITY_PATIENT_ID)
-	private Long healthFacilityPatientId;
+	@ManyToOne
+	@JoinColumn(name=COL_HEALTH_FACILITY_PATIENT_ID)
+	private HealthFacilitiesPatients healthFacilitiesPatients;
+
 
 	@Id
 	@Column(name = COL_APPOINTMENT_DATE)
 	private Date appointmentDate;
 
 	@Column(name = COL_IS_CANCELLED)
-	private String isCancelled;
+	private boolean isCancelled;
 
 	@Column(name = COL_STATUS)
 	private String status;
@@ -54,12 +60,20 @@ public class PatientAppointments implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getId() {
-		return id;
+	public HealthFacilitiesPatients getHealthFacilitiesPatients() {
+		return healthFacilitiesPatients;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setHealthFacilitiesPatients(HealthFacilitiesPatients healthFacilitiesPatients) {
+		this.healthFacilitiesPatients = healthFacilitiesPatients;
+	}
+
+	public Long getAppointment_id() {
+		return appointment_id;
+	}
+
+	public void setAppointment_id(Long appointment_id) {
+		this.appointment_id = appointment_id;
 	}
 
 	public Long getHealthFacilityPatientId() {
@@ -78,11 +92,11 @@ public class PatientAppointments implements Serializable {
 		this.appointmentDate = appointmentDate;
 	}
 
-	public String getIsCancelled() {
+	public boolean getIsCancelled() {
 		return isCancelled;
 	}
 
-	public void setIsCancelled(String isCancelled) {
+	public void setIsCancelled(boolean isCancelled) {
 		this.isCancelled = isCancelled;
 	}
 

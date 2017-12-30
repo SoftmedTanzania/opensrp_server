@@ -30,8 +30,10 @@ public class TBEncounterRepository {
 				TBEncounter.COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION + "," +
 				TBEncounter.COL_MAKOHOZI + "," +
 				TBEncounter.COL_SCHEDULED_DATE + "," +
+				TBEncounter.COL_MEDICATION_DATE + "," +
+				TBEncounter.COL_MEDICATION_STATUS + "," +
 				TBEncounter.COL_UPDATED_AT + "," +
-				TBEncounter.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?) ";
+				TBEncounter.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				tBEncounter.getTbPatientId(),
@@ -40,6 +42,8 @@ public class TBEncounterRepository {
 				tBEncounter.isHasFinishedPreviousMonthMedication(),
 		        tBEncounter.getMakohozi(),
 				tBEncounter.getScheduledDate(),
+				tBEncounter.getMedicationDate(),
+				tBEncounter.isMedicationStatus(),
 		        tBEncounter.getUpdatedAt(),
 				tBEncounter.getCreatedAt() };
 		int[] types = new int[] {
@@ -50,10 +54,44 @@ public class TBEncounterRepository {
 				Types.VARCHAR,
 				Types.DATE,
 				Types.DATE,
+				Types.BOOLEAN,
+				Types.DATE,
 				Types.TIMESTAMP };
 		
 		return jdbcTemplate.update(insertQuery, params, types);
 		
+	}
+
+
+	public int update(TBEncounter tBEncounter) throws Exception {
+		String insertQuery = "UPDATE " + TBEncounter.tbName + " SET " +
+				TBEncounter.COL_ENCOUNTER_MONTH + " = ? ," +
+				TBEncounter.COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION + " = ? ," +
+				TBEncounter.COL_MAKOHOZI + " = ? ," +
+				TBEncounter.COL_MEDICATION_DATE + " = ? ," +
+				TBEncounter.COL_MEDICATION_STATUS + " = ?," +
+				TBEncounter.COL_UPDATED_AT + " = ? " +
+				"WHERE _id = ? ";
+
+		Object[] params = new Object[] {
+				tBEncounter.getEncounterMonth(),
+				tBEncounter.isHasFinishedPreviousMonthMedication(),
+				tBEncounter.getMakohozi(),
+				tBEncounter.getMedicationDate(),
+				tBEncounter.isMedicationStatus(),
+				tBEncounter.getUpdatedAt(),
+				tBEncounter.getId()};
+		int[] types = new int[] {
+				Types.INTEGER,
+				Types.BOOLEAN,
+				Types.VARCHAR,
+				Types.DATE,
+				Types.BOOLEAN,
+				Types.DATE,
+				Types.BIGINT};
+
+		return jdbcTemplate.update(insertQuery, params, types);
+
 	}
 	
 	public void executeQuery(String query) throws Exception {
@@ -86,6 +124,8 @@ public class TBEncounterRepository {
 			tbPatient.setHasFinishedPreviousMonthMedication(rs.getBoolean(rs.findColumn(TBEncounter.COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION)));
 			tbPatient.setMakohozi(rs.getString(rs.findColumn(TBEncounter.COL_MAKOHOZI)));
 			tbPatient.setScheduledDate(rs.getDate(rs.findColumn(TBEncounter.COL_SCHEDULED_DATE)));
+			tbPatient.setMedicationDate(rs.getDate(rs.findColumn(TBEncounter.COL_MEDICATION_DATE)));
+			tbPatient.setMedicationStatus(rs.getBoolean(rs.findColumn(TBEncounter.COL_MEDICATION_STATUS)));
 			tbPatient.setUpdatedAt(rs.getDate(rs.findColumn(TBEncounter.COL_UPDATED_AT)));
 			tbPatient.setId(rs.getLong(rs.findColumn("_id")));
 			return tbPatient;

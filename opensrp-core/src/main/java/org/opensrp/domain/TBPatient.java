@@ -14,6 +14,8 @@ public class TBPatient implements Serializable {
 
 	public static final String COL_PATIENT_TYPE = "patient_type";
 
+	public static final String COL_TB_PATIENT_ID = "tb_patient_id";
+
 	public static final String COL_TRANSFER_TYPE= "transfer_type";
 
 	public static final String COL_REFERRAL_TYPE = "referral_type";
@@ -42,12 +44,15 @@ public class TBPatient implements Serializable {
 
 
 	@GeneratedValue
-	@Column(name = "_id")
-	private Long id;
+	@Column(name = COL_TB_PATIENT_ID)
+	private Long tbPatientId;
+
+	private Long healthFacilityPatientId;
 
 	@Id
-	@Column(name = COL_HEALTH_FACILITY_PATIENT_ID)
-	private Long healthFacilityPatientId;
+	@ManyToOne
+	@JoinColumn(name=COL_HEALTH_FACILITY_PATIENT_ID)
+	private HealthFacilitiesPatients healthFacilitiesPatients;
 
 	@Column(name = COL_PATIENT_TYPE)
 	private int patientType;
@@ -94,12 +99,20 @@ public class TBPatient implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getId() {
-		return id;
+	public Long getTbPatientId() {
+		return tbPatientId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setTbPatientId(Long tbPatientId) {
+		this.tbPatientId = tbPatientId;
+	}
+
+	public HealthFacilitiesPatients getHealthFacilitiesPatients() {
+		return healthFacilitiesPatients;
+	}
+
+	public void setHealthFacilitiesPatients(HealthFacilitiesPatients healthFacilitiesPatients) {
+		this.healthFacilitiesPatients = healthFacilitiesPatients;
 	}
 
 	public Long getHealthFacilityPatientId() {

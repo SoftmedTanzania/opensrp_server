@@ -115,7 +115,7 @@ public class TBPatientsRepository {
 			tbPatient.setOutcomeDate(rs.getDate(rs.findColumn(TBPatient.COL_OUTCOME_DATE)));
 			tbPatient.setOutcomeDetails(rs.getString(rs.findColumn(TBPatient.COL_OUTCOME_DETAILS)));
 			tbPatient.setUpdatedAt(rs.getDate(rs.findColumn(TBPatient.COL_UPDATED_AT)));
-			tbPatient.setId(rs.getLong(rs.findColumn("_id")));
+			tbPatient.setTbPatientId(rs.getLong(rs.findColumn(TBPatient.COL_TB_PATIENT_ID)));
 			return tbPatient;
 		}
 		

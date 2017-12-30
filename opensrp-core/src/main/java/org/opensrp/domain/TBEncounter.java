@@ -20,6 +20,10 @@ public class TBEncounter implements Serializable {
 
 	public static final String COL_SCHEDULED_DATE = "scheduled_date";
 
+	public static final String COL_MEDICATION_DATE = "medication_date";
+
+	public static final String COL_MEDICATION_STATUS = "medication_status";
+
 	public static final String COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION= "has_finished_previous_month_medication";
 
 	public static final String COL_CREATED_AT = "created_at";
@@ -50,6 +54,13 @@ public class TBEncounter implements Serializable {
 
 	@Column(name = COL_SCHEDULED_DATE)
 	private Date scheduledDate;
+
+	@Column(name = COL_MEDICATION_DATE)
+	private Date medicationDate;
+
+	@Column(name = COL_MEDICATION_STATUS)
+	private boolean medicationStatus;
+
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -114,6 +125,22 @@ public class TBEncounter implements Serializable {
 
 	public void setScheduledDate(Date scheduledDate) {
 		this.scheduledDate = scheduledDate;
+	}
+
+	public Date getMedicationDate() {
+		return medicationDate;
+	}
+
+	public void setMedicationDate(Date medicationDate) {
+		this.medicationDate = medicationDate;
+	}
+
+	public boolean isMedicationStatus() {
+		return medicationStatus;
+	}
+
+	public void setMedicationStatus(boolean medicationStatus) {
+		this.medicationStatus = medicationStatus;
 	}
 
 	public Date getCreatedAt() {

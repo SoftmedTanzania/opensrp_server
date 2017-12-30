@@ -14,7 +14,7 @@ public class CTCPatientsAppointmesDTO {
     private Long RowVersion;
 
     @JsonProperty
-    private String Cancelled;
+    private boolean Cancelled;
 
     @JsonProperty
     private Long DateOfAppointment;
@@ -27,11 +27,11 @@ public class CTCPatientsAppointmesDTO {
         RowVersion = rowVersion;
     }
 
-    public String getCancelled() {
+    public boolean getCancelled() {
         return Cancelled;
     }
 
-    public void setCancelled(String cancelled) {
+    public void setCancelled(boolean cancelled) {
         Cancelled = cancelled;
     }
 

@@ -122,6 +122,14 @@ public class PatientReferral {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
+	public Patients getPatient() {
+		return patient;
+	}
+
+	public void setPatient(Patients patient) {
+		this.patient = patient;
+	}
+
 	public Long getId() {
 		return id;
 	}

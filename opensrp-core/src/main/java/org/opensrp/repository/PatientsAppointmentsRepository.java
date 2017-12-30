@@ -80,10 +80,10 @@ public class PatientsAppointmentsRepository {
 		public PatientAppointments mapRow(ResultSet rs, int rowNum) throws SQLException {
 			PatientAppointments patientAppointments = new PatientAppointments();
 
-			patientAppointments.setId(rs.getLong(rs.findColumn("_id")));
+			patientAppointments.setAppointment_id(rs.getLong(rs.findColumn(PatientAppointments.COL_APPOINTMENT_ID)));
 			patientAppointments.setHealthFacilityPatientId(rs.getLong(rs.findColumn(PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID)));
 			patientAppointments.setAppointmentDate(rs.getDate(rs.findColumn(PatientAppointments.COL_APPOINTMENT_DATE)));
-			patientAppointments.setIsCancelled(rs.getString(rs.findColumn(PatientAppointments.COL_IS_CANCELLED)));
+			patientAppointments.setIsCancelled(rs.getBoolean(rs.findColumn(PatientAppointments.COL_IS_CANCELLED)));
 			patientAppointments.setStatus(rs.getString(rs.findColumn(PatientAppointments.COL_STATUS)));
 			patientAppointments.setRowVersion(rs.getDate(rs.findColumn(PatientAppointments.COL_ROW_VERSION)));
 			patientAppointments.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientAppointments.COL_CREATED_AT)).getTime()));

@@ -11,6 +11,39 @@ public class TBPatientsDTO {
     @JsonProperty
     private Long id;
 
+	@JsonProperty
+	private Long patientId;
+
+	@JsonProperty
+	private String firstName;
+
+	@JsonProperty
+	private String middleName;
+
+	@JsonProperty
+	private String phoneNumber;
+
+	@JsonProperty
+	private String ward;
+
+	@JsonProperty
+	private String village;
+
+	@JsonProperty
+	private String hamlet;
+
+	@JsonProperty
+	private Date dateOfBirth;
+
+	@JsonProperty
+	private String surname;
+
+	@JsonProperty
+	private String gender;
+
+	@JsonProperty
+	private Date dateOfDeath;
+
     @JsonProperty
     private Long healthFacilityPatientId;
 
@@ -50,12 +83,103 @@ public class TBPatientsDTO {
     @JsonProperty
     private String outcomeDetails;
 
+	@JsonProperty
+	private String healthFacilityCode;
+
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getPatientId() {
+		return patientId;
+	}
+
+	public void setPatientId(Long patientId) {
+		this.patientId = patientId;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getWard() {
+		return ward;
+	}
+
+	public void setWard(String ward) {
+		this.ward = ward;
+	}
+
+	public String getVillage() {
+		return village;
+	}
+
+	public void setVillage(String village) {
+		this.village = village;
+	}
+
+	public String getHamlet() {
+		return hamlet;
+	}
+
+	public void setHamlet(String hamlet) {
+		this.hamlet = hamlet;
+	}
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public Date getDateOfDeath() {
+		return dateOfDeath;
+	}
+
+	public void setDateOfDeath(Date dateOfDeath) {
+		this.dateOfDeath = dateOfDeath;
 	}
 
 	public Long getHealthFacilityPatientId() {
@@ -160,6 +284,14 @@ public class TBPatientsDTO {
 
 	public void setOutcomeDetails(String outcomeDetails) {
 		this.outcomeDetails = outcomeDetails;
+	}
+
+	public String getHealthFacilityCode() {
+		return healthFacilityCode;
+	}
+
+	public void setHealthFacilityCode(String healthFacilityCode) {
+		this.healthFacilityCode = healthFacilityCode;
 	}
 
 	@Override

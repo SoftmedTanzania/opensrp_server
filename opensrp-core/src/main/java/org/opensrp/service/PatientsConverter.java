@@ -3,10 +3,8 @@ package org.opensrp.service;
 import org.opensrp.domain.PatientAppointments;
 import org.opensrp.domain.PatientReferral;
 import org.opensrp.domain.Patients;
-import org.opensrp.dto.CTCPatientsAppointmesDTO;
-import org.opensrp.dto.CTCPatientsDTO;
-import org.opensrp.dto.PatientsDTO;
-import org.opensrp.dto.ReferralsDTO;
+import org.opensrp.domain.TBEncounter;
+import org.opensrp.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +48,6 @@ public class PatientsConverter {
     public static Patients toPatients(CTCPatientsDTO patientsDTO) {
         try {
             Patients patients = new Patients();
-
-
             patients.setFirstName(patientsDTO.getFirstName());
             patients.setSurname(patientsDTO.getSurname());
             patients.setPhoneNumber(patientsDTO.getContact());
@@ -74,6 +70,33 @@ public class PatientsConverter {
         }
     }
 
+
+    public static Patients toPatients(TBPatientsDTO patientsDTO) {
+        try {
+            Patients patients = new Patients();
+
+
+            patients.setFirstName(patientsDTO.getFirstName());
+            patients.setSurname(patientsDTO.getSurname());
+            patients.setPhoneNumber(patientsDTO.getPhoneNumber());
+            Date dob = new Date();
+            dob.setTime(patientsDTO.getDateOfBirth().getTime());
+            patients.setDateOfBirth(dob);
+            patients.setGender(patientsDTO.getGender());
+
+            Date deathDate = new Date();
+            deathDate.setTime(patientsDTO.getDateOfDeath().getTime());
+
+            patients.setDateOfDeath(deathDate);
+            patients.setCreatedAt(Calendar.getInstance().getTime());
+            patients.setUpdatedAt(Calendar.getInstance().getTime());
+
+            return patients;
+        } catch (Exception e) {
+            logger.error(MessageFormat.format("Converting TBPatientsDTO :{0}, failed with error: {1}.", patientsDTO, e));
+            throw e;
+        }
+    }
 
 
     public static List<PatientAppointments> toPatientsAppointments(CTCPatientsDTO patientsDTO) {
@@ -226,6 +249,27 @@ public class PatientsConverter {
             return referralsDTO;
         } catch (Exception e) {
             logger.error(MessageFormat.format("Converting ReferralsDTO :{0}, failed with error: {1}.", referral, e));
+            throw e;
+        }
+    }
+
+
+    public static TBEncounter toTBEncounter(TBEncounterDTO tbEncounterDTO) {
+        try {
+           TBEncounter encounter = new TBEncounter();
+           encounter.setTbPatientId(tbEncounterDTO.getTbPatientId());
+           encounter.setMedicationDate(tbEncounterDTO.getMedicationDate());
+           encounter.setMedicationStatus(tbEncounterDTO.isMedicationStatus());
+           encounter.setScheduledDate(tbEncounterDTO.getScheduledDate());
+           encounter.setHasFinishedPreviousMonthMedication(tbEncounterDTO.isHasFinishedPreviousMonthMedication());
+           encounter.setEncounterMonth(tbEncounterDTO.getEncounterMonth());
+           encounter.setAppointmentId(tbEncounterDTO.getAppointmentId());
+           encounter.setMakohozi(tbEncounterDTO.getMakohozi());
+           encounter.setUpdatedAt(Calendar.getInstance().getTime());
+
+            return encounter;
+        } catch (Exception e) {
+            logger.error(MessageFormat.format("Converting TBEncounterDTO :{0}, failed with error: {1}.", tbEncounterDTO, e));
             throw e;
         }
     }

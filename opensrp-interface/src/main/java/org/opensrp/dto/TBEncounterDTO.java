@@ -9,46 +9,39 @@ import java.util.Date;
 
 public class TBEncounterDTO {
     @JsonProperty
-    private Long id;
+	private Long id;
 
-    @JsonProperty
-    private Long healthFacilityPatientId;
+	@JsonProperty
+	private Long tbPatientId;
 
-    @JsonProperty
-    private int patientType;
+	@JsonProperty
+	private String makohozi;
 
-    @JsonProperty
-    private int transferType;
+	@JsonProperty
+	private Long appointmentId;
 
-    @JsonProperty
-    private int referralType;
+	@JsonProperty
+	private int encounterMonth;
 
-    @JsonProperty
-    private String veo;
+	@JsonProperty
+	private boolean hasFinishedPreviousMonthMedication;
 
-    @JsonProperty
-    private double weight;
+	@JsonProperty
+	private Date scheduledDate;
 
-    @JsonProperty
-    private String xray;
 
-    @JsonProperty
-    private String makohozi;
+	@JsonProperty
+	private Date medicationDate;
 
-    @JsonProperty
-    private String otherTests;
+	@JsonProperty
+	private boolean medicationStatus;
 
-    @JsonProperty
-    private String treatment_type;
 
-    @JsonProperty
-    private String outcome;
+	@JsonProperty
+	private Date createdAt;
 
-    @JsonProperty
-    private Date outcomeDate;
-
-    @JsonProperty
-    private String outcomeDetails;
+	@JsonProperty
+	private Date updatedAt;
 
 	public Long getId() {
 		return id;
@@ -58,60 +51,12 @@ public class TBEncounterDTO {
 		this.id = id;
 	}
 
-	public Long getHealthFacilityPatientId() {
-		return healthFacilityPatientId;
+	public Long getTbPatientId() {
+		return tbPatientId;
 	}
 
-	public void setHealthFacilityPatientId(Long healthFacilityPatientId) {
-		this.healthFacilityPatientId = healthFacilityPatientId;
-	}
-
-	public int getPatientType() {
-		return patientType;
-	}
-
-	public void setPatientType(int patientType) {
-		this.patientType = patientType;
-	}
-
-	public int getTransferType() {
-		return transferType;
-	}
-
-	public void setTransferType(int transferType) {
-		this.transferType = transferType;
-	}
-
-	public int getReferralType() {
-		return referralType;
-	}
-
-	public void setReferralType(int referralType) {
-		this.referralType = referralType;
-	}
-
-	public String getVeo() {
-		return veo;
-	}
-
-	public void setVeo(String veo) {
-		this.veo = veo;
-	}
-
-	public double getWeight() {
-		return weight;
-	}
-
-	public void setWeight(double weight) {
-		this.weight = weight;
-	}
-
-	public String getXray() {
-		return xray;
-	}
-
-	public void setXray(String xray) {
-		this.xray = xray;
+	public void setTbPatientId(Long tbPatientId) {
+		this.tbPatientId = tbPatientId;
 	}
 
 	public String getMakohozi() {
@@ -122,44 +67,68 @@ public class TBEncounterDTO {
 		this.makohozi = makohozi;
 	}
 
-	public String getOtherTests() {
-		return otherTests;
+	public Long getAppointmentId() {
+		return appointmentId;
 	}
 
-	public void setOtherTests(String otherTests) {
-		this.otherTests = otherTests;
+	public void setAppointmentId(Long appointmentId) {
+		this.appointmentId = appointmentId;
 	}
 
-	public String getTreatment_type() {
-		return treatment_type;
+	public int getEncounterMonth() {
+		return encounterMonth;
 	}
 
-	public void setTreatment_type(String treatment_type) {
-		this.treatment_type = treatment_type;
+	public void setEncounterMonth(int encounterMonth) {
+		this.encounterMonth = encounterMonth;
 	}
 
-	public String getOutcome() {
-		return outcome;
+	public boolean isHasFinishedPreviousMonthMedication() {
+		return hasFinishedPreviousMonthMedication;
 	}
 
-	public void setOutcome(String outcome) {
-		this.outcome = outcome;
+	public void setHasFinishedPreviousMonthMedication(boolean hasFinishedPreviousMonthMedication) {
+		this.hasFinishedPreviousMonthMedication = hasFinishedPreviousMonthMedication;
 	}
 
-	public Date getOutcomeDate() {
-		return outcomeDate;
+	public Date getScheduledDate() {
+		return scheduledDate;
 	}
 
-	public void setOutcomeDate(Date outcomeDate) {
-		this.outcomeDate = outcomeDate;
+	public void setScheduledDate(Date scheduledDate) {
+		this.scheduledDate = scheduledDate;
 	}
 
-	public String getOutcomeDetails() {
-		return outcomeDetails;
+	public Date getMedicationDate() {
+		return medicationDate;
 	}
 
-	public void setOutcomeDetails(String outcomeDetails) {
-		this.outcomeDetails = outcomeDetails;
+	public void setMedicationDate(Date medicationDate) {
+		this.medicationDate = medicationDate;
+	}
+
+	public boolean isMedicationStatus() {
+		return medicationStatus;
+	}
+
+	public void setMedicationStatus(boolean medicationStatus) {
+		this.medicationStatus = medicationStatus;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	@Override
