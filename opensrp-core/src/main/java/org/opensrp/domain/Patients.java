@@ -31,6 +31,8 @@ public class Patients {
 
 	public static final String COL_DATE_OF_DEATH= "date_of_death";
 
+	public static final String COL_HIV_STATUS= "hiv_status";
+
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
@@ -70,6 +72,9 @@ public class Patients {
 
 	@Column(name = COL_DATE_OF_DEATH)
 	private Date dateOfDeath;
+
+	@Column(name = COL_HIV_STATUS)
+	private boolean hivStatus;
 
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
@@ -166,6 +171,14 @@ public class Patients {
 
 	public void setDateOfDeath(Date dateOfDeath) {
 		this.dateOfDeath = dateOfDeath;
+	}
+
+	public boolean isHivStatus() {
+		return hivStatus;
+	}
+
+	public void setHivStatus(boolean hivStatus) {
+		this.hivStatus = hivStatus;
 	}
 
 	public Date getUpdatedAt() {

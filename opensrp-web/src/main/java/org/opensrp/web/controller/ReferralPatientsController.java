@@ -135,7 +135,10 @@ public class ReferralPatientsController {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbPatientsDTO));
 
 			Patients patient = PatientsConverter.toPatients(tbPatientsDTO);
+			TBPatient tbPatient = PatientsConverter.toTBPatients(tbPatientsDTO);
 			long healthfacilityPatientId = savePatient(patient,tbPatientsDTO.getHealthFacilityCode(),null);
+			tbPatient.setHealthFacilityPatientId(healthfacilityPatientId);
+
 			createAppointments(healthfacilityPatientId);
 
 

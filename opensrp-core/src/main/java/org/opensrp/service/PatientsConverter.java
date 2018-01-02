@@ -1,9 +1,6 @@
 package org.opensrp.service;
 
-import org.opensrp.domain.PatientAppointments;
-import org.opensrp.domain.PatientReferral;
-import org.opensrp.domain.Patients;
-import org.opensrp.domain.TBEncounter;
+import org.opensrp.domain.*;
 import org.opensrp.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +80,7 @@ public class PatientsConverter {
             dob.setTime(patientsDTO.getDateOfBirth().getTime());
             patients.setDateOfBirth(dob);
             patients.setGender(patientsDTO.getGender());
+            patients.setHivStatus(patientsDTO.isHivStatus());
 
             Date deathDate = new Date();
             deathDate.setTime(patientsDTO.getDateOfDeath().getTime());
@@ -92,6 +90,31 @@ public class PatientsConverter {
             patients.setUpdatedAt(Calendar.getInstance().getTime());
 
             return patients;
+        } catch (Exception e) {
+            logger.error(MessageFormat.format("Converting TBPatientsDTO :{0}, failed with error: {1}.", patientsDTO, e));
+            throw e;
+        }
+    }
+
+    public static TBPatient toTBPatients(TBPatientsDTO patientsDTO) {
+        try {
+            TBPatient tbPatient = new TBPatient();
+            tbPatient.setOutcomeDetails(patientsDTO.getOutcomeDetails());
+            tbPatient.setOutcome(patientsDTO.getOutcome());
+            tbPatient.setTbPatientId(patientsDTO.getPatientId());
+            tbPatient.setOutcomeDate(patientsDTO.getOutcomeDate());
+            tbPatient.setOtherTests(patientsDTO.getOtherTests());
+            tbPatient.setMakohozi(patientsDTO.getMakohozi());
+            tbPatient.setWeight(patientsDTO.getWeight());
+            tbPatient.setXray(patientsDTO.getXray());
+            tbPatient.setVeo(patientsDTO.getVeo());
+            tbPatient.setReferralType(patientsDTO.getReferralType());
+            tbPatient.setTreatment_type(patientsDTO.getTreatment_type());
+            tbPatient.setTransferType(patientsDTO.getTransferType());
+            tbPatient.setPatientType(patientsDTO.getPatientType());
+            tbPatient.setPregnant(patientsDTO.isPregnant());
+
+            return tbPatient;
         } catch (Exception e) {
             logger.error(MessageFormat.format("Converting TBPatientsDTO :{0}, failed with error: {1}.", patientsDTO, e));
             throw e;

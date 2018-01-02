@@ -36,6 +36,8 @@ public class TBPatient implements Serializable {
 
 	public static final String COL_OUTCOME_DATE = "outcome_date";
 
+	public static final String COL_IS_PREGNANT = "is_pregnant";
+
 	public static final String COL_OUTCOME_DETAILS= "outcome_details";
 
 	public static final String COL_CREATED_AT = "created_at";
@@ -89,6 +91,9 @@ public class TBPatient implements Serializable {
 
 	@Column(name = COL_OUTCOME_DETAILS)
 	private String outcomeDetails;
+
+	@Column(name = COL_IS_PREGNANT)
+	private boolean isPregnant;
 
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
@@ -217,6 +222,14 @@ public class TBPatient implements Serializable {
 
 	public void setOutcomeDetails(String outcomeDetails) {
 		this.outcomeDetails = outcomeDetails;
+	}
+
+	public boolean isPregnant() {
+		return isPregnant;
+	}
+
+	public void setPregnant(boolean pregnant) {
+		isPregnant = pregnant;
 	}
 
 	public Date getCreatedAt() {

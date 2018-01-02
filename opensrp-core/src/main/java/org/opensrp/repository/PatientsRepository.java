@@ -39,6 +39,7 @@ public class PatientsRepository {
 		parameters.put(Patients.COL_DATE_OF_BIRTH , patients.getDateOfBirth());
 		parameters.put(Patients.COL_GENDER , patients.getGender());
 		parameters.put(Patients.COL_DATE_OF_DEATH , patients.getDateOfDeath());
+		parameters.put(Patients.COL_HIV_STATUS , patients.isHivStatus());
 		parameters.put(Patients.COL_CREATED_AT , patients.getCreatedAt());
 		parameters.put(Patients.COL_UPDATED_AT , patients.getCreatedAt());
 
@@ -77,6 +78,7 @@ public class PatientsRepository {
 			patients.setPhoneNumber(rs.getString(rs.findColumn(Patients.COL_PHONE_NUMBER)));
 			patients.setDateOfBirth(rs.getDate(rs.findColumn(Patients.COL_DATE_OF_BIRTH)));
 			patients.setGender(rs.getString(rs.findColumn(Patients.COL_GENDER)));
+			patients.setHivStatus(rs.getBoolean(rs.findColumn(Patients.COL_HIV_STATUS)));
 			patients.setDateOfDeath(rs.getDate(rs.findColumn(Patients.COL_DATE_OF_DEATH)));
 			return patients;
 		}

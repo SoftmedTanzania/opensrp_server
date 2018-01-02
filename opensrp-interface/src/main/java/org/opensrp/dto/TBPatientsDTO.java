@@ -42,6 +42,12 @@ public class TBPatientsDTO {
 	private String gender;
 
 	@JsonProperty
+	private boolean hivStatus;
+
+	@JsonProperty
+	private boolean isPregnant;
+
+	@JsonProperty
 	private Date dateOfDeath;
 
     @JsonProperty
@@ -292,6 +298,22 @@ public class TBPatientsDTO {
 
 	public void setHealthFacilityCode(String healthFacilityCode) {
 		this.healthFacilityCode = healthFacilityCode;
+	}
+
+	public boolean isHivStatus() {
+		return hivStatus;
+	}
+
+	public void setHivStatus(boolean hivStatus) {
+		this.hivStatus = hivStatus;
+	}
+
+	public boolean isPregnant() {
+		return isPregnant;
+	}
+
+	public void setPregnant(boolean pregnant) {
+		isPregnant = pregnant;
 	}
 
 	@Override

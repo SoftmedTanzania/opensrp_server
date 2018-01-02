@@ -37,8 +37,9 @@ public class TBPatientsRepository {
 				TBPatient.COL_OUTCOME + "," +
 				TBPatient.COL_OUTCOME_DATE + "," +
 				TBPatient.COL_OUTCOME_DETAILS + "," +
+				TBPatient.COL_IS_PREGNANT + "," +
 				TBPatient.COL_UPDATED_AT + "," +
-				TBPatient.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				TBPatient.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				tBPatient.getHealthFacilityPatientId(),
@@ -54,6 +55,7 @@ public class TBPatientsRepository {
 		        tBPatient.getOutcome(),
 		        tBPatient.getOutcomeDate(),
 		        tBPatient.getOutcomeDetails(),
+		        tBPatient.isPregnant(),
 		        tBPatient.getUpdatedAt(),
 				tBPatient.getCreatedAt() };
 		int[] types = new int[] {
@@ -70,6 +72,7 @@ public class TBPatientsRepository {
 				Types.VARCHAR,
 				Types.DATE,
 				Types.VARCHAR,
+				Types.BOOLEAN,
 				Types.DATE,
 				Types.TIMESTAMP };
 		
@@ -116,6 +119,7 @@ public class TBPatientsRepository {
 			tbPatient.setOutcomeDetails(rs.getString(rs.findColumn(TBPatient.COL_OUTCOME_DETAILS)));
 			tbPatient.setUpdatedAt(rs.getDate(rs.findColumn(TBPatient.COL_UPDATED_AT)));
 			tbPatient.setTbPatientId(rs.getLong(rs.findColumn(TBPatient.COL_TB_PATIENT_ID)));
+			tbPatient.setPregnant(rs.getBoolean(rs.findColumn(TBPatient.COL_IS_PREGNANT)));
 			return tbPatient;
 		}
 		

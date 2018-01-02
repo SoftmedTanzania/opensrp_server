@@ -49,7 +49,7 @@ public class ServiceController {
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-boresha-afya-services")
-    public ResponseEntity<HttpStatus> savePatient(@RequestBody List<BoreshaAfyaServiceDTO> boreshaAfyaServiceDTOS) {
+    public ResponseEntity<HttpStatus> saveBoreshaAfyaServices(@RequestBody List<BoreshaAfyaServiceDTO> boreshaAfyaServiceDTOS) {
         try {
             if (boreshaAfyaServiceDTOS.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
@@ -86,7 +86,7 @@ public class ServiceController {
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/boresha-afya-services")
     @ResponseBody
-    public List<BoreshaAfyaServiceDTO> getFiles() {
+    public List<BoreshaAfyaServiceDTO> getBoreshaAfyaServices() {
 
         List<BoreshaAfyaService> allBoreshaAfyaServices = null;
         try {
@@ -101,6 +101,42 @@ public class ServiceController {
                 return new BoreshaAfyaServiceDTO(boreshaAfyaService.getId(),boreshaAfyaService.getServiceName(),boreshaAfyaService.getIsActive(),boreshaAfyaService.getCreatedAt(),boreshaAfyaService.getUpdatedAt());
             }
         });
+    }
+
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-boresha-afya-services")
+    public ResponseEntity<HttpStatus> savePatientType(@RequestBody List<TBPatientTypesDTO> tbPatientTypesDTOS) {
+        try {
+            if (tbPatientTypesDTOS.isEmpty()) {
+                return new ResponseEntity<>(BAD_REQUEST);
+            }
+
+            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, tbPatientTypesDTOS));
+
+            String json = new Gson().toJson(tbPatientTypesDTOS);
+            List<TBPatientTypesDTO> tbPatientTypesDTOS1 = new Gson().fromJson(json, new TypeToken<List<TBPatientTypesDTO>>() {
+            }.getType());
+
+            List<TBPatientType> tbPatientTypes =  with(tbPatientTypesDTOS1).convert(new Converter<TBPatientTypesDTO, TBPatientType>() {
+                @Override
+                public TBPatientType convert(TBPatientTypesDTO tbPatientTypesDTO) {
+                    TBPatientType tbPatientType = new TBPatientType();
+                    tbPatientType.setPatientTypeName(tbPatientTypesDTO.getPatientTypeName());
+                    tbPatientType.setIsActive(tbPatientTypesDTO.isActive());
+                    return tbPatientType;
+                }
+            });
+
+            for (TBPatientType tbPatientType : tbPatientTypes) {
+                tbPatientTypeRepository.save(tbPatientType);
+            }
+
+            logger.debug(format("Saved TB Patient types to queue.\nSubmissions: {0}", tbPatientTypesDTOS));
+        } catch (Exception e) {
+            logger.error(format("TB Patient Types processing failed with exception {0}.\nSubmissions: {1}", e, tbPatientTypesDTOS));
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(CREATED);
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/tb-patient-types")
