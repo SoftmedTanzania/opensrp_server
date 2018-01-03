@@ -38,10 +38,15 @@ public class PatientReferralRepository {
 				PatientReferral.COL_SERVICE_PROVIDER_UIID + "," +
 				PatientReferral.COL_SERVICE_PROVIDER_GROUP + "," +
 				PatientReferral.COL_VILLAGE_LEADER + "," +
+				PatientReferral.COL_FROM_FACILITY_ID + "," +
+				PatientReferral.COL_OTHER_CLINICAL_INFORMATION + "," +
+				PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT + "," +
+				PatientReferral.COL_OTHER_NOTES + "," +
+				PatientReferral.COL_REFERRAL_SOURCE + "," +
 				PatientReferral.COL_REFERRAL_DATE + "," +
 				PatientReferral.COL_REFERRAL_STATUS + "," +
 				PatientReferral.COL_UPDATED_AT + "," +
-				PatientReferral.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				PatientReferral.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				healthFacilities.getReferral_id(),
@@ -59,6 +64,11 @@ public class PatientReferralRepository {
 		        healthFacilities.getServiceProviderUIID(),
 		        healthFacilities.getServiceProviderGroup(),
 		        healthFacilities.getVillageLeader(),
+		        healthFacilities.getFromFacilityId(),
+		        healthFacilities.getOtherClinicalInformation(),
+		        healthFacilities.getServiceGivenToPatient(),
+		        healthFacilities.getOtherNotes(),
+		        healthFacilities.getReferralSource(),
 		        healthFacilities.getReferralDate(),
 		        healthFacilities.getReferralStatus(),
 		        healthFacilities.getUpdatedAt(),
@@ -80,6 +90,11 @@ public class PatientReferralRepository {
 				Types.VARCHAR,
 				Types.VARCHAR,
 				Types.VARCHAR,
+				Types.INTEGER,
+				Types.VARCHAR,
+				Types.VARCHAR,
+				Types.VARCHAR,
+				Types.INTEGER,
 				Types.DATE,
 				Types.INTEGER,
 				Types.DATE,
@@ -114,7 +129,6 @@ public class PatientReferralRepository {
 	public class HealthFacilityRefferalRowMapper implements RowMapper<PatientReferral> {
 		public PatientReferral mapRow(ResultSet rs, int rowNum) throws SQLException {
 			PatientReferral patientReferral = new PatientReferral();
-
 			patientReferral.setId(rs.getLong(rs.findColumn("_id")));
 			patientReferral.setReferral_id(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_ID)));
 			patientReferral.setPatient_id(rs.getLong(rs.findColumn(PatientReferral.COL_PATIENT_ID)));

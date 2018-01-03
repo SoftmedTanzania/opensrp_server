@@ -39,6 +39,16 @@ public class PatientReferral {
 
 	public static final String COL_SERVICE_PROVIDER_GROUP= "service_provider_group";
 
+	public static final String COL_FROM_FACILITY_ID= "from_facility_id";
+
+	public static final String COL_OTHER_CLINICAL_INFORMATION= "other_clinical_information";
+
+	public static final String COL_SERVICES_GIVEN_TO_PATIENT= "services_given_to_patient";
+
+	public static final String COL_OTHER_NOTES= "other_notes";
+
+	public static final String COL_REFERRAL_SOURCE= "referral_source";
+
 	public static final String COL_VILLAGE_LEADER= "village_leader";
 
 	public static final String COL_REFERRAL_STATUS= "referral_status";
@@ -98,6 +108,27 @@ public class PatientReferral {
 
 	@Column(name = COL_VILLAGE_LEADER)
 	private String villageLeader;
+
+	@Column(name = COL_OTHER_CLINICAL_INFORMATION)
+	private String otherClinicalInformation;
+
+	@Column(name = COL_OTHER_NOTES)
+	private String otherNotes;
+
+	@Column(name = COL_SERVICES_GIVEN_TO_PATIENT)
+	private String serviceGivenToPatient;
+
+
+	@Column(name = COL_FROM_FACILITY_ID)
+	private int fromFacilityId;
+
+
+	/*
+	 *  0 = chw
+	 * 1 = facility
+	 */
+	@Column(name = COL_REFERRAL_SOURCE)
+	private int referralSource;
 
 	@Column(name = COL_REFERRAL_DATE)
 	private Date referralDate;
@@ -272,6 +303,46 @@ public class PatientReferral {
 
 	public void setReferralStatus(int referralStatus) {
 		this.referralStatus = referralStatus;
+	}
+
+	public String getOtherClinicalInformation() {
+		return otherClinicalInformation;
+	}
+
+	public void setOtherClinicalInformation(String otherClinicalInformation) {
+		this.otherClinicalInformation = otherClinicalInformation;
+	}
+
+	public String getOtherNotes() {
+		return otherNotes;
+	}
+
+	public void setOtherNotes(String otherNotes) {
+		this.otherNotes = otherNotes;
+	}
+
+	public String getServiceGivenToPatient() {
+		return serviceGivenToPatient;
+	}
+
+	public void setServiceGivenToPatient(String serviceGivenToPatient) {
+		this.serviceGivenToPatient = serviceGivenToPatient;
+	}
+
+	public int getReferralSource() {
+		return referralSource;
+	}
+
+	public void setReferralSource(int referralSource) {
+		this.referralSource = referralSource;
+	}
+
+	public int getFromFacilityId() {
+		return fromFacilityId;
+	}
+
+	public void setFromFacilityId(int fromFacilityId) {
+		this.fromFacilityId = fromFacilityId;
 	}
 
 	public Date getCreatedAt() {

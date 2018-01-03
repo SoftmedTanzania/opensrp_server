@@ -63,7 +63,7 @@ public class PatientsRepository {
 	}
 
 
-	public List<Patients> getPatientReferrals(String sql, Object[] args) throws Exception {
+	public List<Patients> getPatients(String sql, Object[] args) throws Exception {
 		return this.jdbcTemplate.query(sql, args, new referralPatientsRowMapper());
 	}
 

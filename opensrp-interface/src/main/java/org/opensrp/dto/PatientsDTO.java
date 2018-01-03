@@ -41,6 +41,10 @@ public class PatientsDTO {
     @JsonProperty
     private Date dateOfDeath;
 
+    @JsonProperty
+    private boolean hivStatus;
+
+
     public PatientsDTO() {
     }
 
@@ -143,6 +147,14 @@ public class PatientsDTO {
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
+    }
+
+    public boolean isHivStatus() {
+        return hivStatus;
+    }
+
+    public void setHivStatus(boolean hivStatus) {
+        this.hivStatus = hivStatus;
     }
 
     @Override

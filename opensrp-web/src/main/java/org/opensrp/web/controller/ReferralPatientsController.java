@@ -3,13 +3,9 @@ package org.opensrp.web.controller;
 import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.json.JSONException;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
-import org.opensrp.dto.form.FormSubmissionDTO;
-import org.opensrp.form.domain.FormSubmission;
-import org.opensrp.form.service.FormSubmissionConverter;
 import org.opensrp.repository.*;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
@@ -23,10 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -130,24 +124,42 @@ public class ReferralPatientsController {
 
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_patients")
-	public ResponseEntity<HttpStatus> saveTBPatients(@RequestBody TBPatientsDTO tbPatientsDTO) {
+	@ResponseBody
+	public TBPatientsDTO2 saveTBPatients(@RequestBody TBPatientsDTO tbPatientsDTO) {
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbPatientsDTO));
 
-			Patients patient = PatientsConverter.toPatients(tbPatientsDTO);
+			Patients convertedPatient = PatientsConverter.toPatients(tbPatientsDTO);
 			TBPatient tbPatient = PatientsConverter.toTBPatients(tbPatientsDTO);
-			long healthfacilityPatientId = savePatient(patient,tbPatientsDTO.getHealthFacilityCode(),null);
+			long healthfacilityPatientId = savePatient(convertedPatient,tbPatientsDTO.getHealthFacilityCode(),null);
 			tbPatient.setHealthFacilityPatientId(healthfacilityPatientId);
-
 			createAppointments(healthfacilityPatientId);
 
 
-			logger.debug(format("Added  Patients and their appointments from CTC to queue.\nSubmissions: {0}", tbPatientsDTO));
+			List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+ "=?",
+					new Object[] {healthfacilityPatientId});
+
+			HealthFacilitiesPatients healthFacilitiesPatient = healthFacilitiesPatients.get(0);
+			List<Patients> patients = patientsRepository.getPatients("SELECT * FROM "+ org.opensrp.domain.Patients.tbName+" WHERE "+ org.opensrp.domain.Patients.COL_PATIENT_ID+ "=?",
+					new Object[] {healthFacilitiesPatient.getPatient_id()});
+			Patients patient = patients.get(0);
+
+			List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID+ "=?",
+					new Object[] {healthfacilityPatientId});
+
+			TBPatientsDTO2 tbPatientsDTO2 = new TBPatientsDTO2();
+			tbPatientsDTO2.setPatientId(healthfacilityPatientId);
+			tbPatientsDTO2.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
+			tbPatientsDTO2.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
+
+
+			return tbPatientsDTO2;
 		} catch (Exception e) {
-			logger.error(format("CTC Patients processing failed with exception {0}.\nSubmissions: {1}", e, tbPatientsDTO));
-			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+			logger.error(format("TB Patients processing failed with exception {0}.\nSubmissions: {1}", e, tbPatientsDTO));
+
 		}
-		return new ResponseEntity<>(CREATED);
+		return null;
 	}
 
 
@@ -213,7 +225,7 @@ public class ReferralPatientsController {
 				patient.getPhoneNumber()};
 		List<Patients> patientsResults = null;
 		try {
-			patientsResults = patientsRepository.getPatientReferrals(query,params);
+			patientsResults = patientsRepository.getPatients(query,params);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

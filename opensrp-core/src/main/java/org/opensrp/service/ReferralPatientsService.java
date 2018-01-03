@@ -1,6 +1,5 @@
 package org.opensrp.service;
 
-import com.google.gson.Gson;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.opensrp.domain.PatientReferral;
@@ -64,7 +63,7 @@ public class ReferralPatientsService {
         List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
         String getPatientsSQL = "SELECT * from " + Patients.tbName;
         try {
-            List<Patients> patientsRepositoryList = patientsRepository.getPatientReferrals(getPatientsSQL,null);
+            List<Patients> patientsRepositoryList = patientsRepository.getPatients(getPatientsSQL,null);
             for(Patients patient : patientsRepositoryList){
                 PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
                 patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));

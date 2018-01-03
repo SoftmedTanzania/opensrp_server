@@ -70,7 +70,7 @@ public class PatientsAppointmentsRepository {
 
 
 
-	public List<PatientAppointments> getReferrals(String sql, String[] args) throws Exception {
+	public List<PatientAppointments> getAppointments(String sql, Object[] args) throws Exception {
 		return this.jdbcTemplate.query(sql,args, new PatientsAppointmentsRowMapper());
 	}
 

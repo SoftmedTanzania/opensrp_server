@@ -21,7 +21,6 @@ import org.opensrp.connector.openmrs.service.EncounterService;
 import org.opensrp.connector.openmrs.service.HouseholdService;
 import org.opensrp.connector.openmrs.service.PatientService;
 import org.opensrp.domain.*;
-import org.opensrp.dto.PatientsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.dto.form.MultimediaDTO;
 import org.opensrp.form.domain.FormSubmission;
@@ -220,7 +219,7 @@ public class FormSubmissionController {
                     patients.getMiddleName(),
                     patients.getSurname(),
                     patients.getPhoneNumber()};
-            List<Patients> patientsResults = patientsRepository.getPatientReferrals(query,params);
+            List<Patients> patientsResults = patientsRepository.getPatients(query,params);
             System.out.println("Coze = number of patients found = "+patientsResults.size());
             Long id;
             if(patientsResults.size()>0){

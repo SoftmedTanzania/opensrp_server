@@ -168,6 +168,7 @@ public class PatientsConverter {
             patientsDTO.setVillage(patients.getVillage());
             patientsDTO.setHamlet(patients.getHamlet());
             patientsDTO.setDateOfDeath(patients.getDateOfDeath());
+            patientsDTO.setHivStatus(patients.isHivStatus());
 
 
             return patientsDTO;
@@ -297,6 +298,43 @@ public class PatientsConverter {
         }
     }
 
+
+	public static List<PatientsAppointmentsDTO> toPatientAppointmentDTOsList(List<PatientAppointments> patientAppointments) {
+		try {
+
+			List<PatientsAppointmentsDTO> patientsAppointmentsDTOS = new ArrayList<>();
+			for(PatientAppointments appointments:patientAppointments){
+				patientsAppointmentsDTOS.add(toPatientAppointmentsDTO(appointments));
+			}
+
+			return patientsAppointmentsDTOS;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(MessageFormat.format("Converting  List<PatientsAppointmentsDTO> :{0}, failed with error: {1}.", patientAppointments, e));
+			throw e;
+		}
+	}
+
+	public static PatientsAppointmentsDTO toPatientAppointmentsDTO(PatientAppointments patientAppointments) {
+		try {
+			PatientsAppointmentsDTO patientsAppointmentsDTO = new PatientsAppointmentsDTO();
+
+			patientsAppointmentsDTO.setAppointment_id(patientAppointments.getAppointment_id());
+			patientsAppointmentsDTO.setAppointmentDate(patientAppointments.getAppointmentDate());
+			patientsAppointmentsDTO.setCancelled(patientAppointments.getIsCancelled());
+			patientsAppointmentsDTO.setCreatedAt(patientAppointments.getCreatedAt());
+			patientsAppointmentsDTO.setRowVersion(patientAppointments.getRowVersion());
+			patientsAppointmentsDTO.setHealthFacilityPatientId(patientAppointments.getHealthFacilityPatientId());
+			patientsAppointmentsDTO.setStatus(patientAppointments.getStatus());
+			patientsAppointmentsDTO.setUpdatedAt(patientAppointments.getUpdatedAt());
+
+			return patientsAppointmentsDTO;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(MessageFormat.format("Converting PatientsAppointmentsDTO :{0}, failed with error: {1}.", patientAppointments, e));
+			throw e;
+		}
+	}
 
 
 }
