@@ -234,6 +234,12 @@ public class PatientsConverter {
             referral.setReferralDate(referralsDTO.getReferralDate());
             referral.setFacilityId(referralsDTO.getFacilityId());
 
+            referral.setReferralSource(referralsDTO.getReferralSource());
+            referral.setServiceGivenToPatient(referralsDTO.getServiceGivenToPatient());
+            referral.setFromFacilityId(referralsDTO.getFromFacilityId());
+            referral.setOtherClinicalInformation(referralsDTO.getOtherClinicalInformation());
+            referral.setOtherNotes(referralsDTO.getOtherNotes());
+
             referral.setCreatedAt(Calendar.getInstance().getTime());
             referral.setUpdatedAt(Calendar.getInstance().getTime());
 

@@ -4,7 +4,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.util.Date;
 
 public class ReferralsDTO {
@@ -14,6 +13,9 @@ public class ReferralsDTO {
 
     @JsonProperty
     private Long patientId;
+
+    @JsonProperty
+    private String referral_id;
 
     @JsonProperty
     private String communityBasedHivService;
@@ -50,6 +52,22 @@ public class ReferralsDTO {
 
     @JsonProperty
     private String villageLeader;
+
+    @JsonProperty
+    private String otherClinicalInformation;
+
+    @JsonProperty
+    private String otherNotes;
+
+    @JsonProperty
+    private String serviceGivenToPatient;
+
+
+    @JsonProperty
+    private int fromFacilityId;
+
+    @JsonProperty
+    private int referralSource;
 
     @JsonProperty
     private Date referralDate;
@@ -223,6 +241,54 @@ public class ReferralsDTO {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getReferral_id() {
+        return referral_id;
+    }
+
+    public void setReferral_id(String referral_id) {
+        this.referral_id = referral_id;
+    }
+
+    public String getOtherClinicalInformation() {
+        return otherClinicalInformation;
+    }
+
+    public void setOtherClinicalInformation(String otherClinicalInformation) {
+        this.otherClinicalInformation = otherClinicalInformation;
+    }
+
+    public String getOtherNotes() {
+        return otherNotes;
+    }
+
+    public void setOtherNotes(String otherNotes) {
+        this.otherNotes = otherNotes;
+    }
+
+    public String getServiceGivenToPatient() {
+        return serviceGivenToPatient;
+    }
+
+    public void setServiceGivenToPatient(String serviceGivenToPatient) {
+        this.serviceGivenToPatient = serviceGivenToPatient;
+    }
+
+    public int getFromFacilityId() {
+        return fromFacilityId;
+    }
+
+    public void setFromFacilityId(int fromFacilityId) {
+        this.fromFacilityId = fromFacilityId;
+    }
+
+    public int getReferralSource() {
+        return referralSource;
+    }
+
+    public void setReferralSource(int referralSource) {
+        this.referralSource = referralSource;
     }
 
     @Override

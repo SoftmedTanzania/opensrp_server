@@ -40,11 +40,13 @@ public class ReferralPatientsController {
     private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
     private TBEncounterRepository tbEncounterRepository;
     private PatientsAppointmentsRepository patientsAppointmentsRepository;
+    private PatientReferralRepository patientReferralRepository;
 	private TaskSchedulerService scheduler;
 
     @Autowired
     public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
-                                      HealthFacilityRepository healthFacilityRepository,HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository,PatientsAppointmentsRepository patientsAppointmentsRepository,TBEncounterRepository tbEncounterRepository) {
+                                      HealthFacilityRepository healthFacilityRepository,HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository,PatientsAppointmentsRepository patientsAppointmentsRepository,
+                                      TBEncounterRepository tbEncounterRepository,PatientReferralRepository patientReferralRepository) {
         this.patientsService = patientsService;
         this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
@@ -52,6 +54,7 @@ public class ReferralPatientsController {
 		this.healthFacilitiesPatientsRepository = healthFacilitiesPatientsRepository;
 		this.patientsAppointmentsRepository = patientsAppointmentsRepository;
 	    this.tbEncounterRepository = tbEncounterRepository;
+	    this.patientReferralRepository = patientReferralRepository;
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_patients")
@@ -299,6 +302,24 @@ public class ReferralPatientsController {
 
 		return healthfacilityPatientId;
 	}
+
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_facility_referral")
+	public ResponseEntity<HttpStatus> saveFaciltyReferral(@RequestBody ReferralsDTO referralsDTO) {
+		try {
+			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
+
+			PatientReferral patientReferral = PatientsConverter.toPatientReferral(referralsDTO);
+			patientReferralRepository.save(patientReferral);
+
+			logger.debug(format("Added  ReferralsDTO Submissions: {0}", referralsDTO));
+		} catch (Exception e) {
+			logger.error(format("ReferralsDTO processing failed with exception {0}.\nSubmissions: {1}", e, referralsDTO));
+			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(CREATED);
+	}
+
 
 	private void createAppointments(long healthfacilityPatientId){
 		for (int i=1;i<=8;i++) {
