@@ -44,16 +44,16 @@ public class TBPatient implements Serializable {
 
 	public static final String COL_UPDATED_AT = "updated_at";
 
-
+	@Id
 	@GeneratedValue
 	@Column(name = COL_TB_PATIENT_ID)
 	private Long tbPatientId;
 
 	private Long healthFacilityPatientId;
 
-	@Id
-	@ManyToOne
-	@JoinColumn(name=COL_HEALTH_FACILITY_PATIENT_ID)
+	//TODO recheck this implementation for reoccuring tb cases
+	@OneToOne
+	@JoinColumn(name=COL_HEALTH_FACILITY_PATIENT_ID,unique=true)
 	private HealthFacilitiesPatients healthFacilitiesPatients;
 
 	@Column(name = COL_PATIENT_TYPE)

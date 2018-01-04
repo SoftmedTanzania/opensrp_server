@@ -42,23 +42,10 @@ public class PatientsDTO {
     private Date dateOfDeath;
 
     @JsonProperty
-    private boolean hivStatus;
+    private boolean hivStatus = false;
 
 
     public PatientsDTO() {
-    }
-
-    public PatientsDTO(Long patientId, String firstName, String phoneNumber, String ward, String village, String hamlet, Date dateOfBirth, String surname, String gender, Date dateOfDeath) {
-        this.patientId = patientId;
-        this.firstName = firstName;
-        this.phoneNumber = phoneNumber;
-        this.ward = ward;
-        this.village = village;
-        this.hamlet = hamlet;
-        this.dateOfBirth = dateOfBirth;
-        this.surname = surname;
-        this.gender = gender;
-        this.dateOfDeath = dateOfDeath;
     }
 
     public Long getPatientId() {

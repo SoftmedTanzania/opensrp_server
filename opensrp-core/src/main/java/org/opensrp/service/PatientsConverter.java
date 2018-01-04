@@ -30,6 +30,7 @@ public class PatientsConverter {
             patients.setVillage(patientsDTO.getVillage());
             patients.setHamlet(patientsDTO.getHamlet());
             patients.setDateOfDeath(patientsDTO.getDateOfDeath());
+            patients.setHivStatus(patientsDTO.isHivStatus());
             patients.setCreatedAt(Calendar.getInstance().getTime());
             patients.setUpdatedAt(Calendar.getInstance().getTime());
 
@@ -59,6 +60,7 @@ public class PatientsConverter {
             patients.setDateOfDeath(deathDate);
             patients.setCreatedAt(Calendar.getInstance().getTime());
             patients.setUpdatedAt(Calendar.getInstance().getTime());
+            patients.setHivStatus(patientsDTO.isHivStatus());
 
             return patients;
         } catch (Exception e) {
@@ -68,7 +70,7 @@ public class PatientsConverter {
     }
 
 
-    public static Patients toPatients(TBPatientsDTO patientsDTO) {
+    public static Patients toPatients(TBPatientMobileClientDTO patientsDTO) {
         try {
             Patients patients = new Patients();
 
@@ -91,12 +93,12 @@ public class PatientsConverter {
 
             return patients;
         } catch (Exception e) {
-            logger.error(MessageFormat.format("Converting TBPatientsDTO :{0}, failed with error: {1}.", patientsDTO, e));
+            logger.error(MessageFormat.format("Converting TBPatientMobileClientDTO :{0}, failed with error: {1}.", patientsDTO, e));
             throw e;
         }
     }
 
-    public static TBPatient toTBPatients(TBPatientsDTO patientsDTO) {
+    public static TBPatient toTBPatients(TBPatientMobileClientDTO patientsDTO) {
         try {
             TBPatient tbPatient = new TBPatient();
             tbPatient.setOutcomeDetails(patientsDTO.getOutcomeDetails());
@@ -116,7 +118,7 @@ public class PatientsConverter {
 
             return tbPatient;
         } catch (Exception e) {
-            logger.error(MessageFormat.format("Converting TBPatientsDTO :{0}, failed with error: {1}.", patientsDTO, e));
+            logger.error(MessageFormat.format("Converting TBPatientMobileClientDTO :{0}, failed with error: {1}.", patientsDTO, e));
             throw e;
         }
     }
@@ -170,10 +172,36 @@ public class PatientsConverter {
             patientsDTO.setDateOfDeath(patients.getDateOfDeath());
             patientsDTO.setHivStatus(patients.isHivStatus());
 
-
             return patientsDTO;
         } catch (Exception e) {
             logger.error(MessageFormat.format("Converting Patient :{0}, failed with error: {1}.", patients, e));
+            throw e;
+        }
+    }
+
+    public static TBPatientDTO toTbPatientDTO(TBPatient patient) {
+        try {
+            TBPatientDTO tbPatientDTO = new TBPatientDTO();
+
+            tbPatientDTO.setHealthFacilityPatientId(patient.getHealthFacilityPatientId());
+            tbPatientDTO.setMakohozi(patient.getMakohozi());
+            tbPatientDTO.setOtherTests(patient.getOtherTests());
+            tbPatientDTO.setOutcome(patient.getOutcome());
+            tbPatientDTO.setOutcomeDate(patient.getOutcomeDate());
+            tbPatientDTO.setOutcomeDetails(patient.getOutcomeDetails());
+            tbPatientDTO.setPatientType(patient.getPatientType());
+            tbPatientDTO.setPregnant(patient.isPregnant());
+            tbPatientDTO.setReferralType(patient.getReferralType());
+            tbPatientDTO.setTbPatientId(patient.getTbPatientId());
+            tbPatientDTO.setTransferType(patient.getTransferType());
+            tbPatientDTO.setTreatment_type(patient.getTreatment_type());
+            tbPatientDTO.setVeo(patient.getVeo());
+            tbPatientDTO.setWeight(patient.getWeight());
+            tbPatientDTO.setXray(patient.getXray());
+
+            return tbPatientDTO;
+        } catch (Exception e) {
+            logger.error(MessageFormat.format("Converting TBPatientDTO :{0}, failed with error: {1}.", patient, e));
             throw e;
         }
     }

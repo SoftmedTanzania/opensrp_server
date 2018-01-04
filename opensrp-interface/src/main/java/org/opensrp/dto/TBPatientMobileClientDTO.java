@@ -7,7 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.Date;
 
-public class TBPatientsDTO {
+public class TBPatientMobileClientDTO {
     @JsonProperty
     private Long id;
 

@@ -35,6 +35,12 @@ public class CTCPatientsDTO {
 
 
 	@JsonProperty
+	private boolean hivStatus;
+
+
+
+
+	@JsonProperty
 	private String healthFacilityCode;
 
 	@JsonProperty
@@ -110,6 +116,14 @@ public class CTCPatientsDTO {
 
 	public void setAppointments(CTCPatientsAppointmesDTO[] appointments) {
 		this.appointments = appointments;
+	}
+
+	public boolean isHivStatus() {
+		return hivStatus;
+	}
+
+	public void setHivStatus(boolean hivStatus) {
+		this.hivStatus = hivStatus;
 	}
 
 	@Override

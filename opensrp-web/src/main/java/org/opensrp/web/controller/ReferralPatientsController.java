@@ -33,133 +33,136 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
 public class ReferralPatientsController {
-    private static Logger logger = LoggerFactory.getLogger(ReferralPatientsController.class.toString());
-    private ReferralPatientsService patientsService;
-    private PatientsRepository patientsRepository;
-    private HealthFacilityRepository healthFacilityRepository;
-    private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
-    private TBEncounterRepository tbEncounterRepository;
-    private PatientsAppointmentsRepository patientsAppointmentsRepository;
-    private PatientReferralRepository patientReferralRepository;
+	private static Logger logger = LoggerFactory.getLogger(ReferralPatientsController.class.toString());
+	private ReferralPatientsService patientsService;
+	private PatientsRepository patientsRepository;
+	private HealthFacilityRepository healthFacilityRepository;
+	private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
+	private TBEncounterRepository tbEncounterRepository;
+	private PatientsAppointmentsRepository patientsAppointmentsRepository;
+	private PatientReferralRepository patientReferralRepository;
+	private TBPatientsRepository tbPatientsRepository;
 	private TaskSchedulerService scheduler;
 
-    @Autowired
-    public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
-                                      HealthFacilityRepository healthFacilityRepository,HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository,PatientsAppointmentsRepository patientsAppointmentsRepository,
-                                      TBEncounterRepository tbEncounterRepository,PatientReferralRepository patientReferralRepository) {
-        this.patientsService = patientsService;
-        this.patientsRepository = patientsRepository;
+	@Autowired
+	public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
+	                                  HealthFacilityRepository healthFacilityRepository, HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository, PatientsAppointmentsRepository patientsAppointmentsRepository,
+	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository) {
+		this.patientsService = patientsService;
+		this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
 		this.healthFacilityRepository = healthFacilityRepository;
 		this.healthFacilitiesPatientsRepository = healthFacilitiesPatientsRepository;
 		this.patientsAppointmentsRepository = patientsAppointmentsRepository;
-	    this.tbEncounterRepository = tbEncounterRepository;
-	    this.patientReferralRepository = patientReferralRepository;
-    }
+		this.tbEncounterRepository = tbEncounterRepository;
+		this.patientReferralRepository = patientReferralRepository;
+		this.tbPatientsRepository = tbPatientsRepository;
+	}
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_patients")
-    public ResponseEntity<HttpStatus> savePatient(@RequestBody List<PatientsDTO> patientsDTOS) {
-        try {
-            if (patientsDTOS.isEmpty()) {
-                return new ResponseEntity<>(BAD_REQUEST);
-            }
-            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
-            String json = new Gson().toJson(patientsDTOS);
-            List<PatientsDTO> healthFacilitiesDTOs = new Gson().fromJson(json, new TypeToken<List<PatientsDTO>>() {}.getType());
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_patients")
+	public ResponseEntity<HttpStatus> savePatient(@RequestBody List<PatientsDTO> patientsDTOS) {
+		try {
+			if (patientsDTOS.isEmpty()) {
+				return new ResponseEntity<>(BAD_REQUEST);
+			}
+			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
+			String json = new Gson().toJson(patientsDTOS);
+			List<PatientsDTO> healthFacilitiesDTOs = new Gson().fromJson(json, new TypeToken<List<PatientsDTO>>() {
+			}.getType());
 
-            try{
-				List<Patients>patients = with(healthFacilitiesDTOs).convert(new Converter<PatientsDTO, Patients>() {
+			try {
+				List<Patients> patients = with(healthFacilitiesDTOs).convert(new Converter<PatientsDTO, Patients>() {
 					@Override
 					public Patients convert(PatientsDTO submission) {
 						return PatientsConverter.toPatients(submission);
 					}
 				});
 
-				for(Patients ctcPatients:patients){
+				for (Patients ctcPatients : patients) {
 					patientsService.storeCTCPatients(ctcPatients);
 				}
-            }
-            catch(Exception e){
-            	e.printStackTrace();
-            }
-            logger.debug(format("Added  Patient to queue.\nSubmissions: {0}", patientsDTOS));
-        } catch (Exception e) {
-            logger.error(format("Patients processing failed with exception {0}.\nSubmissions: {1}", e, patientsDTOS));
-            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(CREATED);
-    }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			logger.debug(format("Added  Patient to queue.\nSubmissions: {0}", patientsDTOS));
+		} catch (Exception e) {
+			logger.error(format("Patients processing failed with exception {0}.\nSubmissions: {1}", e, patientsDTOS));
+			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(CREATED);
+	}
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_ctc_patients")
+	public ResponseEntity<HttpStatus> saveCtcPatients(@RequestBody List<CTCPatientsDTO> ctcPatientsDTOS) {
+		try {
+			if (ctcPatientsDTOS.isEmpty()) {
+				return new ResponseEntity<>(BAD_REQUEST);
+			}
+			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, ctcPatientsDTOS));
+			String json = new Gson().toJson(ctcPatientsDTOS);
+			List<CTCPatientsDTO> patientsDTOS = new Gson().fromJson(json, new TypeToken<List<CTCPatientsDTO>>() {
+			}.getType());
+
+			for (CTCPatientsDTO dto : patientsDTOS) {
+				Patients patient = PatientsConverter.toPatients(dto);
+
+				long healthfacilityPatientId = savePatient(patient, dto.getHealthFacilityCode(), dto.getCtc_number());
+				List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
+
+				for (PatientAppointments patientAppointment : appointments) {
+					patientAppointment.setStatus("CTC");
+					patientAppointment.setHealthFacilityPatientId(healthfacilityPatientId);
+					patientsAppointmentsRepository.save(patientAppointment);
+				}
+			}
 
 
-
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_ctc_patients")
-    public ResponseEntity<HttpStatus> saveCtcPatients(@RequestBody List<CTCPatientsDTO> ctcPatientsDTOS) {
-        try {
-            if (ctcPatientsDTOS.isEmpty()) {
-                return new ResponseEntity<>(BAD_REQUEST);
-            }
-            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, ctcPatientsDTOS));
-            String json = new Gson().toJson(ctcPatientsDTOS);
-            List<CTCPatientsDTO> patientsDTOS = new Gson().fromJson(json, new TypeToken<List<CTCPatientsDTO>>() {}.getType());
-
-            for(CTCPatientsDTO dto: patientsDTOS){
-	            Patients patient = PatientsConverter.toPatients(dto);
-
-	            long healthfacilityPatientId = savePatient(patient,dto.getHealthFacilityCode(),dto.getCtc_number());
-	            List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
-
-	            for(PatientAppointments patientAppointment:appointments){
-	            	patientAppointment.setStatus("CTC");
-	            	patientAppointment.setHealthFacilityPatientId(healthfacilityPatientId);
-		            patientsAppointmentsRepository.save(patientAppointment);
-	            }
-            }
-
-
-
-            logger.debug(format("Added  Patients and their appointments from CTC to queue.\nSubmissions: {0}", ctcPatientsDTOS));
-        } catch (Exception e) {
-            logger.error(format("CTC Patients processing failed with exception {0}.\nSubmissions: {1}", e, ctcPatientsDTOS));
-            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(CREATED);
-    }
+			logger.debug(format("Added  Patients and their appointments from CTC to queue.\nSubmissions: {0}", ctcPatientsDTOS));
+		} catch (Exception e) {
+			logger.error(format("CTC Patients processing failed with exception {0}.\nSubmissions: {1}", e, ctcPatientsDTOS));
+			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(CREATED);
+	}
 
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_patients")
 	@ResponseBody
-	public TBPatientsDTO2 saveTBPatients(@RequestBody TBPatientsDTO tbPatientsDTO) {
+	public TBCompletePatientDataDTO saveTBPatients(@RequestBody TBPatientMobileClientDTO tbPatientMobileClientDTO) {
 		try {
-			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbPatientsDTO));
+			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbPatientMobileClientDTO));
 
-			Patients convertedPatient = PatientsConverter.toPatients(tbPatientsDTO);
-			TBPatient tbPatient = PatientsConverter.toTBPatients(tbPatientsDTO);
-			long healthfacilityPatientId = savePatient(convertedPatient,tbPatientsDTO.getHealthFacilityCode(),null);
+			Patients convertedPatient = PatientsConverter.toPatients(tbPatientMobileClientDTO);
+			TBPatient tbPatient = PatientsConverter.toTBPatients(tbPatientMobileClientDTO);
+			long healthfacilityPatientId = savePatient(convertedPatient, tbPatientMobileClientDTO.getHealthFacilityCode(), null);
 			tbPatient.setHealthFacilityPatientId(healthfacilityPatientId);
+			tbPatientsRepository.save(tbPatient);
 			createAppointments(healthfacilityPatientId);
 
 
-			List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+ "=?",
-					new Object[] {healthfacilityPatientId});
+			TBCompletePatientDataDTO tbCompletePatientDataDTO = new TBCompletePatientDataDTO();
+			List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM " + HealthFacilitiesPatients.tbName + " WHERE " + HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
+					new Object[]{healthfacilityPatientId});
 
 			HealthFacilitiesPatients healthFacilitiesPatient = healthFacilitiesPatients.get(0);
-			List<Patients> patients = patientsRepository.getPatients("SELECT * FROM "+ org.opensrp.domain.Patients.tbName+" WHERE "+ org.opensrp.domain.Patients.COL_PATIENT_ID+ "=?",
-					new Object[] {healthFacilitiesPatient.getPatient_id()});
-			Patients patient = patients.get(0);
+			List<Patients> patients = patientsRepository.getPatients("SELECT * FROM " + org.opensrp.domain.Patients.tbName + " WHERE " + org.opensrp.domain.Patients.COL_PATIENT_ID + "=?",
+					new Object[]{healthFacilitiesPatient.getPatient_id()});
 
-			List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID+ "=?",
-					new Object[] {healthfacilityPatientId});
+			tbCompletePatientDataDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients.get(0)));
 
-			TBPatientsDTO2 tbPatientsDTO2 = new TBPatientsDTO2();
-			tbPatientsDTO2.setPatientId(healthfacilityPatientId);
-			tbPatientsDTO2.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
-			tbPatientsDTO2.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
+			List<TBPatient> tbPatients = tbPatientsRepository.getTBPatients("SELECT * FROM " + org.opensrp.domain.TBPatient.tbName + " WHERE " + TBPatient.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
+					new Object[]{healthFacilitiesPatient.getPatient_id()});
+			tbCompletePatientDataDTO.setTbPatientDTO(PatientsConverter.toTbPatientDTO(tbPatients.get(0)));
+
+			List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
+					new Object[]{healthfacilityPatientId});
+			tbCompletePatientDataDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
 
 
-			return tbPatientsDTO2;
+			return tbCompletePatientDataDTO;
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error(format("TB Patients processing failed with exception {0}.\nSubmissions: {1}", e, tbPatientsDTO));
+			logger.error(format("TB Patients processing failed with exception {0}.\nSubmissions: {1}", e, tbPatientMobileClientDTO));
 
 		}
 		return null;
@@ -170,20 +173,20 @@ public class ReferralPatientsController {
 	public ResponseEntity<HttpStatus> saveTBEncounter(@RequestBody TBEncounterDTO tbEncounterDTOS) {
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbEncounterDTOS));
-			TBEncounter  encounter = PatientsConverter.toTBEncounter(tbEncounterDTOS);
+			TBEncounter encounter = PatientsConverter.toTBEncounter(tbEncounterDTOS);
 
 
 			String encounterQuery = "SELECT * FROM " + TBEncounter.tbName + " WHERE " +
-					TBEncounter.COL_TB_PATIENT_ID  +  " = ?    AND " +
-					TBEncounter.COL_APPOINTMENT_ID +  " = ?  " ;
+					TBEncounter.COL_TB_PATIENT_ID + " = ?    AND " +
+					TBEncounter.COL_APPOINTMENT_ID + " = ?  ";
 
-			Object[] tbEncountersParams = new Object[] {
+			Object[] tbEncountersParams = new Object[]{
 					encounter.getTbPatientId(),
 					encounter.getAppointmentId()};
 
 			List<TBEncounter> tbEncounters = null;
 			try {
-				tbEncounters = tbEncounterRepository.getTBEncounters(encounterQuery,tbEncountersParams);
+				tbEncounters = tbEncounterRepository.getTBEncounters(encounterQuery, tbEncountersParams);
 				TBEncounter tbEncounter = tbEncounters.get(0);
 				tbEncounter.setUpdatedAt(Calendar.getInstance().getTime());
 				tbEncounter.setMakohozi(encounter.getMakohozi());
@@ -198,8 +201,6 @@ public class ReferralPatientsController {
 			}
 
 
-
-
 			logger.debug(format("Added  TB Encounters Submissions: {0}", tbEncounterDTOS));
 		} catch (Exception e) {
 			logger.error(format("TB Encounters processing failed with exception {0}.\nSubmissions: {1}", e, tbEncounterDTOS));
@@ -208,104 +209,15 @@ public class ReferralPatientsController {
 		return new ResponseEntity<>(CREATED);
 	}
 
-    @RequestMapping(method = GET, value="/all-patients-referrals")
+	@RequestMapping(method = GET, value = "/all-patients-referrals")
 	@ResponseBody
 	private List<PatientReferralsDTO> getAllPatientsReferrals() {
 		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getAllPatientReferrals();
 		return patientReferralsDTOS;
 	}
 
-	private long savePatient(Patients patient, String healthFacilityCode, String ctcNumber){
-		String query = "SELECT * FROM " + Patients.tbName + " WHERE " +
-				Patients.COL_PATIENT_FIRST_NAME + " = ?     AND " +
-				Patients.COL_PATIENT_MIDDLE_NAME + " = ?    AND " +
-				Patients.COL_PATIENT_SURNAME + " = ?        AND " +
-				Patients.COL_PHONE_NUMBER + " = ?" ;
-		Object[] params = new Object[] {
-				patient.getFirstName(),
-				patient.getMiddleName(),
-				patient.getSurname(),
-				patient.getPhoneNumber()};
-		List<Patients> patientsResults = null;
-		try {
-			patientsResults = patientsRepository.getPatients(query,params);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("Coze = number of patients found = "+patientsResults.size());
-		long id;
-		if(patientsResults.size()>0){
-			System.out.println("Coze = using the received patients ");
-			id = patientsResults.get(0).getPatientId();
-		}else{
-			System.out.println("Coze = saving patient Data ");
-			try {
-				id = patientsRepository.save(patient);
-			} catch (Exception e) {
-				e.printStackTrace();
-				id=-1;
-			}
-		}
-
-		//Obtaining health facilityId from tbl_facilities
-		String healthFacilitySql = "SELECT * FROM "+ HealthFacilities.tbName+" WHERE "+
-				HealthFacilities.COL_FACILITY_CTC_CODE+" = ? OR "+HealthFacilities.COL_OPENMRS_UIID+" = ?";
-		Object[] healthFacilityParams = new Object[] {
-				healthFacilityCode,};
-
-		System.out.println("Coze facility ctc code = "+healthFacilityCode);
-		Long healthFacilityId=(long)0;
-		List<HealthFacilities> healthFacilities = null;
-		try {
-			healthFacilities = healthFacilityRepository.getHealthFacility(healthFacilitySql,healthFacilityParams);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if(healthFacilities.size()>0){
-			healthFacilityId = healthFacilities.get(0).getId();
-		}
-
-		HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
-		healthFacilitiesPatients.setPatient_id(id);
-		healthFacilitiesPatients.setCtcNumber(ctcNumber);
-		healthFacilitiesPatients.setFacilityId(healthFacilityId);
-
-
-		String healthFacilityPatientsquery = "SELECT * FROM " + HealthFacilitiesPatients.tbName + " WHERE " +
-				HealthFacilitiesPatients.COL_CTC_NUMBER +  " = ?    AND " +
-				HealthFacilitiesPatients.COL_PATIENT_ID +  " = ?    AND " +
-				HealthFacilitiesPatients.COL_FACILITY_ID + " = ?" ;
-
-		Object[] healthFacilityPatientsparams = new Object[] {
-				healthFacilitiesPatients.getCtcNumber(),
-				healthFacilitiesPatients.getPatient_id(),
-				healthFacilitiesPatients.getFacilityId()};
-
-		List<HealthFacilitiesPatients> healthFacilitiesPatientsResults = null;
-		try {
-			healthFacilitiesPatientsResults = healthFacilitiesPatientsRepository.getHealthFacilityPatients(healthFacilityPatientsquery,healthFacilityPatientsparams);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-
-		long healthfacilityPatientId=-1;
-		if(healthFacilitiesPatientsResults.size()>0){
-			healthfacilityPatientId = healthFacilitiesPatientsResults.get(0).getHealthFacilityPatientId();
-		}else{
-			try {
-				healthfacilityPatientId = healthFacilitiesPatientsRepository.save(healthFacilitiesPatients);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		return healthfacilityPatientId;
-	}
-
-
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_facility_referral")
-	public ResponseEntity<HttpStatus> saveFaciltyReferral(@RequestBody ReferralsDTO referralsDTO) {
+	public ResponseEntity<HttpStatus> saveFacilityReferral(@RequestBody ReferralsDTO referralsDTO) {
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
 
@@ -321,29 +233,117 @@ public class ReferralPatientsController {
 	}
 
 
-	private void createAppointments(long healthfacilityPatientId){
-		for (int i=1;i<=8;i++) {
+	private long savePatient(Patients patient, String healthFacilityCode, String ctcNumber) {
+		String query = "SELECT * FROM " + Patients.tbName + " WHERE " +
+				Patients.COL_PATIENT_FIRST_NAME + " = ?     AND " +
+				Patients.COL_PATIENT_MIDDLE_NAME + " = ?    AND " +
+				Patients.COL_PATIENT_SURNAME + " = ?        AND " +
+				Patients.COL_PHONE_NUMBER + " = ?";
+		Object[] params = new Object[]{
+				patient.getFirstName(),
+				patient.getMiddleName(),
+				patient.getSurname(),
+				patient.getPhoneNumber()};
+		List<Patients> patientsResults = null;
+		try {
+			patientsResults = patientsRepository.getPatients(query, params);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("Coze = number of patients found = " + patientsResults.size());
+		long id;
+		if (patientsResults.size() > 0) {
+			System.out.println("Coze = using the received patients ");
+			id = patientsResults.get(0).getPatientId();
+		} else {
+			System.out.println("Coze = saving patient Data ");
+			try {
+				id = patientsRepository.save(patient);
+			} catch (Exception e) {
+				e.printStackTrace();
+				id = -1;
+			}
+		}
+
+		//Obtaining health facilityId from tbl_facilities
+		String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
+				HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UIID + " = ?";
+		Object[] healthFacilityParams = new Object[]{
+				healthFacilityCode,};
+
+		System.out.println("Coze facility ctc code = " + healthFacilityCode);
+		Long healthFacilityId = (long) 0;
+		List<HealthFacilities> healthFacilities = null;
+		try {
+			healthFacilities = healthFacilityRepository.getHealthFacility(healthFacilitySql, healthFacilityParams);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (healthFacilities.size() > 0) {
+			healthFacilityId = healthFacilities.get(0).getId();
+		}
+
+		HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
+		healthFacilitiesPatients.setPatient_id(id);
+		healthFacilitiesPatients.setCtcNumber(ctcNumber);
+		healthFacilitiesPatients.setFacilityId(healthFacilityId);
+
+
+		String healthFacilityPatientsquery = "SELECT * FROM " + HealthFacilitiesPatients.tbName + " WHERE " +
+				HealthFacilitiesPatients.COL_CTC_NUMBER + " = ?    AND " +
+				HealthFacilitiesPatients.COL_PATIENT_ID + " = ?    AND " +
+				HealthFacilitiesPatients.COL_FACILITY_ID + " = ?";
+
+		Object[] healthFacilityPatientsparams = new Object[]{
+				healthFacilitiesPatients.getCtcNumber(),
+				healthFacilitiesPatients.getPatient_id(),
+				healthFacilitiesPatients.getFacilityId()};
+
+		List<HealthFacilitiesPatients> healthFacilitiesPatientsResults = null;
+		try {
+			healthFacilitiesPatientsResults = healthFacilitiesPatientsRepository.getHealthFacilityPatients(healthFacilityPatientsquery, healthFacilityPatientsparams);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+		long healthfacilityPatientId = -1;
+		if (healthFacilitiesPatientsResults.size() > 0) {
+			healthfacilityPatientId = healthFacilitiesPatientsResults.get(0).getHealthFacilityPatientId();
+		} else {
+			try {
+				healthfacilityPatientId = healthFacilitiesPatientsRepository.save(healthFacilitiesPatients);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return healthfacilityPatientId;
+	}
+
+	private void createAppointments(long healthfacilityPatientId) {
+		for (int i = 1; i <= 8; i++) {
 			PatientAppointments appointments = new PatientAppointments();
 			appointments.setHealthFacilityPatientId(healthfacilityPatientId);
 			appointments.setStatus("TB");
 			Calendar c = Calendar.getInstance();
 			c.add(Calendar.MONTH, +i);
-			c.add(Calendar.DAY_OF_MONTH,+checkIfWeekend(c.getTime()));
+			c.add(Calendar.DAY_OF_MONTH, +checkIfWeekend(c.getTime()));
 			appointments.setAppointmentDate(c.getTime());
 			appointments.setIsCancelled(false);
 		}
 
 	}
 
-	private int checkIfWeekend(Date d1){
+	private int checkIfWeekend(Date d1) {
 		Calendar c1 = Calendar.getInstance();
 		c1.setTime(d1);
 		System.out.println(c1.get(Calendar.DAY_OF_WEEK));
 		if ((c1.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)) {  //or sunday
 			return 2;
-		}else if(c1.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+		} else if (c1.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 			return 1;
-		}else {
+		} else {
 			return 0;
 		}
 	}
