@@ -48,7 +48,6 @@ public class ReferralPatientsController {
 	private FormSubmissionService formSubmissionService;
 	private FormEntityConverter formEntityConverter;
 	private TaskSchedulerService scheduler;
-
 	@Autowired
 	public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
 	                                  HealthFacilityRepository healthFacilityRepository, HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository, PatientsAppointmentsRepository patientsAppointmentsRepository,
@@ -262,7 +261,6 @@ public class ReferralPatientsController {
 				formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission,PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT,referral.getServiceGivenToPatient());
 				formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission,PatientReferral.COL_OTHER_NOTES,referral.getOtherNotes());
 				formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission,PatientReferral.COL_REFERRAL_STATUS,referral.getReferralStatus()+"");
-
 				formSubmissionService.update(formSubmission);
 			}
 
