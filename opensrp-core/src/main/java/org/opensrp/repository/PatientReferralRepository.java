@@ -45,8 +45,9 @@ public class PatientReferralRepository {
 				PatientReferral.COL_REFERRAL_SOURCE + "," +
 				PatientReferral.COL_REFERRAL_DATE + "," +
 				PatientReferral.COL_REFERRAL_STATUS + "," +
+				PatientReferral.COL_INSTANCE_ID + "," +
 				PatientReferral.COL_UPDATED_AT + "," +
-				PatientReferral.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				PatientReferral.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				healthFacilities.getReferral_id(),
@@ -71,6 +72,7 @@ public class PatientReferralRepository {
 		        healthFacilities.getReferralSource(),
 		        healthFacilities.getReferralDate(),
 		        healthFacilities.getReferralStatus(),
+		        healthFacilities.getInstanceId(),
 		        healthFacilities.getUpdatedAt(),
 				healthFacilities.getCreatedAt() };
 
@@ -97,6 +99,7 @@ public class PatientReferralRepository {
 				Types.INTEGER,
 				Types.DATE,
 				Types.INTEGER,
+				Types.VARCHAR,
 				Types.DATE,
 				Types.TIMESTAMP };
 		
@@ -120,7 +123,7 @@ public class PatientReferralRepository {
 
 
 
-	public List<PatientReferral> getReferrals(String sql, String[] args) throws Exception {
+	public List<PatientReferral> getReferrals(String sql, Object[] args) throws Exception {
 		return this.jdbcTemplate.query(sql,args, new HealthFacilityRefferalRowMapper());
 	}
 
@@ -147,6 +150,7 @@ public class PatientReferralRepository {
 			patientReferral.setReferralDate(rs.getDate(rs.findColumn(PatientReferral.COL_REFERRAL_DATE)));
 			patientReferral.setFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FACILITY_ID)));
 			patientReferral.setReferralStatus(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_STATUS)));
+			patientReferral.setInstanceId(rs.getString(rs.findColumn(PatientReferral.COL_INSTANCE_ID)));
 			patientReferral.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientReferral.COL_CREATED_AT)).getTime()));
 			patientReferral.setUpdatedAt(rs.getDate(rs.findColumn(PatientReferral.COL_UPDATED_AT)));
 			return patientReferral;

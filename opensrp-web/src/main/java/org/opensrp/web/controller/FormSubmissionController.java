@@ -230,6 +230,8 @@ public class FormSubmissionController {
                 id = patientsRepository.save(patients);
             }
 			patientReferral.setPatient_id(id);
+            patientReferral.setReferralSource(0);
+            patientReferral.setReferralStatus(0);
 
             System.out.println("Coze = saving referral Data");
             patientReferralRepository.save(patientReferral);

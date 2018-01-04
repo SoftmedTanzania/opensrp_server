@@ -53,6 +53,8 @@ public class PatientReferral {
 
 	public static final String COL_REFERRAL_STATUS= "referral_status";
 
+	public static final String COL_INSTANCE_ID= "instance_id";
+
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
@@ -84,6 +86,9 @@ public class PatientReferral {
 
 	@Column(name = COL_CTC_NUMBER)
 	private String ctcNumber;
+
+	@Column(name = COL_INSTANCE_ID)
+	private String instanceId;
 
 	@Column(name = COL_HAS_2WEEKS_COUGH)
 	private Boolean has2WeeksCough;
@@ -327,6 +332,14 @@ public class PatientReferral {
 
 	public void setServiceGivenToPatient(String serviceGivenToPatient) {
 		this.serviceGivenToPatient = serviceGivenToPatient;
+	}
+
+	public String getInstanceId() {
+		return instanceId;
+	}
+
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
 	}
 
 	public int getReferralSource() {

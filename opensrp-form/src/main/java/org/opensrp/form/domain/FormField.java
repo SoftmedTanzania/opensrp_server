@@ -32,7 +32,11 @@ public class FormField {
     public String value() {
         return value;
     }
-    
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public String source() {
         return source;
     }

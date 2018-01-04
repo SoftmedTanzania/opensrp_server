@@ -61,6 +61,10 @@ public class FormSubmissionService {
     public List<FormSubmission> findByMetadata(String key, Object value) {
     	return allFormSubmissions.findByMetadata(key, value);
     }
+
+    public void update(FormSubmission formSubmission) {
+        allFormSubmissions.update(formSubmission);
+    }
     
     public void submit(List<FormSubmissionDTO> formSubmissionsDTO) {
         List<FormSubmission> formSubmissions = with(formSubmissionsDTO).convert(new Converter<FormSubmissionDTO, FormSubmission>() {

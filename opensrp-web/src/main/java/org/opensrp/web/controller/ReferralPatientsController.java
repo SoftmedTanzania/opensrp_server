@@ -6,11 +6,14 @@ import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
+import org.opensrp.form.domain.FormSubmission;
+import org.opensrp.form.service.FormSubmissionService;
 import org.opensrp.repository.*;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
 import org.opensrp.service.PatientsConverter;
 import org.opensrp.service.ReferralPatientsService;
+import org.opensrp.service.formSubmission.FormEntityConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +45,14 @@ public class ReferralPatientsController {
 	private PatientsAppointmentsRepository patientsAppointmentsRepository;
 	private PatientReferralRepository patientReferralRepository;
 	private TBPatientsRepository tbPatientsRepository;
+	private FormSubmissionService formSubmissionService;
+	private FormEntityConverter formEntityConverter;
 	private TaskSchedulerService scheduler;
 
 	@Autowired
 	public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
 	                                  HealthFacilityRepository healthFacilityRepository, HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository, PatientsAppointmentsRepository patientsAppointmentsRepository,
-	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository) {
+	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository,FormSubmissionService formSubmissionService,FormEntityConverter formEntityConverter) {
 		this.patientsService = patientsService;
 		this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
@@ -57,6 +62,8 @@ public class ReferralPatientsController {
 		this.tbEncounterRepository = tbEncounterRepository;
 		this.patientReferralRepository = patientReferralRepository;
 		this.tbPatientsRepository = tbPatientsRepository;
+		this.formSubmissionService = formSubmissionService;
+		this.formEntityConverter = formEntityConverter;
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_patients")
@@ -221,12 +228,48 @@ public class ReferralPatientsController {
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
 
+			referralsDTO.setReferralSource(1);
+			referralsDTO.setReferralStatus(0);
 			PatientReferral patientReferral = PatientsConverter.toPatientReferral(referralsDTO);
 			patientReferralRepository.save(patientReferral);
 
 			logger.debug(format("Added  ReferralsDTO Submissions: {0}", referralsDTO));
 		} catch (Exception e) {
 			logger.error(format("ReferralsDTO processing failed with exception {0}.\nSubmissions: {1}", e, referralsDTO));
+			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(CREATED);
+	}
+
+
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/receive_feedback")
+	public ResponseEntity<HttpStatus> saveReferralFeedback(@RequestBody ReferralsFeedbackDTO referralsFeedbackDTO) {
+		try {
+			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsFeedbackDTO));
+
+			List<PatientReferral> referrals = patientReferralRepository.getReferrals("SELECT * FROM " + org.opensrp.domain.PatientReferral.tbName + " WHERE " + PatientReferral.COL_REFERRAL_ID + "=?",
+					new Object[]{referralsFeedbackDTO.getReferralId()});
+
+			PatientReferral referral = referrals.get(0);
+			referral.setReferralStatus(referralsFeedbackDTO.getReferralStatus());
+			referral.setServiceGivenToPatient(referralsFeedbackDTO.getServiceGivenToPatient());
+			referral.setOtherNotes(referralsFeedbackDTO.getOtherNotes());
+			patientReferralRepository.save(referral);
+
+			if(referral.getReferralSource()==0){
+				FormSubmission formSubmission = formSubmissionService.findByInstanceId(referral.getInstanceId());
+				formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission,PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT,referral.getServiceGivenToPatient());
+				formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission,PatientReferral.COL_OTHER_NOTES,referral.getOtherNotes());
+				formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission,PatientReferral.COL_REFERRAL_STATUS,referral.getReferralStatus()+"");
+
+				formSubmissionService.update(formSubmission);
+			}
+
+
+			logger.debug(format("updated  ReferralsFeedbackDTO Submissions: {0}", referralsFeedbackDTO));
+		} catch (Exception e) {
+			logger.error(format("ReferralsFeedbackDTO processing failed with exception {0}.\nSubmissions: {1}", e, referralsFeedbackDTO));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(CREATED);

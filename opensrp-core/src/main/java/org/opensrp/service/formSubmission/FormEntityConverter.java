@@ -391,6 +391,9 @@ public class FormEntityConverter {
 			patientReferral.setReferral_id(fsubmission.entityId());
 			FormData formData = fsubmission.instance().form();
 			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
+
+			patientReferral.setInstanceId(fsubmission.getInstanceId());
+
 			for(org.opensrp.form.domain.FormField formField : formFields){
 				if(formField.name().equals(PatientReferral.COL_CTC_NUMBER))
 					patientReferral.setCtcNumber(formField.value());
@@ -415,7 +418,6 @@ public class FormEntityConverter {
 
 				if(formField.name().equals(PatientReferral.COL_HAS_SEVERE_SWEATING))
 					patientReferral.setHasSevereSweating(Boolean.parseBoolean(formField.value()));
-
 
 				if(formField.name().equals(PatientReferral.COL_REFERRAL_DATE)) {
 					DateFormat df = new SimpleDateFormat("dd MMM yyyy");
@@ -454,8 +456,24 @@ public class FormEntityConverter {
 		}
 	}
 
+	public FormSubmission updateFormSUbmissionField(FormSubmission fsubmission,String collumnName,String value) throws IllegalStateException {
+		try {
+			FormData formData = fsubmission.instance().form();
+			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
 
-	
+			for(org.opensrp.form.domain.FormField formField : formFields){
+				if(formField.name().equals(collumnName))
+					formField.setValue(value);
+			}
+
+			return fsubmission;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+
+
 	public Client createBaseClient(FormSubmissionMap fs) throws ParseException {
 		String firstName = fs.getFieldValue(getFieldName(Person.first_name, fs));
 		String middleName = fs.getFieldValue(getFieldName(Person.middle_name, fs));
