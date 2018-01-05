@@ -42,18 +42,12 @@ public class GooglePushNotificationsUsersController {
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-google-push-notifications-user")
-    public ResponseEntity<HttpStatus> saveToken(@RequestBody List<GooglePushNotificationsUsersDTO> googlePushNotificationsUsersDTOS) {
+    public ResponseEntity<HttpStatus> saveToken(@RequestBody GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTOS) {
         try {
-            if (googlePushNotificationsUsersDTOS.isEmpty()) {
-                return new ResponseEntity<>(BAD_REQUEST);
-            }
 
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, googlePushNotificationsUsersDTOS));
 
-            String json = new Gson().toJson(googlePushNotificationsUsersDTOS);
-            List<GooglePushNotificationsUsersDTO> googlePushNotificationsUsersDTOS1 = new Gson().fromJson(json, new TypeToken<List<GooglePushNotificationsUsersDTO>>() {}.getType());
-
-            List<GooglePushNotificationsUsers> googlePushNotificationsUsers = with(googlePushNotificationsUsersDTOS1).convert(new Converter<GooglePushNotificationsUsersDTO, GooglePushNotificationsUsers>() {
+            GooglePushNotificationsUsers googlePushNotificationsUser = new Converter<GooglePushNotificationsUsersDTO, GooglePushNotificationsUsers>() {
                 @Override
                 public GooglePushNotificationsUsers convert(GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO) {
 
@@ -64,11 +58,9 @@ public class GooglePushNotificationsUsersController {
 
                     return googlePushNotificationsUsers;
                 }
-            });
+            }.convert(googlePushNotificationsUsersDTOS);
 
-            for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
-                googlePushNotificationsUsersRepository.save(pushNotificationsUsers);
-            }
+            googlePushNotificationsUsersRepository.save(googlePushNotificationsUser);
 
             logger.debug(format("Saved Google push notification user  queue.\nSubmissions: {0}", googlePushNotificationsUsersDTOS));
         } catch (Exception e) {
