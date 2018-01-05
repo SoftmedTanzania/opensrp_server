@@ -156,12 +156,12 @@ public class ReferralPatientsController {
 
 			HealthFacilitiesPatients healthFacilitiesPatient = healthFacilitiesPatients.get(0);
 			List<Patients> patients = patientsRepository.getPatients("SELECT * FROM " + org.opensrp.domain.Patients.tbName + " WHERE " + org.opensrp.domain.Patients.COL_PATIENT_ID + "=?",
-					new Object[]{healthFacilitiesPatient.getPatient_id()});
+					new Object[]{healthFacilitiesPatient.getPatient().getPatientId()});
 
 			tbCompletePatientDataDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients.get(0)));
 
 			List<TBPatient> tbPatients = tbPatientsRepository.getTBPatients("SELECT * FROM " + org.opensrp.domain.TBPatient.tbName + " WHERE " + TBPatient.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
-					new Object[]{healthFacilitiesPatient.getPatient_id()});
+					new Object[]{healthFacilitiesPatient.getPatient().getPatientId()});
 			tbCompletePatientDataDTO.setTbPatientDTO(PatientsConverter.toTbPatientDTO(tbPatients.get(0)));
 
 			List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
@@ -329,7 +329,11 @@ public class ReferralPatientsController {
 		}
 
 		HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
-		healthFacilitiesPatients.setPatient_id(id);
+
+		Patients patients = new Patients();
+		patients.setPatientId(id);
+
+		healthFacilitiesPatients.setPatient(patients);
 		healthFacilitiesPatients.setCtcNumber(ctcNumber);
 		healthFacilitiesPatients.setFacilityId(healthFacilityId);
 
@@ -341,7 +345,7 @@ public class ReferralPatientsController {
 
 		Object[] healthFacilityPatientsparams = new Object[]{
 				healthFacilitiesPatients.getCtcNumber(),
-				healthFacilitiesPatients.getPatient_id(),
+				healthFacilitiesPatients.getPatient().getPatientId(),
 				healthFacilitiesPatients.getFacilityId()};
 
 		List<HealthFacilitiesPatients> healthFacilitiesPatientsResults = null;

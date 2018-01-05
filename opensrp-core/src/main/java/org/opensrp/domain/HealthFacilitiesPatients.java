@@ -34,9 +34,6 @@ public class HealthFacilitiesPatients {
 	@JoinColumn(name=COL_PATIENT_ID)
 	private Patients patient;
 
-	private Long patient_id;
-
-
 	@Column(name = COL_CTC_NUMBER,unique=true)
 	private String ctcNumber;
 
@@ -65,15 +62,6 @@ public class HealthFacilitiesPatients {
 
 	public void setPatient(Patients patient) {
 		this.patient = patient;
-	}
-
-
-	public Long getPatient_id() {
-		return patient_id;
-	}
-
-	public void setPatient_id(Long patient_id) {
-		this.patient_id = patient_id;
 	}
 
 	public String getCtcNumber() {
