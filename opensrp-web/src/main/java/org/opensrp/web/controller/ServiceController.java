@@ -36,7 +36,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Controller
 public class ServiceController {
     private static Logger logger = LoggerFactory.getLogger(ServiceController.class.toString());
-    private BoreshaAfyaService boreshaAfyaService;
     private BoreshaAfyaServiceRepository boreshaAfyaServiceRepository;
     private TBPatientTypeRepository tbPatientTypeRepository;
     private TaskSchedulerService scheduler;
@@ -104,7 +103,7 @@ public class ServiceController {
     }
 
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-boresha-afya-services")
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-tb-patient-type")
     public ResponseEntity<HttpStatus> savePatientType(@RequestBody List<TBPatientTypesDTO> tbPatientTypesDTOS) {
         try {
             if (tbPatientTypesDTOS.isEmpty()) {
