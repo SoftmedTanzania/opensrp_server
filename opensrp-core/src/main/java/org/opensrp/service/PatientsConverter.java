@@ -183,7 +183,7 @@ public class PatientsConverter {
         try {
             TBPatientDTO tbPatientDTO = new TBPatientDTO();
 
-            tbPatientDTO.setHealthFacilityPatientId(patient.getHealthFacilityPatientId());
+            tbPatientDTO.setHealthFacilityPatientId(patient.getHealthFacilitiesPatients().getHealthFacilityPatientId());
             tbPatientDTO.setMakohozi(patient.getMakohozi());
             tbPatientDTO.setOtherTests(patient.getOtherTests());
             tbPatientDTO.setOutcome(patient.getOutcome());
@@ -244,7 +244,10 @@ public class PatientsConverter {
         try {
             PatientReferral referral = new PatientReferral();
 
-            referral.setPatient_id(referralsDTO.getPatientId());
+	        Patients patient  = new Patients();
+	        patient.setPatientId(referralsDTO.getPatientId());
+
+            referral.setPatient(patient);
             referral.setReferral_id(referralsDTO.getReferralId());
             referral.setCommunityBasedHivService(referralsDTO.getCommunityBasedHivService());
             referral.setReferralReason(referralsDTO.getReferralReason());
@@ -283,7 +286,7 @@ public class PatientsConverter {
         try {
             ReferralsDTO referralsDTO = new ReferralsDTO();
 
-            referralsDTO.setPatientId(referral.getPatient_id());
+            referralsDTO.setPatientId(referral.getPatient().getPatientId());
             referralsDTO.setReferralId(referral.getReferral_id());
             referralsDTO.setCommunityBasedHivService(referral.getCommunityBasedHivService());
             referralsDTO.setReferralReason(referral.getReferralReason());

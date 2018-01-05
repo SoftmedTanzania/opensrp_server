@@ -64,7 +64,6 @@ public class PatientReferral {
 	@Column(name = "_id")
 	private Long id;
 
-	private Long patient_id;
 
 	@ManyToOne
 	@JoinColumn(name=COL_PATIENT_ID)
@@ -172,14 +171,6 @@ public class PatientReferral {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getPatient_id() {
-		return patient_id;
-	}
-
-	public void setPatient_id(Long patient_id) {
-		this.patient_id = patient_id;
 	}
 
 	public String getReferral_id() {

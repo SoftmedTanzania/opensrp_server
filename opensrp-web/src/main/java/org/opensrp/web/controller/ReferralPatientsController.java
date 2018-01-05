@@ -141,7 +141,11 @@ public class ReferralPatientsController {
 			Patients convertedPatient = PatientsConverter.toPatients(tbPatientMobileClientDTO);
 			TBPatient tbPatient = PatientsConverter.toTBPatients(tbPatientMobileClientDTO);
 			long healthfacilityPatientId = savePatient(convertedPatient, tbPatientMobileClientDTO.getHealthFacilityCode(), null);
-			tbPatient.setHealthFacilityPatientId(healthfacilityPatientId);
+
+			HealthFacilitiesPatients hPatient = new HealthFacilitiesPatients();
+			hPatient.setHealthFacilityPatientId(healthfacilityPatientId);
+
+			tbPatient.setHealthFacilitiesPatients(hPatient);
 			tbPatientsRepository.save(tbPatient);
 			createAppointments(healthfacilityPatientId);
 

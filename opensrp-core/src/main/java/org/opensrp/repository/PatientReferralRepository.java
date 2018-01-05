@@ -1,6 +1,7 @@
 package org.opensrp.repository;
 
 import org.opensrp.domain.PatientReferral;
+import org.opensrp.domain.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -51,7 +52,7 @@ public class PatientReferralRepository {
 
 		Object[] params = new Object[] {
 				healthFacilities.getReferral_id(),
-				healthFacilities.getPatient_id(),
+				healthFacilities.getPatient().getPatientId(),
 				healthFacilities.getCommunityBasedHivService(),
 				healthFacilities.getReferralReason(),
 				healthFacilities.getServiceId(),
@@ -134,7 +135,11 @@ public class PatientReferralRepository {
 			PatientReferral patientReferral = new PatientReferral();
 			patientReferral.setId(rs.getLong(rs.findColumn("_id")));
 			patientReferral.setReferral_id(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_ID)));
-			patientReferral.setPatient_id(rs.getLong(rs.findColumn(PatientReferral.COL_PATIENT_ID)));
+
+			Patients patient = new Patients();
+			patient.setPatientId(rs.getLong(rs.findColumn(PatientReferral.COL_PATIENT_ID)));
+			patientReferral.setPatient(patient);
+
 			patientReferral.setCommunityBasedHivService(rs.getString(rs.findColumn(PatientReferral.COL_COMMUNITY_BASED_HIV_SERVICE)));
 			patientReferral.setReferralReason(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_REASON)));
 			patientReferral.setServiceId(rs.getInt(rs.findColumn(PatientReferral.COL_SERVICE_ID)));

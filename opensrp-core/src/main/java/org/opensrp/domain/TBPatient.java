@@ -49,8 +49,6 @@ public class TBPatient implements Serializable {
 	@Column(name = COL_TB_PATIENT_ID)
 	private Long tbPatientId;
 
-	private Long healthFacilityPatientId;
-
 	//TODO recheck this implementation for reoccuring tb cases
 	@OneToOne
 	@JoinColumn(name=COL_HEALTH_FACILITY_PATIENT_ID,unique=true)
@@ -118,14 +116,6 @@ public class TBPatient implements Serializable {
 
 	public void setHealthFacilitiesPatients(HealthFacilitiesPatients healthFacilitiesPatients) {
 		this.healthFacilitiesPatients = healthFacilitiesPatients;
-	}
-
-	public Long getHealthFacilityPatientId() {
-		return healthFacilityPatientId;
-	}
-
-	public void setHealthFacilityPatientId(Long healthFacilityPatientId) {
-		this.healthFacilityPatientId = healthFacilityPatientId;
 	}
 
 	public int getPatientType() {

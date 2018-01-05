@@ -221,15 +221,16 @@ public class FormSubmissionController {
                     patients.getPhoneNumber()};
             List<Patients> patientsResults = patientsRepository.getPatients(query,params);
             System.out.println("Coze = number of patients found = "+patientsResults.size());
-            Long id;
+
             if(patientsResults.size()>0){
                 System.out.println("Coze = using the received patients");
-                id = patientsResults.get(0).getPatientId();
+	            patientReferral.setPatient(patientsResults.get(0));
             }else{
                 System.out.println("Coze = saving patient Data");
-                id = patientsRepository.save(patients);
+                Long id = patientsRepository.save(patients);
+                patients.setPatientId(id);
+	            patientReferral.setPatient(patients);
             }
-			patientReferral.setPatient_id(id);
             patientReferral.setReferralSource(0);
             patientReferral.setReferralStatus(0);
 
