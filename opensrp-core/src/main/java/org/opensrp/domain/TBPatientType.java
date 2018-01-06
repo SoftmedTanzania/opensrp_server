@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tbl_tb_patient_type")
-public class TBPatientType implements Serializable {
+public class TBPatientType {
 
 	public static final String tbName = "tbl_tb_patient_type";
 

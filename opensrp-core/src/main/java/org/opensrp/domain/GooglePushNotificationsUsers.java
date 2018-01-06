@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tbl_push_notifications_users")
-public class GooglePushNotificationsUsers implements Serializable {
+public class GooglePushNotificationsUsers {
 
 	public static final String tbName = "tbl_push_notifications_users";
 
@@ -21,15 +21,16 @@ public class GooglePushNotificationsUsers implements Serializable {
 	public static final String COL_UPDATED_AT = "updated_at";
 
 
-	@GeneratedValue
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "_id")
 	private Long id;
 
 	@Column(name = COL_USER_UIID)
 	private String userUiid;
 
-	@Id
-	@Column(name = COL_GOOGLE_PUSH_NOTIFICATION_TOKEN)
+
+	@Column(name = COL_GOOGLE_PUSH_NOTIFICATION_TOKEN,unique = true)
 	private String googlePushNotificationToken;
 
 	@Column(name = COL_FACILITY_UIID)

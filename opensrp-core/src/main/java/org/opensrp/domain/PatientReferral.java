@@ -60,6 +60,7 @@ public class PatientReferral {
 	public static final String COL_UPDATED_AT = "updated_at";
 
 
+	@Id
 	@GeneratedValue
 	@Column(name = "_id")
 	private Long id;
@@ -70,8 +71,8 @@ public class PatientReferral {
 	private Patients patient;
 
 
-	@Id
-	@Column(name = COL_REFERRAL_ID)
+
+	@Column(name = COL_REFERRAL_ID,unique = true)
 	private String referral_id;
 
 	@Column(name = COL_COMMUNITY_BASED_HIV_SERVICE)
