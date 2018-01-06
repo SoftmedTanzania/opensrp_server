@@ -45,6 +45,8 @@ public class GooglePushNotificationsUsersController {
     public ResponseEntity<HttpStatus> saveToken(@RequestBody GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTOS) {
         try {
 
+            System.out.println("Coze: saving google push notifications users");
+            System.out.println("Coze: google push notifications users = "+googlePushNotificationsUsersDTOS);
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, googlePushNotificationsUsersDTOS));
 
             GooglePushNotificationsUsers googlePushNotificationsUser = new Converter<GooglePushNotificationsUsersDTO, GooglePushNotificationsUsers>() {
@@ -64,6 +66,7 @@ public class GooglePushNotificationsUsersController {
 
             logger.debug(format("Saved Google push notification user  queue.\nSubmissions: {0}", googlePushNotificationsUsersDTOS));
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(format("Google push notification user processing failed with exception {0}.\nSubmissions: {1}", e, googlePushNotificationsUsersDTOS));
             return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
