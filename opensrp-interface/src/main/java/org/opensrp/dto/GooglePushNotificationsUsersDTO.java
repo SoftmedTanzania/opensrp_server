@@ -20,19 +20,12 @@ public class GooglePushNotificationsUsersDTO {
     @JsonProperty
     private String facilityUiid;
 
-    @JsonProperty
-    private Date createdAt;
 
-    @JsonProperty
-    private Date updatedAt;
-
-    public GooglePushNotificationsUsersDTO(Long id, String userUiid, String googlePushNotificationToken, String facilityUiid, Date createdAt, Date updatedAt) {
+    public GooglePushNotificationsUsersDTO(Long id, String userUiid, String googlePushNotificationToken, String facilityUiid) {
         this.id = id;
         this.userUiid = userUiid;
         this.googlePushNotificationToken = googlePushNotificationToken;
         this.facilityUiid = facilityUiid;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -65,22 +58,6 @@ public class GooglePushNotificationsUsersDTO {
 
     public void setFacilityUiid(String facilityUiid) {
         this.facilityUiid = facilityUiid;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override

@@ -132,7 +132,7 @@ public class ReferralPatientsController {
 	}
 
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_patients")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_patient")
 	@ResponseBody
 	public TBCompletePatientDataDTO saveTBPatients(@RequestBody TBPatientMobileClientDTO tbPatientMobileClientDTO) {
 		try {

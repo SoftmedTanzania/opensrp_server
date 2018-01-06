@@ -42,35 +42,38 @@ public class GooglePushNotificationsUsersController {
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_push_notification_token")
-    public ResponseEntity<HttpStatus> saveToken(@RequestBody GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO) {
-        return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
-//        try {
-////            System.out.println("Coze: saving google push notifications users");
-////            System.out.println("Coze: google push notifications users = "+googlePushNotificationsUsersDTO);
-////            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, googlePushNotificationsUsersDTO));
-////
-////            GooglePushNotificationsUsers googlePushNotificationsUser = new Converter<GooglePushNotificationsUsersDTO, GooglePushNotificationsUsers>() {
-////                @Override
-////                public GooglePushNotificationsUsers convert(GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO) {
-////
-////                    GooglePushNotificationsUsers googlePushNotificationsUsers = new GooglePushNotificationsUsers();
-////                    googlePushNotificationsUsers.setGooglePushNotificationToken(googlePushNotificationsUsersDTO.getGooglePushNotificationToken());
-////                    googlePushNotificationsUsers.setUserUiid(googlePushNotificationsUsersDTO.getUserUiid());
-////                    googlePushNotificationsUsers.setFacilityUiid(googlePushNotificationsUsersDTO.getFacilityUiid());
-////
-////                    return googlePushNotificationsUsers;
-////                }
-////            }.convert(googlePushNotificationsUsersDTO);
-////
-////            googlePushNotificationsUsersRepository.save(googlePushNotificationsUser);
-////
-////            logger.debug(format("Saved Google push notification user  queue.\nSubmissions: {0}", googlePushNotificationsUsersDTO));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error(format("Google push notification user processing failed with exception {0}.\nSubmissions: {1}", e, googlePushNotificationsUsersDTO));
-//            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
-//        }
-//        return new ResponseEntity<>(CREATED);
+    public ResponseEntity<HttpStatus> saveToken(@RequestBody String json) {
+        try {
+            System.out.println("Coze: saving google push notifications users");
+            System.out.println("Coze: google push notifications users = "+json);
+            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, json));
+
+            GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO =  new Gson().fromJson(json, GooglePushNotificationsUsersDTO.class);
+
+
+
+            GooglePushNotificationsUsers googlePushNotificationsUser = new Converter<GooglePushNotificationsUsersDTO, GooglePushNotificationsUsers>() {
+                @Override
+                public GooglePushNotificationsUsers convert(GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO) {
+
+                    GooglePushNotificationsUsers googlePushNotificationsUsers = new GooglePushNotificationsUsers();
+                    googlePushNotificationsUsers.setGooglePushNotificationToken(googlePushNotificationsUsersDTO.getGooglePushNotificationToken());
+                    googlePushNotificationsUsers.setUserUiid(googlePushNotificationsUsersDTO.getUserUiid());
+                    googlePushNotificationsUsers.setFacilityUiid(googlePushNotificationsUsersDTO.getFacilityUiid());
+
+                    return googlePushNotificationsUsers;
+                }
+            }.convert(googlePushNotificationsUsersDTO);
+
+            googlePushNotificationsUsersRepository.save(googlePushNotificationsUser);
+
+            logger.debug(format("Saved Google push notification user  queue.\nSubmissions: {0}", json));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(format("Google push notification user processing failed with exception {0}.\nSubmissions: {1}", e, json));
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(CREATED);
     }
 
 
@@ -88,7 +91,7 @@ public class GooglePushNotificationsUsersController {
         return with(googlePushNotificationsUsers).convert(new Converter<GooglePushNotificationsUsers, GooglePushNotificationsUsersDTO>() {
             @Override
             public GooglePushNotificationsUsersDTO convert(GooglePushNotificationsUsers googlePushNotificationsUsers) {
-                return new GooglePushNotificationsUsersDTO(googlePushNotificationsUsers.getId(),googlePushNotificationsUsers.getUserUiid(),googlePushNotificationsUsers.getGooglePushNotificationToken(),googlePushNotificationsUsers.getFacilityUiid(),googlePushNotificationsUsers.getCreatedAt(),googlePushNotificationsUsers.getUpdatedAt());
+                return new GooglePushNotificationsUsersDTO(googlePushNotificationsUsers.getId(),googlePushNotificationsUsers.getUserUiid(),googlePushNotificationsUsers.getGooglePushNotificationToken(),googlePushNotificationsUsers.getFacilityUiid());
             }
         });
     }
