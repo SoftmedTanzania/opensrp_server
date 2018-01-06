@@ -5,10 +5,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_service")
+@Table(name = "tbl_tb_patient_type")
 public class TBPatientType implements Serializable {
 
-	public static final String tbName = "tbl_service";
+	public static final String tbName = "tbl_tb_patient_type";
 
 	public static final String COL_PATIENT_TYPE_NAME = "patient_type_name";
 

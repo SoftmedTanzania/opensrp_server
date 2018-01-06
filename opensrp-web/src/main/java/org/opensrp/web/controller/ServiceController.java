@@ -76,6 +76,7 @@ public class ServiceController {
 
             logger.debug(format("Saved Boresha Afya Service to queue.\nSubmissions: {0}", boreshaAfyaServiceDTOS));
         } catch (Exception e) {
+        	e.printStackTrace();
             logger.error(format("Boresha Afya Service processing failed with exception {0}.\nSubmissions: {1}", e, boreshaAfyaServiceDTOS));
             return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
