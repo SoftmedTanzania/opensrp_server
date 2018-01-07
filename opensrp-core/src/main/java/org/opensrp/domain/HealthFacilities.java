@@ -15,6 +15,10 @@ public class HealthFacilities {
 
 	public static final String COL_FACILITY_CTC_CODE = "facility_ctc_code";
 
+	public static final String COL_PARENT_OPENMRS_UIID= "parent_openmrs_UIID";
+
+	public static final String COL_PARENT_HFR_CODE= "parent_HFR_code";
+
 	public static final String COL_HFR_CODE = "HFR_code";
 
 	public static final String COL_CREATED_AT = "created_at";
@@ -34,6 +38,12 @@ public class HealthFacilities {
 
 	@Column(name = COL_FACILITY_CTC_CODE,unique=true)
 	private String facilityCtcCode;
+
+	@Column(name = COL_PARENT_OPENMRS_UIID)
+	private String parentOpenmrsUIID;
+
+	@Column(name = COL_PARENT_HFR_CODE)
+	private String parentHFRCode;
 
 
 	@Column(name = COL_HFR_CODE,unique=true)
@@ -86,6 +96,22 @@ public class HealthFacilities {
 
 	public void setHfrCode(String hfrCode) {
 		this.hfrCode = hfrCode;
+	}
+
+	public String getParentOpenmrsUIID() {
+		return parentOpenmrsUIID;
+	}
+
+	public void setParentOpenmrsUIID(String parentOpenmrsUIID) {
+		this.parentOpenmrsUIID = parentOpenmrsUIID;
+	}
+
+	public String getParentHFRCode() {
+		return parentHFRCode;
+	}
+
+	public void setParentHFRCode(String parentHFRCode) {
+		this.parentHFRCode = parentHFRCode;
 	}
 
 	public Date getUpdatedAt() {

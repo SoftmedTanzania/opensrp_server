@@ -16,54 +16,78 @@ public class HealthFacilitiesDTO {
     private String facilityName;
 
     @JsonProperty
-    private String facilityCode;
+    private String facilityCTCCode;
 
     @JsonProperty
-    private String parentId;
+    private String openmrsUIID;
 
-    public HealthFacilitiesDTO(String facilityId, String facilityName, String facilityCode, String parentId) {
-        this.facilityId = facilityId;
-        this.facilityName = facilityName;
-        this.facilityCode = facilityCode;
-        this.parentId = parentId;
-    }
+	@JsonProperty
+	private String parentOpenmrsUIID;
 
-    public HealthFacilitiesDTO() {
-    }
+	@JsonProperty
+	private String hfrCode;
 
-    public String getFacilityId() {
-        return facilityId;
-    }
+    @JsonProperty
+    private String parentHFRCode;
 
-    public void setFacilityId(String facilityId) {
-        this.facilityId = facilityId;
-    }
 
-    public String getFacilityName() {
-        return facilityName;
-    }
+	public String getFacilityId() {
+		return facilityId;
+	}
 
-    public void setFacilityName(String facilityName) {
-        this.facilityName = facilityName;
-    }
+	public void setFacilityId(String facilityId) {
+		this.facilityId = facilityId;
+	}
 
-    public String getFacilityCode() {
-        return facilityCode;
-    }
+	public String getFacilityName() {
+		return facilityName;
+	}
 
-    public void setFacilityCode(String facilityCode) {
-        this.facilityCode = facilityCode;
-    }
+	public void setFacilityName(String facilityName) {
+		this.facilityName = facilityName;
+	}
 
-    public String getParentId() {
-        return parentId;
-    }
+	public String getFacilityCTCCode() {
+		return facilityCTCCode;
+	}
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
+	public void setFacilityCTCCode(String facilityCTCCode) {
+		this.facilityCTCCode = facilityCTCCode;
+	}
 
-    @Override
+	public String getOpenmrsUIID() {
+		return openmrsUIID;
+	}
+
+	public void setOpenmrsUIID(String openmrsUIID) {
+		this.openmrsUIID = openmrsUIID;
+	}
+
+	public String getParentOpenmrsUIID() {
+		return parentOpenmrsUIID;
+	}
+
+	public void setParentOpenmrsUIID(String parentOpenmrsUIID) {
+		this.parentOpenmrsUIID = parentOpenmrsUIID;
+	}
+
+	public String getHfrCode() {
+		return hfrCode;
+	}
+
+	public void setHfrCode(String hfrCode) {
+		this.hfrCode = hfrCode;
+	}
+
+	public String getParentHFRCode() {
+		return parentHFRCode;
+	}
+
+	public void setParentHFRCode(String parentHFRCode) {
+		this.parentHFRCode = parentHFRCode;
+	}
+
+	@Override
     public final boolean equals(Object o) {
         return EqualsBuilder.reflectionEquals(this, o);
     }

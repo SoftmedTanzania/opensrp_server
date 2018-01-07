@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.HealthFacilities;
 import org.opensrp.dto.HealthFacilitiesDTO;
+import org.opensrp.dto.PatientReferralsDTO;
 import org.opensrp.repository.HealthFacilityRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
@@ -18,12 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 import static ch.lambdaj.collection.LambdaCollections.with;
 import static java.text.MessageFormat.format;
 import static org.springframework.http.HttpStatus.*;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
@@ -40,20 +43,18 @@ public class HealthFacilitiesController {
         this.scheduler = scheduler;
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/health_facilities")
-    public ResponseEntity<HttpStatus> saveHealthFacility(@RequestBody List<HealthFacilitiesDTO> healthFacilitiesDTOS) {
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_health_facilities")
+    public ResponseEntity<HttpStatus> saveHealthFacility(@RequestBody String json) {
         try {
+            System.out.println("Coze:save health facility");
+            List<HealthFacilitiesDTO> healthFacilitiesDTOS = new Gson().fromJson(json, new TypeToken<List<HealthFacilitiesDTO>>() {}.getType());
             if (healthFacilitiesDTOS.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
 
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, healthFacilitiesDTOS));
 
-            String json = new Gson().toJson(healthFacilitiesDTOS);
-            List<HealthFacilitiesDTO> healthFacilitiesDTOs = new Gson().fromJson(json, new TypeToken<List<HealthFacilitiesDTO>>() {
-            }.getType());
-
-            List<HealthFacilities> healthFacilities =  HealthFacilitiesConverter.toHealthFacilities(healthFacilitiesDTOs);
+            List<HealthFacilities> healthFacilities =  HealthFacilitiesConverter.toHealthFacilities(healthFacilitiesDTOS);
 
             for (HealthFacilities healthFacility : healthFacilities) {
                 healthFacilitiesService.storeHealthFacilities(healthFacility);
@@ -61,9 +62,22 @@ public class HealthFacilitiesController {
 
             logger.debug(format("Saved Health Facility to queue.\nSubmissions: {0}", healthFacilitiesDTOS));
         } catch (Exception e) {
-            logger.error(format("Health Facility processing failed with exception {0}.\nSubmissions: {1}", e, healthFacilitiesDTOS));
+            e.printStackTrace();
+            logger.error(format("Health Facility processing failed with exception {0}.\nSubmissions: {1}", e, json));
             return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(CREATED);
+    }
+
+    @RequestMapping(method = GET, value = "/get_health_facilities")
+    @ResponseBody
+    private List<HealthFacilities> getHealthFacilities() {
+        List<HealthFacilities> healthFacilities = null;
+        try {
+            healthFacilities = facilityRepository.getHealthFacility("Select * from "+ HealthFacilities.tbName,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return healthFacilities;
     }
 }

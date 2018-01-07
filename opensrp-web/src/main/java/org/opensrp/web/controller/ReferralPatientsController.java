@@ -181,7 +181,7 @@ public class ReferralPatientsController {
 
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_encounters")
-	public ResponseEntity<HttpStatus> saveTBEncounter(@RequestBody String json) {
+	public ResponseEntity<TBEncounter> saveTBEncounter(@RequestBody String json) {
 		TBEncounterDTO tbEncounterDTOS = new Gson().fromJson(json,TBEncounterDTO.class);
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbEncounterDTOS));
@@ -205,8 +205,8 @@ public class ReferralPatientsController {
 				tbEncounter.setEncounterMonth(encounter.getEncounterMonth());
 				tbEncounter.setHasFinishedPreviousMonthMedication(encounter.isHasFinishedPreviousMonthMedication());
 				tbEncounter.setMedicationStatus(encounter.isMedicationStatus());
-
 				tbEncounterRepository.update(tbEncounter);
+				return new ResponseEntity<TBEncounter>(tbEncounter,HttpStatus.CREATED);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -229,7 +229,7 @@ public class ReferralPatientsController {
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_facility_referral")
-	public ResponseEntity<HttpStatus> saveFacilityReferral(@RequestBody ReferralsDTO referralsDTO) {
+	public ResponseEntity<PatientReferral> saveFacilityReferral(@RequestBody ReferralsDTO referralsDTO) {
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
 
@@ -238,12 +238,14 @@ public class ReferralPatientsController {
 			PatientReferral patientReferral = PatientsConverter.toPatientReferral(referralsDTO);
 			patientReferralRepository.save(patientReferral);
 
+			List<PatientReferral> patientReferrals = patientReferralRepository.getReferrals("SELECT * FROM "+PatientReferral.tbName+" ORDER BY _id DESC LIMIT 1 ",null);
 			logger.debug(format("Added  ReferralsDTO Submissions: {0}", referralsDTO));
+
+			return new ResponseEntity<PatientReferral>(patientReferrals.get(0),HttpStatus.CREATED);
 		} catch (Exception e) {
 			logger.error(format("ReferralsDTO processing failed with exception {0}.\nSubmissions: {1}", e, referralsDTO));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(CREATED);
 	}
 
 
@@ -384,6 +386,12 @@ public class ReferralPatientsController {
 			c.add(Calendar.DAY_OF_MONTH, +checkIfWeekend(c.getTime()));
 			appointments.setAppointmentDate(c.getTime());
 			appointments.setIsCancelled(false);
+
+			try {
+				patientsAppointmentsRepository.save(appointments);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
