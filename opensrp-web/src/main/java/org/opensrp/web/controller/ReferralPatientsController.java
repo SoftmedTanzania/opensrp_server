@@ -392,6 +392,7 @@ public class ReferralPatientsController {
 			appointments.setIsCancelled(false);
 
 			try {
+				System.out.println("Coze:save appointment");
 				patientsAppointmentsRepository.save(appointments);
 			} catch (Exception e) {
 				e.printStackTrace();
