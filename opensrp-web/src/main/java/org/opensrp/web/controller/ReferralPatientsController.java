@@ -176,7 +176,6 @@ public class ReferralPatientsController {
 					new Object[]{healthfacilityPatientId});
 			tbCompletePatientDataDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
 
-
 			return new ResponseEntity<TBCompletePatientDataDTO>(tbCompletePatientDataDTO,HttpStatus.CREATED);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -350,12 +349,10 @@ public class ReferralPatientsController {
 
 
 		String healthFacilityPatientsquery = "SELECT * FROM " + HealthFacilitiesPatients.tbName + " WHERE " +
-				HealthFacilitiesPatients.COL_CTC_NUMBER + " = ?    AND " +
 				HealthFacilitiesPatients.COL_PATIENT_ID + " = ?    AND " +
 				HealthFacilitiesPatients.COL_FACILITY_ID + " = ?";
 
 		Object[] healthFacilityPatientsparams = new Object[]{
-				healthFacilitiesPatients.getCtcNumber(),
 				healthFacilitiesPatients.getPatient().getPatientId(),
 				healthFacilitiesPatients.getFacilityId()};
 

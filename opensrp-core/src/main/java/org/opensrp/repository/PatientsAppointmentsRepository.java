@@ -42,9 +42,9 @@ public class PatientsAppointmentsRepository {
 				patientAppointments.getCreatedAt() };
 
 		int[] types = new int[] {
-				Types.INTEGER,
+				Types.BIGINT,
 				Types.DATE,
-				Types.VARCHAR,
+				Types.BOOLEAN,
 				Types.VARCHAR,
 				Types.VARCHAR,
 				Types.DATE,

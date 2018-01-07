@@ -47,8 +47,6 @@ public class PatientsRepository {
 		parameters.put(Patients.COL_UPDATED_AT , patients.getCreatedAt());
 
 		return insert.executeAndReturnKey(parameters).longValue();
-
-
 	}
 
 	public void executeQuery(String query) throws Exception {
