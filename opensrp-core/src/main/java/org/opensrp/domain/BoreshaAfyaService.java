@@ -18,13 +18,13 @@ public class BoreshaAfyaService{
 
 	public static final String COL_UPDATED_AT = "updated_at";
 
-
+	@Id
 	@GeneratedValue
 	@Column(name = "_id")
 	private Long id;
 
-	@Id
-	@Column(name = COL_SERVICE_NAME)
+
+	@Column(name = COL_SERVICE_NAME,unique = true)
 	private String serviceName;
 
 	@Column(name = COL_IS_ACTIVE)

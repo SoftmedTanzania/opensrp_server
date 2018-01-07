@@ -134,7 +134,8 @@ public class ReferralPatientsController {
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_patient")
 	@ResponseBody
-	public TBCompletePatientDataDTO saveTBPatients(@RequestBody TBPatientMobileClientDTO tbPatientMobileClientDTO) {
+	public TBCompletePatientDataDTO saveTBPatients(@RequestBody String json) {
+		TBPatientMobileClientDTO tbPatientMobileClientDTO = new Gson().fromJson(json,TBPatientMobileClientDTO.class);
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbPatientMobileClientDTO));
 
@@ -180,7 +181,8 @@ public class ReferralPatientsController {
 
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_encounters")
-	public ResponseEntity<HttpStatus> saveTBEncounter(@RequestBody TBEncounterDTO tbEncounterDTOS) {
+	public ResponseEntity<HttpStatus> saveTBEncounter(@RequestBody String json) {
+		TBEncounterDTO tbEncounterDTOS = new Gson().fromJson(json,TBEncounterDTO.class);
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbEncounterDTOS));
 			TBEncounter encounter = PatientsConverter.toTBEncounter(tbEncounterDTOS);
@@ -314,7 +316,7 @@ public class ReferralPatientsController {
 		String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
 				HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UIID + " = ?";
 		Object[] healthFacilityParams = new Object[]{
-				healthFacilityCode,};
+				healthFacilityCode,healthFacilityCode};
 
 		System.out.println("Coze facility ctc code = " + healthFacilityCode);
 		Long healthFacilityId = (long) 0;
@@ -370,6 +372,8 @@ public class ReferralPatientsController {
 		return healthfacilityPatientId;
 	}
 
+
+	//TODO implement regeration of appointments
 	private void createAppointments(long healthfacilityPatientId) {
 		for (int i = 1; i <= 8; i++) {
 			PatientAppointments appointments = new PatientAppointments();
@@ -388,7 +392,7 @@ public class ReferralPatientsController {
 		Calendar c1 = Calendar.getInstance();
 		c1.setTime(d1);
 		System.out.println(c1.get(Calendar.DAY_OF_WEEK));
-		if ((c1.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)) {  //or sunday
+		if ((c1.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)) {
 			return 2;
 		} else if (c1.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 			return 1;

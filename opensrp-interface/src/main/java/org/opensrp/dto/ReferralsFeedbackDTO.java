@@ -13,13 +13,14 @@ public class ReferralsFeedbackDTO {
     private String referralId;
 
     @JsonProperty
-    private String otherClinicalInformation;
-
-    @JsonProperty
     private String otherNotes;
 
     @JsonProperty
     private String serviceGivenToPatient;
+
+
+	@JsonProperty
+	private String testResults; //TODO handle its implementation
 
     /*
 	 *  0 = new
@@ -68,13 +69,6 @@ public class ReferralsFeedbackDTO {
         this.updatedAt = updatedAt;
     }
 
-    public String getOtherClinicalInformation() {
-        return otherClinicalInformation;
-    }
-
-    public void setOtherClinicalInformation(String otherClinicalInformation) {
-        this.otherClinicalInformation = otherClinicalInformation;
-    }
 
     public String getOtherNotes() {
         return otherNotes;

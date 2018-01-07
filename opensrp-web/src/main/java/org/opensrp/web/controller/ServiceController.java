@@ -48,17 +48,17 @@ public class ServiceController {
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-boresha-afya-services")
-    public ResponseEntity<HttpStatus> saveBoreshaAfyaServices(@RequestBody List<BoreshaAfyaServiceDTO> boreshaAfyaServiceDTOS) {
+    public ResponseEntity<HttpStatus> saveBoreshaAfyaServices(@RequestBody String json) {
         try {
-            if (boreshaAfyaServiceDTOS.isEmpty()) {
+	        List<BoreshaAfyaServiceDTO> afyaServiceDTOS = new Gson().fromJson(json, new TypeToken<List<BoreshaAfyaServiceDTO>>() {
+	        }.getType());
+
+            if (afyaServiceDTOS.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
 
-            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, boreshaAfyaServiceDTOS));
+            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, afyaServiceDTOS));
 
-            String json = new Gson().toJson(boreshaAfyaServiceDTOS);
-            List<BoreshaAfyaServiceDTO> afyaServiceDTOS = new Gson().fromJson(json, new TypeToken<List<BoreshaAfyaServiceDTO>>() {
-            }.getType());
 
             List<BoreshaAfyaService> boreshaAfyaServices =  with(afyaServiceDTOS).convert(new Converter<BoreshaAfyaServiceDTO, BoreshaAfyaService>() {
                 @Override
@@ -66,6 +66,7 @@ public class ServiceController {
                     BoreshaAfyaService boreshaAfyaService = new BoreshaAfyaService();
                     boreshaAfyaService.setServiceName(boreshaAfyaServiceDTO.getServiceName());
                     boreshaAfyaService.setIsActive(boreshaAfyaService.getIsActive());
+	                System.out.println("coze:service name = "+boreshaAfyaService.getServiceName());
                     return boreshaAfyaService;
                 }
             });
@@ -74,10 +75,10 @@ public class ServiceController {
                 boreshaAfyaServiceRepository.save(boreshaAfyaService);
             }
 
-            logger.debug(format("Saved Boresha Afya Service to queue.\nSubmissions: {0}", boreshaAfyaServiceDTOS));
+            logger.debug(format("Saved Boresha Afya Service to queue.\nSubmissions: {0}", afyaServiceDTOS));
         } catch (Exception e) {
         	e.printStackTrace();
-            logger.error(format("Boresha Afya Service processing failed with exception {0}.\nSubmissions: {1}", e, boreshaAfyaServiceDTOS));
+            logger.error(format("Boresha Afya Service processing failed with exception {0}.\nSubmissions: {1}", e, json));
             return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(CREATED);

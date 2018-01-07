@@ -33,7 +33,7 @@ public class TBPatientMobileClientDTO {
 	private String hamlet;
 
 	@JsonProperty
-	private Date dateOfBirth;
+	private long dateOfBirth;
 
 	@JsonProperty
 	private String surname;
@@ -48,7 +48,7 @@ public class TBPatientMobileClientDTO {
 	private boolean isPregnant;
 
 	@JsonProperty
-	private Date dateOfDeath;
+	private long dateOfDeath;
 
     @JsonProperty
     private Long healthFacilityPatientId;
@@ -84,7 +84,7 @@ public class TBPatientMobileClientDTO {
     private String outcome;
 
     @JsonProperty
-    private Date outcomeDate;
+    private long outcomeDate;
 
     @JsonProperty
     private String outcomeDetails;
@@ -156,11 +156,11 @@ public class TBPatientMobileClientDTO {
 		this.hamlet = hamlet;
 	}
 
-	public Date getDateOfBirth() {
+	public long getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(Date dateOfBirth) {
+	public void setDateOfBirth(long dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
@@ -180,11 +180,11 @@ public class TBPatientMobileClientDTO {
 		this.gender = gender;
 	}
 
-	public Date getDateOfDeath() {
+	public long getDateOfDeath() {
 		return dateOfDeath;
 	}
 
-	public void setDateOfDeath(Date dateOfDeath) {
+	public void setDateOfDeath(long dateOfDeath) {
 		this.dateOfDeath = dateOfDeath;
 	}
 
@@ -276,11 +276,11 @@ public class TBPatientMobileClientDTO {
 		this.outcome = outcome;
 	}
 
-	public Date getOutcomeDate() {
+	public long getOutcomeDate() {
 		return outcomeDate;
 	}
 
-	public void setOutcomeDate(Date outcomeDate) {
+	public void setOutcomeDate(long outcomeDate) {
 		this.outcomeDate = outcomeDate;
 	}
 

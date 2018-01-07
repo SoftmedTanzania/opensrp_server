@@ -77,15 +77,20 @@ public class PatientsConverter {
 
             patients.setFirstName(patientsDTO.getFirstName());
             patients.setSurname(patientsDTO.getSurname());
+            patients.setMiddleName(patientsDTO.getMiddleName());
+            patients.setPhoneNumber(patientsDTO.getPhoneNumber());
+            patients.setHamlet(patientsDTO.getHamlet());
+            patients.setVillage(patientsDTO.getVillage());
+            patients.setHamlet(patientsDTO.getHamlet());
             patients.setPhoneNumber(patientsDTO.getPhoneNumber());
             Date dob = new Date();
-            dob.setTime(patientsDTO.getDateOfBirth().getTime());
+            dob.setTime(patientsDTO.getDateOfBirth());
             patients.setDateOfBirth(dob);
             patients.setGender(patientsDTO.getGender());
             patients.setHivStatus(patientsDTO.isHivStatus());
 
             Date deathDate = new Date();
-            deathDate.setTime(patientsDTO.getDateOfDeath().getTime());
+            deathDate.setTime(patientsDTO.getDateOfDeath());
 
             patients.setDateOfDeath(deathDate);
             patients.setCreatedAt(Calendar.getInstance().getTime());
@@ -104,7 +109,11 @@ public class PatientsConverter {
             tbPatient.setOutcomeDetails(patientsDTO.getOutcomeDetails());
             tbPatient.setOutcome(patientsDTO.getOutcome());
             tbPatient.setTbPatientId(patientsDTO.getPatientId());
-            tbPatient.setOutcomeDate(patientsDTO.getOutcomeDate());
+
+	        Date outcomeDate = new Date();
+	        outcomeDate.setTime(patientsDTO.getOutcomeDate());
+
+            tbPatient.setOutcomeDate(outcomeDate);
             tbPatient.setOtherTests(patientsDTO.getOtherTests());
             tbPatient.setMakohozi(patientsDTO.getMakohozi());
             tbPatient.setWeight(patientsDTO.getWeight());
@@ -319,9 +328,15 @@ public class PatientsConverter {
         try {
            TBEncounter encounter = new TBEncounter();
            encounter.setTbPatientId(tbEncounterDTO.getTbPatientId());
-           encounter.setMedicationDate(tbEncounterDTO.getMedicationDate());
+           Date medicationDate = new Date();
+           medicationDate.setTime(tbEncounterDTO.getMedicationDate());
+
+           encounter.setMedicationDate(medicationDate);
            encounter.setMedicationStatus(tbEncounterDTO.isMedicationStatus());
-           encounter.setScheduledDate(tbEncounterDTO.getScheduledDate());
+
+           Date scheduledDate = new Date();
+           scheduledDate.setTime(tbEncounterDTO.getScheduledDate());
+           encounter.setScheduledDate(scheduledDate);
            encounter.setHasFinishedPreviousMonthMedication(tbEncounterDTO.isHasFinishedPreviousMonthMedication());
            encounter.setEncounterMonth(tbEncounterDTO.getEncounterMonth());
            encounter.setAppointmentId(tbEncounterDTO.getAppointmentId());

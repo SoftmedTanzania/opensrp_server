@@ -41,7 +41,7 @@ public class HealthFacilitiesController {
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/health_facilities")
-    public ResponseEntity<HttpStatus> savePatient(@RequestBody List<HealthFacilitiesDTO> healthFacilitiesDTOS) {
+    public ResponseEntity<HttpStatus> saveHealthFacility(@RequestBody List<HealthFacilitiesDTO> healthFacilitiesDTOS) {
         try {
             if (healthFacilitiesDTOS.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);

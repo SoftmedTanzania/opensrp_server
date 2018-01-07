@@ -15,9 +15,6 @@ public class ReferralsDTO {
     private Long patientId;
 
     @JsonProperty
-    private String referral_id;
-
-    @JsonProperty
     private String communityBasedHivService;
 
     @JsonProperty
@@ -61,6 +58,10 @@ public class ReferralsDTO {
 
     @JsonProperty
     private String serviceGivenToPatient;
+
+
+    @JsonProperty
+    private String testResults; //TODO handle its implementation
 
 
     @JsonProperty
@@ -241,14 +242,6 @@ public class ReferralsDTO {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public String getReferral_id() {
-        return referral_id;
-    }
-
-    public void setReferral_id(String referral_id) {
-        this.referral_id = referral_id;
     }
 
     public String getOtherClinicalInformation() {

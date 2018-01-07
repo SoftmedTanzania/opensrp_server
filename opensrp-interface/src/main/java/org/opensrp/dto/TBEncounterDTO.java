@@ -27,11 +27,11 @@ public class TBEncounterDTO {
 	private boolean hasFinishedPreviousMonthMedication;
 
 	@JsonProperty
-	private Date scheduledDate;
+	private long scheduledDate;
 
 
 	@JsonProperty
-	private Date medicationDate;
+	private long medicationDate;
 
 	@JsonProperty
 	private boolean medicationStatus;
@@ -91,19 +91,19 @@ public class TBEncounterDTO {
 		this.hasFinishedPreviousMonthMedication = hasFinishedPreviousMonthMedication;
 	}
 
-	public Date getScheduledDate() {
+	public long getScheduledDate() {
 		return scheduledDate;
 	}
 
-	public void setScheduledDate(Date scheduledDate) {
+	public void setScheduledDate(long scheduledDate) {
 		this.scheduledDate = scheduledDate;
 	}
 
-	public Date getMedicationDate() {
+	public long getMedicationDate() {
 		return medicationDate;
 	}
 
-	public void setMedicationDate(Date medicationDate) {
+	public void setMedicationDate(long medicationDate) {
 		this.medicationDate = medicationDate;
 	}
 
