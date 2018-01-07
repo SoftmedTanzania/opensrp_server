@@ -30,7 +30,7 @@ public class PatientsAppointmentsRepository {
 				PatientAppointments.COL_STATUS + "," +
 				PatientAppointments.COL_ROW_VERSION + "," +
 				PatientAppointments.COL_UPDATED_AT + "," +
-				PatientAppointments.COL_CREATED_AT + ") values (?,?,?,?,?) ";
+				PatientAppointments.COL_CREATED_AT + ") values (?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				patientAppointments.getHealthFacilityPatientId(),

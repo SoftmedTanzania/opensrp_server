@@ -40,6 +40,9 @@ public class PatientsRepository {
 		parameters.put(Patients.COL_GENDER , patients.getGender());
 		parameters.put(Patients.COL_DATE_OF_DEATH , patients.getDateOfDeath());
 		parameters.put(Patients.COL_HIV_STATUS , patients.isHivStatus());
+		parameters.put(Patients.COL_VILLAGE , patients.getVillage());
+		parameters.put(Patients.COL_WARD , patients.getWard());
+		parameters.put(Patients.COL_HAMLET , patients.getHamlet());
 		parameters.put(Patients.COL_CREATED_AT , patients.getCreatedAt());
 		parameters.put(Patients.COL_UPDATED_AT , patients.getCreatedAt());
 
@@ -75,6 +78,10 @@ public class PatientsRepository {
 			patients.setPatientId(rs.getLong(rs.findColumn(Patients.COL_PATIENT_ID)));
 			patients.setFirstName(rs.getString(rs.findColumn(Patients.COL_PATIENT_FIRST_NAME)));
 			patients.setSurname(rs.getString(rs.findColumn(Patients.COL_PATIENT_SURNAME)));
+			patients.setMiddleName(rs.getString(rs.findColumn(Patients.COL_PATIENT_MIDDLE_NAME)));
+			patients.setWard(rs.getString(rs.findColumn(Patients.COL_WARD)));
+			patients.setVillage(rs.getString(rs.findColumn(Patients.COL_VILLAGE)));
+			patients.setHamlet(rs.getString(rs.findColumn(Patients.COL_HAMLET)));
 			patients.setPhoneNumber(rs.getString(rs.findColumn(Patients.COL_PHONE_NUMBER)));
 			patients.setDateOfBirth(rs.getDate(rs.findColumn(Patients.COL_DATE_OF_BIRTH)));
 			patients.setGender(rs.getString(rs.findColumn(Patients.COL_GENDER)));

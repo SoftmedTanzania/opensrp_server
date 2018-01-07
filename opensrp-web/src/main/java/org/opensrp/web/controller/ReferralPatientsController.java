@@ -134,13 +134,20 @@ public class ReferralPatientsController {
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_patient")
 	@ResponseBody
-	public TBCompletePatientDataDTO saveTBPatients(@RequestBody String json) {
+	public ResponseEntity<TBCompletePatientDataDTO> saveTBPatients(@RequestBody String json) {
 		TBPatientMobileClientDTO tbPatientMobileClientDTO = new Gson().fromJson(json,TBPatientMobileClientDTO.class);
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbPatientMobileClientDTO));
 
 			Patients convertedPatient = PatientsConverter.toPatients(tbPatientMobileClientDTO);
+
+			System.out.println("Coze:Patient data = "+new Gson().toJson(convertedPatient));
+
 			TBPatient tbPatient = PatientsConverter.toTBPatients(tbPatientMobileClientDTO);
+
+
+			System.out.println("Coze:TB patient data = "+new Gson().toJson(tbPatient));
+
 			long healthfacilityPatientId = savePatient(convertedPatient, tbPatientMobileClientDTO.getHealthFacilityCode(), null);
 
 			HealthFacilitiesPatients hPatient = new HealthFacilitiesPatients();
@@ -170,7 +177,7 @@ public class ReferralPatientsController {
 			tbCompletePatientDataDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
 
 
-			return tbCompletePatientDataDTO;
+			return new ResponseEntity<TBCompletePatientDataDTO>(tbCompletePatientDataDTO,HttpStatus.CREATED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(format("TB Patients processing failed with exception {0}.\nSubmissions: {1}", e, tbPatientMobileClientDTO));

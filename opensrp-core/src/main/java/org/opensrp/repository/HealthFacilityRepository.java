@@ -36,8 +36,8 @@ public class HealthFacilityRepository {
 				healthFacilities.getFacilityName(),
 				healthFacilities.getFacilityCtcCode(),
 		        healthFacilities.getHfrCode(),
-		        healthFacilities.getParentHFRCode(),
 		        healthFacilities.getParentOpenmrsUIID(),
+				healthFacilities.getParentHFRCode(),
 		        healthFacilities.getUpdatedAt(),
 				healthFacilities.getCreatedAt() };
 		int[] types = new int[] {
