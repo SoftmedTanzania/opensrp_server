@@ -24,7 +24,11 @@ public class PatientsConverter {
             patients.setFirstName(patientsDTO.getFirstName());
             patients.setSurname(patientsDTO.getSurname());
             patients.setPhoneNumber(patientsDTO.getPhoneNumber());
-            patients.setDateOfBirth(patientsDTO.getDateOfBirth());
+
+            Date dob = new Date();
+            dob.setTime(patientsDTO.getDateOfBirth());
+
+            patients.setDateOfBirth(dob);
             patients.setGender(patientsDTO.getGender());
             patients.setWard(patientsDTO.getWard());
             patients.setVillage(patientsDTO.getVillage());
@@ -176,14 +180,20 @@ public class PatientsConverter {
             patientsDTO.setPatientId(patients.getPatientId());
             patientsDTO.setFirstName(patients.getFirstName());
             patientsDTO.setSurname(patients.getSurname());
+            patientsDTO.setMiddleName(patients.getMiddleName());
             patientsDTO.setPhoneNumber(patients.getPhoneNumber());
-            patientsDTO.setDateOfBirth(patients.getDateOfBirth());
+            patientsDTO.setDateOfBirth(patients.getDateOfBirth().getTime());
             patientsDTO.setGender(patients.getGender());
             patientsDTO.setWard(patients.getWard());
             patientsDTO.setVillage(patients.getVillage());
             patientsDTO.setHamlet(patients.getHamlet());
 
-            patientsDTO.setDateOfDeath(patients.getDateOfDeath().getTime());
+            try {
+	            patientsDTO.setDateOfDeath(patients.getDateOfDeath().getTime());
+            }catch (Exception e){
+	            patientsDTO.setDateOfDeath((long)0);
+            	e.printStackTrace();
+            }
             patientsDTO.setHivStatus(patients.isHivStatus());
 
             return patientsDTO;

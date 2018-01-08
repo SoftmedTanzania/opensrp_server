@@ -30,7 +30,7 @@ public class PatientsDTO {
     private String hamlet;
 
     @JsonProperty
-    private Date dateOfBirth;
+    private long dateOfBirth;
 
     @JsonProperty
     private String surname;
@@ -96,11 +96,11 @@ public class PatientsDTO {
         this.hamlet = hamlet;
     }
 
-    public Date getDateOfBirth() {
+    public long getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(long dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
