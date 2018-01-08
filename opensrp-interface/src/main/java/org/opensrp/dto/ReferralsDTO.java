@@ -9,9 +9,6 @@ import java.util.Date;
 public class ReferralsDTO {
 
     @JsonProperty
-    private String referralId;
-
-    @JsonProperty
     private Long patientId;
 
     @JsonProperty
@@ -71,7 +68,7 @@ public class ReferralsDTO {
     private int referralSource;
 
     @JsonProperty
-    private Date referralDate;
+    private Long referralDate;
 
     @JsonProperty
     private String facilityId;
@@ -83,21 +80,6 @@ public class ReferralsDTO {
 	 */
     @JsonProperty
     private int referralStatus;
-
-
-    @JsonProperty
-    private Date createdAt;
-
-    @JsonProperty
-    private Date updatedAt;
-
-    public String getReferralId() {
-        return referralId;
-    }
-
-    public void setReferralId(String referralId) {
-        this.referralId = referralId;
-    }
 
 
     public Long getPatientId() {
@@ -204,11 +186,11 @@ public class ReferralsDTO {
         this.villageLeader = villageLeader;
     }
 
-    public Date getReferralDate() {
+    public long getReferralDate() {
         return referralDate;
     }
 
-    public void setReferralDate(Date referralDate) {
+    public void setReferralDate(long referralDate) {
         this.referralDate = referralDate;
     }
 
@@ -226,22 +208,6 @@ public class ReferralsDTO {
 
     public void setReferralStatus(int referralStatus) {
         this.referralStatus = referralStatus;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public String getOtherClinicalInformation() {

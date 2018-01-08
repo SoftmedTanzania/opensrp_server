@@ -17,7 +17,7 @@ public class PatientsAppointmentsDTO {
 
 
     @JsonProperty
-    private Date appointmentDate;
+    private Long appointmentDate;
 
     @JsonProperty
     private boolean isCancelled;
@@ -26,13 +26,8 @@ public class PatientsAppointmentsDTO {
     private String status;
 
     @JsonProperty
-    private Date rowVersion;
+    private Long rowVersion;
 
-    @JsonProperty
-    private Date createdAt;
-
-    @JsonProperty
-    private Date updatedAt;
 
     public Long getAppointment_id() {
         return appointment_id;
@@ -50,11 +45,11 @@ public class PatientsAppointmentsDTO {
         this.healthFacilityPatientId = healthFacilityPatientId;
     }
 
-    public Date getAppointmentDate() {
+    public long getAppointmentDate() {
         return appointmentDate;
     }
 
-    public void setAppointmentDate(Date appointmentDate) {
+    public void setAppointmentDate(long appointmentDate) {
         this.appointmentDate = appointmentDate;
     }
 
@@ -72,30 +67,6 @@ public class PatientsAppointmentsDTO {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Date getRowVersion() {
-        return rowVersion;
-    }
-
-    public void setRowVersion(Date rowVersion) {
-        this.rowVersion = rowVersion;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override

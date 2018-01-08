@@ -2,9 +2,7 @@ package org.opensrp.web.controller;
 
 import static ch.lambdaj.collection.LambdaCollections.with;
 import static java.text.MessageFormat.format;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -26,12 +24,14 @@ import org.opensrp.dto.form.MultimediaDTO;
 import org.opensrp.form.domain.FormSubmission;
 import org.opensrp.form.service.FormSubmissionConverter;
 import org.opensrp.form.service.FormSubmissionService;
+import org.opensrp.repository.GooglePushNotificationsUsersRepository;
 import org.opensrp.repository.MultimediaRepository;
 import org.opensrp.repository.PatientReferralRepository;
 import org.opensrp.repository.PatientsRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
 import org.opensrp.service.ErrorTraceService;
+import org.opensrp.service.GoogleFCMService;
 import org.opensrp.service.MultimediaService;
 import org.opensrp.service.formSubmission.FormEntityConverter;
 import org.slf4j.Logger;
@@ -54,6 +54,7 @@ import ch.lambdaj.function.convert.Converter;
 public class FormSubmissionController {
     private static Logger logger = LoggerFactory.getLogger(FormSubmissionController.class.toString());
     private FormSubmissionService formSubmissionService;
+    private GoogleFCMService googleFCMService;
     private TaskSchedulerService scheduler;
     private EncounterService encounterService;
     private FormEntityConverter formEntityConverter;
@@ -64,12 +65,13 @@ public class FormSubmissionController {
     private MultimediaRepository multimediaRepository;
     private PatientsRepository patientsRepository;
     private PatientReferralRepository patientReferralRepository;
+    private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
 
     @Autowired
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
     		EncounterService encounterService, FormEntityConverter formEntityConverter, PatientService patientService, 
     		HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
-    		ErrorTraceService errorTraceService,PatientsRepository patientsRepository,PatientReferralRepository patientReferralRepository) {
+    		ErrorTraceService errorTraceService,PatientsRepository patientsRepository,PatientReferralRepository patientReferralRepository,GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService=errorTraceService;
@@ -81,6 +83,8 @@ public class FormSubmissionController {
         this.multimediaRepository = multimediaRepository;
         this.patientsRepository = patientsRepository;
         this.patientReferralRepository = patientReferralRepository;
+        this.googlePushNotificationsUsersRepository = googlePushNotificationsUsersRepository;
+	    this.googleFCMService =googleFCMService;
     }
 
     @RequestMapping(method = GET, value = "/form-submissions")
@@ -125,10 +129,8 @@ public class FormSubmissionController {
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.FORM_SUBMISSION, formSubmissionsDTO));
             
             try{
-          
-            ////////TODO MAIMOONA : SHOULD BE IN EVENT but event needs to be moved to web so for now kept here
+
             String json = new Gson().toJson(formSubmissionsDTO);
-            System.out.println("MMMMMMMMMMMYYYYYYYYYYYYYY::"+json);
             List<FormSubmissionDTO> formSubmissions = new Gson().fromJson(json, new TypeToken<List<FormSubmissionDTO>>() {
             }.getType());
             List<FormSubmission> fsl = with(formSubmissions).convert(new Converter<FormSubmissionDTO, FormSubmission>() {
@@ -235,7 +237,29 @@ public class FormSubmissionController {
             patientReferral.setReferralStatus(0);
 
             System.out.println("Coze = saving referral Data");
-            patientReferralRepository.save(patientReferral);
+            long id = patientReferralRepository.save(patientReferral);
+
+            patientReferral.setId(id);
+
+			Object[] facilityParams = new Object[]{patientReferral.getFacilityId()};
+			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ?",facilityParams);
+			String ids = "";
+			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
+				ids+=googlePushNotificationsUsers1.getGooglePushNotificationToken()+",";
+			}
+
+			String tokens = null;
+			if (ids.length() > 1) {
+				tokens = ids.substring(0, ids.length() - 1);
+			}
+
+
+			String json = new Gson().toJson(patientReferral);
+
+//			JSONObject jsonObject = new JSONObject(json);
+
+
+			googleFCMService.SendPushNotification(json,tokens);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));

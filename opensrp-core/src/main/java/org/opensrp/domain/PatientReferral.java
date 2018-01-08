@@ -70,11 +70,6 @@ public class PatientReferral {
 	@JoinColumn(name=COL_PATIENT_ID)
 	private Patients patient;
 
-
-
-	@Column(name = COL_REFERRAL_ID,unique = true)
-	private String referral_id;
-
 	@Column(name = COL_COMMUNITY_BASED_HIV_SERVICE)
 	private String communityBasedHivService;
 
@@ -87,7 +82,7 @@ public class PatientReferral {
 	@Column(name = COL_CTC_NUMBER)
 	private String ctcNumber;
 
-	@Column(name = COL_INSTANCE_ID)
+	@Column(name = COL_INSTANCE_ID,unique = true)
 	private String instanceId;
 
 	@Column(name = COL_HAS_2WEEKS_COUGH)
@@ -174,13 +169,6 @@ public class PatientReferral {
 		this.id = id;
 	}
 
-	public String getReferral_id() {
-		return referral_id;
-	}
-
-	public void setReferral_id(String referral_id) {
-		this.referral_id = referral_id;
-	}
 
 	public String getCommunityBasedHivService() {
 		return communityBasedHivService;

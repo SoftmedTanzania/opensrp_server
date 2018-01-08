@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -365,13 +361,12 @@ public class FormEntityConverter {
 					patients.setPhoneNumber(formField.value());
 
 				if(formField.name().equals(Patients.COL_DATE_OF_BIRTH)) {
-					DateFormat df = new SimpleDateFormat("dd MMM yyyy");
-					Date startDate;
-					try {
-						startDate = df.parse(formField.value());
+					Date startDate = new Date();
+					try{
+						startDate.setTime(Long.parseLong(formField.value()));
 						patients.setDateOfBirth(startDate);
-					}catch (Exception e){
-						e.printStackTrace();
+					}catch (Exception e1){
+						e1.printStackTrace();
 					}
 				}
 
@@ -388,7 +383,6 @@ public class FormEntityConverter {
 	public PatientReferral getPatientReferralFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
 		PatientReferral patientReferral = new PatientReferral();
 		try {
-			patientReferral.setReferral_id(fsubmission.entityId());
 			FormData formData = fsubmission.instance().form();
 			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
 
@@ -420,10 +414,9 @@ public class FormEntityConverter {
 					patientReferral.setHasSevereSweating(Boolean.parseBoolean(formField.value()));
 
 				if(formField.name().equals(PatientReferral.COL_REFERRAL_DATE)) {
-					DateFormat df = new SimpleDateFormat("dd MMM yyyy");
-					Date startDate;
+					Date startDate = new Date();
 					try {
-						startDate = df.parse(formField.value());
+						startDate.setTime(Long.parseLong(formField.value()));
 						patientReferral.setReferralDate(startDate);
 					}catch (Exception e){
 						e.printStackTrace();

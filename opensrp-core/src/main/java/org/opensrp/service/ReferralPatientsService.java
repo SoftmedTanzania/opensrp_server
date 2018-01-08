@@ -51,7 +51,6 @@ public class ReferralPatientsService {
         if (!this.checkIfClientExists(patientReferral)) {
             try {
                 patientReferralRepository.save(patientReferral);
-                logger.info("Successfully saved referral " + patientReferral.getReferral_id());
             } catch (Exception e) {
                 logger.error("", e);
             }
@@ -103,10 +102,9 @@ public class ReferralPatientsService {
 
     public Boolean checkIfClientExists(PatientReferral patientReferral) throws SQLException {
         try {
-            String checkIfExistQuery = "SELECT count(*) from " + PatientReferral.tbName + " WHERE " + PatientReferral.COL_REFERRAL_ID + " = ?";
-            String[] args = new String[1];
-            args[0] = (String) patientReferral.getReferral_id();
-
+            String checkIfExistQuery = "SELECT count(*) from " + PatientReferral.tbName + " WHERE  _id = ?";
+            Object[] args = new Object[1];
+            args[0] = patientReferral.getId();
             int rowCount = patientsRepository.checkIfExists(checkIfExistQuery, args);
 
             logger.info(

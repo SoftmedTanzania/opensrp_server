@@ -5,13 +5,16 @@ import org.opensrp.domain.Patients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Repository
@@ -20,103 +23,53 @@ public class PatientReferralRepository {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+	private SimpleJdbcInsert insert;
 
-	
-	public int save(PatientReferral healthFacilities) throws Exception {
-		String insertQuery = "insert into " + PatientReferral.tbName + " (" +
-				PatientReferral.COL_REFERRAL_ID + "," +
-				PatientReferral.COL_PATIENT_ID + "," +
-				PatientReferral.COL_COMMUNITY_BASED_HIV_SERVICE + "," +
-				PatientReferral.COL_REFERRAL_REASON + "," +
-				PatientReferral.COL_SERVICE_ID + "," +
-				PatientReferral.COL_FACILITY_ID + "," +
-				PatientReferral.COL_CTC_NUMBER + "," +
-				PatientReferral.COL_HAS_2WEEKS_COUGH + "," +
-				PatientReferral.COL_HAS_BLOOD_COUGH + "," +
-				PatientReferral.COL_HAS_SEVERE_SWEATING + "," +
-				PatientReferral.COL_HAS_FEVER + "," +
-				PatientReferral.COL_HAD_WEIGHT_LOSS + "," +
-				PatientReferral.COL_SERVICE_PROVIDER_UIID + "," +
-				PatientReferral.COL_SERVICE_PROVIDER_GROUP + "," +
-				PatientReferral.COL_VILLAGE_LEADER + "," +
-				PatientReferral.COL_FROM_FACILITY_ID + "," +
-				PatientReferral.COL_OTHER_CLINICAL_INFORMATION + "," +
-				PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT + "," +
-				PatientReferral.COL_OTHER_NOTES + "," +
-				PatientReferral.COL_REFERRAL_SOURCE + "," +
-				PatientReferral.COL_REFERRAL_DATE + "," +
-				PatientReferral.COL_REFERRAL_STATUS + "," +
-				PatientReferral.COL_INSTANCE_ID + "," +
-				PatientReferral.COL_UPDATED_AT + "," +
-				PatientReferral.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
-		Object[] params = new Object[] {
-				healthFacilities.getReferral_id(),
-				healthFacilities.getPatient().getPatientId(),
-				healthFacilities.getCommunityBasedHivService(),
-				healthFacilities.getReferralReason(),
-				healthFacilities.getServiceId(),
-		        healthFacilities.getFacilityId(),
-		        healthFacilities.getCtcNumber(),
-		        healthFacilities.getHas2WeeksCough(),
-		        healthFacilities.getHasBloodCough(),
-		        healthFacilities.getHasSevereSweating(),
-		        healthFacilities.getHasFever(),
-		        healthFacilities.getHadWeightLoss(),
-		        healthFacilities.getServiceProviderUIID(),
-		        healthFacilities.getServiceProviderGroup(),
-		        healthFacilities.getVillageLeader(),
-		        healthFacilities.getFromFacilityId(),
-		        healthFacilities.getOtherClinicalInformation(),
-		        healthFacilities.getServiceGivenToPatient(),
-		        healthFacilities.getOtherNotes(),
-		        healthFacilities.getReferralSource(),
-		        healthFacilities.getReferralDate(),
-		        healthFacilities.getReferralStatus(),
-		        healthFacilities.getInstanceId(),
-		        healthFacilities.getUpdatedAt(),
-				healthFacilities.getCreatedAt() };
+	public long save(PatientReferral healthFacilities) throws Exception {
 
-		int[] types = new int[] {
-				Types.VARCHAR,
-				Types.INTEGER,
-				Types.VARCHAR,
-				Types.VARCHAR,
-				Types.INTEGER,
-				Types.VARCHAR,
-				Types.VARCHAR,
-				Types.BOOLEAN,
-				Types.BOOLEAN,
-				Types.BOOLEAN,
-				Types.BOOLEAN,
-				Types.BOOLEAN,
-				Types.VARCHAR,
-				Types.VARCHAR,
-				Types.VARCHAR,
-				Types.INTEGER,
-				Types.VARCHAR,
-				Types.VARCHAR,
-				Types.VARCHAR,
-				Types.INTEGER,
-				Types.DATE,
-				Types.INTEGER,
-				Types.VARCHAR,
-				Types.DATE,
-				Types.TIMESTAMP };
-		
-		return jdbcTemplate.update(insertQuery, params, types);
-		
+
+		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(PatientReferral.tbName).usingGeneratedKeyColumns("_id");
+
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put(PatientReferral.COL_PATIENT_ID ,healthFacilities.getPatient().getPatientId());
+		parameters.put(PatientReferral.COL_COMMUNITY_BASED_HIV_SERVICE , healthFacilities.getCommunityBasedHivService());
+		parameters.put(PatientReferral.COL_REFERRAL_REASON , healthFacilities.getReferralReason());
+		parameters.put(PatientReferral.COL_SERVICE_ID , healthFacilities.getServiceId());
+		parameters.put(PatientReferral.COL_FACILITY_ID ,healthFacilities.getFacilityId());
+		parameters.put(PatientReferral.COL_CTC_NUMBER , healthFacilities.getCtcNumber());
+		parameters.put(PatientReferral.COL_HAS_2WEEKS_COUGH , healthFacilities.getHas2WeeksCough());
+		parameters.put(PatientReferral.COL_HAS_BLOOD_COUGH ,  healthFacilities.getHasBloodCough());
+		parameters.put(PatientReferral.COL_HAS_SEVERE_SWEATING , healthFacilities.getHasSevereSweating());
+		parameters.put(PatientReferral.COL_HAS_FEVER ,  healthFacilities.getHasFever());
+		parameters.put(PatientReferral.COL_HAD_WEIGHT_LOSS ,healthFacilities.getHadWeightLoss());
+		parameters.put(PatientReferral.COL_SERVICE_PROVIDER_UIID , healthFacilities.getServiceProviderUIID());
+		parameters.put(PatientReferral.COL_SERVICE_PROVIDER_GROUP , healthFacilities.getServiceProviderGroup());
+		parameters.put(PatientReferral.COL_VILLAGE_LEADER , healthFacilities.getVillageLeader());
+		parameters.put(PatientReferral.COL_FROM_FACILITY_ID , healthFacilities.getFromFacilityId());
+		parameters.put(PatientReferral.COL_OTHER_CLINICAL_INFORMATION , healthFacilities.getOtherClinicalInformation());
+		parameters.put(PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT , healthFacilities.getServiceGivenToPatient());
+		parameters.put(PatientReferral.COL_OTHER_NOTES , healthFacilities.getOtherNotes());
+		parameters.put(PatientReferral.COL_REFERRAL_SOURCE , healthFacilities.getReferralSource());
+		parameters.put(PatientReferral.COL_REFERRAL_DATE , healthFacilities.getReferralDate());
+		parameters.put(PatientReferral.COL_REFERRAL_STATUS , healthFacilities.getReferralStatus());
+		parameters.put(PatientReferral.COL_INSTANCE_ID ,  healthFacilities.getInstanceId());
+		parameters.put(PatientReferral.COL_CREATED_AT , healthFacilities.getCreatedAt());
+		parameters.put(PatientReferral.COL_UPDATED_AT , healthFacilities.getCreatedAt());
+
+		return insert.executeAndReturnKey(parameters).longValue();
+
 	}
-	
+
 	public void executeQuery(String query) throws Exception {
 		jdbcTemplate.execute(query);
 	}
-	
+
 	public int checkIfExists(String query, String[] args) throws Exception {
 		return this.jdbcTemplate.queryForObject(query, args, Integer.class);
-		
+
 	}
-	
+
 	public void clearTable() throws Exception {
 		String query = "DELETE FROM " + PatientReferral.tbName;
 		executeQuery(query);
@@ -134,7 +87,6 @@ public class PatientReferralRepository {
 		public PatientReferral mapRow(ResultSet rs, int rowNum) throws SQLException {
 			PatientReferral patientReferral = new PatientReferral();
 			patientReferral.setId(rs.getLong(rs.findColumn("_id")));
-			patientReferral.setReferral_id(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_ID)));
 
 			Patients patient = new Patients();
 			patient.setPatientId(rs.getLong(rs.findColumn(PatientReferral.COL_PATIENT_ID)));

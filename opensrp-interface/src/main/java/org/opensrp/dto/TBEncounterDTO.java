@@ -37,11 +37,6 @@ public class TBEncounterDTO {
 	private boolean medicationStatus;
 
 
-	@JsonProperty
-	private Date createdAt;
-
-	@JsonProperty
-	private Date updatedAt;
 
 	public Long getId() {
 		return id;
@@ -113,22 +108,6 @@ public class TBEncounterDTO {
 
 	public void setMedicationStatus(boolean medicationStatus) {
 		this.medicationStatus = medicationStatus;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
 	}
 
 	@Override

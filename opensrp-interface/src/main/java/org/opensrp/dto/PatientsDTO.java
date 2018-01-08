@@ -39,7 +39,7 @@ public class PatientsDTO {
     private String gender;
 
     @JsonProperty
-    private Date dateOfDeath;
+    private Long dateOfDeath;
 
     @JsonProperty
     private boolean hivStatus = false;
@@ -120,11 +120,11 @@ public class PatientsDTO {
         this.gender = gender;
     }
 
-    public Date getDateOfDeath() {
+    public Long getDateOfDeath() {
         return dateOfDeath;
     }
 
-    public void setDateOfDeath(Date dateOfDeath) {
+    public void setDateOfDeath(Long dateOfDeath) {
         this.dateOfDeath = dateOfDeath;
     }
 

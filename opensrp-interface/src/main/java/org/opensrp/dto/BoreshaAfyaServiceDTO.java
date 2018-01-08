@@ -17,18 +17,12 @@ public class BoreshaAfyaServiceDTO {
     @JsonProperty
     private boolean isActive;
 
-    @JsonProperty
-    private Date createdAt;
 
-    @JsonProperty
-    private Date updatedAt;
 
-    public BoreshaAfyaServiceDTO(Long id, String serviceName, boolean isActive, Date createdAt, Date updatedAt) {
+    public BoreshaAfyaServiceDTO(Long id, String serviceName, boolean isActive) {
         this.id = id;
         this.serviceName = serviceName;
         this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public BoreshaAfyaServiceDTO() {
@@ -56,22 +50,6 @@ public class BoreshaAfyaServiceDTO {
 
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override

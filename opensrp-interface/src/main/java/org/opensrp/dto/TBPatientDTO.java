@@ -44,7 +44,7 @@ public class TBPatientDTO {
 	private String outcome;
 
 	@JsonProperty
-	private Date outcomeDate;
+	private long outcomeDate;
 
 	@JsonProperty
 	private String outcomeDetails;
@@ -148,11 +148,11 @@ public class TBPatientDTO {
 		this.outcome = outcome;
 	}
 
-	public Date getOutcomeDate() {
+	public long getOutcomeDate() {
 		return outcomeDate;
 	}
 
-	public void setOutcomeDate(Date outcomeDate) {
+	public void setOutcomeDate(long outcomeDate) {
 		this.outcomeDate = outcomeDate;
 	}
 

@@ -17,18 +17,11 @@ public class TBPatientTypesDTO {
     @JsonProperty
     private boolean isActive;
 
-    @JsonProperty
-    private Date createdAt;
 
-    @JsonProperty
-    private Date updatedAt;
-
-    public TBPatientTypesDTO(Long id, String patientTypeName, boolean isActive, Date createdAt, Date updatedAt) {
+    public TBPatientTypesDTO(Long id, String patientTypeName, boolean isActive) {
         this.id = id;
         this.patientTypeName = patientTypeName;
         this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -53,22 +46,6 @@ public class TBPatientTypesDTO {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override

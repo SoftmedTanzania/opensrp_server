@@ -31,11 +31,6 @@ public class ReferralsFeedbackDTO {
     private int referralStatus;
 
 
-    @JsonProperty
-    private Date createdAt;
-
-    @JsonProperty
-    private Date updatedAt;
 
     public String getReferralId() {
         return referralId;
@@ -52,23 +47,6 @@ public class ReferralsFeedbackDTO {
     public void setReferralStatus(int referralStatus) {
         this.referralStatus = referralStatus;
     }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
 
     public String getOtherNotes() {
         return otherNotes;

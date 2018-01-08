@@ -29,7 +29,11 @@ public class PatientsConverter {
             patients.setWard(patientsDTO.getWard());
             patients.setVillage(patientsDTO.getVillage());
             patients.setHamlet(patientsDTO.getHamlet());
-            patients.setDateOfDeath(patientsDTO.getDateOfDeath());
+
+            Date deathDate = new Date();
+            deathDate.setTime(patientsDTO.getDateOfDeath());
+
+            patients.setDateOfDeath(deathDate);
             patients.setHivStatus(patientsDTO.isHivStatus());
             patients.setCreatedAt(Calendar.getInstance().getTime());
             patients.setUpdatedAt(Calendar.getInstance().getTime());
@@ -178,7 +182,8 @@ public class PatientsConverter {
             patientsDTO.setWard(patients.getWard());
             patientsDTO.setVillage(patients.getVillage());
             patientsDTO.setHamlet(patients.getHamlet());
-            patientsDTO.setDateOfDeath(patients.getDateOfDeath());
+
+            patientsDTO.setDateOfDeath(patients.getDateOfDeath().getTime());
             patientsDTO.setHivStatus(patients.isHivStatus());
 
             return patientsDTO;
@@ -196,7 +201,7 @@ public class PatientsConverter {
             tbPatientDTO.setMakohozi(patient.getMakohozi());
             tbPatientDTO.setOtherTests(patient.getOtherTests());
             tbPatientDTO.setOutcome(patient.getOutcome());
-            tbPatientDTO.setOutcomeDate(patient.getOutcomeDate());
+            tbPatientDTO.setOutcomeDate(patient.getOutcomeDate().getTime());
             tbPatientDTO.setOutcomeDetails(patient.getOutcomeDetails());
             tbPatientDTO.setPatientType(patient.getPatientType());
             tbPatientDTO.setPregnant(patient.isPregnant());
@@ -257,7 +262,6 @@ public class PatientsConverter {
 	        patient.setPatientId(referralsDTO.getPatientId());
 
             referral.setPatient(patient);
-            referral.setReferral_id(referralsDTO.getReferralId());
             referral.setCommunityBasedHivService(referralsDTO.getCommunityBasedHivService());
             referral.setReferralReason(referralsDTO.getReferralReason());
             referral.setServiceId(referralsDTO.getServiceId());
@@ -271,7 +275,13 @@ public class PatientsConverter {
             referral.setServiceProviderUIID(referralsDTO.getServiceProviderUIID());
             referral.setServiceProviderGroup(referralsDTO.getServiceProviderGroup());
             referral.setVillageLeader(referralsDTO.getVillageLeader());
-            referral.setReferralDate(referralsDTO.getReferralDate());
+
+            Date referralDate = new Date();
+            referralDate.setTime(referralsDTO.getReferralDate());
+
+            referral.setReferralDate(referralDate);
+
+
             referral.setFacilityId(referralsDTO.getFacilityId());
 
             referral.setReferralSource(referralsDTO.getReferralSource());
@@ -296,7 +306,6 @@ public class PatientsConverter {
             ReferralsDTO referralsDTO = new ReferralsDTO();
 
             referralsDTO.setPatientId(referral.getPatient().getPatientId());
-            referralsDTO.setReferralId(referral.getReferral_id());
             referralsDTO.setCommunityBasedHivService(referral.getCommunityBasedHivService());
             referralsDTO.setReferralReason(referral.getReferralReason());
             referralsDTO.setServiceId(referral.getServiceId());
@@ -310,11 +319,8 @@ public class PatientsConverter {
             referralsDTO.setServiceProviderUIID(referral.getServiceProviderUIID());
             referralsDTO.setServiceProviderGroup(referral.getServiceProviderGroup());
             referralsDTO.setVillageLeader(referral.getVillageLeader());
-            referralsDTO.setReferralDate(referral.getReferralDate());
+            referralsDTO.setReferralDate(referral.getReferralDate().getTime());
             referralsDTO.setFacilityId(referral.getFacilityId());
-
-            referralsDTO.setCreatedAt(Calendar.getInstance().getTime());
-            referralsDTO.setUpdatedAt(Calendar.getInstance().getTime());
 
             return referralsDTO;
         } catch (Exception e) {
@@ -372,13 +378,10 @@ public class PatientsConverter {
 			PatientsAppointmentsDTO patientsAppointmentsDTO = new PatientsAppointmentsDTO();
 
 			patientsAppointmentsDTO.setAppointment_id(patientAppointments.getAppointment_id());
-			patientsAppointmentsDTO.setAppointmentDate(patientAppointments.getAppointmentDate());
+			patientsAppointmentsDTO.setAppointmentDate(patientAppointments.getAppointmentDate().getTime());
 			patientsAppointmentsDTO.setCancelled(patientAppointments.getIsCancelled());
-			patientsAppointmentsDTO.setCreatedAt(patientAppointments.getCreatedAt());
-			patientsAppointmentsDTO.setRowVersion(patientAppointments.getRowVersion());
 			patientsAppointmentsDTO.setHealthFacilityPatientId(patientAppointments.getHealthFacilityPatientId());
 			patientsAppointmentsDTO.setStatus(patientAppointments.getStatus());
-			patientsAppointmentsDTO.setUpdatedAt(patientAppointments.getUpdatedAt());
 
 			return patientsAppointmentsDTO;
 		} catch (Exception e) {

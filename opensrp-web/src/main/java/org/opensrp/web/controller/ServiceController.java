@@ -99,7 +99,7 @@ public class ServiceController {
         return with(allBoreshaAfyaServices).convert(new Converter<BoreshaAfyaService, BoreshaAfyaServiceDTO>() {
             @Override
             public BoreshaAfyaServiceDTO convert(BoreshaAfyaService boreshaAfyaService) {
-                return new BoreshaAfyaServiceDTO(boreshaAfyaService.getId(),boreshaAfyaService.getServiceName(),boreshaAfyaService.getIsActive(),boreshaAfyaService.getCreatedAt(),boreshaAfyaService.getUpdatedAt());
+                return new BoreshaAfyaServiceDTO(boreshaAfyaService.getId(),boreshaAfyaService.getServiceName(),boreshaAfyaService.getIsActive());
             }
         });
     }
@@ -154,7 +154,7 @@ public class ServiceController {
         return with(tbPatientTypes).convert(new Converter<TBPatientType, TBPatientTypesDTO>() {
             @Override
             public TBPatientTypesDTO convert(TBPatientType tbPatientType) {
-                return new TBPatientTypesDTO(tbPatientType.getId(),tbPatientType.getPatientTypeName(),tbPatientType.getIsActive(),tbPatientType.getCreatedAt(),tbPatientType.getUpdatedAt());
+                return new TBPatientTypesDTO(tbPatientType.getId(),tbPatientType.getPatientTypeName(),tbPatientType.getIsActive());
             }
         });
     }
