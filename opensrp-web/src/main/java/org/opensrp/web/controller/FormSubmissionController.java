@@ -247,11 +247,7 @@ public class FormSubmissionController {
 
             patientReferral.setId(id);
 
-			Object[] HealthfacilityParams = new Object[]{patientReferral.getFacilityId()};
-			List <HealthFacilities> healthFacilities = healthFacilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE _id = ?",HealthfacilityParams);
-
-
-			Object[] facilityParams = new Object[]{healthFacilities.get(0).getOpenMRSUIID(),1};
+			Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),1};
 			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
 			JSONArray tokens = new JSONArray();
 			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
