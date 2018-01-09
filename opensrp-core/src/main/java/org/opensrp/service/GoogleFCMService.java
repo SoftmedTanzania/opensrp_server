@@ -34,6 +34,8 @@ public class GoogleFCMService {
 			json.put("notification", notification);
 			json.put("registration_ids", to);
 
+			System.out.println("FCM Data:"+json.toString());
+
 			HttpEntity<String> httpEntity = new HttpEntity<String>(json.toString(),httpHeaders);
 			String response = restTemplate.postForObject(androidFcmUrl,httpEntity,String.class);
 			System.out.println("FCM:"+response);
