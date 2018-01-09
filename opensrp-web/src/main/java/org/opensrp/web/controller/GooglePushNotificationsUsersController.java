@@ -50,6 +50,8 @@ public class GooglePushNotificationsUsersController {
 
             GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO =  new Gson().fromJson(json, GooglePushNotificationsUsersDTO.class);
 
+            System.out.println("Coze: google push notifications DTO object = "+new Gson().toJson(googlePushNotificationsUsersDTO));
+
             GooglePushNotificationsUsers googlePushNotificationsUser = new Converter<GooglePushNotificationsUsersDTO, GooglePushNotificationsUsers>() {
                 @Override
                 public GooglePushNotificationsUsers convert(GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO) {
@@ -64,6 +66,7 @@ public class GooglePushNotificationsUsersController {
                 }
             }.convert(googlePushNotificationsUsersDTO);
 
+            System.out.println("Coze: google push notifications object = "+new Gson().toJson(googlePushNotificationsUser));
             googlePushNotificationsUsersRepository.save(googlePushNotificationsUser);
 
             logger.debug(format("Saved Google push notification user  queue.\nSubmissions: {0}", json));
