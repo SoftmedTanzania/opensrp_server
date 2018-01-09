@@ -2,10 +2,12 @@ package org.opensrp.service;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.opensrp.domain.HealthFacilitiesPatients;
 import org.opensrp.domain.PatientReferral;
 import org.opensrp.domain.Patients;
 import org.opensrp.dto.PatientReferralsDTO;
 import org.opensrp.dto.ReferralsDTO;
+import org.opensrp.repository.HealthFacilitiesPatientsRepository;
 import org.opensrp.repository.PatientReferralRepository;
 import org.opensrp.repository.PatientsRepository;
 import org.slf4j.Logger;
@@ -29,6 +31,9 @@ public class ReferralPatientsService {
 
     @Autowired
     private PatientReferralRepository patientReferralRepository;
+
+    @Autowired
+    private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
 
 
     public ReferralPatientsService() {
@@ -61,6 +66,48 @@ public class ReferralPatientsService {
     public List<PatientReferralsDTO> getAllPatientReferrals(){
         List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
         String getPatientsSQL = "SELECT * from " + Patients.tbName;
+        try {
+            List<Patients> patientsRepositoryList = patientsRepository.getPatients(getPatientsSQL,null);
+            for(Patients patient : patientsRepositoryList){
+                PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
+                patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
+
+                String getReferralPatientsSQL = "SELECT * from " + PatientReferral.tbName+" WHERE "+PatientReferral.COL_PATIENT_ID +" =?";
+                String[] args = new String[1];
+                args[0] =  patient.getPatientId()+"";
+
+                List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(patientReferralRepository.getReferrals(getReferralPatientsSQL,args));
+                patientReferralsDTO.setPatientReferralsList(referralsDTOS);
+                patientReferralsDTOS.add(patientReferralsDTO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return patientReferralsDTOS;
+    }
+
+    public List<PatientReferralsDTO> getHealthFacilityReferrals(String facilityUUID){
+
+        String[] healthFacilityPatientArg = new String[1];
+        healthFacilityPatientArg[0] =  facilityUUID;
+
+        List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
+        try {
+            healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_FACILITY_ID+" = ?",healthFacilityPatientArg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String ids = "";
+        for(HealthFacilitiesPatients patients:healthFacilitiesPatients){
+            ids+=patients.getPatient().getPatientId()+",";
+        }
+
+
+        ids = delete_last_char_java(ids);
+
+        List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
+        String getPatientsSQL = "SELECT * from " + Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+ " IN ("+ids+")";
         try {
             List<Patients> patientsRepositoryList = patientsRepository.getPatients(getPatientsSQL,null);
             for(Patients patient : patientsRepositoryList){
@@ -116,5 +163,18 @@ public class ReferralPatientsService {
             return null;
         }
     }
+
+    public String delete_last_char_java(String string) {
+
+        String phrase = "level up lunch";
+
+        String rephrase = null;
+        if (phrase != null && phrase.length() > 1) {
+            rephrase = phrase.substring(0, phrase.length() - 1);
+        }
+
+        return rephrase;
+    }
+
 
 }
