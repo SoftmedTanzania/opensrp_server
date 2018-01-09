@@ -271,6 +271,7 @@ public class PatientsConverter {
 	        Patients patient  = new Patients();
 	        patient.setPatientId(referralsDTO.getPatientId());
 
+	        referral.setId(referralsDTO.getReferralId());
             referral.setPatient(patient);
             referral.setCommunityBasedHivService(referralsDTO.getCommunityBasedHivService());
             referral.setReferralReason(referralsDTO.getReferralReason());
@@ -323,6 +324,7 @@ public class PatientsConverter {
             referralsDTO.setHas2WeeksCough(referral.getHas2WeeksCough());
             referralsDTO.setHasBloodCough(referral.getHasBloodCough());
             referralsDTO.setHasFever(referral.getHasFever());
+            referralsDTO.setReferralId(referral.getId());
 
             referralsDTO.setHasSevereSweating(referral.getHasSevereSweating());
             referralsDTO.setHadWeightLoss(referral.getHadWeightLoss());

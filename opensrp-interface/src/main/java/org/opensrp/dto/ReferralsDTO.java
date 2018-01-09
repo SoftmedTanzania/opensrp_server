@@ -9,6 +9,9 @@ import java.util.Date;
 public class ReferralsDTO {
 
     @JsonProperty
+    private Long referralId;
+
+    @JsonProperty
     private Long patientId;
 
     @JsonProperty
@@ -176,6 +179,26 @@ public class ReferralsDTO {
 
     public void setServiceProviderGroup(String serviceProviderGroup) {
         this.serviceProviderGroup = serviceProviderGroup;
+    }
+
+    public Long getReferralId() {
+        return referralId;
+    }
+
+    public void setReferralId(Long referralId) {
+        this.referralId = referralId;
+    }
+
+    public String getTestResults() {
+        return testResults;
+    }
+
+    public void setTestResults(String testResults) {
+        this.testResults = testResults;
+    }
+
+    public void setReferralDate(Long referralDate) {
+        this.referralDate = referralDate;
     }
 
     public String getVillageLeader() {

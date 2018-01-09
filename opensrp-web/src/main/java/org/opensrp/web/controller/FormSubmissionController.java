@@ -7,6 +7,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ import org.opensrp.connector.openmrs.service.EncounterService;
 import org.opensrp.connector.openmrs.service.HouseholdService;
 import org.opensrp.connector.openmrs.service.PatientService;
 import org.opensrp.domain.*;
+import org.opensrp.dto.PatientReferralsDTO;
+import org.opensrp.dto.ReferralsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.dto.form.MultimediaDTO;
 import org.opensrp.form.domain.FormSubmission;
@@ -33,6 +36,7 @@ import org.opensrp.scheduler.TaskSchedulerService;
 import org.opensrp.service.ErrorTraceService;
 import org.opensrp.service.GoogleFCMService;
 import org.opensrp.service.MultimediaService;
+import org.opensrp.service.PatientsConverter;
 import org.opensrp.service.formSubmission.FormEntityConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -256,10 +260,17 @@ public class FormSubmissionController {
 
 			String json = new Gson().toJson(patientReferral);
 
-//			JSONObject jsonObject = new JSONObject(json);
+			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
+			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients));
 
+			List<ReferralsDTO> patientReferrals = new ArrayList<>();
+			patientReferrals.add(PatientsConverter.toPatientDTO(patientReferral));
+			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
-			googleFCMService.SendPushNotification(json,tokens);
+			JSONObject notificationObject = new JSONObject();
+			notificationObject.put("type","PatientReferral");
+
+			googleFCMService.SendPushNotification(json,notificationObject.toString(),tokens);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
