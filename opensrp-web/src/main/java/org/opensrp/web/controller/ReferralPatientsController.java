@@ -239,6 +239,13 @@ public class ReferralPatientsController {
 		return patientReferralsDTOS;
 	}
 
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get_facility_referrals")
+	private List<PatientReferralsDTO> getHealthFacilityReferrals(@RequestBody String facilityUuid) {
+		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getHealthFacilityReferrals(facilityUuid);
+		return patientReferralsDTOS;
+	}
+
+
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_facility_referral")
 	public ResponseEntity<PatientReferral> saveFacilityReferral(@RequestBody ReferralsDTO referralsDTO) {
 		try {
