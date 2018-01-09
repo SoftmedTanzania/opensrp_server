@@ -20,12 +20,16 @@ public class GooglePushNotificationsUsersDTO {
     @JsonProperty
     private String facilityUiid;
 
+    @JsonProperty
+    private int userType;
 
-    public GooglePushNotificationsUsersDTO(Long id, String userUiid, String googlePushNotificationToken, String facilityUiid) {
+
+    public GooglePushNotificationsUsersDTO(Long id, String userUiid, String googlePushNotificationToken, String facilityUiid, int userType) {
         this.id = id;
         this.userUiid = userUiid;
         this.googlePushNotificationToken = googlePushNotificationToken;
         this.facilityUiid = facilityUiid;
+        this.userType = userType;
     }
 
     public Long getId() {
@@ -58,6 +62,14 @@ public class GooglePushNotificationsUsersDTO {
 
     public void setFacilityUiid(String facilityUiid) {
         this.facilityUiid = facilityUiid;
+    }
+
+    public int getUserType() {
+        return userType;
+    }
+
+    public void setUserType(int userType) {
+        this.userType = userType;
     }
 
     @Override

@@ -16,6 +16,8 @@ public class GooglePushNotificationsUsers {
 
 	public static final String COL_FACILITY_UIID = "facility_uiid";
 
+	public static final String COL_USER_TYPE= "user_type";
+
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
@@ -29,12 +31,14 @@ public class GooglePushNotificationsUsers {
 	@Column(name = COL_USER_UIID)
 	private String userUiid;
 
-
 	@Column(name = COL_GOOGLE_PUSH_NOTIFICATION_TOKEN,unique = true)
 	private String googlePushNotificationToken;
 
 	@Column(name = COL_FACILITY_UIID)
 	private String facilityUiid;
+
+	@Column(name = COL_USER_TYPE)
+	private int userType;
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -74,6 +78,14 @@ public class GooglePushNotificationsUsers {
 
 	public void setFacilityUiid(String facilityUiid) {
 		this.facilityUiid = facilityUiid;
+	}
+
+	public int getUserType() {
+		return userType;
+	}
+
+	public void setUserType(int userType) {
+		this.userType = userType;
 	}
 
 	public Date getCreatedAt() {

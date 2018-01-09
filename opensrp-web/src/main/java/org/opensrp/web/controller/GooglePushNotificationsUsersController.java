@@ -50,8 +50,6 @@ public class GooglePushNotificationsUsersController {
 
             GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO =  new Gson().fromJson(json, GooglePushNotificationsUsersDTO.class);
 
-
-
             GooglePushNotificationsUsers googlePushNotificationsUser = new Converter<GooglePushNotificationsUsersDTO, GooglePushNotificationsUsers>() {
                 @Override
                 public GooglePushNotificationsUsers convert(GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO) {
@@ -60,6 +58,7 @@ public class GooglePushNotificationsUsersController {
                     googlePushNotificationsUsers.setGooglePushNotificationToken(googlePushNotificationsUsersDTO.getGooglePushNotificationToken());
                     googlePushNotificationsUsers.setUserUiid(googlePushNotificationsUsersDTO.getUserUiid());
                     googlePushNotificationsUsers.setFacilityUiid(googlePushNotificationsUsersDTO.getFacilityUiid());
+                    googlePushNotificationsUsers.setUserType(googlePushNotificationsUsersDTO.getUserType());
 
                     return googlePushNotificationsUsers;
                 }
@@ -91,7 +90,7 @@ public class GooglePushNotificationsUsersController {
         return with(googlePushNotificationsUsers).convert(new Converter<GooglePushNotificationsUsers, GooglePushNotificationsUsersDTO>() {
             @Override
             public GooglePushNotificationsUsersDTO convert(GooglePushNotificationsUsers googlePushNotificationsUsers) {
-                return new GooglePushNotificationsUsersDTO(googlePushNotificationsUsers.getId(),googlePushNotificationsUsers.getUserUiid(),googlePushNotificationsUsers.getGooglePushNotificationToken(),googlePushNotificationsUsers.getFacilityUiid());
+                return new GooglePushNotificationsUsersDTO(googlePushNotificationsUsers.getId(),googlePushNotificationsUsers.getUserUiid(),googlePushNotificationsUsers.getGooglePushNotificationToken(),googlePushNotificationsUsers.getFacilityUiid(),googlePushNotificationsUsers.getUserType());
             }
         });
     }

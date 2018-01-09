@@ -33,6 +33,7 @@ public class GooglePushNotificationsUsersRepository {
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(GooglePushNotificationsUsers.COL_USER_UIID , googlePushNotificationsUsers.getUserUiid());
 		parameters.put(GooglePushNotificationsUsers.COL_FACILITY_UIID  , googlePushNotificationsUsers.getFacilityUiid());
+		parameters.put(GooglePushNotificationsUsers.COL_USER_TYPE  , googlePushNotificationsUsers.getUserType());
 		parameters.put(GooglePushNotificationsUsers.COL_GOOGLE_PUSH_NOTIFICATION_TOKEN , googlePushNotificationsUsers.getGooglePushNotificationToken());
 		parameters.put(GooglePushNotificationsUsers.COL_CREATED_AT , googlePushNotificationsUsers.getCreatedAt());
 		parameters.put(GooglePushNotificationsUsers.COL_UPDATED_AT , googlePushNotificationsUsers.getCreatedAt());
@@ -69,6 +70,7 @@ public class GooglePushNotificationsUsersRepository {
 
 			googlePushNotificationsUsers.setId(rs.getLong(rs.findColumn("_id")));
 			googlePushNotificationsUsers.setUserUiid(rs.getString(rs.findColumn(GooglePushNotificationsUsers.COL_USER_UIID)));
+			googlePushNotificationsUsers.setUserType(rs.getInt(rs.findColumn(GooglePushNotificationsUsers.COL_USER_TYPE)));
 			googlePushNotificationsUsers.setFacilityUiid(rs.getString(rs.findColumn(GooglePushNotificationsUsers.COL_FACILITY_UIID)));
 			googlePushNotificationsUsers.setGooglePushNotificationToken(rs.getString(rs.findColumn(GooglePushNotificationsUsers.COL_GOOGLE_PUSH_NOTIFICATION_TOKEN)));
 			googlePushNotificationsUsers.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(GooglePushNotificationsUsers.COL_CREATED_AT)).getTime()));
