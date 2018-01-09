@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opensrp.common.AllConstants;
@@ -27,10 +28,7 @@ import org.opensrp.dto.form.MultimediaDTO;
 import org.opensrp.form.domain.FormSubmission;
 import org.opensrp.form.service.FormSubmissionConverter;
 import org.opensrp.form.service.FormSubmissionService;
-import org.opensrp.repository.GooglePushNotificationsUsersRepository;
-import org.opensrp.repository.MultimediaRepository;
-import org.opensrp.repository.PatientReferralRepository;
-import org.opensrp.repository.PatientsRepository;
+import org.opensrp.repository.*;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
 import org.opensrp.service.ErrorTraceService;
@@ -69,13 +67,16 @@ public class FormSubmissionController {
     private MultimediaRepository multimediaRepository;
     private PatientsRepository patientsRepository;
     private PatientReferralRepository patientReferralRepository;
+    private HealthFacilityRepository healthFacilityRepository;
     private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
 
     @Autowired
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
     		EncounterService encounterService, FormEntityConverter formEntityConverter, PatientService patientService, 
     		HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
-    		ErrorTraceService errorTraceService,PatientsRepository patientsRepository,PatientReferralRepository patientReferralRepository,GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService) {
+    		ErrorTraceService errorTraceService,PatientsRepository patientsRepository,PatientReferralRepository patientReferralRepository,
+		                            GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService,
+		                            HealthFacilityRepository healthFacilityRepository) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService=errorTraceService;
@@ -89,6 +90,7 @@ public class FormSubmissionController {
         this.patientReferralRepository = patientReferralRepository;
         this.googlePushNotificationsUsersRepository = googlePushNotificationsUsersRepository;
 	    this.googleFCMService =googleFCMService;
+	    this.healthFacilityRepository = healthFacilityRepository;
     }
 
     @RequestMapping(method = GET, value = "/form-submissions")
@@ -245,17 +247,17 @@ public class FormSubmissionController {
 
             patientReferral.setId(id);
 
-			Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),1};
+			Object[] HealthfacilityParams = new Object[]{patientReferral.getFacilityId()};
+			List <HealthFacilities> healthFacilities = healthFacilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE _id = ?",HealthfacilityParams);
+
+
+			Object[] facilityParams = new Object[]{healthFacilities.get(0).getOpenMRSUIID(),1};
 			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
-			String ids = "";
+			JSONArray tokens = new JSONArray();
 			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
-				ids+=googlePushNotificationsUsers1.getGooglePushNotificationToken()+",";
+				tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
 			}
 
-			String tokens = null;
-			if (ids.length() > 1) {
-				tokens = ids.substring(0, ids.length() - 1);
-			}
 
 
 			List<ReferralsDTO> patientReferrals = new ArrayList<>();
@@ -265,11 +267,19 @@ public class FormSubmissionController {
 			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients));
 			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
+
+			JSONObject body = new JSONObject();
+			body.put("type","PatientReferral");
+
 			JSONObject notificationObject = new JSONObject();
-			notificationObject.put("type","PatientReferral");
+			notificationObject.put("body",body);
+
+
 			String json = new Gson().toJson(patientReferralsDTO);
 
-			googleFCMService.SendPushNotification(json,notificationObject.toString(),tokens);
+			JSONObject msg = new JSONObject(json);
+
+			googleFCMService.SendPushNotification(msg,notificationObject,tokens);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));

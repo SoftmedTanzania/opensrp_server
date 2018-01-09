@@ -3,6 +3,7 @@ package org.opensrp.web.controller;
 import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opensrp.common.AllConstants;
@@ -280,26 +281,26 @@ public class ReferralPatientsController {
 			patientReferrals.add(PatientsConverter.toPatientDTO(savedPatientReferrals.get(0)));
 			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
+
+			JSONObject body = new JSONObject();
+			body.put("type","PatientReferral");
+
 			JSONObject notificationObject = new JSONObject();
-			notificationObject.put("type","PatientReferral");
-
-
+			notificationObject.put("body",body);
 
 			Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(),1};
 			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
-			String ids = "";
+			JSONArray tokens = new JSONArray();
 			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
-				ids+=googlePushNotificationsUsers1.getGooglePushNotificationToken()+",";
-			}
-
-			String tokens = null;
-			if (ids.length() > 1) {
-				tokens = ids.substring(0, ids.length() - 1);
+				tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
 			}
 
 
 			String json = new Gson().toJson(patientReferralsDTO);
-			googleFCMService.SendPushNotification(json,notificationObject.toString(),tokens);
+
+			JSONObject msg = new JSONObject(json);
+
+			googleFCMService.SendPushNotification(msg,notificationObject,tokens);
 
 
 			return new ResponseEntity<PatientReferral>(savedPatientReferrals.get(0),HttpStatus.CREATED);
