@@ -45,6 +45,8 @@ public class PatientReferral {
 
 	public static final String COL_SERVICES_GIVEN_TO_PATIENT= "services_given_to_patient";
 
+	public static final String COL_TEST_RESULTS= "test_results";
+
 	public static final String COL_OTHER_NOTES= "other_notes";
 
 	public static final String COL_REFERRAL_SOURCE= "referral_source";
@@ -143,6 +145,10 @@ public class PatientReferral {
 	 */
 	@Column(name = COL_REFERRAL_STATUS)
 	private int referralStatus;
+
+
+	@Column(name = COL_TEST_RESULTS)
+	private boolean testResults;
 
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
@@ -336,6 +342,14 @@ public class PatientReferral {
 
 	public void setFromFacilityId(int fromFacilityId) {
 		this.fromFacilityId = fromFacilityId;
+	}
+
+	public boolean isTestResults() {
+		return testResults;
+	}
+
+	public void setTestResults(boolean testResults) {
+		this.testResults = testResults;
 	}
 
 	public Date getCreatedAt() {

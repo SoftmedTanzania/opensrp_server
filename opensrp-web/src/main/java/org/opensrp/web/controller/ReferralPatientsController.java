@@ -13,6 +13,7 @@ import org.opensrp.form.service.FormSubmissionService;
 import org.opensrp.repository.*;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
+import org.opensrp.service.GoogleFCMService;
 import org.opensrp.service.PatientsConverter;
 import org.opensrp.service.ReferralPatientsService;
 import org.opensrp.service.formSubmission.FormEntityConverter;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -49,14 +51,18 @@ public class ReferralPatientsController {
 	private TBEncounterRepository tbEncounterRepository;
 	private PatientsAppointmentsRepository patientsAppointmentsRepository;
 	private PatientReferralRepository patientReferralRepository;
+	private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
 	private TBPatientsRepository tbPatientsRepository;
 	private FormSubmissionService formSubmissionService;
 	private FormEntityConverter formEntityConverter;
 	private TaskSchedulerService scheduler;
+	private GoogleFCMService googleFCMService;
+
 	@Autowired
 	public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
 	                                  HealthFacilityRepository healthFacilityRepository, HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository, PatientsAppointmentsRepository patientsAppointmentsRepository,
-	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository,FormSubmissionService formSubmissionService,FormEntityConverter formEntityConverter) {
+	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository,FormSubmissionService formSubmissionService,
+	                                  FormEntityConverter formEntityConverter,GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService) {
 		this.patientsService = patientsService;
 		this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
@@ -68,6 +74,8 @@ public class ReferralPatientsController {
 		this.tbPatientsRepository = tbPatientsRepository;
 		this.formSubmissionService = formSubmissionService;
 		this.formEntityConverter = formEntityConverter;
+		this.googlePushNotificationsUsersRepository = googlePushNotificationsUsersRepository;
+		this.googleFCMService = googleFCMService;
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_patients")
@@ -256,10 +264,45 @@ public class ReferralPatientsController {
 			PatientReferral patientReferral = PatientsConverter.toPatientReferral(referralsDTO);
 			patientReferralRepository.save(patientReferral);
 
-			List<PatientReferral> patientReferrals = patientReferralRepository.getReferrals("SELECT * FROM "+PatientReferral.tbName+" ORDER BY _id DESC LIMIT 1 ",null);
+			List<PatientReferral> savedPatientReferrals = patientReferralRepository.getReferrals("SELECT * FROM "+PatientReferral.tbName+" ORDER BY _id DESC LIMIT 1 ",null);
 			logger.debug(format("Added  ReferralsDTO Submissions: {0}", referralsDTO));
 
-			return new ResponseEntity<PatientReferral>(patientReferrals.get(0),HttpStatus.CREATED);
+
+			Object[] patientParams = new Object[]{
+					savedPatientReferrals.get(0).getPatient().getPatientId()};
+			List<Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" =?",patientParams);
+
+
+			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
+			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients.get(0)));
+
+			List<ReferralsDTO> patientReferrals = new ArrayList<>();
+			patientReferrals.add(PatientsConverter.toPatientDTO(savedPatientReferrals.get(0)));
+			patientReferralsDTO.setPatientReferralsList(patientReferrals);
+
+			JSONObject notificationObject = new JSONObject();
+			notificationObject.put("type","PatientReferral");
+
+
+
+			Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(),1};
+			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
+			String ids = "";
+			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
+				ids+=googlePushNotificationsUsers1.getGooglePushNotificationToken()+",";
+			}
+
+			String tokens = null;
+			if (ids.length() > 1) {
+				tokens = ids.substring(0, ids.length() - 1);
+			}
+
+
+			String json = new Gson().toJson(patientReferralsDTO);
+			googleFCMService.SendPushNotification(json,notificationObject.toString(),tokens);
+
+
+			return new ResponseEntity<PatientReferral>(savedPatientReferrals.get(0),HttpStatus.CREATED);
 		} catch (Exception e) {
 			logger.error(format("ReferralsDTO processing failed with exception {0}.\nSubmissions: {1}", e, referralsDTO));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);

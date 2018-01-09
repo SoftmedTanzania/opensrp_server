@@ -270,7 +270,6 @@ public class PatientsConverter {
 
 	        Patients patient  = new Patients();
 	        patient.setPatientId(referralsDTO.getPatientId());
-
 	        referral.setId(referralsDTO.getReferralId());
             referral.setPatient(patient);
             referral.setCommunityBasedHivService(referralsDTO.getCommunityBasedHivService());
@@ -280,19 +279,18 @@ public class PatientsConverter {
             referral.setHas2WeeksCough(referralsDTO.getHas2WeeksCough());
             referral.setHasBloodCough(referralsDTO.getHasBloodCough());
             referral.setHasFever(referralsDTO.getHasFever());
-
+            referral.setReferralStatus(referralsDTO.getReferralStatus());
             referral.setHasSevereSweating(referralsDTO.getHasSevereSweating());
             referral.setHadWeightLoss(referralsDTO.getHadWeightLoss());
             referral.setServiceProviderUIID(referralsDTO.getServiceProviderUIID());
             referral.setServiceProviderGroup(referralsDTO.getServiceProviderGroup());
             referral.setVillageLeader(referralsDTO.getVillageLeader());
 
+
             Date referralDate = new Date();
             referralDate.setTime(referralsDTO.getReferralDate());
 
             referral.setReferralDate(referralDate);
-
-
             referral.setFacilityId(referralsDTO.getFacilityId());
 
             referral.setReferralSource(referralsDTO.getReferralSource());
@@ -325,7 +323,7 @@ public class PatientsConverter {
             referralsDTO.setHasBloodCough(referral.getHasBloodCough());
             referralsDTO.setHasFever(referral.getHasFever());
             referralsDTO.setReferralId(referral.getId());
-
+            referralsDTO.setReferralStatus(referral.getReferralStatus());
             referralsDTO.setHasSevereSweating(referral.getHasSevereSweating());
             referralsDTO.setHadWeightLoss(referral.getHadWeightLoss());
             referralsDTO.setServiceProviderUIID(referral.getServiceProviderUIID());

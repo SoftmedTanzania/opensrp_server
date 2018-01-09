@@ -258,17 +258,16 @@ public class FormSubmissionController {
 			}
 
 
-			String json = new Gson().toJson(patientReferral);
+			List<ReferralsDTO> patientReferrals = new ArrayList<>();
+			patientReferrals.add(PatientsConverter.toPatientDTO(patientReferral));
 
 			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
 			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients));
-
-			List<ReferralsDTO> patientReferrals = new ArrayList<>();
-			patientReferrals.add(PatientsConverter.toPatientDTO(patientReferral));
 			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
 			JSONObject notificationObject = new JSONObject();
 			notificationObject.put("type","PatientReferral");
+			String json = new Gson().toJson(patientReferralsDTO);
 
 			googleFCMService.SendPushNotification(json,notificationObject.toString(),tokens);
 		} catch (Exception e) {

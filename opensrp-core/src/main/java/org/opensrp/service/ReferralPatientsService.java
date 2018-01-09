@@ -86,6 +86,48 @@ public class ReferralPatientsService {
         return patientReferralsDTOS;
     }
 
+    public List<PatientReferralsDTO> getHealthFacilityReferrals(String facilityUUID){
+
+        String[] healthFacilityPatientArg = new String[1];
+        healthFacilityPatientArg[0] =  facilityUUID;
+
+        List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
+        try {
+            healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_FACILITY_ID+" = ?",healthFacilityPatientArg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String ids = "";
+        for(HealthFacilitiesPatients patients:healthFacilitiesPatients){
+            ids+=patients.getPatient().getPatientId()+",";
+        }
+
+
+        ids = delete_last_char_java(ids);
+
+        List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
+        String getPatientsSQL = "SELECT * from " + Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+ " IN ("+ids+")";
+        try {
+            List<Patients> patientsRepositoryList = patientsRepository.getPatients(getPatientsSQL,null);
+            for(Patients patient : patientsRepositoryList){
+                PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
+                patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
+
+                String getReferralPatientsSQL = "SELECT * from " + PatientReferral.tbName+" WHERE "+PatientReferral.COL_PATIENT_ID +" =?";
+                String[] args = new String[1];
+                args[0] =  patient.getPatientId()+"";
+
+                List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(patientReferralRepository.getReferrals(getReferralPatientsSQL,args));
+                patientReferralsDTO.setPatientReferralsList(referralsDTOS);
+                patientReferralsDTOS.add(patientReferralsDTO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return patientReferralsDTOS;
+    }
+
 
     public Boolean checkIfClientExists(Patients patient) throws SQLException {
         try {
@@ -122,58 +164,17 @@ public class ReferralPatientsService {
         }
     }
 
-	public List<PatientReferralsDTO> getHealthFacilityReferrals(String facilityUUID){
+    public String delete_last_char_java(String string) {
 
-		String[] healthFacilityPatientArg = new String[1];
-		healthFacilityPatientArg[0] =  facilityUUID;
+        String phrase = "level up lunch";
 
-		List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
-		try {
-			healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_FACILITY_ID+" = ?",healthFacilityPatientArg);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        String rephrase = null;
+        if (phrase != null && phrase.length() > 1) {
+            rephrase = phrase.substring(0, phrase.length() - 1);
+        }
 
-		String ids = "";
-		for(HealthFacilitiesPatients patients:healthFacilitiesPatients){
-			ids+=patients.getPatient().getPatientId()+",";
-		}
+        return rephrase;
+    }
 
-
-		ids = delete_last_char_java(ids);
-
-		List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
-		String getPatientsSQL = "SELECT * from " + Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+ " IN ("+ids+")";
-		try {
-			List<Patients> patientsRepositoryList = patientsRepository.getPatients(getPatientsSQL,null);
-			for(Patients patient : patientsRepositoryList){
-				PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
-				patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
-
-				String getReferralPatientsSQL = "SELECT * from " + PatientReferral.tbName+" WHERE "+PatientReferral.COL_PATIENT_ID +" =?";
-				String[] args = new String[1];
-				args[0] =  patient.getPatientId()+"";
-
-				List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(patientReferralRepository.getReferrals(getReferralPatientsSQL,args));
-				patientReferralsDTO.setPatientReferralsList(referralsDTOS);
-				patientReferralsDTOS.add(patientReferralsDTO);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return patientReferralsDTOS;
-	}
-
-	public String delete_last_char_java(String string) {
-
-		String phrase = "level up lunch";
-
-		String rephrase = null;
-		if (phrase != null && phrase.length() > 1) {
-			rephrase = phrase.substring(0, phrase.length() - 1);
-		}
-
-		return rephrase;
-	}
 
 }

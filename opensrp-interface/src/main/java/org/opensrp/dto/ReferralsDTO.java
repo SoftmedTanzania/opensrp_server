@@ -61,7 +61,7 @@ public class ReferralsDTO {
 
 
     @JsonProperty
-    private String testResults; //TODO handle its implementation
+    private boolean testResults; //TODO handle its implementation
 
 
     @JsonProperty
@@ -189,11 +189,11 @@ public class ReferralsDTO {
         this.referralId = referralId;
     }
 
-    public String getTestResults() {
+    public boolean getTestResults() {
         return testResults;
     }
 
-    public void setTestResults(String testResults) {
+    public void setTestResults(boolean testResults) {
         this.testResults = testResults;
     }
 
