@@ -42,7 +42,7 @@ public class GooglePushNotificationsUsersController {
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_push_notification_token")
-    public ResponseEntity<HttpStatus> saveToken(@RequestBody String json) {
+    public ResponseEntity<String> saveToken(@RequestBody String json) {
         try {
             System.out.println("Coze: saving google push notifications users");
             System.out.println("Coze: google push notifications users = "+json);
@@ -75,7 +75,7 @@ public class GooglePushNotificationsUsersController {
             logger.error(format("Google push notification user processing failed with exception {0}.\nSubmissions: {1}", e, json));
             return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(CREATED);
+        return new ResponseEntity<String>("success",OK);
     }
 
 

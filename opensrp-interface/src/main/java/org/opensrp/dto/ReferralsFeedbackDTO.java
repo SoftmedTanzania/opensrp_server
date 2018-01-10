@@ -64,6 +64,14 @@ public class ReferralsFeedbackDTO {
         this.serviceGivenToPatient = serviceGivenToPatient;
     }
 
+    public String getTestResults() {
+        return testResults;
+    }
+
+    public void setTestResults(String testResults) {
+        this.testResults = testResults;
+    }
+
     @Override
     public final boolean equals(Object o) {
         return EqualsBuilder.reflectionEquals(this, o);

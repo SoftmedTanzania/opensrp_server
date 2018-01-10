@@ -80,7 +80,7 @@ public class ReferralPatientsController {
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_patients")
-	public ResponseEntity<HttpStatus> savePatient(@RequestBody List<PatientsDTO> patientsDTOS) {
+	public ResponseEntity<String> savePatient(@RequestBody List<PatientsDTO> patientsDTOS) {
 		try {
 			if (patientsDTOS.isEmpty()) {
 				return new ResponseEntity<>(BAD_REQUEST);
@@ -109,7 +109,7 @@ public class ReferralPatientsController {
 			logger.error(format("Patients processing failed with exception {0}.\nSubmissions: {1}", e, patientsDTOS));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(CREATED);
+		return new ResponseEntity<String>("success",OK);
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_ctc_patients")
@@ -314,8 +314,9 @@ public class ReferralPatientsController {
 
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/receive_feedback")
-	public ResponseEntity<HttpStatus> saveReferralFeedback(@RequestBody ReferralsFeedbackDTO referralsFeedbackDTO) {
+	public ResponseEntity<String> saveReferralFeedback(@RequestBody String json) {
 		try {
+			ReferralsFeedbackDTO referralsFeedbackDTO = new Gson().fromJson(json,ReferralsFeedbackDTO.class);
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsFeedbackDTO));
 
 			List<PatientReferral> referrals = patientReferralRepository.getReferrals("SELECT * FROM " + org.opensrp.domain.PatientReferral.tbName + " WHERE " + PatientReferral.COL_REFERRAL_ID + "=?",
@@ -325,6 +326,7 @@ public class ReferralPatientsController {
 			referral.setReferralStatus(referralsFeedbackDTO.getReferralStatus());
 			referral.setServiceGivenToPatient(referralsFeedbackDTO.getServiceGivenToPatient());
 			referral.setOtherNotes(referralsFeedbackDTO.getOtherNotes());
+			referral.setReferralStatus(referralsFeedbackDTO.getReferralStatus());
 			patientReferralRepository.save(referral);
 
 			if(referral.getReferralSource()==0){
@@ -338,10 +340,11 @@ public class ReferralPatientsController {
 
 			logger.debug(format("updated  ReferralsFeedbackDTO Submissions: {0}", referralsFeedbackDTO));
 		} catch (Exception e) {
-			logger.error(format("ReferralsFeedbackDTO processing failed with exception {0}.\nSubmissions: {1}", e, referralsFeedbackDTO));
+			logger.error(format("ReferralsFeedbackDTO processing failed with exception {0}.\nSubmissions: {1}", e, json));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(CREATED);
+
+		return new ResponseEntity<String>("success",OK);
 	}
 
 
