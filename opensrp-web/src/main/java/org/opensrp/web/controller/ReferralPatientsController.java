@@ -256,8 +256,9 @@ public class ReferralPatientsController {
 
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_facility_referral")
-	public ResponseEntity<PatientReferral> saveFacilityReferral(@RequestBody ReferralsDTO referralsDTO) {
+	public ResponseEntity<PatientReferral> saveFacilityReferral(@RequestBody String jsonData) {
 		try {
+			ReferralsDTO referralsDTO = new Gson().fromJson(jsonData,ReferralsDTO.class);
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
 
 			referralsDTO.setReferralSource(1);
@@ -305,7 +306,7 @@ public class ReferralPatientsController {
 
 			return new ResponseEntity<PatientReferral>(savedPatientReferrals.get(0),HttpStatus.CREATED);
 		} catch (Exception e) {
-			logger.error(format("ReferralsDTO processing failed with exception {0}.\nSubmissions: {1}", e, referralsDTO));
+			logger.error(format("ReferralsDTO processing failed with exception {0}.\nSubmissions: {1}", e, jsonData));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
 	}

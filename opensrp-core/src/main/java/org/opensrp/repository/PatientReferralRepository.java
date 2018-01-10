@@ -94,6 +94,7 @@ public class PatientReferralRepository {
 
 			patientReferral.setCommunityBasedHivService(rs.getString(rs.findColumn(PatientReferral.COL_COMMUNITY_BASED_HIV_SERVICE)));
 			patientReferral.setReferralReason(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_REASON)));
+			patientReferral.setFromFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FROM_FACILITY_ID)));
 			patientReferral.setServiceId(rs.getInt(rs.findColumn(PatientReferral.COL_SERVICE_ID)));
 			patientReferral.setCtcNumber(rs.getString(rs.findColumn(PatientReferral.COL_CTC_NUMBER)));
 			patientReferral.setHas2WeeksCough(rs.getBoolean(rs.findColumn(PatientReferral.COL_HAS_2WEEKS_COUGH)));

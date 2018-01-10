@@ -67,7 +67,7 @@ public class ReferralsDTO {
 
 
     @JsonProperty
-    private int fromFacilityId;
+    private String fromFacilityId;
 
     @JsonProperty
     private int referralSource;
@@ -259,11 +259,11 @@ public class ReferralsDTO {
         this.serviceGivenToPatient = serviceGivenToPatient;
     }
 
-    public int getFromFacilityId() {
+    public String getFromFacilityId() {
         return fromFacilityId;
     }
 
-    public void setFromFacilityId(int fromFacilityId) {
+    public void setFromFacilityId(String fromFacilityId) {
         this.fromFacilityId = fromFacilityId;
     }
 

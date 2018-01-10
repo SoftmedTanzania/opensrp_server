@@ -122,7 +122,7 @@ public class PatientReferral {
 
 
 	@Column(name = COL_FROM_FACILITY_ID)
-	private int fromFacilityId;
+	private String fromFacilityId;
 
 
 	/*
@@ -336,11 +336,11 @@ public class PatientReferral {
 		this.referralSource = referralSource;
 	}
 
-	public int getFromFacilityId() {
+	public String getFromFacilityId() {
 		return fromFacilityId;
 	}
 
-	public void setFromFacilityId(int fromFacilityId) {
+	public void setFromFacilityId(String fromFacilityId) {
 		this.fromFacilityId = fromFacilityId;
 	}
 
