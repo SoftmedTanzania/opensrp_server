@@ -1,16 +1,19 @@
 package org.opensrp.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "tbl_service")
-public class BoreshaAfyaService{
+public class ReferralService {
 
 	public static final String tbName = "tbl_service";
 
 	public static final String COL_SERVICE_NAME = "service_name";
+
+	public static final String COL_SERVICE_ID= "service_id";
+
+	public static final String COL_CATEGORY= "category";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 
@@ -20,12 +23,14 @@ public class BoreshaAfyaService{
 
 	@Id
 	@GeneratedValue
-	@Column(name = "_id")
-	private Long id;
-
+	@Column(name = COL_SERVICE_ID)
+	private Long serviceId;
 
 	@Column(name = COL_SERVICE_NAME,unique = true)
 	private String serviceName;
+
+	@Column(name = COL_CATEGORY)
+	private String category;
 
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;
@@ -38,12 +43,12 @@ public class BoreshaAfyaService{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getId() {
-		return id;
+	public Long getServiceId() {
+		return serviceId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setServiceId(Long serviceId) {
+		this.serviceId = serviceId;
 	}
 
 	public String getServiceName() {
@@ -54,12 +59,20 @@ public class BoreshaAfyaService{
 		this.serviceName = serviceName;
 	}
 
-	public boolean getIsActive() {
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public boolean isActive() {
 		return isActive;
 	}
 
-	public void setIsActive(boolean isActive) {
-		this.isActive = isActive;
+	public void setActive(boolean active) {
+		isActive = active;
 	}
 
 	public Date getCreatedAt() {

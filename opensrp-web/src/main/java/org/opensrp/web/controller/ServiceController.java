@@ -4,14 +4,11 @@ import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
-import org.opensrp.domain.BoreshaAfyaService;
-import org.opensrp.domain.Multimedia;
-import org.opensrp.domain.TBPatient;
+import org.opensrp.domain.ReferralService;
 import org.opensrp.domain.TBPatientType;
 import org.opensrp.dto.BoreshaAfyaServiceDTO;
 import org.opensrp.dto.TBPatientTypesDTO;
-import org.opensrp.dto.form.MultimediaDTO;
-import org.opensrp.repository.BoreshaAfyaServiceRepository;
+import org.opensrp.repository.ReferralServiceRepository;
 import org.opensrp.repository.TBPatientTypeRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
@@ -36,13 +33,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Controller
 public class ServiceController {
     private static Logger logger = LoggerFactory.getLogger(ServiceController.class.toString());
-    private BoreshaAfyaServiceRepository boreshaAfyaServiceRepository;
+    private ReferralServiceRepository referralServiceRepository;
     private TBPatientTypeRepository tbPatientTypeRepository;
     private TaskSchedulerService scheduler;
 
     @Autowired
-    public ServiceController(BoreshaAfyaServiceRepository boreshaAfyaServiceRepository, TaskSchedulerService scheduler,TBPatientTypeRepository tbPatientTypeRepository) {
-        this.boreshaAfyaServiceRepository = boreshaAfyaServiceRepository;
+    public ServiceController(ReferralServiceRepository referralServiceRepository, TaskSchedulerService scheduler, TBPatientTypeRepository tbPatientTypeRepository) {
+        this.referralServiceRepository = referralServiceRepository;
         this.tbPatientTypeRepository = tbPatientTypeRepository;
         this.scheduler = scheduler;
     }
@@ -60,19 +57,19 @@ public class ServiceController {
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, afyaServiceDTOS));
 
 
-            List<BoreshaAfyaService> boreshaAfyaServices =  with(afyaServiceDTOS).convert(new Converter<BoreshaAfyaServiceDTO, BoreshaAfyaService>() {
+            List<ReferralService> referralServices =  with(afyaServiceDTOS).convert(new Converter<BoreshaAfyaServiceDTO, ReferralService>() {
                 @Override
-                public BoreshaAfyaService convert(BoreshaAfyaServiceDTO boreshaAfyaServiceDTO) {
-                    BoreshaAfyaService boreshaAfyaService = new BoreshaAfyaService();
-                    boreshaAfyaService.setServiceName(boreshaAfyaServiceDTO.getServiceName());
-                    boreshaAfyaService.setIsActive(boreshaAfyaService.getIsActive());
-	                System.out.println("coze:service name = "+boreshaAfyaService.getServiceName());
-                    return boreshaAfyaService;
+                public ReferralService convert(BoreshaAfyaServiceDTO boreshaAfyaServiceDTO) {
+                    ReferralService referralService = new ReferralService();
+                    referralService.setServiceName(boreshaAfyaServiceDTO.getServiceName());
+                    referralService.setIsActive(referralService.getIsActive());
+	                System.out.println("coze:service name = "+ referralService.getServiceName());
+                    return referralService;
                 }
             });
 
-            for (BoreshaAfyaService boreshaAfyaService : boreshaAfyaServices) {
-                boreshaAfyaServiceRepository.save(boreshaAfyaService);
+            for (ReferralService referralService : referralServices) {
+                referralServiceRepository.save(referralService);
             }
 
             logger.debug(format("Saved Boresha Afya Service to queue.\nSubmissions: {0}", afyaServiceDTOS));
@@ -89,17 +86,17 @@ public class ServiceController {
     @ResponseBody
     public List<BoreshaAfyaServiceDTO> getBoreshaAfyaServices() {
 
-        List<BoreshaAfyaService> allBoreshaAfyaServices = null;
+        List<ReferralService> allReferralServices = null;
         try {
-            allBoreshaAfyaServices = boreshaAfyaServiceRepository.getBoreshaAfyaServices("Select * from "+ BoreshaAfyaService.tbName,null);
+            allReferralServices = referralServiceRepository.getBoreshaAfyaServices("Select * from "+ ReferralService.tbName,null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return with(allBoreshaAfyaServices).convert(new Converter<BoreshaAfyaService, BoreshaAfyaServiceDTO>() {
+        return with(allReferralServices).convert(new Converter<ReferralService, BoreshaAfyaServiceDTO>() {
             @Override
-            public BoreshaAfyaServiceDTO convert(BoreshaAfyaService boreshaAfyaService) {
-                return new BoreshaAfyaServiceDTO(boreshaAfyaService.getId(),boreshaAfyaService.getServiceName(),boreshaAfyaService.getIsActive());
+            public BoreshaAfyaServiceDTO convert(ReferralService referralService) {
+                return new BoreshaAfyaServiceDTO(referralService.getServiceId(), referralService.getServiceName(), referralService.getIsActive());
             }
         });
     }
