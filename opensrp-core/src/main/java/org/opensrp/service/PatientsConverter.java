@@ -295,7 +295,7 @@ public class PatientsConverter {
 
             referral.setReferralSource(referralsDTO.getReferralSource());
             referral.setServiceGivenToPatient(referralsDTO.getServiceGivenToPatient());
-            referral.setFromFacilityId(referralsDTO.getFromFacilityId());
+//            referral.setFromFacilityId(referralsDTO.getFromFacilityId());
             referral.setOtherClinicalInformation(referralsDTO.getOtherClinicalInformation());
             referral.setOtherNotes(referralsDTO.getOtherNotes());
 
