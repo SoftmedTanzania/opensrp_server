@@ -5,11 +5,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import java.util.Date;
+import java.util.List;
 
-public class BoreshaAfyaServiceDTO {
+public class ReferralServiceIndicatorsDTO {
     @JsonProperty
-    private Long id;
+    private Long serviceId;
 
     @JsonProperty
     private String serviceName;
@@ -21,22 +21,26 @@ public class BoreshaAfyaServiceDTO {
     private boolean isActive;
 
 
-    public BoreshaAfyaServiceDTO(Long id, String serviceName, String category, boolean isActive) {
-        this.id = id;
+    @JsonProperty
+    List<ReferralIndicatorDTO> indicators;
+
+    public ReferralServiceIndicatorsDTO(Long serviceId, String serviceName, String category, boolean isActive, List<ReferralIndicatorDTO> indicators) {
+        this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.category = category;
         this.isActive = isActive;
+        this.indicators = indicators;
     }
 
-    public BoreshaAfyaServiceDTO() {
+    public ReferralServiceIndicatorsDTO() {
     }
 
-    public Long getId() {
-        return id;
+    public Long getServiceId() {
+        return serviceId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
     }
 
     public String getServiceName() {
@@ -61,6 +65,14 @@ public class BoreshaAfyaServiceDTO {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public List<ReferralIndicatorDTO> getIndicators() {
+        return indicators;
+    }
+
+    public void setIndicators(List<ReferralIndicatorDTO> indicators) {
+        this.indicators = indicators;
     }
 
     @Override

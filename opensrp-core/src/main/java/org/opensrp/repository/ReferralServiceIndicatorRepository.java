@@ -57,7 +57,7 @@ public class ReferralServiceIndicatorRepository {
 
 
 
-	public List<ReferralServiceIndicator> getBoreshaAfyaServices(String sql, Object[] args) throws Exception {
+	public List<ReferralServiceIndicator> getReferralServicesIndicators(String sql, Object[] args) throws Exception {
 		return this.jdbcTemplate.query(sql,args, new ServiceRowMapper());
 	}
 
