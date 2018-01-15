@@ -53,8 +53,8 @@ public class ServiceController {
         this.referralIndicatorRepository =referralIndicatorRepository;
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-boresha-afya-services")
-    public ResponseEntity<HttpStatus> saveBoreshaAfyaServices(@RequestBody String json) {
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-services")
+    public ResponseEntity<HttpStatus> saveReferralServices(@RequestBody String json) {
         try {
 	        List<BoreshaAfyaServiceDTO> afyaServiceDTOS = new Gson().fromJson(json, new TypeToken<List<BoreshaAfyaServiceDTO>>() {
 	        }.getType());
@@ -91,10 +91,47 @@ public class ServiceController {
         return new ResponseEntity<>(CREATED);
     }
 
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-indicators")
+    public ResponseEntity<HttpStatus> saveReferralIndicators(@RequestBody String json) {
+        try {
+            List<ReferralIndicatorDTO> indicatorDTOS = new Gson().fromJson(json, new TypeToken<List<ReferralIndicatorDTO>>() {
+            }.getType());
+
+            if (indicatorDTOS.isEmpty()) {
+                return new ResponseEntity<>(BAD_REQUEST);
+            }
+
+            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, indicatorDTOS));
+
+
+            List<ReferralIndicator> referralIndicators =  with(indicatorDTOS).convert(new Converter<ReferralIndicatorDTO, ReferralIndicator>() {
+                @Override
+                public ReferralIndicator convert(ReferralIndicatorDTO referralIndicatorDTO) {
+                    ReferralIndicator referralIndicator = new ReferralIndicator();
+                    referralIndicator.setReferralIndicatorName(referralIndicatorDTO.getIndicatorName());
+                    referralIndicator.setActive(referralIndicator.isActive());
+                    System.out.println("coze:indicator name = "+ referralIndicator.getReferralIndicatorName());
+                    return referralIndicator;
+                }
+            });
+
+            for (ReferralIndicator referralIndicator : referralIndicators) {
+                referralIndicatorRepository.save(referralIndicator);
+            }
+
+            logger.debug(format("Saved Referral Indicator to queue.\nSubmissions: {0}", indicatorDTOS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(format("Referral Indicators processing failed with exception {0}.\nSubmissions: {1}", e, json));
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(CREATED);
+    }
+
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/boresha-afya-services")
     @ResponseBody
-    public List<BoreshaAfyaServiceDTO> getBoreshaAfyaServices() {
+    public List<ReferralServiceIndicatorsDTO> getBoreshaAfyaServices() {
 
         List<ReferralService> allReferralServices = null;
         try {
@@ -150,18 +187,13 @@ public class ServiceController {
             }
             referralServiceIndicatorsDTO.setIndicators(indicatorDTOS);
 
-            referralServiceIndicatorsDTOS.add(referralServiceIndicatorsDTO)
+            referralServiceIndicatorsDTOS.add(referralServiceIndicatorsDTO);
         }
 
 
 
 
-        return with(allReferralServices).convert(new Converter<ReferralService, BoreshaAfyaServiceDTO>() {
-            @Override
-            public BoreshaAfyaServiceDTO convert(ReferralService referralService) {
-                return new BoreshaAfyaServiceDTO(referralService.getServiceId(), referralService.getServiceName(), referralService.getCategory(),referralService.isActive());
-            }
-        });
+        return referralServiceIndicatorsDTOS;
     }
 
 
