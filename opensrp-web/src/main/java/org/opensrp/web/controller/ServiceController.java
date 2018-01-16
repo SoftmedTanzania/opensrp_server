@@ -128,6 +128,52 @@ public class ServiceController {
         return new ResponseEntity<>(CREATED);
     }
 
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-service-indicators")
+    public ResponseEntity<HttpStatus> saveReferralServiceIndicators(@RequestBody String json) {
+        try {
+            List<ReferralServiceIndicatorDTO> referralServiceIndicators = new Gson().fromJson(json, new TypeToken<List<ReferralServiceIndicatorDTO>>() {
+            }.getType());
+
+            if (referralServiceIndicators.isEmpty()) {
+                return new ResponseEntity<>(BAD_REQUEST);
+            }
+
+            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, referralServiceIndicators));
+
+
+            List<ReferralServiceIndicator> referralIndicators =  with(referralServiceIndicators).convert(new Converter<ReferralServiceIndicatorDTO, ReferralServiceIndicator>() {
+                @Override
+                public ReferralServiceIndicator convert(ReferralServiceIndicatorDTO referralServiceIndicatorDTO) {
+                    ReferralServiceIndicator referralServiceIndicator = new ReferralServiceIndicator();
+
+                    ReferralService referralService = new ReferralService();
+                    referralService.setServiceId(referralServiceIndicatorDTO.getReferralServiceId());
+
+                    ReferralIndicator referralIndicator = new ReferralIndicator();
+                    referralIndicator.setReferralIndicatorId(referralServiceIndicatorDTO.getReferralIndicatorId());
+
+                    referralServiceIndicator.setReferralService(referralService);
+                    referralServiceIndicator.setReferralIndicator(referralIndicator);
+
+
+
+                    return referralServiceIndicator;
+                }
+            });
+
+            for (ReferralServiceIndicator referralServiceIndicator : referralIndicators) {
+                referralServiceIndicatorRepository.save(referralServiceIndicator);
+            }
+
+            logger.debug(format("Saved Referral Indicator to queue.\nSubmissions: {0}", referralServiceIndicators));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(format("Referral Indicators processing failed with exception {0}.\nSubmissions: {1}", e, json));
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(CREATED);
+    }
+
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/boresha-afya-services")
     @ResponseBody
