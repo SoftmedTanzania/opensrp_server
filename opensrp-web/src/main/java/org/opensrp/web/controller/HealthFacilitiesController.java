@@ -43,7 +43,7 @@ public class HealthFacilitiesController {
         this.scheduler = scheduler;
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_health_facilities")
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-health-facilities")
     public ResponseEntity<HttpStatus> saveHealthFacility(@RequestBody String json) {
         try {
             System.out.println("Coze:save health facility");

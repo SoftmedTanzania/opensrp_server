@@ -56,7 +56,7 @@ public class ServiceController {
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-services")
     public ResponseEntity<HttpStatus> saveReferralServices(@RequestBody String json) {
         try {
-	        List<BoreshaAfyaServiceDTO> afyaServiceDTOS = new Gson().fromJson(json, new TypeToken<List<BoreshaAfyaServiceDTO>>() {
+	        List<ReferralServiceDTO> afyaServiceDTOS = new Gson().fromJson(json, new TypeToken<List<ReferralServiceDTO>>() {
 	        }.getType());
 
             if (afyaServiceDTOS.isEmpty()) {
@@ -66,9 +66,9 @@ public class ServiceController {
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, afyaServiceDTOS));
 
 
-            List<ReferralService> referralServices =  with(afyaServiceDTOS).convert(new Converter<BoreshaAfyaServiceDTO, ReferralService>() {
+            List<ReferralService> referralServices =  with(afyaServiceDTOS).convert(new Converter<ReferralServiceDTO, ReferralService>() {
                 @Override
-                public ReferralService convert(BoreshaAfyaServiceDTO boreshaAfyaServiceDTO) {
+                public ReferralService convert(ReferralServiceDTO boreshaAfyaServiceDTO) {
                     ReferralService referralService = new ReferralService();
                     referralService.setServiceName(boreshaAfyaServiceDTO.getServiceName());
                     referralService.setCategory(boreshaAfyaServiceDTO.getCategory());

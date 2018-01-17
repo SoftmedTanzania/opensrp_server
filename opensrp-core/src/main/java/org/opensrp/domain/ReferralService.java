@@ -22,7 +22,7 @@ public class ReferralService {
 	public static final String COL_UPDATED_AT = "updated_at";
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = COL_SERVICE_ID)
 	private Long serviceId;
 

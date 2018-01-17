@@ -1,11 +1,12 @@
 package org.opensrp.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "tbl_referral_service_indicator")
-public class ReferralServiceIndicator {
+public class ReferralServiceIndicator implements Serializable {
 
 	public static final String tbName = "tbl_referral_service_indicator";
 

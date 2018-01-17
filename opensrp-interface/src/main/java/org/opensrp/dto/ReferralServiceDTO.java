@@ -7,7 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.Date;
 
-public class BoreshaAfyaServiceDTO {
+public class ReferralServiceDTO {
     @JsonProperty
     private Long id;
 
@@ -21,14 +21,14 @@ public class BoreshaAfyaServiceDTO {
     private boolean isActive;
 
 
-    public BoreshaAfyaServiceDTO(Long id, String serviceName, String category, boolean isActive) {
+    public ReferralServiceDTO(Long id, String serviceName, String category, boolean isActive) {
         this.id = id;
         this.serviceName = serviceName;
         this.category = category;
         this.isActive = isActive;
     }
 
-    public BoreshaAfyaServiceDTO() {
+    public ReferralServiceDTO() {
     }
 
     public Long getId() {
