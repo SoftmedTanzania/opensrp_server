@@ -4,10 +4,7 @@ import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
-import org.opensrp.domain.ReferralIndicator;
-import org.opensrp.domain.ReferralService;
-import org.opensrp.domain.ReferralServiceIndicator;
-import org.opensrp.domain.TBPatientType;
+import org.opensrp.domain.*;
 import org.opensrp.dto.*;
 import org.opensrp.repository.ReferralIndicatorRepository;
 import org.opensrp.repository.ReferralServiceIndicatorRepository;
@@ -70,25 +67,17 @@ public class ServiceController {
                 @Override
                 public ReferralService convert(ReferralServiceDTO boreshaAfyaServiceDTO) {
                     ReferralService referralService = new ReferralService();
-                    referralService.setServiceName(boreshaAfyaServiceDTO.getServiceName());
-                    referralService.setCategory(boreshaAfyaServiceDTO.getCategory());
+                    referralService.setReferralServiceName(boreshaAfyaServiceDTO.getServiceName());
+                    referralService.setReferralCategoryName(boreshaAfyaServiceDTO.getCategory());
                     referralService.setActive(boreshaAfyaServiceDTO.isActive());
-	                System.out.println("coze:service name = "+ referralService.getServiceName());
                     return referralService;
                 }
             });
 
 
-            List<ReferralService> services = referralServiceRepository.getBoreshaAfyaServices("Select "+ReferralService.COL_SERVICE_ID+" FROM "+ReferralService.tbName+" ORDER BY "+ReferralService.COL_SERVICE_ID+" DESC LIMIT 1",null);
-            long id = 0;
-            if(services.size()>0){
-                id = services.get(0).getServiceId();
-            }
 
             for (ReferralService referralService : referralServices) {
-                referralService.setServiceId(id);
                 referralServiceRepository.save(referralService);
-                id++;
             }
 
             logger.debug(format("Saved Boresha Afya Service to queue.\nSubmissions: {0}", afyaServiceDTOS));
@@ -155,15 +144,8 @@ public class ServiceController {
                 public ReferralServiceIndicator convert(ReferralServiceIndicatorDTO referralServiceIndicatorDTO) {
                     ReferralServiceIndicator referralServiceIndicator = new ReferralServiceIndicator();
 
-                    ReferralService referralService = new ReferralService();
-                    referralService.setServiceId(referralServiceIndicatorDTO.getReferralServiceId());
-
-                    ReferralIndicator referralIndicator = new ReferralIndicator();
-                    referralIndicator.setReferralIndicatorId(referralServiceIndicatorDTO.getReferralIndicatorId());
-
-                    referralServiceIndicator.setReferralService(referralService);
-                    referralServiceIndicator.setReferralIndicator(referralIndicator);
-
+	                PK pk = new PK(referralServiceIndicatorDTO.getReferralIndicatorId(),referralServiceIndicatorDTO.getReferralServiceId());
+                    referralServiceIndicator.setPk(pk);
 
 
                     return referralServiceIndicator;
@@ -200,16 +182,16 @@ public class ServiceController {
         for(ReferralService referralService:allReferralServices) {
             ReferralServiceIndicatorsDTO referralServiceIndicatorsDTO = new ReferralServiceIndicatorsDTO();
 
-            referralServiceIndicatorsDTO.setCategory(referralService.getCategory());
-            referralServiceIndicatorsDTO.setServiceId(referralService.getServiceId());
-            referralServiceIndicatorsDTO.setServiceName(referralService.getServiceName());
+            referralServiceIndicatorsDTO.setCategory(referralService.getReferralCategoryName());
+            referralServiceIndicatorsDTO.setServiceId(referralService.getReferralServiceId());
+            referralServiceIndicatorsDTO.setServiceName(referralService.getReferralServiceName());
             referralServiceIndicatorsDTO.setActive(referralService.isActive());
 
 
             List<ReferralServiceIndicator> referralServiceIndicators = null;
             try {
                 Object[] objects = new Object[]{
-                        referralService.getServiceId()
+                        referralService.getReferralServiceId()
                 };
                 referralServiceIndicators =
                         referralServiceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM " + ReferralServiceIndicator.tbName+" WHERE "+ReferralServiceIndicator.COL_SERVICE_ID +" =?", objects);
@@ -224,7 +206,7 @@ public class ServiceController {
 
 
                 Object[] objects = new Object[]{
-                        serviceIndicator.getReferralIndicator().getReferralIndicatorId()
+                        serviceIndicator.getPk().getIndicatorId()
                 };
                 List<ReferralIndicator> referralIndicators = null;
                 try {

@@ -4,16 +4,16 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_service")
+@Table(name = "tbl_referral_services")
 public class ReferralService {
 
-	public static final String tbName = "tbl_service";
+	public static final String tbName = "tbl_referral_services";
 
-	public static final String COL_SERVICE_NAME = "service_name";
+	public static final String COL_REFERRAL_SERVICE_NAME = "referral_service_name";
 
-	public static final String COL_SERVICE_ID= "service_id";
+	public static final String COL_REFERRAL_SERVICE_ID= "referral_service_id";
 
-	public static final String COL_CATEGORY= "category";
+	public static final String COL_REFERRAL_CATEGORY_NAME= "referral_category_name";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 
@@ -22,15 +22,16 @@ public class ReferralService {
 	public static final String COL_UPDATED_AT = "updated_at";
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = COL_SERVICE_ID)
-	private Long serviceId;
+	@GeneratedValue
+	@Column(name = COL_REFERRAL_SERVICE_ID)
+	private Long referralServiceId;
 
-	@Column(name = COL_SERVICE_NAME,unique = true)
-	private String serviceName;
+	@Column(name = COL_REFERRAL_SERVICE_NAME,unique = true)
+	private String referralServiceName;
 
-	@Column(name = COL_CATEGORY)
-	private String category;
+	@Column(name = COL_REFERRAL_CATEGORY_NAME)
+	private String referralCategoryName;
+
 
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;
@@ -43,28 +44,28 @@ public class ReferralService {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getServiceId() {
-		return serviceId;
+	public Long getReferralServiceId() {
+		return referralServiceId;
 	}
 
-	public void setServiceId(Long serviceId) {
-		this.serviceId = serviceId;
+	public void setReferralServiceId(Long referralServiceId) {
+		this.referralServiceId = referralServiceId;
 	}
 
-	public String getServiceName() {
-		return serviceName;
+	public String getReferralServiceName() {
+		return referralServiceName;
 	}
 
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
+	public void setReferralServiceName(String referralServiceName) {
+		this.referralServiceName = referralServiceName;
 	}
 
-	public String getCategory() {
-		return category;
+	public String getReferralCategoryName() {
+		return referralCategoryName;
 	}
 
-	public void setCategory(String category) {
-		this.category = category;
+	public void setReferralCategoryName(String referralCategoryName) {
+		this.referralCategoryName = referralCategoryName;
 	}
 
 	public boolean isActive() {
@@ -73,6 +74,14 @@ public class ReferralService {
 
 	public void setActive(boolean active) {
 		isActive = active;
+	}
+
+	public boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 
 	public Date getCreatedAt() {

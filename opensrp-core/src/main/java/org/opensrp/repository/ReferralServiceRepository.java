@@ -25,13 +25,11 @@ public class ReferralServiceRepository {
 
 	
 	public Long save(ReferralService referralService) throws Exception {
-
-		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(ReferralService.tbName).usingGeneratedKeyColumns(ReferralService.COL_SERVICE_ID);
+		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(ReferralService.tbName).usingGeneratedKeyColumns(ReferralService.COL_REFERRAL_SERVICE_ID);
 
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put(ReferralService.COL_SERVICE_ID , referralService.getServiceId());
-		parameters.put(ReferralService.COL_SERVICE_NAME , referralService.getServiceName());
-		parameters.put(ReferralService.COL_CATEGORY , referralService.getCategory());
+		parameters.put(ReferralService.COL_REFERRAL_SERVICE_NAME , referralService.getReferralServiceName());
+		parameters.put(ReferralService.COL_REFERRAL_CATEGORY_NAME , referralService.getReferralCategoryName());
 		parameters.put(ReferralService.COL_IS_ACTIVE  , referralService.isActive());
 		parameters.put(ReferralService.COL_CREATED_AT , referralService.getCreatedAt());
 		parameters.put(ReferralService.COL_UPDATED_AT , referralService.getCreatedAt());
@@ -66,9 +64,9 @@ public class ReferralServiceRepository {
 		public ReferralService mapRow(ResultSet rs, int rowNum) throws SQLException {
 			ReferralService referralService = new ReferralService();
 
-			referralService.setServiceId(rs.getLong(rs.findColumn(ReferralService.COL_SERVICE_ID)));
-			referralService.setCategory(rs.getString(rs.findColumn(ReferralService.COL_CATEGORY)));
-			referralService.setServiceName(rs.getString(rs.findColumn(ReferralService.COL_SERVICE_NAME)));
+			referralService.setReferralServiceId(rs.getLong(rs.findColumn(ReferralService.COL_REFERRAL_SERVICE_ID)));
+			referralService.setReferralCategoryName(rs.getString(rs.findColumn(ReferralService.COL_REFERRAL_CATEGORY_NAME)));
+			referralService.setReferralServiceName(rs.getString(rs.findColumn(ReferralService.COL_REFERRAL_SERVICE_NAME)));
 			referralService.setActive(rs.getBoolean(rs.findColumn(ReferralService.COL_IS_ACTIVE)));
 			referralService.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ReferralService.COL_CREATED_AT)).getTime()));
 			referralService.setUpdatedAt(rs.getDate(rs.findColumn(ReferralService.COL_UPDATED_AT)));

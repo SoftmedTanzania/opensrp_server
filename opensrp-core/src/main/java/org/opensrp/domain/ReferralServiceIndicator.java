@@ -31,18 +31,6 @@ public class ReferralServiceIndicator implements Serializable {
 	@EmbeddedId
 	private PK pk;
 
-	@MapsId("serviceId") //references EmbeddedId's property
-	@JoinColumn(name = COL_SERVICE_ID, referencedColumnName = COL_SERVICE_ID,insertable=false, updatable=false)
-	@ManyToOne
-	private ReferralService referralService;
-
-
-	@MapsId("indicatorId") //references EmbeddedId's property
-	@JoinColumn(name = COL_REFERRAL_INDICATOR_ID, referencedColumnName = COL_REFERRAL_INDICATOR_ID,insertable=false, updatable=false)
-	@ManyToOne
-	private ReferralIndicator referralIndicator;
-
-
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;
 
@@ -62,21 +50,6 @@ public class ReferralServiceIndicator implements Serializable {
 		this.referralServiceIndicatorId = referralServiceIndicatorId;
 	}
 
-	public ReferralService getReferralService() {
-		return referralService;
-	}
-
-	public void setReferralService(ReferralService referralService) {
-		this.referralService = referralService;
-	}
-
-	public ReferralIndicator getReferralIndicator() {
-		return referralIndicator;
-	}
-
-	public void setReferralIndicator(ReferralIndicator referralIndicator) {
-		this.referralIndicator = referralIndicator;
-	}
 
 	public boolean isActive() {
 		return isActive;
@@ -110,50 +83,11 @@ public class ReferralServiceIndicator implements Serializable {
 		this.updatedAt = updatedAt;
 	}
 
+	public PK getPk() {
+		return pk;
+	}
 
-
-	@Embeddable
-	public class PK implements Serializable {
-		@Column(name = COL_SERVICE_ID)
-		private long serviceId;
-
-		@Column(name = COL_REFERRAL_INDICATOR_ID)
-		private long indicatorId;
-
-
-		public long getServiceId() {
-			return serviceId;
-		}
-
-		public void setServiceId(long serviceId) {
-			this.serviceId = serviceId;
-		}
-
-		public long getIndicatorId() {
-			return indicatorId;
-		}
-
-		public void setIndicatorId(long indicatorId) {
-			this.indicatorId = indicatorId;
-		}
-
-		public PK(long indicatorId, long serviceId) {
-			this.serviceId = serviceId;
-			this.indicatorId = indicatorId;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (!(o instanceof PK)) return false;
-			PK that = (PK) o;
-			return Objects.equals(getIndicatorId(), that.getIndicatorId()) &&
-					Objects.equals(getServiceId(), that.getServiceId());
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(getIndicatorId(), getServiceId());
-		}
+	public void setPk(PK pk) {
+		this.pk = pk;
 	}
 }
