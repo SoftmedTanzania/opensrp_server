@@ -29,6 +29,7 @@ public class ReferralServiceRepository {
 		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(ReferralService.tbName).usingGeneratedKeyColumns(ReferralService.COL_SERVICE_ID);
 
 		Map<String, Object> parameters = new HashMap<>();
+		parameters.put(ReferralService.COL_SERVICE_ID , referralService.getServiceId());
 		parameters.put(ReferralService.COL_SERVICE_NAME , referralService.getServiceName());
 		parameters.put(ReferralService.COL_CATEGORY , referralService.getCategory());
 		parameters.put(ReferralService.COL_IS_ACTIVE  , referralService.isActive());
