@@ -32,7 +32,7 @@ public class ReferralServiceIndicatorRepository {
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(ReferralServiceIndicator.COL_REFERRAL_INDICATOR_ID , referralServiceIndicator.getReferralIndicator().getReferralIndicatorId());
-		parameters.put(ReferralServiceIndicator.COL_REFERRAL_SERVICE_ID , referralServiceIndicator.getReferralService().getServiceId());
+		parameters.put(ReferralServiceIndicator.COL_SERVICE_ID, referralServiceIndicator.getReferralService().getServiceId());
 		parameters.put(ReferralServiceIndicator.COL_IS_ACTIVE  , referralServiceIndicator.isActive());
 		parameters.put(ReferralServiceIndicator.COL_CREATED_AT , referralServiceIndicator.getCreatedAt());
 		parameters.put(ReferralServiceIndicator.COL_UPDATED_AT , referralServiceIndicator.getCreatedAt());
@@ -70,7 +70,7 @@ public class ReferralServiceIndicatorRepository {
 			referralService.setReferralServiceIndicatorId(rs.getLong(rs.findColumn(ReferralServiceIndicator.COL_REFERRAL_SERVICE_INDICATOR_ID)));
 
 			ReferralService service = new ReferralService();
-			service.setServiceId(rs.getLong(rs.findColumn(ReferralServiceIndicator.COL_REFERRAL_SERVICE_ID)));
+			service.setServiceId(rs.getLong(rs.findColumn(ReferralServiceIndicator.COL_SERVICE_ID)));
 
 			referralService.setReferralService(service);
 

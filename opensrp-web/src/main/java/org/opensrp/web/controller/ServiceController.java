@@ -78,8 +78,17 @@ public class ServiceController {
                 }
             });
 
+
+            List<ReferralService> services = referralServiceRepository.getBoreshaAfyaServices("Select "+ReferralService.COL_SERVICE_ID+" FROM "+ReferralService.tbName+" ORDER BY "+ReferralService.COL_SERVICE_ID+" DESC LIMIT 1",null);
+            long id = 0;
+            if(services.size()>0){
+                id = services.get(0).getServiceId();
+            }
+
             for (ReferralService referralService : referralServices) {
+                referralService.setServiceId(id);
                 referralServiceRepository.save(referralService);
+                id++;
             }
 
             logger.debug(format("Saved Boresha Afya Service to queue.\nSubmissions: {0}", afyaServiceDTOS));
@@ -203,7 +212,7 @@ public class ServiceController {
                         referralService.getServiceId()
                 };
                 referralServiceIndicators =
-                        referralServiceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM " + ReferralServiceIndicator.tbName+" WHERE "+ReferralServiceIndicator.COL_REFERRAL_SERVICE_ID+" =?", objects);
+                        referralServiceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM " + ReferralServiceIndicator.tbName+" WHERE "+ReferralServiceIndicator.COL_SERVICE_ID +" =?", objects);
             } catch (Exception e) {
                 e.printStackTrace();
             }

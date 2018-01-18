@@ -241,7 +241,7 @@ public class ReferralPatientsController {
 		return new ResponseEntity<>(CREATED);
 	}
 
-	@RequestMapping(method = GET, value = "/all-patients-referrals")
+	@RequestMapping(method = GET, value = "/all-x-referrals")
 	@ResponseBody
 	private List<PatientReferralsDTO> getAllPatientsReferrals() {
 		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getAllPatientReferrals();
