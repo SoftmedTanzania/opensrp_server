@@ -22,6 +22,8 @@ public class PatientAppointments implements Serializable {
 
 	public static final String COL_STATUS = "status";
 
+	public static final String COL_APPOINTMENT_TYPE = "appointment_type";
+
 	public static final String COL_ROW_VERSION = "row_version";
 
 	public static final String COL_CREATED_AT = "created_at";
@@ -54,6 +56,10 @@ public class PatientAppointments implements Serializable {
 
 	@Column(name = COL_ROW_VERSION)
 	private Date rowVersion;
+
+	@Column(name = COL_APPOINTMENT_TYPE)
+	private int appointmentType;
+
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -109,6 +115,14 @@ public class PatientAppointments implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public int getAppointmentType() {
+		return appointmentType;
+	}
+
+	public void setAppointmentType(int appointmentType) {
+		this.appointmentType = appointmentType;
 	}
 
 	public Date getRowVersion() {
