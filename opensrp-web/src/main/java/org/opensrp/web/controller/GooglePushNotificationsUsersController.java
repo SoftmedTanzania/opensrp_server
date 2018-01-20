@@ -37,7 +37,7 @@ public class GooglePushNotificationsUsersController {
         this.scheduler = scheduler;
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_push_notification_token")
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-push-notification-token")
     public ResponseEntity<String> saveToken(@RequestBody String json) {
         try {
             System.out.println("Coze: saving google push notifications users");

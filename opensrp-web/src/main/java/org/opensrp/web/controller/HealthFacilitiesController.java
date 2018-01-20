@@ -69,7 +69,7 @@ public class HealthFacilitiesController {
         return new ResponseEntity<>(CREATED);
     }
 
-    @RequestMapping(method = GET, value = "/get_health_facilities")
+    @RequestMapping(method = GET, value = "/get-health-facilities")
     @ResponseBody
     private List<HealthFacilities> getHealthFacilities() {
         List<HealthFacilities> healthFacilities = null;

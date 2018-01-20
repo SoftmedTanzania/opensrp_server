@@ -79,7 +79,7 @@ public class ReferralPatientsController {
 		this.googleFCMService = googleFCMService;
 	}
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_patients")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
 	public ResponseEntity<String> savePatient(@RequestBody List<PatientsDTO> patientsDTOS) {
 		try {
 			if (patientsDTOS.isEmpty()) {
@@ -112,7 +112,7 @@ public class ReferralPatientsController {
 		return new ResponseEntity<String>("success",OK);
 	}
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_ctc_patients")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-ctc-patients")
 	public ResponseEntity<HttpStatus> saveCtcPatients(@RequestBody List<CTCPatientsDTO> ctcPatientsDTOS) {
 		try {
 			if (ctcPatientsDTOS.isEmpty()) {
@@ -146,7 +146,7 @@ public class ReferralPatientsController {
 	}
 
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_patient")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-tb-patient")
 	@ResponseBody
 	public ResponseEntity<TBCompletePatientDataDTO> saveTBPatients(@RequestBody String json) {
 		TBPatientMobileClientDTO tbPatientMobileClientDTO = new Gson().fromJson(json,TBPatientMobileClientDTO.class);
@@ -200,7 +200,7 @@ public class ReferralPatientsController {
 	}
 
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_tb_encounters")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-tb-encounters")
 	public ResponseEntity<TBEncounter> saveTBEncounter(@RequestBody String json) {
 		TBEncounterDTO tbEncounterDTOS = new Gson().fromJson(json,TBEncounterDTO.class);
 		try {
@@ -241,21 +241,21 @@ public class ReferralPatientsController {
 		return new ResponseEntity<>(CREATED);
 	}
 
-	@RequestMapping(method = GET, value = "/all-x-referrals")
+	@RequestMapping(method = GET, value = "/all-patients-referrals")
 	@ResponseBody
 	private List<PatientReferralsDTO> getAllPatientsReferrals() {
 		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getAllPatientReferrals();
 		return patientReferralsDTOS;
 	}
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get_facility_referrals")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-facility-referrals")
 	private List<PatientReferralsDTO> getHealthFacilityReferrals(@RequestBody String facilityUuid) {
 		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getHealthFacilityReferrals(facilityUuid);
 		return patientReferralsDTOS;
 	}
 
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save_facility_referral")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-facility-referral")
 	public ResponseEntity<PatientReferral> saveFacilityReferral(@RequestBody String jsonData) {
 		try {
 			ReferralsDTO referralsDTO = new Gson().fromJson(jsonData,ReferralsDTO.class);
@@ -313,7 +313,7 @@ public class ReferralPatientsController {
 
 
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/receive_feedback")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/receive-feedback")
 	public ResponseEntity<String> saveReferralFeedback(@RequestBody String json) {
 		try {
 			ReferralsFeedbackDTO referralsFeedbackDTO = new Gson().fromJson(json,ReferralsFeedbackDTO.class);
