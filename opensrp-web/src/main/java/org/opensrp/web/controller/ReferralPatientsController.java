@@ -26,6 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -248,8 +249,9 @@ public class ReferralPatientsController {
 		return patientReferralsDTOS;
 	}
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-facility-referrals")
-	private List<PatientReferralsDTO> getHealthFacilityReferrals(@RequestBody String facilityUuid) {
+	@RequestMapping("get-facility-referrals/{facilityUUID}")
+	@ResponseBody
+	private List<PatientReferralsDTO> getHealthFacilityReferrals(@PathVariable("facilityUUID") String facilityUuid) {
 		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getHealthFacilityReferrals(facilityUuid);
 		return patientReferralsDTOS;
 	}
