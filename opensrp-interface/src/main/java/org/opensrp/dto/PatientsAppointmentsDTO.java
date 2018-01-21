@@ -28,6 +28,9 @@ public class PatientsAppointmentsDTO {
     @JsonProperty
     private Long rowVersion;
 
+    @JsonProperty
+    private int appointmentType;
+
 
     public Long getAppointment_id() {
         return appointment_id;
@@ -55,6 +58,14 @@ public class PatientsAppointmentsDTO {
 
     public boolean isCancelled() {
         return isCancelled;
+    }
+
+    public int getAppointmentType() {
+        return appointmentType;
+    }
+
+    public void setAppointmentType(int appointmentType) {
+        this.appointmentType = appointmentType;
     }
 
     public void setCancelled(boolean cancelled) {

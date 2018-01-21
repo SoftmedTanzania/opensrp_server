@@ -57,6 +57,12 @@ public class PatientAppointments implements Serializable {
 	@Column(name = COL_ROW_VERSION)
 	private Date rowVersion;
 
+
+	//TODO implement table and configurations for saving this
+	/***
+	 * 1 = CTC
+	 * 2 = TB
+	 */
 	@Column(name = COL_APPOINTMENT_TYPE)
 	private int appointmentType;
 

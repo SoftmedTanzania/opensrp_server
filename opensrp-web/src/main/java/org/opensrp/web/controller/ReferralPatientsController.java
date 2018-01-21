@@ -131,7 +131,7 @@ public class ReferralPatientsController {
 				List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
 
 				for (PatientAppointments patientAppointment : appointments) {
-					patientAppointment.setStatus("CTC");
+					patientAppointment.setAppointmentType(1);
 					patientAppointment.setHealthFacilityPatientId(healthfacilityPatientId);
 					patientsAppointmentsRepository.save(patientAppointment);
 				}
@@ -446,7 +446,7 @@ public class ReferralPatientsController {
 		for (int i = 1; i <= 8; i++) {
 			PatientAppointments appointments = new PatientAppointments();
 			appointments.setHealthFacilityPatientId(healthfacilityPatientId);
-			appointments.setStatus("TB");
+			appointments.setAppointmentType(2);
 			Calendar c = Calendar.getInstance();
 			c.add(Calendar.MONTH, +i);
 			c.add(Calendar.DAY_OF_MONTH, +checkIfWeekend(c.getTime()));

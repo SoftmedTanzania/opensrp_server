@@ -161,6 +161,7 @@ public class PatientsConverter {
 
                 patientAppointment.setRowVersion(rowVersion);
                 patientAppointment.setStatus("0");
+                patientAppointment.setAppointmentType(1);
                 patientAppointments.add(patientAppointment);
             }
 
@@ -385,6 +386,7 @@ public class PatientsConverter {
 			patientsAppointmentsDTO.setCancelled(patientAppointments.getIsCancelled());
 			patientsAppointmentsDTO.setHealthFacilityPatientId(patientAppointments.getHealthFacilityPatientId());
 			patientsAppointmentsDTO.setStatus(patientAppointments.getStatus());
+			patientsAppointmentsDTO.setAppointmentType(patientAppointments.getAppointmentType());
 
 			return patientsAppointmentsDTO;
 		} catch (Exception e) {
