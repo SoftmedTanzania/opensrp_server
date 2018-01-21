@@ -165,10 +165,18 @@ public class ServiceController {
                 }
             });
 
+            long id = 1;
+            List<ReferralServiceIndicator> indicators =  referralServiceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM "+ReferralServiceIndicator.tbName+" ORDER BY "+ReferralServiceIndicator.COL_SERVICE_ID+" LIMIT 1",null);
+            if(indicators.size()>0){
+                id = indicators.get(0).getReferralServiceIndicatorId()+1;
+            }
+
             Exception exp = null;
             for (List<ReferralServiceIndicator> referralServiceIndicatorsList : referralIndicatorsList) {
                 for (ReferralServiceIndicator referralServiceIndicator : referralServiceIndicatorsList) {
                     try {
+                        referralServiceIndicator.setReferralServiceIndicatorId(id);
+                        id++;
                         referralServiceIndicatorRepository.save(referralServiceIndicator);
                     }catch (Exception e){
                         exp = e;
@@ -238,9 +246,11 @@ public class ServiceController {
                     e.printStackTrace();
                 }
 
-                referralIndicatorDTO.setIndicatorName(referralIndicators.get(0).getReferralIndicatorName());
-                referralIndicatorDTO.setReferralIndicatorId(referralIndicators.get(0).getReferralIndicatorId());
-                referralIndicatorDTO.setActive(referralIndicators.get(0).isActive());
+                if(referralIndicators.size()>0) {
+                    referralIndicatorDTO.setIndicatorName(referralIndicators.get(0).getReferralIndicatorName());
+                    referralIndicatorDTO.setReferralIndicatorId(referralIndicators.get(0).getReferralIndicatorId());
+                    referralIndicatorDTO.setActive(referralIndicators.get(0).isActive());
+                }
 
                 indicatorDTOS.add(referralIndicatorDTO);
 
