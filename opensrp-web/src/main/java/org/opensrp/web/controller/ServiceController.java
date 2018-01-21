@@ -113,9 +113,18 @@ public class ServiceController {
                 }
             });
 
+            Exception exp = null;
             for (ReferralIndicator referralIndicator : referralIndicators) {
-                referralIndicatorRepository.save(referralIndicator);
+                try {
+                    referralIndicatorRepository.save(referralIndicator);
+                }catch (Exception e){
+                    exp=e;
+                    e.printStackTrace();
+                }
             }
+
+            if(exp!=null)
+                throw  exp;
 
             logger.debug(format("Saved Referral Indicator to queue.\nSubmissions: {0}", indicatorDTOS));
         } catch (Exception e) {
@@ -139,23 +148,37 @@ public class ServiceController {
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, referralServiceIndicators));
 
 
-            List<ReferralServiceIndicator> referralIndicators =  with(referralServiceIndicators).convert(new Converter<ReferralServiceIndicatorDTO, ReferralServiceIndicator>() {
+            List<List<ReferralServiceIndicator>> referralIndicatorsList =  with(referralServiceIndicators).convert(new Converter<ReferralServiceIndicatorDTO, List<ReferralServiceIndicator>>() {
                 @Override
-                public ReferralServiceIndicator convert(ReferralServiceIndicatorDTO referralServiceIndicatorDTO) {
-                    ReferralServiceIndicator referralServiceIndicator = new ReferralServiceIndicator();
+                public List<ReferralServiceIndicator> convert(ReferralServiceIndicatorDTO referralServiceIndicatorDTO) {
+                    List<ReferralServiceIndicator> referralIndicators = new ArrayList<>();
+                    for (Long indicatorId:referralServiceIndicatorDTO.getReferralIndicatorId()) {
+                        ReferralServiceIndicator referralServiceIndicator = new ReferralServiceIndicator();
+                        PK pk = new PK(indicatorId, referralServiceIndicatorDTO.getReferralServiceId());
+                        referralServiceIndicator.setPk(pk);
 
-	                PK pk = new PK(referralServiceIndicatorDTO.getReferralIndicatorId(),referralServiceIndicatorDTO.getReferralServiceId());
-                    referralServiceIndicator.setPk(pk);
+                        referralIndicators.add(referralServiceIndicator);
+                    }
 
 
-                    return referralServiceIndicator;
+                    return referralIndicators;
                 }
             });
 
-            for (ReferralServiceIndicator referralServiceIndicator : referralIndicators) {
-                referralServiceIndicatorRepository.save(referralServiceIndicator);
+            Exception exp = null;
+            for (List<ReferralServiceIndicator> referralServiceIndicatorsList : referralIndicatorsList) {
+                for (ReferralServiceIndicator referralServiceIndicator : referralServiceIndicatorsList) {
+                    try {
+                        referralServiceIndicatorRepository.save(referralServiceIndicator);
+                    }catch (Exception e){
+                        exp = e;
+                        e.printStackTrace();
+                    }
+                }
             }
 
+            if(exp!=null)
+                throw  exp;
             logger.debug(format("Saved Referral Indicator to queue.\nSubmissions: {0}", referralServiceIndicators));
         } catch (Exception e) {
             e.printStackTrace();

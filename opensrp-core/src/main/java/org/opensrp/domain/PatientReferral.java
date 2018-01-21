@@ -21,16 +21,6 @@ public class PatientReferral {
 
 	public static final String COL_CTC_NUMBER = "ctc_number";
 
-	public static final String COL_HAS_2WEEKS_COUGH = "has_2Week_cough";
-
-	public static final String COL_HAS_BLOOD_COUGH= "has_blood_cough";
-
-	public static final String COL_HAS_SEVERE_SWEATING = "has_severe_sweating";
-
-	public static final String COL_HAS_FEVER = "has_fever";
-
-	public static final String COL_HAD_WEIGHT_LOSS = "had_weight_loss";
-
 	public static final String COL_FACILITY_ID = "facility_id";
 
 	public static final String COL_REFERRAL_DATE= "referral_date";
@@ -86,21 +76,6 @@ public class PatientReferral {
 
 	@Column(name = COL_INSTANCE_ID,unique = true)
 	private String instanceId;
-
-	@Column(name = COL_HAS_2WEEKS_COUGH)
-	private Boolean has2WeeksCough;
-
-	@Column(name = COL_HAS_BLOOD_COUGH)
-	private Boolean hasBloodCough;
-
-	@Column(name = COL_HAS_SEVERE_SWEATING)
-	private Boolean hasSevereSweating;
-
-	@Column(name = COL_HAS_FEVER)
-	private Boolean hasFever;
-
-	@Column(name = COL_HAD_WEIGHT_LOSS)
-	private Boolean hadWeightLoss;
 
 	@Column(name = COL_SERVICE_PROVIDER_UIID)
 	private String serviceProviderUIID;
@@ -208,45 +183,6 @@ public class PatientReferral {
 		this.ctcNumber = ctcNumber;
 	}
 
-	public Boolean getHas2WeeksCough() {
-		return has2WeeksCough;
-	}
-
-	public void setHas2WeeksCough(Boolean has2WeeksCough) {
-		this.has2WeeksCough = has2WeeksCough;
-	}
-
-	public Boolean getHasBloodCough() {
-		return hasBloodCough;
-	}
-
-	public void setHasBloodCough(Boolean hasBloodCough) {
-		this.hasBloodCough = hasBloodCough;
-	}
-
-	public Boolean getHasSevereSweating() {
-		return hasSevereSweating;
-	}
-
-	public void setHasSevereSweating(Boolean hasSevereSweating) {
-		this.hasSevereSweating = hasSevereSweating;
-	}
-
-	public Boolean getHasFever() {
-		return hasFever;
-	}
-
-	public void setHasFever(Boolean hasFever) {
-		this.hasFever = hasFever;
-	}
-
-	public Boolean getHadWeightLoss() {
-		return hadWeightLoss;
-	}
-
-	public void setHadWeightLoss(Boolean hadWeightLoss) {
-		this.hadWeightLoss = hadWeightLoss;
-	}
 
 	public String getServiceProviderUIID() {
 		return serviceProviderUIID;

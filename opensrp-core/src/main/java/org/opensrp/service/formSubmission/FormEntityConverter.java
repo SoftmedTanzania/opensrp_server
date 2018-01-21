@@ -398,21 +398,7 @@ public class FormEntityConverter {
 				if(formField.name().equals(PatientReferral.COL_FACILITY_ID))
 					patientReferral.setFacilityId(formField.value());
 
-				if(formField.name().equals(PatientReferral.COL_HAD_WEIGHT_LOSS))
-					patientReferral.setHadWeightLoss(Boolean.parseBoolean(formField.value()));
-
-				if(formField.name().equals(PatientReferral.COL_HAS_2WEEKS_COUGH))
-					patientReferral.setHas2WeeksCough(Boolean.parseBoolean(formField.value()));
-
-				if(formField.name().equals(PatientReferral.COL_HAS_BLOOD_COUGH))
-					patientReferral.setHasBloodCough(Boolean.parseBoolean(formField.value()));
-
-				if(formField.name().equals(PatientReferral.COL_HAS_FEVER))
-					patientReferral.setHasFever(Boolean.parseBoolean(formField.value()));
-
-				if(formField.name().equals(PatientReferral.COL_HAS_SEVERE_SWEATING))
-					patientReferral.setHasSevereSweating(Boolean.parseBoolean(formField.value()));
-
+				//TODO implement new mechanism for storing referral indicators
 				if(formField.name().equals(PatientReferral.COL_REFERRAL_DATE)) {
 					Date startDate = new Date();
 					try {

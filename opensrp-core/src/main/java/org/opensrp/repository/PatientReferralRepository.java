@@ -38,11 +38,6 @@ public class PatientReferralRepository {
 		parameters.put(PatientReferral.COL_SERVICE_ID , healthFacilities.getServiceId());
 		parameters.put(PatientReferral.COL_FACILITY_ID ,healthFacilities.getFacilityId());
 		parameters.put(PatientReferral.COL_CTC_NUMBER , healthFacilities.getCtcNumber());
-		parameters.put(PatientReferral.COL_HAS_2WEEKS_COUGH , healthFacilities.getHas2WeeksCough());
-		parameters.put(PatientReferral.COL_HAS_BLOOD_COUGH ,  healthFacilities.getHasBloodCough());
-		parameters.put(PatientReferral.COL_HAS_SEVERE_SWEATING , healthFacilities.getHasSevereSweating());
-		parameters.put(PatientReferral.COL_HAS_FEVER ,  healthFacilities.getHasFever());
-		parameters.put(PatientReferral.COL_HAD_WEIGHT_LOSS ,healthFacilities.getHadWeightLoss());
 		parameters.put(PatientReferral.COL_SERVICE_PROVIDER_UIID , healthFacilities.getServiceProviderUIID());
 		parameters.put(PatientReferral.COL_SERVICE_PROVIDER_GROUP , healthFacilities.getServiceProviderGroup());
 		parameters.put(PatientReferral.COL_VILLAGE_LEADER , healthFacilities.getVillageLeader());
@@ -97,11 +92,6 @@ public class PatientReferralRepository {
 			patientReferral.setFromFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FROM_FACILITY_ID)));
 			patientReferral.setServiceId(rs.getInt(rs.findColumn(PatientReferral.COL_SERVICE_ID)));
 			patientReferral.setCtcNumber(rs.getString(rs.findColumn(PatientReferral.COL_CTC_NUMBER)));
-			patientReferral.setHas2WeeksCough(rs.getBoolean(rs.findColumn(PatientReferral.COL_HAS_2WEEKS_COUGH)));
-			patientReferral.setHasBloodCough(rs.getBoolean(rs.findColumn(PatientReferral.COL_HAS_BLOOD_COUGH)));
-			patientReferral.setHasSevereSweating(rs.getBoolean(rs.findColumn(PatientReferral.COL_HAS_SEVERE_SWEATING)));
-			patientReferral.setHasFever(rs.getBoolean(rs.findColumn(PatientReferral.COL_HAS_FEVER)));
-			patientReferral.setHadWeightLoss(rs.getBoolean(rs.findColumn(PatientReferral.COL_HAD_WEIGHT_LOSS)));
 			patientReferral.setServiceProviderUIID(rs.getString(rs.findColumn(PatientReferral.COL_SERVICE_PROVIDER_UIID)));
 			patientReferral.setServiceProviderGroup(rs.getString(rs.findColumn(PatientReferral.COL_SERVICE_PROVIDER_GROUP)));
 			patientReferral.setVillageLeader(rs.getString(rs.findColumn(PatientReferral.COL_VILLAGE_LEADER)));

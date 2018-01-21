@@ -276,12 +276,9 @@ public class PatientsConverter {
             referral.setReferralReason(referralsDTO.getReferralReason());
             referral.setServiceId(referralsDTO.getServiceId());
             referral.setCtcNumber(referralsDTO.getServiceProviderGroup());
-            referral.setHas2WeeksCough(referralsDTO.getHas2WeeksCough());
-            referral.setHasBloodCough(referralsDTO.getHasBloodCough());
-            referral.setHasFever(referralsDTO.getHasFever());
+
+            //TODO implement new mechanism for saving referral indicators
             referral.setReferralStatus(referralsDTO.getReferralStatus());
-            referral.setHasSevereSweating(referralsDTO.getHasSevereSweating());
-            referral.setHadWeightLoss(referralsDTO.getHadWeightLoss());
             referral.setServiceProviderUIID(referralsDTO.getServiceProviderUIID());
             referral.setServiceProviderGroup(referralsDTO.getServiceProviderGroup());
             referral.setVillageLeader(referralsDTO.getVillageLeader());
@@ -318,14 +315,10 @@ public class PatientsConverter {
             referralsDTO.setCommunityBasedHivService(referral.getCommunityBasedHivService());
             referralsDTO.setReferralReason(referral.getReferralReason());
             referralsDTO.setServiceId(referral.getServiceId());
-            referralsDTO.setCtcNumber(referral.getServiceProviderGroup());
-            referralsDTO.setHas2WeeksCough(referral.getHas2WeeksCough());
-            referralsDTO.setHasBloodCough(referral.getHasBloodCough());
-            referralsDTO.setHasFever(referral.getHasFever());
             referralsDTO.setReferralId(referral.getId());
             referralsDTO.setReferralStatus(referral.getReferralStatus());
-            referralsDTO.setHasSevereSweating(referral.getHasSevereSweating());
-            referralsDTO.setHadWeightLoss(referral.getHadWeightLoss());
+
+            //TODO implement new mechanism for saving referral indicators
             referralsDTO.setServiceProviderUIID(referral.getServiceProviderUIID());
             referralsDTO.setServiceProviderGroup(referral.getServiceProviderGroup());
             referralsDTO.setVillageLeader(referral.getVillageLeader());

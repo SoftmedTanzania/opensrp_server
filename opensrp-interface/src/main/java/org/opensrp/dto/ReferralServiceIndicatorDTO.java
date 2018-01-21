@@ -5,12 +5,14 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.List;
+
 public class ReferralServiceIndicatorDTO {
     @JsonProperty
     private Long referralServiceId;
 
     @JsonProperty
-    private Long referralIndicatorId;
+    private List<Long> referralIndicatorId;
 
 
     public Long getReferralServiceId() {
@@ -21,11 +23,11 @@ public class ReferralServiceIndicatorDTO {
         this.referralServiceId = referralServiceId;
     }
 
-    public Long getReferralIndicatorId() {
+    public List<Long> getReferralIndicatorId() {
         return referralIndicatorId;
     }
 
-    public void setReferralIndicatorId(Long referralIndicatorId) {
+    public void setReferralIndicatorId(List<Long> referralIndicatorId) {
         this.referralIndicatorId = referralIndicatorId;
     }
 
