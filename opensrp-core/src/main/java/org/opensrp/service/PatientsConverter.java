@@ -55,6 +55,7 @@ public class PatientsConverter {
         try {
             Patients patients = new Patients();
             patients.setFirstName(patientsDTO.getFirstName());
+	        patients.setMiddleName(patientsDTO.getMiddleName());
             patients.setSurname(patientsDTO.getSurname());
             patients.setPhoneNumber(patientsDTO.getContact());
             Date dob = new Date();
@@ -147,22 +148,23 @@ public class PatientsConverter {
             List<PatientAppointments> patientAppointments = new ArrayList<>();
             CTCPatientsAppointmesDTO[] appointments = patientsDTO.getAppointments();
 
-            int count = appointments.length;
-            for(int i=0;i<count;i++){
-                PatientAppointments patientAppointment = new PatientAppointments();
-                Date appointDate = new Date();
-                appointDate.setTime(appointments[i].getDateOfAppointment());
+            if (appointments!=null) {
+	            for (CTCPatientsAppointmesDTO appointment : appointments) {
+		            PatientAppointments patientAppointment = new PatientAppointments();
+		            Date appointDate = new Date();
+		            appointDate.setTime(appointment.getDateOfAppointment());
 
-                patientAppointment.setAppointmentDate(appointDate);
-                patientAppointment.setIsCancelled(appointments[i].getCancelled());
+		            patientAppointment.setAppointmentDate(appointDate);
+		            patientAppointment.setIsCancelled(appointment.getCancelled());
 
-                Date rowVersion = new Date();
-                rowVersion.setTime(appointments[i].getRowVersion());
+		            Date rowVersion = new Date();
+		            rowVersion.setTime(appointment.getRowVersion());
 
-                patientAppointment.setRowVersion(rowVersion);
-                patientAppointment.setStatus("0");
-                patientAppointment.setAppointmentType(1);
-                patientAppointments.add(patientAppointment);
+		            patientAppointment.setRowVersion(rowVersion);
+		            patientAppointment.setStatus("0");
+		            patientAppointment.setAppointmentType(1);
+		            patientAppointments.add(patientAppointment);
+	            }
             }
 
             return patientAppointments;

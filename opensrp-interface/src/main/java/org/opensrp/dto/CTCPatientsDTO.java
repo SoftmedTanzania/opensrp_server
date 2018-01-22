@@ -5,9 +5,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import java.util.Date;
-import java.util.Map;
-
 public class CTCPatientsDTO {
 	@JsonProperty
 	private String firstName;
@@ -16,7 +13,7 @@ public class CTCPatientsDTO {
 	private String middleName;
 
 	@JsonProperty
-	private String ctc_number;
+	private String ctcNumber;
 
 	@JsonProperty
 	private String contact;
@@ -36,9 +33,6 @@ public class CTCPatientsDTO {
 
 	@JsonProperty
 	private boolean hivStatus;
-
-
-
 
 	@JsonProperty
 	private String healthFacilityCode;
@@ -62,12 +56,12 @@ public class CTCPatientsDTO {
 		this.middleName = middleName;
 	}
 
-	public String getCtc_number() {
-		return ctc_number;
+	public String getCtcNumber() {
+		return ctcNumber;
 	}
 
-	public void setCtc_number(String ctc_number) {
-		this.ctc_number = ctc_number;
+	public void setCtcNumber(String ctcNumber) {
+		this.ctcNumber = ctcNumber;
 	}
 
 	public String getContact() {

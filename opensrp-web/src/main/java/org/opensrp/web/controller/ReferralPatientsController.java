@@ -4,7 +4,6 @@ import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.*;
@@ -21,8 +20,6 @@ import org.opensrp.service.formSubmission.FormEntityConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -30,7 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -114,20 +110,22 @@ public class ReferralPatientsController {
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-ctc-patients")
-	public ResponseEntity<HttpStatus> saveCtcPatients(@RequestBody List<CTCPatientsDTO> ctcPatientsDTOS) {
+	public ResponseEntity<HttpStatus> saveCtcPatients(@RequestBody String json) {
 		try {
-			if (ctcPatientsDTOS.isEmpty()) {
-				return new ResponseEntity<>(BAD_REQUEST);
-			}
-			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, ctcPatientsDTOS));
-			String json = new Gson().toJson(ctcPatientsDTOS);
+
 			List<CTCPatientsDTO> patientsDTOS = new Gson().fromJson(json, new TypeToken<List<CTCPatientsDTO>>() {
 			}.getType());
+
+			if (patientsDTOS.isEmpty()) {
+				return new ResponseEntity<>(BAD_REQUEST);
+			}
+			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
+
 
 			for (CTCPatientsDTO dto : patientsDTOS) {
 				Patients patient = PatientsConverter.toPatients(dto);
 
-				long healthfacilityPatientId = savePatient(patient, dto.getHealthFacilityCode(), dto.getCtc_number());
+				long healthfacilityPatientId = savePatient(patient, dto.getHealthFacilityCode(), dto.getCtcNumber());
 				List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
 
 				for (PatientAppointments patientAppointment : appointments) {
@@ -138,9 +136,10 @@ public class ReferralPatientsController {
 			}
 
 
-			logger.debug(format("Added  Patients and their appointments from CTC to queue.\nSubmissions: {0}", ctcPatientsDTOS));
+			logger.debug(format("Added  Patients and their appointments from CTC to queue.\nSubmissions: {0}", patientsDTOS));
 		} catch (Exception e) {
-			logger.error(format("CTC Patients processing failed with exception {0}.\nSubmissions: {1}", e, ctcPatientsDTOS));
+			e.printStackTrace();
+			logger.error(format("CTC Patients processing failed with exception {0}.\nSubmissions: {1}", e, json));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(CREATED);
