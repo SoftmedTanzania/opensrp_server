@@ -398,6 +398,9 @@ public class FormEntityConverter {
 				if(formField.name().equals(PatientReferral.COL_FACILITY_ID))
 					patientReferral.setFacilityId(formField.value());
 
+				if(formField.name().equals(PatientReferral.COL_REFERRAL_UUID))
+					patientReferral.setReferralUUID(formField.value());
+
 				//TODO implement new mechanism for storing referral indicators
 				if(formField.name().equals(PatientReferral.COL_REFERRAL_DATE)) {
 					Date startDate = new Date();

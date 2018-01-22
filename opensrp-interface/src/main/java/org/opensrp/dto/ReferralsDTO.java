@@ -29,19 +29,7 @@ public class ReferralsDTO {
     private String ctcNumber;
 
     @JsonProperty
-    private Boolean has2WeeksCough;
-
-    @JsonProperty
-    private Boolean hasBloodCough;
-
-    @JsonProperty
-    private Boolean hasSevereSweating;
-
-    @JsonProperty
-    private Boolean hasFever;
-
-    @JsonProperty
-    private Boolean hadWeightLoss;
+    private String referralUUID;
 
     @JsonProperty
     private String serviceProviderUIID;
@@ -127,44 +115,12 @@ public class ReferralsDTO {
         this.ctcNumber = ctcNumber;
     }
 
-    public Boolean getHas2WeeksCough() {
-        return has2WeeksCough;
+    public String getReferralUUID() {
+        return referralUUID;
     }
 
-    public void setHas2WeeksCough(Boolean has2WeeksCough) {
-        this.has2WeeksCough = has2WeeksCough;
-    }
-
-    public Boolean getHasBloodCough() {
-        return hasBloodCough;
-    }
-
-    public void setHasBloodCough(Boolean hasBloodCough) {
-        this.hasBloodCough = hasBloodCough;
-    }
-
-    public Boolean getHasSevereSweating() {
-        return hasSevereSweating;
-    }
-
-    public void setHasSevereSweating(Boolean hasSevereSweating) {
-        this.hasSevereSweating = hasSevereSweating;
-    }
-
-    public Boolean getHasFever() {
-        return hasFever;
-    }
-
-    public void setHasFever(Boolean hasFever) {
-        this.hasFever = hasFever;
-    }
-
-    public Boolean getHadWeightLoss() {
-        return hadWeightLoss;
-    }
-
-    public void setHadWeightLoss(Boolean hadWeightLoss) {
-        this.hadWeightLoss = hadWeightLoss;
+    public void setReferralUUID(String referralUUID) {
+        this.referralUUID = referralUUID;
     }
 
     public String getServiceProviderUIID() {

@@ -13,6 +13,10 @@ public class PatientReferral {
 
 	public static final String COL_REFERRAL_ID = "referral_id";
 
+
+	public static final String COL_REFERRAL_UUID = "referral_uuid";
+
+
 	public static final String COL_COMMUNITY_BASED_HIV_SERVICE = "community_based_hiv_service";
 
 	public static final String COL_REFERRAL_REASON = "referral_reason";
@@ -76,6 +80,9 @@ public class PatientReferral {
 
 	@Column(name = COL_INSTANCE_ID,unique = true)
 	private String instanceId;
+
+	@Column(name = COL_REFERRAL_UUID,unique = true)
+	private String referralUUID;
 
 	@Column(name = COL_SERVICE_PROVIDER_UIID)
 	private String serviceProviderUIID;
@@ -286,6 +293,14 @@ public class PatientReferral {
 
 	public void setTestResults(boolean testResults) {
 		this.testResults = testResults;
+	}
+
+	public String getReferralUUID() {
+		return referralUUID;
+	}
+
+	public void setReferralUUID(String referralUUID) {
+		this.referralUUID = referralUUID;
 	}
 
 	public Date getCreatedAt() {
