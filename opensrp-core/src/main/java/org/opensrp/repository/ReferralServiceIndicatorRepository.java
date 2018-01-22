@@ -1,6 +1,6 @@
 package org.opensrp.repository;
 
-import org.opensrp.domain.PK;
+import org.opensrp.domain.PKReferralServiceIndicator;
 import org.opensrp.domain.ReferralServiceIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,8 +31,8 @@ public class ReferralServiceIndicatorRepository {
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(ReferralServiceIndicator.COL_REFERRAL_SERVICE_INDICATOR_ID, referralServiceIndicator.getReferralServiceIndicatorId());
-		parameters.put(ReferralServiceIndicator.COL_REFERRAL_INDICATOR_ID , referralServiceIndicator.getPk().getIndicatorId());
-		parameters.put(ReferralServiceIndicator.COL_SERVICE_ID, referralServiceIndicator.getPk().getServiceId());
+		parameters.put(ReferralServiceIndicator.COL_REFERRAL_INDICATOR_ID , referralServiceIndicator.getPkReferralServiceIndicator().getIndicatorId());
+		parameters.put(ReferralServiceIndicator.COL_SERVICE_ID, referralServiceIndicator.getPkReferralServiceIndicator().getServiceId());
 		parameters.put(ReferralServiceIndicator.COL_IS_ACTIVE  , referralServiceIndicator.isActive());
 		parameters.put(ReferralServiceIndicator.COL_CREATED_AT , referralServiceIndicator.getCreatedAt());
 		parameters.put(ReferralServiceIndicator.COL_UPDATED_AT , referralServiceIndicator.getCreatedAt());
@@ -69,8 +69,8 @@ public class ReferralServiceIndicatorRepository {
 
 			referralServiceIndicator.setReferralServiceIndicatorId(rs.getLong(rs.findColumn(ReferralServiceIndicator.COL_REFERRAL_SERVICE_INDICATOR_ID)));
 
-			PK pk = new PK(rs.getLong(rs.findColumn(ReferralServiceIndicator.COL_REFERRAL_INDICATOR_ID)),rs.getLong(rs.findColumn(ReferralServiceIndicator.COL_SERVICE_ID)));
-			referralServiceIndicator.setPk(pk);
+			PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(rs.getLong(rs.findColumn(ReferralServiceIndicator.COL_REFERRAL_INDICATOR_ID)),rs.getLong(rs.findColumn(ReferralServiceIndicator.COL_SERVICE_ID)));
+			referralServiceIndicator.setPkReferralServiceIndicator(pkReferralServiceIndicator);
 
 
 			referralServiceIndicator.setActive(rs.getBoolean(rs.findColumn(ReferralServiceIndicator.COL_IS_ACTIVE)));

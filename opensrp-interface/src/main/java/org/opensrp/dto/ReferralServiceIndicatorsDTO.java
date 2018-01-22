@@ -22,9 +22,9 @@ public class ReferralServiceIndicatorsDTO {
 
 
     @JsonProperty
-    List<ReferralIndicatorDTO> indicators;
+    List<IndicatorDTO> indicators;
 
-    public ReferralServiceIndicatorsDTO(Long serviceId, String serviceName, String category, boolean isActive, List<ReferralIndicatorDTO> indicators) {
+    public ReferralServiceIndicatorsDTO(Long serviceId, String serviceName, String category, boolean isActive, List<IndicatorDTO> indicators) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.category = category;
@@ -67,11 +67,11 @@ public class ReferralServiceIndicatorsDTO {
         isActive = active;
     }
 
-    public List<ReferralIndicatorDTO> getIndicators() {
+    public List<IndicatorDTO> getIndicators() {
         return indicators;
     }
 
-    public void setIndicators(List<ReferralIndicatorDTO> indicators) {
+    public void setIndicators(List<IndicatorDTO> indicators) {
         this.indicators = indicators;
     }
 

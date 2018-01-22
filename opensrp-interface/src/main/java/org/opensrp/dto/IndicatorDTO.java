@@ -7,7 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.List;
 
-public class ReferralIndicatorDTO {
+public class IndicatorDTO {
     @JsonProperty
     private Long referralServiceIndicatorId;
 
@@ -20,7 +20,7 @@ public class ReferralIndicatorDTO {
     @JsonProperty
     private boolean isActive;
 
-    public ReferralIndicatorDTO(Long referralServiceIndicatorId, Long referralIndicatorId, String indicatorName, boolean isActive) {
+    public IndicatorDTO(Long referralServiceIndicatorId, Long referralIndicatorId, String indicatorName, boolean isActive) {
         this.referralServiceIndicatorId = referralServiceIndicatorId;
         this.referralIndicatorId = referralIndicatorId;
         this.indicatorName = indicatorName;
@@ -51,7 +51,7 @@ public class ReferralIndicatorDTO {
         this.indicatorName = indicatorName;
     }
 
-    public ReferralIndicatorDTO() {
+    public IndicatorDTO() {
     }
 
     public boolean isActive() {

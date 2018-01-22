@@ -6,9 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-	public class PK implements Serializable {
-	public static final String COL_REFERRAL_SERVICE_INDICATOR_ID = "referral_service_indicator_id";
-
+	public class PKReferralServiceIndicator implements Serializable {
 	public static final String COL_SERVICE_ID = "service_id";
 
 	public static final String COL_REFERRAL_INDICATOR_ID= "referral_indicator_id";
@@ -36,7 +34,7 @@ import java.util.Objects;
 			this.indicatorId = indicatorId;
 		}
 
-		public PK(long indicatorId, long serviceId) {
+		public PKReferralServiceIndicator(long indicatorId, long serviceId) {
 			this.serviceId = serviceId;
 			this.indicatorId = indicatorId;
 		}
@@ -44,8 +42,8 @@ import java.util.Objects;
 		@Override
 		public boolean equals(Object o) {
 			if (this == o) return true;
-			if (!(o instanceof PK)) return false;
-			PK that = (PK) o;
+			if (!(o instanceof PKReferralServiceIndicator)) return false;
+			PKReferralServiceIndicator that = (PKReferralServiceIndicator) o;
 			return Objects.equals(getIndicatorId(), that.getIndicatorId()) &&
 					Objects.equals(getServiceId(), that.getServiceId());
 		}

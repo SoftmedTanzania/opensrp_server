@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
-import org.opensrp.repository.ReferralIndicatorRepository;
+import org.opensrp.repository.IndicatorRepository;
 import org.opensrp.repository.ReferralServiceIndicatorRepository;
 import org.opensrp.repository.ReferralServiceRepository;
 import org.opensrp.repository.TBPatientTypeRepository;
@@ -35,19 +35,19 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 public class ServiceController {
     private static Logger logger = LoggerFactory.getLogger(ServiceController.class.toString());
     private ReferralServiceRepository referralServiceRepository;
-    private ReferralIndicatorRepository referralIndicatorRepository;
+    private IndicatorRepository indicatorRepository;
     private ReferralServiceIndicatorRepository referralServiceIndicatorRepository;
     private TBPatientTypeRepository tbPatientTypeRepository;
     private TaskSchedulerService scheduler;
 
     @Autowired
     public ServiceController(ReferralServiceRepository referralServiceRepository, TaskSchedulerService scheduler, TBPatientTypeRepository tbPatientTypeRepository,
-                             ReferralServiceIndicatorRepository referralServiceIndicatorRepository,ReferralIndicatorRepository referralIndicatorRepository) {
+                             ReferralServiceIndicatorRepository referralServiceIndicatorRepository, IndicatorRepository indicatorRepository) {
         this.referralServiceRepository = referralServiceRepository;
         this.tbPatientTypeRepository = tbPatientTypeRepository;
         this.scheduler = scheduler;
         this.referralServiceIndicatorRepository = referralServiceIndicatorRepository;
-        this.referralIndicatorRepository =referralIndicatorRepository;
+        this.indicatorRepository = indicatorRepository;
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-services")
@@ -92,7 +92,7 @@ public class ServiceController {
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-indicators")
     public ResponseEntity<HttpStatus> saveReferralIndicators(@RequestBody String json) {
         try {
-            List<ReferralIndicatorDTO> indicatorDTOS = new Gson().fromJson(json, new TypeToken<List<ReferralIndicatorDTO>>() {
+            List<IndicatorDTO> indicatorDTOS = new Gson().fromJson(json, new TypeToken<List<IndicatorDTO>>() {
             }.getType());
 
             if (indicatorDTOS.isEmpty()) {
@@ -101,22 +101,20 @@ public class ServiceController {
 
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, indicatorDTOS));
 
-
-            List<ReferralIndicator> referralIndicators =  with(indicatorDTOS).convert(new Converter<ReferralIndicatorDTO, ReferralIndicator>() {
+            List<Indicator> indicators =  with(indicatorDTOS).convert(new Converter<IndicatorDTO, Indicator>() {
                 @Override
-                public ReferralIndicator convert(ReferralIndicatorDTO referralIndicatorDTO) {
-                    ReferralIndicator referralIndicator = new ReferralIndicator();
-                    referralIndicator.setReferralIndicatorName(referralIndicatorDTO.getIndicatorName());
-                    referralIndicator.setActive(referralIndicatorDTO.isActive());
-                    System.out.println("coze:indicator name = "+ referralIndicator.getReferralIndicatorName());
-                    return referralIndicator;
+                public Indicator convert(IndicatorDTO referralIndicatorDTO) {
+                    Indicator indicator = new Indicator();
+                    indicator.setReferralIndicatorName(referralIndicatorDTO.getIndicatorName());
+                    indicator.setActive(referralIndicatorDTO.isActive());
+                    return indicator;
                 }
             });
 
             Exception exp = null;
-            for (ReferralIndicator referralIndicator : referralIndicators) {
+            for (Indicator indicator : indicators) {
                 try {
-                    referralIndicatorRepository.save(referralIndicator);
+                    indicatorRepository.save(indicator);
                 }catch (Exception e){
                     exp=e;
                     e.printStackTrace();
@@ -154,8 +152,8 @@ public class ServiceController {
                     List<ReferralServiceIndicator> referralIndicators = new ArrayList<>();
                     for (Long indicatorId:referralServiceIndicatorDTO.getReferralIndicatorId()) {
                         ReferralServiceIndicator referralServiceIndicator = new ReferralServiceIndicator();
-                        PK pk = new PK(indicatorId, referralServiceIndicatorDTO.getReferralServiceId());
-                        referralServiceIndicator.setPk(pk);
+                        PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(indicatorId, referralServiceIndicatorDTO.getReferralServiceId());
+                        referralServiceIndicator.setPkReferralServiceIndicator(pkReferralServiceIndicator);
 
                         referralIndicators.add(referralServiceIndicator);
                     }
@@ -230,29 +228,29 @@ public class ServiceController {
                 e.printStackTrace();
             }
 
-            List<ReferralIndicatorDTO> indicatorDTOS = new ArrayList<>();
+            List<IndicatorDTO> indicatorDTOS = new ArrayList<>();
             for(ReferralServiceIndicator serviceIndicator:referralServiceIndicators){
-                ReferralIndicatorDTO referralIndicatorDTO = new ReferralIndicatorDTO();
-                referralIndicatorDTO.setReferralServiceIndicatorId(serviceIndicator.getReferralServiceIndicatorId());
+                IndicatorDTO indicatorDTO = new IndicatorDTO();
+                indicatorDTO.setReferralServiceIndicatorId(serviceIndicator.getReferralServiceIndicatorId());
 
 
                 Object[] objects = new Object[]{
-                        serviceIndicator.getPk().getIndicatorId()
+                        serviceIndicator.getPkReferralServiceIndicator().getIndicatorId()
                 };
-                List<ReferralIndicator> referralIndicators = null;
+                List<Indicator> indicators = null;
                 try {
-                    referralIndicators = referralIndicatorRepository.getReferralIndicators("SELECT * FROM "+ ReferralIndicator.tbName+" WHERE "+ReferralIndicator.COL_REFERRAL_INDICATOR_ID+" =?",objects);
+                    indicators = indicatorRepository.getReferralIndicators("SELECT * FROM "+ Indicator.tbName+" WHERE "+ Indicator.COL_REFERRAL_INDICATOR_ID+" =?",objects);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if(referralIndicators.size()>0) {
-                    referralIndicatorDTO.setIndicatorName(referralIndicators.get(0).getReferralIndicatorName());
-                    referralIndicatorDTO.setReferralIndicatorId(referralIndicators.get(0).getReferralIndicatorId());
-                    referralIndicatorDTO.setActive(referralIndicators.get(0).isActive());
+                if(indicators.size()>0) {
+                    indicatorDTO.setIndicatorName(indicators.get(0).getReferralIndicatorName());
+                    indicatorDTO.setReferralIndicatorId(indicators.get(0).getReferralIndicatorId());
+                    indicatorDTO.setActive(indicators.get(0).isActive());
                 }
 
-                indicatorDTOS.add(referralIndicatorDTO);
+                indicatorDTOS.add(indicatorDTO);
 
             }
             referralServiceIndicatorsDTO.setIndicators(indicatorDTOS);
