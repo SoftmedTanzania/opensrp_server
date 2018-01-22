@@ -49,6 +49,7 @@ public class ReferralPatientsController {
 	private TBEncounterRepository tbEncounterRepository;
 	private PatientsAppointmentsRepository patientsAppointmentsRepository;
 	private PatientReferralRepository patientReferralRepository;
+	private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
 	private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
 	private TBPatientsRepository tbPatientsRepository;
 	private FormSubmissionService formSubmissionService;
@@ -60,7 +61,7 @@ public class ReferralPatientsController {
 	public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
 	                                  HealthFacilityRepository healthFacilityRepository, HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository, PatientsAppointmentsRepository patientsAppointmentsRepository,
 	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository,FormSubmissionService formSubmissionService,
-	                                  FormEntityConverter formEntityConverter,GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService) {
+	                                  FormEntityConverter formEntityConverter,GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService,PatientReferralIndicatorRepository patientReferralIndicatorRepository) {
 		this.patientsService = patientsService;
 		this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
@@ -74,6 +75,7 @@ public class ReferralPatientsController {
 		this.formEntityConverter = formEntityConverter;
 		this.googlePushNotificationsUsersRepository = googlePushNotificationsUsersRepository;
 		this.googleFCMService = googleFCMService;
+		this.patientReferralIndicatorRepository = patientReferralIndicatorRepository;
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
@@ -265,7 +267,16 @@ public class ReferralPatientsController {
 			referralsDTO.setReferralSource(1);
 			referralsDTO.setReferralStatus(0);
 			PatientReferral patientReferral = PatientsConverter.toPatientReferral(referralsDTO);
-			patientReferralRepository.save(patientReferral);
+			Long referralId = patientReferralRepository.save(patientReferral);
+
+			for(Long indicatorId:referralsDTO.getServiceIndicatorIds()){
+				PatientReferralIndicators referralIndicators = new PatientReferralIndicators();
+				referralIndicators.setReferralId(referralId);
+				referralIndicators.setReferralServiceIndicatorId(indicatorId);
+				referralIndicators.setActive(true);
+
+				patientReferralIndicatorRepository.save(referralIndicators);
+			}
 
 			List<PatientReferral> savedPatientReferrals = patientReferralRepository.getReferrals("SELECT * FROM "+PatientReferral.tbName+" ORDER BY _id DESC LIMIT 1 ",null);
 			logger.debug(format("Added  ReferralsDTO Submissions: {0}", referralsDTO));
@@ -281,8 +292,19 @@ public class ReferralPatientsController {
 
 			List<ReferralsDTO> patientReferrals = new ArrayList<>();
 			patientReferrals.add(PatientsConverter.toPatientDTO(savedPatientReferrals.get(0)));
-			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
+			for(ReferralsDTO refDTO:patientReferrals) {
+				Object[] args2 = new Object[1];
+				args2[0] = refDTO.getReferralId();
+				List<PatientReferralIndicators> patientReferralIndicators = patientReferralIndicatorRepository.getPatientReferralIndicators("SELECT * FROM " + PatientReferralIndicators.tbName + " WHERE " + PatientReferralIndicators.COL_REFERRAL_ID + " =?", args2);
+				List<Long> patientReferralIndicatorsIds = new ArrayList<>();
+				for(PatientReferralIndicators referralIndicator:patientReferralIndicators){
+					patientReferralIndicatorsIds.add(referralIndicator.getReferralServiceIndicatorId());
+				}
+				refDTO.setServiceIndicatorIds(patientReferralIndicatorsIds);
+			}
+
+			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
 			JSONObject body = new JSONObject();
 			body.put("type","PatientReferral");

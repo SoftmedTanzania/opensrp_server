@@ -4,10 +4,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.opensrp.domain.HealthFacilitiesPatients;
 import org.opensrp.domain.PatientReferral;
+import org.opensrp.domain.PatientReferralIndicators;
 import org.opensrp.domain.Patients;
 import org.opensrp.dto.PatientReferralsDTO;
 import org.opensrp.dto.ReferralsDTO;
 import org.opensrp.repository.HealthFacilitiesPatientsRepository;
+import org.opensrp.repository.PatientReferralIndicatorRepository;
 import org.opensrp.repository.PatientReferralRepository;
 import org.opensrp.repository.PatientsRepository;
 import org.slf4j.Logger;
@@ -31,6 +33,10 @@ public class ReferralPatientsService {
 
     @Autowired
     private PatientReferralRepository patientReferralRepository;
+
+
+	@Autowired
+	private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
 
     @Autowired
     private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
@@ -66,24 +72,7 @@ public class ReferralPatientsService {
     public List<PatientReferralsDTO> getAllPatientReferrals(){
         List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
         String getPatientsSQL = "SELECT * from " + Patients.tbName;
-        try {
-            List<Patients> patientsRepositoryList = patientsRepository.getPatients(getPatientsSQL,null);
-            for(Patients patient : patientsRepositoryList){
-                PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
-                patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
-
-                String getReferralPatientsSQL = "SELECT * from " + PatientReferral.tbName+" WHERE "+PatientReferral.COL_PATIENT_ID +" =?";
-                String[] args = new String[1];
-                args[0] =  patient.getPatientId()+"";
-
-                List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(patientReferralRepository.getReferrals(getReferralPatientsSQL,args));
-                patientReferralsDTO.setPatientReferralsList(referralsDTOS);
-                patientReferralsDTOS.add(patientReferralsDTO);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return patientReferralsDTOS;
+        return getPatients(getPatientsSQL);
     }
 
     public List<PatientReferralsDTO> getHealthFacilityReferrals(String facilityUUID){
@@ -102,14 +91,15 @@ public class ReferralPatientsService {
         for(HealthFacilitiesPatients patients:healthFacilitiesPatients){
             ids+=patients.getPatient().getPatientId()+",";
         }
-
-
         ids = delete_last_char_java(ids);
-
-        List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
         String getPatientsSQL = "SELECT * from " + Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+ " IN ("+ids+")";
+        return getPatients(getPatientsSQL);
+    }
+
+    public  List<PatientReferralsDTO> getPatients(String sql){
+        List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
         try {
-            List<Patients> patientsRepositoryList = patientsRepository.getPatients(getPatientsSQL,null);
+            List<Patients> patientsRepositoryList = patientsRepository.getPatients(sql,null);
             for(Patients patient : patientsRepositoryList){
                 PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
                 patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
@@ -119,6 +109,20 @@ public class ReferralPatientsService {
                 args[0] =  patient.getPatientId()+"";
 
                 List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(patientReferralRepository.getReferrals(getReferralPatientsSQL,args));
+
+                for(ReferralsDTO referralsDTO:referralsDTOS) {
+	                Object[] args2 = new String[1];
+	                args2[0] = referralsDTO.getReferralId();
+	                List<PatientReferralIndicators> patientReferralIndicators = patientReferralIndicatorRepository.getPatientReferralIndicators("SELECT * FROM " + PatientReferralIndicators.tbName + " WHERE " + PatientReferralIndicators.COL_REFERRAL_ID + " =?", args2);
+
+	                List<Long> patientReferralIndicatorsIds = new ArrayList<>();
+	                for(PatientReferralIndicators referralIndicator:patientReferralIndicators){
+		                patientReferralIndicatorsIds.add(referralIndicator.getReferralServiceIndicatorId());
+	                }
+
+	                referralsDTO.setServiceIndicatorIds(patientReferralIndicatorsIds);
+                }
+
                 patientReferralsDTO.setPatientReferralsList(referralsDTOS);
                 patientReferralsDTOS.add(patientReferralsDTO);
             }
@@ -127,7 +131,6 @@ public class ReferralPatientsService {
         }
         return patientReferralsDTOS;
     }
-
 
     public Boolean checkIfClientExists(Patients patient) throws SQLException {
         try {

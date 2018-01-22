@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import java.util.Date;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReferralsDTO {
@@ -73,6 +74,9 @@ public class ReferralsDTO {
 	 */
     @JsonProperty
     private int referralStatus;
+
+	@JsonProperty
+    private List<Long> serviceIndicatorIds;
 
 
     public Long getPatientId() {
@@ -231,7 +235,15 @@ public class ReferralsDTO {
         this.referralSource = referralSource;
     }
 
-    @Override
+	public List<Long> getServiceIndicatorIds() {
+		return serviceIndicatorIds;
+	}
+
+	public void setServiceIndicatorIds(List<Long> serviceIndicatorIds) {
+		this.serviceIndicatorIds = serviceIndicatorIds;
+	}
+
+	@Override
     public final boolean equals(Object o) {
         return EqualsBuilder.reflectionEquals(this, o);
     }
