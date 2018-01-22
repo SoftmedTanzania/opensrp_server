@@ -107,7 +107,7 @@ public class ServiceController {
                 public ReferralIndicator convert(ReferralIndicatorDTO referralIndicatorDTO) {
                     ReferralIndicator referralIndicator = new ReferralIndicator();
                     referralIndicator.setReferralIndicatorName(referralIndicatorDTO.getIndicatorName());
-                    referralIndicator.setActive(referralIndicator.isActive());
+                    referralIndicator.setActive(referralIndicatorDTO.isActive());
                     System.out.println("coze:indicator name = "+ referralIndicator.getReferralIndicatorName());
                     return referralIndicator;
                 }
