@@ -6,41 +6,39 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.Date;
-import java.util.Map;
 
-public class CTCPatientsAppointmesDTO {
+public class ReferralTypeDTO {
+    @JsonProperty
+    private Long referralTypeId;
 
     @JsonProperty
-    private Long rowVersion;
+    private String referralTypeName;
 
     @JsonProperty
-    private boolean cancelled;
+    private boolean isActive;
 
-    @JsonProperty
-    private Long dateOfAppointment;
-
-    public Long getRowVersion() {
-        return rowVersion;
+    public Long getReferralTypeId() {
+        return referralTypeId;
     }
 
-    public void setRowVersion(Long rowVersion) {
-        this.rowVersion = rowVersion;
+    public void setReferralTypeId(Long referralTypeId) {
+        this.referralTypeId = referralTypeId;
     }
 
-    public boolean isCancelled() {
-        return cancelled;
+    public String getReferralTypeName() {
+        return referralTypeName;
     }
 
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+    public void setReferralTypeName(String referralTypeName) {
+        this.referralTypeName = referralTypeName;
     }
 
-    public Long getDateOfAppointment() {
-        return dateOfAppointment;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setDateOfAppointment(Long dateOfAppointment) {
-        this.dateOfAppointment = dateOfAppointment;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     @Override

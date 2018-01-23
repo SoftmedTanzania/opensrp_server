@@ -125,15 +125,22 @@ public class ReferralPatientsController {
 
 
 			for (CTCPatientsDTO dto : patientsDTOS) {
-				Patients patient = PatientsConverter.toPatients(dto);
+				try {
+					System.out.println("saving patient");
+					Patients patient = PatientsConverter.toPatients(dto);
 
-				long healthfacilityPatientId = savePatient(patient, dto.getHealthFacilityCode(), dto.getCtcNumber());
-				List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
+					long healthfacilityPatientId = savePatient(patient, dto.getHealthFacilityCode(), dto.getCtcNumber());
 
-				for (PatientAppointments patientAppointment : appointments) {
-					patientAppointment.setAppointmentType(1);
-					patientAppointment.setHealthFacilityPatientId(healthfacilityPatientId);
-					patientsAppointmentsRepository.save(patientAppointment);
+					List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
+
+					for (PatientAppointments patientAppointment : appointments) {
+						System.out.println("saving appointment");
+						patientAppointment.setAppointmentType(1);
+						patientAppointment.setHealthFacilityPatientId(healthfacilityPatientId);
+						patientsAppointmentsRepository.save(patientAppointment);
+					}
+				}catch (Exception e){
+					e.printStackTrace();
 				}
 			}
 
@@ -247,6 +254,7 @@ public class ReferralPatientsController {
 	@ResponseBody
 	private List<PatientReferralsDTO> getAllPatientsReferrals() {
 		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getAllPatientReferrals();
+
 		return patientReferralsDTOS;
 	}
 

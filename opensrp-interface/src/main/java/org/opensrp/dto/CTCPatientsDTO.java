@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.List;
+
 public class CTCPatientsDTO {
 	@JsonProperty
 	private String firstName;
@@ -38,7 +40,7 @@ public class CTCPatientsDTO {
 	private String healthFacilityCode;
 
 	@JsonProperty
-	private CTCPatientsAppointmesDTO[] appointments;
+	private List<CTCPatientsAppointmesDTO> patientAppointments;
 
 	public String getFirstName() {
 		return firstName;
@@ -104,12 +106,12 @@ public class CTCPatientsDTO {
 		this.dateOfDeath = dateOfDeath;
 	}
 
-	public CTCPatientsAppointmesDTO[] getAppointments() {
-		return appointments;
+	public List<CTCPatientsAppointmesDTO> getPatientAppointments() {
+		return patientAppointments;
 	}
 
-	public void setAppointments(CTCPatientsAppointmesDTO[] appointments) {
-		this.appointments = appointments;
+	public void setPatientAppointments(List<CTCPatientsAppointmesDTO> patientAppointments) {
+		this.patientAppointments = patientAppointments;
 	}
 
 	public boolean isHivStatus() {

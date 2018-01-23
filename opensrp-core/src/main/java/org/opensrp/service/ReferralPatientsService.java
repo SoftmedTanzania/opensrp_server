@@ -2,16 +2,10 @@ package org.opensrp.service;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.opensrp.domain.HealthFacilitiesPatients;
-import org.opensrp.domain.PatientReferral;
-import org.opensrp.domain.PatientReferralIndicators;
-import org.opensrp.domain.Patients;
+import org.opensrp.domain.*;
 import org.opensrp.dto.PatientReferralsDTO;
 import org.opensrp.dto.ReferralsDTO;
-import org.opensrp.repository.HealthFacilitiesPatientsRepository;
-import org.opensrp.repository.PatientReferralIndicatorRepository;
-import org.opensrp.repository.PatientReferralRepository;
-import org.opensrp.repository.PatientsRepository;
+import org.opensrp.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +28,8 @@ public class ReferralPatientsService {
     @Autowired
     private PatientReferralRepository patientReferralRepository;
 
+    @Autowired
+    private PatientsAppointmentsRepository patientsAppointmentsRepository;
 
 	@Autowired
 	private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
@@ -70,9 +66,7 @@ public class ReferralPatientsService {
     }
 
     public List<PatientReferralsDTO> getAllPatientReferrals(){
-        List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
-        String getPatientsSQL = "SELECT * from " + Patients.tbName;
-        return getPatients(getPatientsSQL);
+        return getPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName,null);
     }
 
     public List<PatientReferralsDTO> getHealthFacilityReferrals(String facilityUUID){
@@ -80,55 +74,66 @@ public class ReferralPatientsService {
         String[] healthFacilityPatientArg = new String[1];
         healthFacilityPatientArg[0] =  facilityUUID;
 
+        return getPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_FACILITY_ID+" = ?",healthFacilityPatientArg);
+    }
+
+    public  List<PatientReferralsDTO> getPatients(String sql,Object[] healthFacilityPatientArg){
+
         List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
         try {
-            healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_FACILITY_ID+" = ?",healthFacilityPatientArg);
+            healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients(sql,healthFacilityPatientArg);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String ids = "";
-        for(HealthFacilitiesPatients patients:healthFacilitiesPatients){
-            ids+=patients.getPatient().getPatientId()+",";
-        }
-        ids = delete_last_char_java(ids);
-        String getPatientsSQL = "SELECT * from " + Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+ " IN ("+ids+")";
-        return getPatients(getPatientsSQL);
-    }
-
-    public  List<PatientReferralsDTO> getPatients(String sql){
         List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
-        try {
-            List<Patients> patientsRepositoryList = patientsRepository.getPatients(sql,null);
-            for(Patients patient : patientsRepositoryList){
+        for(HealthFacilitiesPatients facilitiesPatients:healthFacilitiesPatients){
+            String getPatientsSQL = "SELECT * from " + Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+ " = "+facilitiesPatients.getPatient().getPatientId();
+
+            try {
+                Patients patient = patientsRepository.getPatients(getPatientsSQL,null).get(0);
+
                 PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
                 patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
 
                 String getReferralPatientsSQL = "SELECT * from " + PatientReferral.tbName+" WHERE "+PatientReferral.COL_PATIENT_ID +" =?";
-                String[] args = new String[1];
-                args[0] =  patient.getPatientId()+"";
+                Object[] args = new Object[]{patient.getPatientId()};
 
                 List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(patientReferralRepository.getReferrals(getReferralPatientsSQL,args));
-
                 for(ReferralsDTO referralsDTO:referralsDTOS) {
-	                Object[] args2 = new String[1];
-	                args2[0] = referralsDTO.getReferralId();
-	                List<PatientReferralIndicators> patientReferralIndicators = patientReferralIndicatorRepository.getPatientReferralIndicators("SELECT * FROM " + PatientReferralIndicators.tbName + " WHERE " + PatientReferralIndicators.COL_REFERRAL_ID + " =?", args2);
+                    Object[] args2 = new String[1];
+                    args2[0] = referralsDTO.getReferralId();
+                    List<PatientReferralIndicators> patientReferralIndicators = patientReferralIndicatorRepository.getPatientReferralIndicators("SELECT * FROM " + PatientReferralIndicators.tbName + " WHERE " + PatientReferralIndicators.COL_REFERRAL_ID + " =?", args2);
 
-	                List<Long> patientReferralIndicatorsIds = new ArrayList<>();
-	                for(PatientReferralIndicators referralIndicator:patientReferralIndicators){
-		                patientReferralIndicatorsIds.add(referralIndicator.getReferralServiceIndicatorId());
-	                }
+                    List<Long> patientReferralIndicatorsIds = new ArrayList<>();
+                    for(PatientReferralIndicators referralIndicator:patientReferralIndicators){
+                        patientReferralIndicatorsIds.add(referralIndicator.getReferralServiceIndicatorId());
+                    }
 
-	                referralsDTO.setServiceIndicatorIds(patientReferralIndicatorsIds);
+                    referralsDTO.setServiceIndicatorIds(patientReferralIndicatorsIds);
                 }
 
                 patientReferralsDTO.setPatientReferralsList(referralsDTOS);
+
+
+                Object[] args2 = new Object[]{facilitiesPatients.getHealthFacilityPatientId()};
+                String getPatientsAppointmentsSQL = "SELECT * from " + PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID +" =?";
+                List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments(getPatientsAppointmentsSQL,args2);
+
+                patientReferralsDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
+
                 patientReferralsDTOS.add(patientReferralsDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
         }
+
+
+
+
+
         return patientReferralsDTOS;
     }
 

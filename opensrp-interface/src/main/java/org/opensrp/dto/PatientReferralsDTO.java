@@ -13,17 +13,16 @@ public class PatientReferralsDTO {
     private PatientsDTO patientsDTO;
 
     @JsonProperty
-    private List<ReferralsDTO> referralsDTOS;
+    private List<ReferralsDTO> patientReferralsList;
 
-    public PatientReferralsDTO(PatientsDTO patientsDTO, List<ReferralsDTO> patientReferralsList) {
-        this.patientsDTO = patientsDTO;
-        this.referralsDTOS = patientReferralsList;
+    @JsonProperty
+    private List<PatientsAppointmentsDTO> patientsAppointmentsDTOS;
+
+
+    public PatientReferralsDTO() {
     }
 
-	public PatientReferralsDTO() {
-	}
-
-	public PatientsDTO getPatientsDTO() {
+    public PatientsDTO getPatientsDTO() {
         return patientsDTO;
     }
 
@@ -32,11 +31,19 @@ public class PatientReferralsDTO {
     }
 
     public List<ReferralsDTO> getPatientReferralsList() {
-        return referralsDTOS;
+        return patientReferralsList;
     }
 
     public void setPatientReferralsList(List<ReferralsDTO> patientReferralsList) {
-        this.referralsDTOS = patientReferralsList;
+        this.patientReferralsList = patientReferralsList;
+    }
+
+    public List<PatientsAppointmentsDTO> getPatientsAppointmentsDTOS() {
+        return patientsAppointmentsDTOS;
+    }
+
+    public void setPatientsAppointmentsDTOS(List<PatientsAppointmentsDTO> patientsAppointmentsDTOS) {
+        this.patientsAppointmentsDTOS = patientsAppointmentsDTOS;
     }
 
     @Override

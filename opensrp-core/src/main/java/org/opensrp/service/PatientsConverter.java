@@ -146,7 +146,7 @@ public class PatientsConverter {
         try {
 
             List<PatientAppointments> patientAppointments = new ArrayList<>();
-            CTCPatientsAppointmesDTO[] appointments = patientsDTO.getAppointments();
+            List<CTCPatientsAppointmesDTO> appointments = patientsDTO.getPatientAppointments();
 
             if (appointments!=null) {
 	            for (CTCPatientsAppointmesDTO appointment : appointments) {
@@ -155,16 +155,25 @@ public class PatientsConverter {
 		            appointDate.setTime(appointment.getDateOfAppointment());
 
 		            patientAppointment.setAppointmentDate(appointDate);
-		            patientAppointment.setIsCancelled(appointment.getCancelled());
+		            patientAppointment.setIsCancelled(appointment.isCancelled());
 
-		            Date rowVersion = new Date();
-		            rowVersion.setTime(appointment.getRowVersion());
 
-		            patientAppointment.setRowVersion(rowVersion);
+		            try {
+			            Date rowVersion = new Date();
+			            rowVersion.setTime(appointment.getRowVersion());
+			            patientAppointment.setRowVersion(rowVersion);
+		            }catch (Exception e){
+		            	e.printStackTrace();
+			            patientAppointment.setRowVersion(null);
+		            }
+
+
 		            patientAppointment.setStatus("0");
 		            patientAppointment.setAppointmentType(1);
 		            patientAppointments.add(patientAppointment);
 	            }
+            }else{
+                System.out.println("coze patients appointment is empty");
             }
 
             return patientAppointments;

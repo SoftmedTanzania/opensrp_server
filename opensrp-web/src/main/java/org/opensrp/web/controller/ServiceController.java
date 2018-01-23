@@ -6,10 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
-import org.opensrp.repository.IndicatorRepository;
-import org.opensrp.repository.ReferralServiceIndicatorRepository;
-import org.opensrp.repository.ReferralServiceRepository;
-import org.opensrp.repository.TBPatientTypeRepository;
+import org.opensrp.repository.*;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
 import org.slf4j.Logger;
@@ -36,18 +33,20 @@ public class ServiceController {
     private static Logger logger = LoggerFactory.getLogger(ServiceController.class.toString());
     private ReferralServiceRepository referralServiceRepository;
     private IndicatorRepository indicatorRepository;
+    private ReferralTypeRepository referralTypeRepository;
     private ReferralServiceIndicatorRepository referralServiceIndicatorRepository;
     private TBPatientTypeRepository tbPatientTypeRepository;
     private TaskSchedulerService scheduler;
 
     @Autowired
     public ServiceController(ReferralServiceRepository referralServiceRepository, TaskSchedulerService scheduler, TBPatientTypeRepository tbPatientTypeRepository,
-                             ReferralServiceIndicatorRepository referralServiceIndicatorRepository, IndicatorRepository indicatorRepository) {
+                             ReferralServiceIndicatorRepository referralServiceIndicatorRepository, IndicatorRepository indicatorRepository,ReferralTypeRepository referralTypeRepository) {
         this.referralServiceRepository = referralServiceRepository;
         this.tbPatientTypeRepository = tbPatientTypeRepository;
         this.scheduler = scheduler;
         this.referralServiceIndicatorRepository = referralServiceIndicatorRepository;
         this.indicatorRepository = indicatorRepository;
+        this.referralTypeRepository = referralTypeRepository;
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-services")
@@ -128,6 +127,50 @@ public class ServiceController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(format("Referral Indicators processing failed with exception {0}.\nSubmissions: {1}", e, json));
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(CREATED);
+    }
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-types")
+    public ResponseEntity<HttpStatus> saveReferralType(@RequestBody String json) {
+        try {
+            List<ReferralTypeDTO> referralTypeDTOS = new Gson().fromJson(json, new TypeToken<List<ReferralTypeDTO>>() {
+            }.getType());
+
+            if (referralTypeDTOS.isEmpty()) {
+                return new ResponseEntity<>(BAD_REQUEST);
+            }
+
+            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, referralTypeDTOS));
+
+            List<ReferralType> referralTypes =  with(referralTypeDTOS).convert(new Converter<ReferralTypeDTO, ReferralType>() {
+                @Override
+                public ReferralType convert(ReferralTypeDTO referralTypeDTO) {
+                    ReferralType referralType = new ReferralType();
+                    referralType.setReferralTypeName(referralTypeDTO.getReferralTypeName());
+                    referralType.setActive(referralTypeDTO.isActive());
+                    return referralType;
+                }
+            });
+
+            Exception exp = null;
+            for (ReferralType referralType : referralTypes) {
+                try {
+                    referralTypeRepository.save(referralType);
+                }catch (Exception e){
+                    exp=e;
+                    e.printStackTrace();
+                }
+            }
+
+            if(exp!=null)
+                throw  exp;
+
+            logger.debug(format("Saved Referral Type to queue.\nSubmissions: {0}", referralTypeDTOS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(format("Referral Types processing failed with exception {0}.\nSubmissions: {1}", e, json));
             return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(CREATED);
@@ -263,6 +306,20 @@ public class ServiceController {
 
         return referralServiceIndicatorsDTOS;
     }
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/referral-types")
+	@ResponseBody
+	public List<ReferralType> getReferralTypes() {
+
+		List<ReferralType> allReferralType = null;
+		try {
+			allReferralType = referralTypeRepository.getReferralType("Select * from "+ ReferralType.tbName,null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return allReferralType;
+	}
 
 
 
