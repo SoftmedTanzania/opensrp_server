@@ -13,9 +13,7 @@ public class PatientReferral {
 
 	public static final String COL_REFERRAL_ID = "referral_id";
 
-
 	public static final String COL_REFERRAL_UUID = "referral_uuid";
-
 
 	public static final String COL_COMMUNITY_BASED_HIV_SERVICE = "community_based_hiv_service";
 

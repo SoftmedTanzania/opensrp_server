@@ -12,6 +12,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.opensrp.common.FormEntityConstants;
 import org.opensrp.common.FormEntityConstants.Encounter;
 import org.opensrp.common.FormEntityConstants.FormEntity;
@@ -375,6 +376,23 @@ public class FormEntityConverter {
 			}
 
 			return patients;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public JSONArray getReferralIndicatorsFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
+		Patients patients = new Patients();
+		try {
+			FormData formData = fsubmission.instance().form();
+			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
+			JSONArray indicatorIds = new JSONArray();
+			for(org.opensrp.form.domain.FormField formField : formFields){
+				if(formField.name().equals("indicator_ids"))
+					indicatorIds = new JSONArray(formField.value());
+			}
+
+			return indicatorIds;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}

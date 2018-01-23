@@ -67,6 +67,7 @@ public class FormSubmissionController {
     private MultimediaRepository multimediaRepository;
     private PatientsRepository patientsRepository;
     private PatientReferralRepository patientReferralRepository;
+    private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
     private HealthFacilityRepository healthFacilityRepository;
     private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
 
@@ -76,7 +77,7 @@ public class FormSubmissionController {
     		HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
     		ErrorTraceService errorTraceService,PatientsRepository patientsRepository,PatientReferralRepository patientReferralRepository,
 		                            GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService,
-		                            HealthFacilityRepository healthFacilityRepository) {
+		                            HealthFacilityRepository healthFacilityRepository,PatientReferralIndicatorRepository patientReferralIndicatorRepository) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService=errorTraceService;
@@ -91,6 +92,7 @@ public class FormSubmissionController {
         this.googlePushNotificationsUsersRepository = googlePushNotificationsUsersRepository;
 	    this.googleFCMService =googleFCMService;
 	    this.healthFacilityRepository = healthFacilityRepository;
+	    this.patientReferralIndicatorRepository = patientReferralIndicatorRepository;
     }
 
     @RequestMapping(method = GET, value = "/form-submissions")
@@ -244,8 +246,22 @@ public class FormSubmissionController {
 
             System.out.println("Coze = saving referral Data");
             long id = patientReferralRepository.save(patientReferral);
-
             patientReferral.setId(id);
+
+
+			JSONArray indicatorIds = formEntityConverter.getReferralIndicatorsFromFormSubmission(formSubmission);
+			int size  = indicatorIds.length();
+
+			List<Long> referralIndicatorIds = new ArrayList<>();
+			for(int i=0;i<size;i++){
+				PatientReferralIndicators referralIndicators = new PatientReferralIndicators();
+				referralIndicators.setActive(true);
+				referralIndicators.setReferralId(id);
+				referralIndicators.setReferralServiceIndicatorId(indicatorIds.getLong(i));
+
+				long patientReferralIndicatorId = patientReferralIndicatorRepository.save(referralIndicators);
+				referralIndicatorIds.add(patientReferralIndicatorId);
+			}
 
 			Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),1};
 			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
@@ -257,7 +273,9 @@ public class FormSubmissionController {
 
 
 			List<ReferralsDTO> patientReferrals = new ArrayList<>();
-			patientReferrals.add(PatientsConverter.toPatientDTO(patientReferral));
+			ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(patientReferral);
+			referralsDTO.setServiceIndicatorIds(referralIndicatorIds);
+			patientReferrals.add(referralsDTO);
 
 			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
 			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients));
