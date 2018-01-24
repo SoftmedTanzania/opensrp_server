@@ -133,11 +133,19 @@ public class ReferralPatientsController {
 
 					List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
 
+					long id = 1;
+					List<PatientAppointments> patientAppointments =  patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" ORDER BY "+PatientAppointments.COL_APPOINTMENT_ID+" LIMIT 1",null);
+					if(patientAppointments.size()>0){
+						id = patientAppointments.get(0).getAppointment_id()+1;
+					}
+
 					for (PatientAppointments patientAppointment : appointments) {
 						System.out.println("saving appointment");
+						patientAppointment.setAppointment_id(id);
 						patientAppointment.setAppointmentType(1);
 						patientAppointment.setHealthFacilityPatientId(healthfacilityPatientId);
 						patientsAppointmentsRepository.save(patientAppointment);
+						id++;
 					}
 				}catch (Exception e){
 					e.printStackTrace();
@@ -332,7 +340,7 @@ public class ReferralPatientsController {
 
 			JSONObject msg = new JSONObject(json);
 
-			googleFCMService.SendPushNotification(msg,notificationObject,tokens);
+			googleFCMService.SendPushNotification(msg,notificationObject,tokens,false);
 
 
 			return new ResponseEntity<PatientReferral>(savedPatientReferrals.get(0),HttpStatus.CREATED);
@@ -347,17 +355,17 @@ public class ReferralPatientsController {
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/receive-feedback")
 	public ResponseEntity<String> saveReferralFeedback(@RequestBody String json) {
 		try {
-			ReferralsFeedbackDTO referralsFeedbackDTO = new Gson().fromJson(json,ReferralsFeedbackDTO.class);
-			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsFeedbackDTO));
+			ReferralsDTO referralsDTO = new Gson().fromJson(json,ReferralsDTO.class);
+			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
 
 			List<PatientReferral> referrals = patientReferralRepository.getReferrals("SELECT * FROM " + org.opensrp.domain.PatientReferral.tbName + " WHERE " + PatientReferral.COL_REFERRAL_ID + "=?",
-					new Object[]{referralsFeedbackDTO.getReferralId()});
+					new Object[]{referralsDTO.getReferralId()});
 
 			PatientReferral referral = referrals.get(0);
-			referral.setReferralStatus(referralsFeedbackDTO.getReferralStatus());
-			referral.setServiceGivenToPatient(referralsFeedbackDTO.getServiceGivenToPatient());
-			referral.setOtherNotes(referralsFeedbackDTO.getOtherNotes());
-			referral.setReferralStatus(referralsFeedbackDTO.getReferralStatus());
+			referral.setReferralStatus(referralsDTO.getReferralStatus());
+			referral.setServiceGivenToPatient(referralsDTO.getServiceGivenToPatient());
+			referral.setOtherNotes(referralsDTO.getOtherNotes());
+			referral.setReferralStatus(referralsDTO.getReferralStatus());
 			patientReferralRepository.save(referral);
 
 			if(referral.getReferralSource()==0){
@@ -369,7 +377,30 @@ public class ReferralPatientsController {
 			}
 
 
-			logger.debug(format("updated  ReferralsFeedbackDTO Submissions: {0}", referralsFeedbackDTO));
+
+
+			JSONObject body = new JSONObject();
+			body.put("type","PatientReferral");
+
+			JSONObject notificationObject = new JSONObject();
+			notificationObject.put("body",body);
+
+			Object[] facilityParams = new Object[]{referralsDTO.getServiceProviderUIID(),0};
+			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_USER_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
+			JSONArray tokens = new JSONArray();
+			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
+				tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
+			}
+
+
+			String referralDTOJson = new Gson().toJson(referralsDTO);
+
+			JSONObject msg = new JSONObject(referralDTOJson);
+
+			googleFCMService.SendPushNotification(msg,notificationObject,tokens,false);
+
+
+			logger.debug(format("updated  ReferralsFeedbackDTO Submissions: {0}", referralsDTO));
 		} catch (Exception e) {
 			logger.error(format("ReferralsFeedbackDTO processing failed with exception {0}.\nSubmissions: {1}", e, json));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);

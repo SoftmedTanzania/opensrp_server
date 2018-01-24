@@ -24,6 +24,7 @@ public class PatientsAppointmentsRepository {
 	
 	public int save(PatientAppointments patientAppointments) throws Exception {
 		String insertQuery = "insert into " + PatientAppointments.tbName + " (" +
+				PatientAppointments.COL_APPOINTMENT_ID + "," +
 				PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID + "," +
 				PatientAppointments.COL_APPOINTMENT_DATE + "," +
 				PatientAppointments.COL_IS_CANCELLED + "," +
@@ -31,9 +32,10 @@ public class PatientsAppointmentsRepository {
 				PatientAppointments.COL_ROW_VERSION + "," +
 				PatientAppointments.COL_APPOINTMENT_TYPE + "," +
 				PatientAppointments.COL_UPDATED_AT + "," +
-				PatientAppointments.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?) ";
+				PatientAppointments.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
+				patientAppointments.getAppointment_id(),
 				patientAppointments.getHealthFacilityPatientId(),
 				patientAppointments.getAppointmentDate(),
 				patientAppointments.getIsCancelled(),
@@ -44,6 +46,7 @@ public class PatientsAppointmentsRepository {
 				patientAppointments.getCreatedAt() };
 
 		int[] types = new int[] {
+				Types.BIGINT,
 				Types.BIGINT,
 				Types.DATE,
 				Types.BOOLEAN,

@@ -41,6 +41,8 @@ public class PatientReferral {
 
 	public static final String COL_OTHER_NOTES= "other_notes";
 
+	public static final String COL_REFERRAL_TYPE= "referral_type";
+
 	public static final String COL_REFERRAL_SOURCE= "referral_source";
 
 	public static final String COL_VILLAGE_LEADER= "village_leader";
@@ -99,6 +101,9 @@ public class PatientReferral {
 
 	@Column(name = COL_SERVICES_GIVEN_TO_PATIENT)
 	private String serviceGivenToPatient;
+
+	@Column(name = COL_REFERRAL_TYPE)
+	private long referralType;
 
 
 	@Column(name = COL_FROM_FACILITY_ID)
@@ -259,6 +264,14 @@ public class PatientReferral {
 
 	public void setServiceGivenToPatient(String serviceGivenToPatient) {
 		this.serviceGivenToPatient = serviceGivenToPatient;
+	}
+
+	public long getReferralType() {
+		return referralType;
+	}
+
+	public void setReferralType(long referralType) {
+		this.referralType = referralType;
 	}
 
 	public String getInstanceId() {

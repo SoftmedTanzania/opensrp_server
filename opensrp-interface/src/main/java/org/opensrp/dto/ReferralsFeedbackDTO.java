@@ -22,8 +22,7 @@ public class ReferralsFeedbackDTO {
 
 
 	@JsonProperty
-	private String testResults; //TODO handle its implementation
-
+	private boolean testResults;
     /*
 	 *  0 = new
 	 * -1 = rejected/discarded
@@ -66,11 +65,11 @@ public class ReferralsFeedbackDTO {
         this.serviceGivenToPatient = serviceGivenToPatient;
     }
 
-    public String getTestResults() {
+    public boolean getTestResults() {
         return testResults;
     }
 
-    public void setTestResults(String testResults) {
+    public void setTestResults(boolean testResults) {
         this.testResults = testResults;
     }
 

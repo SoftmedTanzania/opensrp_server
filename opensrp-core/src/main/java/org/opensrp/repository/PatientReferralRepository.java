@@ -50,6 +50,7 @@ public class PatientReferralRepository {
 		parameters.put(PatientReferral.COL_REFERRAL_DATE , patientReferral.getReferralDate());
 		parameters.put(PatientReferral.COL_REFERRAL_STATUS , patientReferral.getReferralStatus());
 		parameters.put(PatientReferral.COL_INSTANCE_ID ,  patientReferral.getInstanceId());
+		parameters.put(PatientReferral.COL_REFERRAL_TYPE ,  patientReferral.getReferralType());
 		parameters.put(PatientReferral.COL_CREATED_AT , patientReferral.getCreatedAt());
 		parameters.put(PatientReferral.COL_UPDATED_AT , patientReferral.getCreatedAt());
 
@@ -101,6 +102,7 @@ public class PatientReferralRepository {
 			patientReferral.setFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FACILITY_ID)));
 			patientReferral.setReferralStatus(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_STATUS)));
 			patientReferral.setInstanceId(rs.getString(rs.findColumn(PatientReferral.COL_INSTANCE_ID)));
+			patientReferral.setReferralType(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_TYPE)));
 			patientReferral.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientReferral.COL_CREATED_AT)).getTime()));
 			patientReferral.setUpdatedAt(rs.getDate(rs.findColumn(PatientReferral.COL_UPDATED_AT)));
 			return patientReferral;

@@ -241,8 +241,11 @@ public class FormSubmissionController {
                 patients.setPatientId(id);
 	            patientReferral.setPatient(patients);
             }
+
+            //TODO remove hardcoding of these values
             patientReferral.setReferralSource(0);
             patientReferral.setReferralStatus(0);
+            patientReferral.setReferralType(1);
 
             System.out.println("Coze = saving referral Data");
             long id = patientReferralRepository.save(patientReferral);
@@ -293,7 +296,7 @@ public class FormSubmissionController {
 
 			JSONObject msg = new JSONObject(json);
 
-			googleFCMService.SendPushNotification(msg,notificationObject,tokens);
+			googleFCMService.SendPushNotification(msg,notificationObject,tokens,true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));

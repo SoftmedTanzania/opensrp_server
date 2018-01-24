@@ -62,6 +62,9 @@ public class ReferralsDTO {
     private int referralSource;
 
     @JsonProperty
+    private int referralType;
+
+    @JsonProperty
     private Long referralDate;
 
     @JsonProperty
@@ -217,6 +220,14 @@ public class ReferralsDTO {
 
     public void setServiceGivenToPatient(String serviceGivenToPatient) {
         this.serviceGivenToPatient = serviceGivenToPatient;
+    }
+
+    public int getReferralType() {
+        return referralType;
+    }
+
+    public void setReferralType(int referralType) {
+        this.referralType = referralType;
     }
 
     public String getFromFacilityId() {

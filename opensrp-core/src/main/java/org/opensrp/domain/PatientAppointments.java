@@ -31,8 +31,6 @@ public class PatientAppointments implements Serializable {
 	public static final String COL_UPDATED_AT = "updated_at";
 
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = COL_APPOINTMENT_ID, unique = true, nullable = false, insertable = false, updatable = false)
 	private Long appointment_id;
 
