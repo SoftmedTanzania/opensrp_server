@@ -361,7 +361,14 @@ public class ReferralPatientsController {
 			List<PatientReferral> referrals = patientReferralRepository.getReferrals("SELECT * FROM " + org.opensrp.domain.PatientReferral.tbName + " WHERE " + PatientReferral.COL_REFERRAL_ID + "=?",
 					new Object[]{referralsDTO.getReferralId()});
 
-			PatientReferral referral = referrals.get(0);
+			PatientReferral referral=null;
+			try {
+				referral = referrals.get(0);
+			}catch (Exception e){
+				e.printStackTrace();
+				return new ResponseEntity<String>("referral not found",PRECONDITION_FAILED);
+			}
+
 			referral.setReferralStatus(referralsDTO.getReferralStatus());
 			referral.setServiceGivenToPatient(referralsDTO.getServiceGivenToPatient());
 			referral.setOtherNotes(referralsDTO.getOtherNotes());
@@ -369,11 +376,15 @@ public class ReferralPatientsController {
 			patientReferralRepository.save(referral);
 
 			if(referral.getReferralSource()==0){
-				FormSubmission formSubmission = formSubmissionService.findByInstanceId(referral.getInstanceId());
-				formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission,PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT,referral.getServiceGivenToPatient());
-				formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission,PatientReferral.COL_OTHER_NOTES,referral.getOtherNotes());
-				formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission,PatientReferral.COL_REFERRAL_STATUS,referral.getReferralStatus()+"");
-				formSubmissionService.update(formSubmission);
+				try {
+					FormSubmission formSubmission = formSubmissionService.findByInstanceId(referral.getInstanceId());
+					formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT, referral.getServiceGivenToPatient());
+					formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_OTHER_NOTES, referral.getOtherNotes());
+					formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_REFERRAL_STATUS, referral.getReferralStatus() + "");
+					formSubmissionService.update(formSubmission);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
 			}
 
 
