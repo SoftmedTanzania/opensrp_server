@@ -89,7 +89,6 @@ public class ReferralPatientsService {
         List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
         for(HealthFacilitiesPatients facilitiesPatients:healthFacilitiesPatients){
             String getPatientsSQL = "SELECT * from " + Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+ " = "+facilitiesPatients.getPatient().getPatientId();
-
             try {
                 Patients patient = patientsRepository.getPatients(getPatientsSQL,null).get(0);
 
@@ -101,8 +100,9 @@ public class ReferralPatientsService {
 
                 List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(patientReferralRepository.getReferrals(getReferralPatientsSQL,args));
                 for(ReferralsDTO referralsDTO:referralsDTOS) {
-                    Object[] args2 = new String[1];
-                    args2[0] = referralsDTO.getReferralId();
+
+                    Object[] args2 = new Object[]{referralsDTO.getReferralId()};
+
                     List<PatientReferralIndicators> patientReferralIndicators = patientReferralIndicatorRepository.getPatientReferralIndicators("SELECT * FROM " + PatientReferralIndicators.tbName + " WHERE " + PatientReferralIndicators.COL_REFERRAL_ID + " =?", args2);
 
                     List<Long> patientReferralIndicatorsIds = new ArrayList<>();
@@ -129,10 +129,6 @@ public class ReferralPatientsService {
             }
 
         }
-
-
-
-
 
         return patientReferralsDTOS;
     }

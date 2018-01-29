@@ -33,6 +33,14 @@ public class Patients {
 
 	public static final String COL_HIV_STATUS= "hiv_status";
 
+	public static final String COL_COMMUNITY_BASED_HIV_SERVICE= "community_based_hiv_service";
+
+	public static final String COL_CARE_TAKER_NAME= "care_taker_name";
+
+	public static final String COL_CARE_TAKER_PHONE_NUMBER= "care_taker_phone_number";
+
+	public static final String COL_CARE_TAKER_RELATIONSHIP= "care_taker_relationship";
+
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
@@ -75,6 +83,22 @@ public class Patients {
 
 	@Column(name = COL_HIV_STATUS)
 	private boolean hivStatus;
+
+	@Column(name = COL_COMMUNITY_BASED_HIV_SERVICE)
+	private String communityBasedHivService;
+
+
+	@Column(name = COL_CARE_TAKER_NAME)
+	private String careTakerName;
+
+
+	@Column(name = COL_CARE_TAKER_PHONE_NUMBER)
+	private String careTakerPhoneNumber;
+
+
+	@Column(name = COL_CARE_TAKER_RELATIONSHIP)
+	private String careTakerRelationship;
+
 
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
@@ -179,6 +203,38 @@ public class Patients {
 
 	public void setHivStatus(boolean hivStatus) {
 		this.hivStatus = hivStatus;
+	}
+
+	public String getCommunityBasedHivService() {
+		return communityBasedHivService;
+	}
+
+	public void setCommunityBasedHivService(String communityBasedHivService) {
+		this.communityBasedHivService = communityBasedHivService;
+	}
+
+	public String getCareTakerName() {
+		return careTakerName;
+	}
+
+	public void setCareTakerName(String careTakerName) {
+		this.careTakerName = careTakerName;
+	}
+
+	public String getCareTakerPhoneNumber() {
+		return careTakerPhoneNumber;
+	}
+
+	public void setCareTakerPhoneNumber(String careTakerPhoneNumber) {
+		this.careTakerPhoneNumber = careTakerPhoneNumber;
+	}
+
+	public String getCareTakerRelationship() {
+		return careTakerRelationship;
+	}
+
+	public void setCareTakerRelationship(String careTakerRelationship) {
+		this.careTakerRelationship = careTakerRelationship;
 	}
 
 	public Date getUpdatedAt() {

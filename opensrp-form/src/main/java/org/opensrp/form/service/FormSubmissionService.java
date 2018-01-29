@@ -87,6 +87,16 @@ public class FormSubmissionService {
         }
     }
 
+    public void submit(FormSubmission submission) {
+        if (allFormSubmissions.exists(submission.instanceId())) {
+            logger.warn(format("Received form submission that already exists. Skipping. Submission: {0}", submission));
+        }
+        logger.info(format("Saving form {0} with instance Id: {1} and for entity Id: {2}",
+                submission.formName(), submission.instanceId(), submission.entityId()));
+        submission.setServerVersion(DateUtil.millis());
+        allFormSubmissions.add(submission);
+    }
+
     private Comparator<FormSubmission> timeStampComparator() {
         return new Comparator<FormSubmission>() {
             public int compare(FormSubmission firstSubmission, FormSubmission secondSubmission) {

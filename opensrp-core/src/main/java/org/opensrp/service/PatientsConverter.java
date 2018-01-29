@@ -22,6 +22,7 @@ public class PatientsConverter {
 
             patients.setPatientId(patientsDTO.getPatientId());
             patients.setFirstName(patientsDTO.getFirstName());
+            patients.setMiddleName(patientsDTO.getMiddleName());
             patients.setSurname(patientsDTO.getSurname());
             patients.setPhoneNumber(patientsDTO.getPhoneNumber());
 
@@ -33,11 +34,19 @@ public class PatientsConverter {
             patients.setWard(patientsDTO.getWard());
             patients.setVillage(patientsDTO.getVillage());
             patients.setHamlet(patientsDTO.getHamlet());
+            patients.setCareTakerName(patientsDTO.getCareTakerName());
+            patients.setCareTakerPhoneNumber(patientsDTO.getPhoneNumber());
+            patients.setCareTakerRelationship(patientsDTO.getCareTakerRelationship());
+            patients.setCommunityBasedHivService(patientsDTO.getCommunityBasedHivService());
 
-            Date deathDate = new Date();
-            deathDate.setTime(patientsDTO.getDateOfDeath());
+            try {
+                Date deathDate = new Date();
+                deathDate.setTime(patientsDTO.getDateOfDeath());
+                patients.setDateOfDeath(deathDate);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
-            patients.setDateOfDeath(deathDate);
             patients.setHivStatus(patientsDTO.isHivStatus());
             patients.setCreatedAt(Calendar.getInstance().getTime());
             patients.setUpdatedAt(Calendar.getInstance().getTime());
@@ -65,6 +74,10 @@ public class PatientsConverter {
 
             Date deathDate = new Date();
             deathDate.setTime(patientsDTO.getDateOfDeath());
+
+            patients.setCareTakerName(patientsDTO.getCareTakerName());
+            patients.setCareTakerPhoneNumber(patientsDTO.getCareTakerPhoneNumber());
+            patients.setCareTakerRelationship(patientsDTO.getCareTakerRelationship());
 
             patients.setDateOfDeath(deathDate);
             patients.setCreatedAt(Calendar.getInstance().getTime());
@@ -96,6 +109,7 @@ public class PatientsConverter {
             dob.setTime(patientsDTO.getDateOfBirth());
             patients.setDateOfBirth(dob);
             patients.setGender(patientsDTO.getGender());
+            patients.setHivStatus(patientsDTO.isHivStatus());
             patients.setHivStatus(patientsDTO.isHivStatus());
 
             Date deathDate = new Date();
@@ -200,6 +214,10 @@ public class PatientsConverter {
             patientsDTO.setVillage(patients.getVillage());
             patientsDTO.setHamlet(patients.getHamlet());
 
+            patientsDTO.setCareTakerName(patients.getCareTakerName());
+            patientsDTO.setCareTakerPhoneNumber(patients.getCareTakerPhoneNumber());
+            patientsDTO.setCareTakerRelationship(patients.getCareTakerRelationship());
+
             try {
 	            patientsDTO.setDateOfDeath(patients.getDateOfDeath().getTime());
             }catch (Exception e){
@@ -270,6 +288,7 @@ public class PatientsConverter {
 
             return referralsDTOS;
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(MessageFormat.format("Converting List<PatientReferral> :{0}, failed with error: {1}.", referrals, e));
             throw e;
         }

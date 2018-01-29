@@ -1,16 +1,8 @@
 package org.opensrp.web.controller;
 
-import static ch.lambdaj.collection.LambdaCollections.with;
-import static java.text.MessageFormat.format;
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import ch.lambdaj.function.convert.Converter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,10 +39,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import ch.lambdaj.function.convert.Converter;
+import static ch.lambdaj.collection.LambdaCollections.with;
+import static java.text.MessageFormat.format;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
 public class FormSubmissionController {
@@ -68,16 +66,15 @@ public class FormSubmissionController {
     private PatientsRepository patientsRepository;
     private PatientReferralRepository patientReferralRepository;
     private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
-    private HealthFacilityRepository healthFacilityRepository;
     private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
 
     @Autowired
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
-    		EncounterService encounterService, FormEntityConverter formEntityConverter, PatientService patientService, 
-    		HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
-    		ErrorTraceService errorTraceService,PatientsRepository patientsRepository,PatientReferralRepository patientReferralRepository,
+                                    EncounterService encounterService, FormEntityConverter formEntityConverter, PatientService patientService,
+                                    HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
+                                    ErrorTraceService errorTraceService,PatientsRepository patientsRepository,PatientReferralRepository patientReferralRepository,
 		                            GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService,
-		                            HealthFacilityRepository healthFacilityRepository,PatientReferralIndicatorRepository patientReferralIndicatorRepository) {
+		                            PatientReferralIndicatorRepository patientReferralIndicatorRepository) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService=errorTraceService;
@@ -91,7 +88,6 @@ public class FormSubmissionController {
         this.patientReferralRepository = patientReferralRepository;
         this.googlePushNotificationsUsersRepository = googlePushNotificationsUsersRepository;
 	    this.googleFCMService =googleFCMService;
-	    this.healthFacilityRepository = healthFacilityRepository;
 	    this.patientReferralIndicatorRepository = patientReferralIndicatorRepository;
     }
 
@@ -305,6 +301,8 @@ public class FormSubmissionController {
 
 
 	}
+
+
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/multimedia-file")
     @ResponseBody

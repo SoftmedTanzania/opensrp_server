@@ -44,6 +44,29 @@ public class PatientsDTO {
     @JsonProperty
     private boolean hivStatus = false;
 
+    @JsonProperty
+    private String communityBasedHivService;
+
+
+    @JsonProperty
+    private String careTakerName;
+
+
+    @JsonProperty
+    private String careTakerPhoneNumber;
+
+
+    @JsonProperty
+    private String careTakerRelationship;
+
+
+    @JsonProperty
+    private String healthFacilityCode;
+
+
+    @JsonProperty
+    private String ctcNumber;
+
 
     public PatientsDTO() {
     }
@@ -142,6 +165,54 @@ public class PatientsDTO {
 
     public void setHivStatus(boolean hivStatus) {
         this.hivStatus = hivStatus;
+    }
+
+    public String getCommunityBasedHivService() {
+        return communityBasedHivService;
+    }
+
+    public void setCommunityBasedHivService(String communityBasedHivService) {
+        this.communityBasedHivService = communityBasedHivService;
+    }
+
+    public String getCtcNumber() {
+        return ctcNumber;
+    }
+
+    public void setCtcNumber(String ctcNumber) {
+        this.ctcNumber = ctcNumber;
+    }
+
+    public String getCareTakerName() {
+        return careTakerName;
+    }
+
+    public void setCareTakerName(String careTakerName) {
+        this.careTakerName = careTakerName;
+    }
+
+    public String getCareTakerPhoneNumber() {
+        return careTakerPhoneNumber;
+    }
+
+    public void setCareTakerPhoneNumber(String careTakerPhoneNumber) {
+        this.careTakerPhoneNumber = careTakerPhoneNumber;
+    }
+
+    public String getCareTakerRelationship() {
+        return careTakerRelationship;
+    }
+
+    public void setCareTakerRelationship(String careTakerRelationship) {
+        this.careTakerRelationship = careTakerRelationship;
+    }
+
+    public String getHealthFacilityCode() {
+        return healthFacilityCode;
+    }
+
+    public void setHealthFacilityCode(String healthFacilityCode) {
+        this.healthFacilityCode = healthFacilityCode;
     }
 
     @Override

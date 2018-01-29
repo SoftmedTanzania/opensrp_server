@@ -4,10 +4,14 @@ import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
+import org.opensrp.form.domain.FormData;
+import org.opensrp.form.domain.FormField;
+import org.opensrp.form.domain.FormInstance;
 import org.opensrp.form.domain.FormSubmission;
 import org.opensrp.form.service.FormSubmissionService;
 import org.opensrp.repository.*;
@@ -28,10 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static ch.lambdaj.collection.LambdaCollections.with;
 import static java.text.MessageFormat.format;
@@ -79,36 +80,46 @@ public class ReferralPatientsController {
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
-	public ResponseEntity<String> savePatient(@RequestBody List<PatientsDTO> patientsDTOS) {
+	public ResponseEntity<PatientsDTO> savePatient(@RequestBody String json) {
+		PatientsDTO patientsDTO = new Gson().fromJson(json, PatientsDTO.class);
 		try {
-			if (patientsDTOS.isEmpty()) {
+			if (patientsDTO==null) {
 				return new ResponseEntity<>(BAD_REQUEST);
 			}
-			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
-			String json = new Gson().toJson(patientsDTOS);
-			List<PatientsDTO> healthFacilitiesDTOs = new Gson().fromJson(json, new TypeToken<List<PatientsDTO>>() {
-			}.getType());
+			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTO));
 
-			try {
-				List<Patients> patients = with(healthFacilitiesDTOs).convert(new Converter<PatientsDTO, Patients>() {
-					@Override
-					public Patients convert(PatientsDTO submission) {
-						return PatientsConverter.toPatients(submission);
-					}
-				});
+			Patients patient = PatientsConverter.toPatients(patientsDTO);
+			long healthfacilityPatientId = savePatient(patient, patientsDTO.getHealthFacilityCode(), patientsDTO.getCtcNumber());
 
-				for (Patients ctcPatients : patients) {
-					patientsService.storeCTCPatients(ctcPatients);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			patientsDTO.setPatientId(healthfacilityPatientId);
+
+			JSONObject body = new JSONObject();
+			body.put("type", "PatientReferral");
+
+			JSONObject notificationObject = new JSONObject();
+			notificationObject.put("body", body);
+
+			Object[] facilityParams = new Object[]{patientsDTO.getHealthFacilityCode(), 1};
+			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
+			JSONArray tokens = new JSONArray();
+			for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
+				tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
 			}
-			logger.debug(format("Added  Patient to queue.\nSubmissions: {0}", patientsDTOS));
+
+			if(tokens.length()>0) {
+				String jsonData = new Gson().toJson(patientsDTO);
+				JSONObject msg = new JSONObject(jsonData);
+				googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
+			}
+
+			logger.debug(format("Added  Patient to queue.\nSubmissions: {0}", patientsDTO));
 		} catch (Exception e) {
-			logger.error(format("Patients processing failed with exception {0}.\nSubmissions: {1}", e, patientsDTOS));
+			e.printStackTrace();
+			logger.error(format("Patients processing failed with exception {0}.\nSubmissions: {1}", e, json));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<String>("success",OK);
+
+		return new ResponseEntity<PatientsDTO>(patientsDTO,OK);
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-ctc-patients")
@@ -275,9 +286,9 @@ public class ReferralPatientsController {
 
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-facility-referral")
-	public ResponseEntity<PatientReferral> saveFacilityReferral(@RequestBody String jsonData) {
+	public ResponseEntity<ReferralsDTO> saveFacilityReferral(@RequestBody String jsonData) {
+		ReferralsDTO referralsDTO = new Gson().fromJson(jsonData,ReferralsDTO.class);
 		try {
-			ReferralsDTO referralsDTO = new Gson().fromJson(jsonData,ReferralsDTO.class);
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
 
 			referralsDTO.setReferralSource(1);
@@ -297,11 +308,12 @@ public class ReferralPatientsController {
 			List<PatientReferral> savedPatientReferrals = patientReferralRepository.getReferrals("SELECT * FROM "+PatientReferral.tbName+" ORDER BY _id DESC LIMIT 1 ",null);
 			logger.debug(format("Added  ReferralsDTO Submissions: {0}", referralsDTO));
 
+			referralsDTO.setReferralId(savedPatientReferrals.get(0).getId());
+
 
 			Object[] patientParams = new Object[]{
 					savedPatientReferrals.get(0).getPatient().getPatientId()};
 			List<Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" =?",patientParams);
-
 
 			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
 			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients.get(0)));
@@ -322,35 +334,96 @@ public class ReferralPatientsController {
 
 			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
-			JSONObject body = new JSONObject();
-			body.put("type","PatientReferral");
+			if(referralsDTO.getReferralType()!=4) {
 
-			JSONObject notificationObject = new JSONObject();
-			notificationObject.put("body",body);
+				JSONObject body = new JSONObject();
+				body.put("type", "PatientReferral");
 
-			Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(),1};
-			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
-			JSONArray tokens = new JSONArray();
-			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
-				tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
+				JSONObject notificationObject = new JSONObject();
+				notificationObject.put("body", body);
+
+				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(), 1};
+				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
+				JSONArray tokens = new JSONArray();
+				for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
+					tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
+				}
+
+
+				String json = new Gson().toJson(patientReferralsDTO);
+
+				JSONObject msg = new JSONObject(json);
+
+				googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
+			}else{
+				String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
+						HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UIID + " = ?";
+				Object[] healthFacilityParams = new Object[]{
+						patientReferral.getFacilityId(),patientReferral.getFacilityId()};
+
+				List<HealthFacilities> healthFacilities = null;
+				try {
+					healthFacilities = healthFacilityRepository.getHealthFacility(healthFacilitySql, healthFacilityParams);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				if(healthFacilities!=null)
+					saveReferralFollowup(patientReferral,healthFacilities.get(0).getId()+"");
 			}
 
 
-			String json = new Gson().toJson(patientReferralsDTO);
-
-			JSONObject msg = new JSONObject(json);
-
-			googleFCMService.SendPushNotification(msg,notificationObject,tokens,false);
-
-
-			return new ResponseEntity<PatientReferral>(savedPatientReferrals.get(0),HttpStatus.CREATED);
+			return new ResponseEntity<ReferralsDTO>(referralsDTO,HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(format("ReferralsDTO processing failed with exception {0}.\nSubmissions: {1}", e, jsonData));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
 	}
 
 
+	public void saveReferralFollowup(PatientReferral patientReferral,String facilityId){
+		List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
+		try {
+			healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_PATIENT_ID+ " = "+patientReferral.getPatient().getPatientId()+" AND "+HealthFacilitiesPatients.COL_FACILITY_ID+ " = '"+facilityId+"'",null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		List<Patients> patients = null;
+		try {
+			patients = patientsRepository.getPatients("SELECT * FROM "+ Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			Patients patient = patients.get(0);
+
+			HealthFacilitiesPatients healthFacilitiesPatient = healthFacilitiesPatients.get(0);
+
+			List<org.opensrp.form.domain.FormField> formFields = new ArrayList<>();
+			formFields.add(new org.opensrp.form.domain.FormField("first_name", patient.getFirstName(), null));
+			formFields.add(new org.opensrp.form.domain.FormField("middle_name", patient.getMiddleName(), null));
+			formFields.add(new org.opensrp.form.domain.FormField("surname", patient.getSurname(), null));
+			formFields.add(new org.opensrp.form.domain.FormField("community_based_hiv_service", patient.getCommunityBasedHivService(), null));
+			formFields.add(new org.opensrp.form.domain.FormField("ctc_number", healthFacilitiesPatient.getCtcNumber(), null));
+			formFields.add(new org.opensrp.form.domain.FormField("care_taker_name", healthFacilitiesPatient.getCtcNumber(), null));
+			formFields.add(new org.opensrp.form.domain.FormField("care_taker_name_phone_number", healthFacilitiesPatient.getCtcNumber(), null));
+			formFields.add(new org.opensrp.form.domain.FormField("care_taker_relationship", healthFacilitiesPatient.getCtcNumber(), null));
+			formFields.add(new org.opensrp.form.domain.FormField("facility_id", patientReferral.getFromFacilityId() + "", null));
+			formFields.add(new FormField("referral_reason", patientReferral.getReferralReason(), null));
+
+			FormData formData = new FormData("client_referral", "/model/instance/follow_up_form/", formFields, null);
+			FormInstance formInstance = new FormInstance(formData);
+			FormSubmission formSubmission = new FormSubmission(patientReferral.getFromFacilityId(), UUID.randomUUID().toString(), "follow_up", patientReferral.getId() + "", "1", 1, formInstance);
+
+			formSubmissionService.submit(formSubmission);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/receive-feedback")
 	public ResponseEntity<String> saveReferralFeedback(@RequestBody String json) {

@@ -34,6 +34,22 @@ public class CTCPatientsDTO {
 
 
 	@JsonProperty
+	private String communityBasedHivService;
+
+
+	@JsonProperty
+	private String careTakerName;
+
+
+	@JsonProperty
+	private String careTakerPhoneNumber;
+
+
+	@JsonProperty
+	private String careTakerRelationship;
+
+
+	@JsonProperty
 	private boolean hivStatus;
 
 	@JsonProperty
@@ -143,5 +159,37 @@ public class CTCPatientsDTO {
 
 	public void setHealthFacilityCode(String healthFacilityCode) {
 		this.healthFacilityCode = healthFacilityCode;
+	}
+
+	public String getCommunityBasedHivService() {
+		return communityBasedHivService;
+	}
+
+	public void setCommunityBasedHivService(String communityBasedHivService) {
+		this.communityBasedHivService = communityBasedHivService;
+	}
+
+	public String getCareTakerName() {
+		return careTakerName;
+	}
+
+	public void setCareTakerName(String careTakerName) {
+		this.careTakerName = careTakerName;
+	}
+
+	public String getCareTakerPhoneNumber() {
+		return careTakerPhoneNumber;
+	}
+
+	public void setCareTakerPhoneNumber(String careTakerPhoneNumber) {
+		this.careTakerPhoneNumber = careTakerPhoneNumber;
+	}
+
+	public String getCareTakerRelationship() {
+		return careTakerRelationship;
+	}
+
+	public void setCareTakerRelationship(String careTakerRelationship) {
+		this.careTakerRelationship = careTakerRelationship;
 	}
 }
