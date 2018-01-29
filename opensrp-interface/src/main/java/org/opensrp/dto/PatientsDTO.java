@@ -67,6 +67,9 @@ public class PatientsDTO {
     @JsonProperty
     private String ctcNumber;
 
+    @JsonProperty
+    private boolean currentOnTbTreatment;
+
 
     public PatientsDTO() {
     }
@@ -213,6 +216,14 @@ public class PatientsDTO {
 
     public void setHealthFacilityCode(String healthFacilityCode) {
         this.healthFacilityCode = healthFacilityCode;
+    }
+
+    public boolean isCurrentOnTbTreatment() {
+        return currentOnTbTreatment;
+    }
+
+    public void setCurrentOnTbTreatment(boolean currentOnTbTreatment) {
+        this.currentOnTbTreatment = currentOnTbTreatment;
     }
 
     @Override
