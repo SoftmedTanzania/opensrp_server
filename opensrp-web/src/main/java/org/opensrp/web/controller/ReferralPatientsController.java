@@ -486,7 +486,7 @@ public class ReferralPatientsController {
 				JSONObject msg = new JSONObject(referralDTOJson);
 
 				try {
-					if(referral.getReferralSource()==0)
+					if(referral.getReferralType()==0)
 						googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
 					else{
 						googleFCMService.SendPushNotification(msg, notificationObject, tokens, true);
