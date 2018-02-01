@@ -29,7 +29,7 @@ public class PatientReferralRepository {
 	public long save(PatientReferral patientReferral) throws Exception {
 
 
-		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(PatientReferral.tbName).usingGeneratedKeyColumns("_id");
+		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(PatientReferral.tbName).usingGeneratedKeyColumns(PatientReferral.COL_REFERRAL_ID);
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(PatientReferral.COL_PATIENT_ID ,patientReferral.getPatient().getPatientId());
@@ -83,7 +83,7 @@ public class PatientReferralRepository {
 	public class HealthFacilityRefferalRowMapper implements RowMapper<PatientReferral> {
 		public PatientReferral mapRow(ResultSet rs, int rowNum) throws SQLException {
 			PatientReferral patientReferral = new PatientReferral();
-			patientReferral.setId(rs.getLong(rs.findColumn("_id")));
+			patientReferral.setId(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_ID)));
 
 			Patients patient = new Patients();
 			patient.setPatientId(rs.getLong(rs.findColumn(PatientReferral.COL_PATIENT_ID)));
@@ -103,6 +103,7 @@ public class PatientReferralRepository {
 			patientReferral.setReferralStatus(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_STATUS)));
 			patientReferral.setInstanceId(rs.getString(rs.findColumn(PatientReferral.COL_INSTANCE_ID)));
 			patientReferral.setReferralType(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_TYPE)));
+			patientReferral.setReferralSource(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_SOURCE)));
 			patientReferral.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientReferral.COL_CREATED_AT)).getTime()));
 			patientReferral.setUpdatedAt(rs.getDate(rs.findColumn(PatientReferral.COL_UPDATED_AT)));
 			return patientReferral;

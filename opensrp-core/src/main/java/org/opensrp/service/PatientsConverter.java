@@ -351,6 +351,11 @@ public class PatientsConverter {
             referralsDTO.setReferralId(referral.getId());
             referralsDTO.setReferralStatus(referral.getReferralStatus());
             referralsDTO.setReferralUUID(referral.getReferralUUID());
+            referralsDTO.setReferralSource(referral.getReferralSource());
+            referralsDTO.setReferralType(referral.getReferralStatus());
+            referralsDTO.setOtherNotes(referral.getOtherNotes());
+            referralsDTO.setServiceGivenToPatient(referral.getServiceGivenToPatient());
+            referralsDTO.setTestResults(referral.isTestResults());
 
             //TODO implement new mechanism for saving referral indicators
             referralsDTO.setServiceProviderUIID(referral.getServiceProviderUIID());
@@ -362,6 +367,7 @@ public class PatientsConverter {
             return referralsDTO;
         } catch (Exception e) {
             logger.error(MessageFormat.format("Converting ReferralsDTO :{0}, failed with error: {1}.", referral, e));
+            e.printStackTrace();
             throw e;
         }
     }

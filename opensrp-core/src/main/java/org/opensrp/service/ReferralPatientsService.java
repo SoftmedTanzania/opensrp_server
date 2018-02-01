@@ -37,6 +37,9 @@ public class ReferralPatientsService {
     @Autowired
     private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
 
+    @Autowired
+    private HealthFacilityRepository healthFacilityRepository;
+
 
     public ReferralPatientsService() {
         this.client = HttpClientBuilder.create().build();
@@ -181,4 +184,94 @@ public class ReferralPatientsService {
     }
 
 
+
+    public long savePatient(Patients patient, String healthFacilityCode, String ctcNumber) {
+        String query = "SELECT * FROM " + Patients.tbName + " WHERE " +
+                Patients.COL_PATIENT_FIRST_NAME + " = ?     AND " +
+                Patients.COL_PATIENT_MIDDLE_NAME + " = ?    AND " +
+                Patients.COL_PATIENT_SURNAME + " = ?        AND " +
+                Patients.COL_PHONE_NUMBER + " = ?";
+        Object[] params = new Object[]{
+                patient.getFirstName(),
+                patient.getMiddleName(),
+                patient.getSurname(),
+                patient.getPhoneNumber()};
+        List<Patients> patientsResults = null;
+        try {
+            patientsResults = patientsRepository.getPatients(query, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Coze = number of patients found = " + patientsResults.size());
+        long id;
+        if (patientsResults.size() > 0) {
+            System.out.println("Coze = using the received patients ");
+            id = patientsResults.get(0).getPatientId();
+        } else {
+            System.out.println("Coze = saving patient Data ");
+            try {
+                id = patientsRepository.save(patient);
+            } catch (Exception e) {
+                e.printStackTrace();
+                id = -1;
+            }
+        }
+
+        //Obtaining health facilityId from tbl_facilities
+        String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
+                HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UIID + " = ?";
+        Object[] healthFacilityParams = new Object[]{
+                healthFacilityCode,healthFacilityCode};
+
+        System.out.println("Coze facility ctc code = " + healthFacilityCode);
+        Long healthFacilityId = (long) 0;
+        List<HealthFacilities> healthFacilities = null;
+        try {
+            healthFacilities = healthFacilityRepository.getHealthFacility(healthFacilitySql, healthFacilityParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (healthFacilities.size() > 0) {
+            healthFacilityId = healthFacilities.get(0).getId();
+        }
+
+        HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
+
+        Patients patients = new Patients();
+        patients.setPatientId(id);
+
+        healthFacilitiesPatients.setPatient(patients);
+        healthFacilitiesPatients.setCtcNumber(ctcNumber);
+        healthFacilitiesPatients.setFacilityId(healthFacilityId);
+
+
+        String healthFacilityPatientsquery = "SELECT * FROM " + HealthFacilitiesPatients.tbName + " WHERE " +
+                HealthFacilitiesPatients.COL_PATIENT_ID + " = ?    AND " +
+                HealthFacilitiesPatients.COL_FACILITY_ID + " = ?";
+
+        Object[] healthFacilityPatientsparams = new Object[]{
+                healthFacilitiesPatients.getPatient().getPatientId(),
+                healthFacilitiesPatients.getFacilityId()};
+
+        List<HealthFacilitiesPatients> healthFacilitiesPatientsResults = null;
+        try {
+            healthFacilitiesPatientsResults = healthFacilitiesPatientsRepository.getHealthFacilityPatients(healthFacilityPatientsquery, healthFacilityPatientsparams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        long healthfacilityPatientId = -1;
+        if (healthFacilitiesPatientsResults.size() > 0) {
+            healthfacilityPatientId = healthFacilitiesPatientsResults.get(0).getHealthFacilityPatientId();
+        } else {
+            try {
+                healthfacilityPatientId = healthFacilitiesPatientsRepository.save(healthFacilitiesPatients);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return healthfacilityPatientId;
+    }
 }

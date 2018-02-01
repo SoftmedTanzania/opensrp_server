@@ -23,10 +23,7 @@ import org.opensrp.form.service.FormSubmissionService;
 import org.opensrp.repository.*;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
-import org.opensrp.service.ErrorTraceService;
-import org.opensrp.service.GoogleFCMService;
-import org.opensrp.service.MultimediaService;
-import org.opensrp.service.PatientsConverter;
+import org.opensrp.service.*;
 import org.opensrp.service.formSubmission.FormEntityConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +35,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import static ch.lambdaj.collection.LambdaCollections.with;
 import static java.text.MessageFormat.format;
 import static org.springframework.http.HttpStatus.*;
@@ -59,11 +54,12 @@ public class FormSubmissionController {
     private EncounterService encounterService;
     private FormEntityConverter formEntityConverter;
     private PatientService patientService;
+    private ReferralPatientsService referralPatientService;
     private HouseholdService householdService;
     private ErrorTraceService errorTraceService;
     private MultimediaService multimediaService;
     private MultimediaRepository multimediaRepository;
-    private PatientsRepository patientsRepository;
+    private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
     private PatientReferralRepository patientReferralRepository;
     private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
     private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
@@ -72,9 +68,9 @@ public class FormSubmissionController {
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
                                     EncounterService encounterService, FormEntityConverter formEntityConverter, PatientService patientService,
                                     HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
-                                    ErrorTraceService errorTraceService,PatientsRepository patientsRepository,PatientReferralRepository patientReferralRepository,
+                                    ErrorTraceService errorTraceService,HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository,PatientReferralRepository patientReferralRepository,
 		                            GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService,
-		                            PatientReferralIndicatorRepository patientReferralIndicatorRepository) {
+		                            PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService=errorTraceService;
@@ -84,11 +80,12 @@ public class FormSubmissionController {
         this.householdService = householdService;
         this.multimediaService = multimediaService;
         this.multimediaRepository = multimediaRepository;
-        this.patientsRepository = patientsRepository;
+        this.healthFacilitiesPatientsRepository = healthFacilitiesPatientsRepository;
         this.patientReferralRepository = patientReferralRepository;
         this.googlePushNotificationsUsersRepository = googlePushNotificationsUsersRepository;
 	    this.googleFCMService =googleFCMService;
 	    this.patientReferralIndicatorRepository = patientReferralIndicatorRepository;
+	    this.referralPatientService = referralPatientService;
     }
 
     @RequestMapping(method = GET, value = "/form-submissions")
@@ -207,36 +204,16 @@ public class FormSubmissionController {
 
 	private void saveFormToOpenSRP(FormSubmission formSubmission) throws ParseException, IllegalStateException, JSONException{
         System.out.println("Coze = saving patient into OpenSRP");
-        Patients patients = formEntityConverter.getPatientFromFormSubmission(formSubmission);
+        Patients patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
         PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
 		try {
-            /**
-             * Check if the patient already exists by comparing his/her names and phone numbers.
-             */
 
-            String query = "SELECT * FROM " + Patients.tbName + " WHERE " +
-                    Patients.COL_PATIENT_FIRST_NAME + " = ?     AND " +
-                    Patients.COL_PATIENT_MIDDLE_NAME + " = ?    AND " +
-                    Patients.COL_PATIENT_SURNAME + " = ?        AND " +
-                    Patients.COL_PHONE_NUMBER + " = ?" ;
+			long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), patientReferral.getCtcNumber());
 
-            Object[] params = new Object[] {
-                    patients.getFirstName(),
-                    patients.getMiddleName(),
-                    patients.getSurname(),
-                    patients.getPhoneNumber()};
-            List<Patients> patientsResults = patientsRepository.getPatients(query,params);
-            System.out.println("Coze = number of patients found = "+patientsResults.size());
+			List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthfacilityPatientId,null);
 
-            if(patientsResults.size()>0){
-                System.out.println("Coze = using the received patients");
-	            patientReferral.setPatient(patientsResults.get(0));
-            }else{
-                System.out.println("Coze = saving patient Data");
-                Long id = patientsRepository.save(patients);
-                patients.setPatientId(id);
-	            patientReferral.setPatient(patients);
-            }
+			patient.setPatientId(healthFacilitiesPatients.get(0).getPatient().getPatientId());
+			patientReferral.setPatient(patient);
 
             //TODO remove hardcoding of these values
             patientReferral.setReferralSource(0);
@@ -246,7 +223,6 @@ public class FormSubmissionController {
             System.out.println("Coze = saving referral Data");
             long id = patientReferralRepository.save(patientReferral);
             patientReferral.setId(id);
-
 
 			JSONArray indicatorIds = formEntityConverter.getReferralIndicatorsFromFormSubmission(formSubmission);
 			int size  = indicatorIds.length();
@@ -270,16 +246,13 @@ public class FormSubmissionController {
 			}
 
 
-
-			List<ReferralsDTO> patientReferrals = new ArrayList<>();
-			ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(patientReferral);
-			referralsDTO.setServiceIndicatorIds(referralIndicatorIds);
-			patientReferrals.add(referralsDTO);
-
 			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
-			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients));
-			patientReferralsDTO.setPatientReferralsList(patientReferrals);
+			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
 
+
+			List<ReferralsDTO> referralsDTOS = new ArrayList<>();
+			referralsDTOS.add(PatientsConverter.toPatientDTO(patientReferral));
+			patientReferralsDTO.setPatientReferralsList(referralsDTOS);
 
 			JSONObject body = new JSONObject();
 			body.put("type","PatientReferral");
@@ -289,6 +262,8 @@ public class FormSubmissionController {
 
 
 			String json = new Gson().toJson(patientReferralsDTO);
+
+			System.out.println("Coze = FCM msg : "+json);
 
 			JSONObject msg = new JSONObject(json);
 

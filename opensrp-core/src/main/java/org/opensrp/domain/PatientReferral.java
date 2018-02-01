@@ -58,7 +58,7 @@ public class PatientReferral {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "_id")
+	@Column(name = COL_REFERRAL_ID)
 	private Long id;
 
 
@@ -81,7 +81,7 @@ public class PatientReferral {
 	@Column(name = COL_INSTANCE_ID,unique = true)
 	private String instanceId;
 
-	@Column(name = COL_REFERRAL_UUID,unique = true)
+	@Column(name = COL_REFERRAL_UUID)
 	private String referralUUID;
 
 	@Column(name = COL_SERVICE_PROVIDER_UIID)
