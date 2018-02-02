@@ -441,6 +441,7 @@ public class ReferralPatientsController {
 				referral.setServiceGivenToPatient(referralsDTO.getServiceGivenToPatient());
 				referral.setOtherNotes(referralsDTO.getOtherNotes());
 				referral.setReferralStatus(referralsDTO.getReferralStatus());
+				referral.setTestResults(referralsDTO.getTestResults());
 			}catch (Exception e){
 				e.printStackTrace();
 				System.out.println("Coze: referral not found");
@@ -459,9 +460,15 @@ public class ReferralPatientsController {
 				if (referral.getReferralType() == 1) {
 					try {
 						FormSubmission formSubmission = formSubmissionService.findByInstanceId(referral.getInstanceId());
+						System.out.println("Coze: formsubmission to be updated = "+new Gson().toJson(formSubmission));
+
 						formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT, referral.getServiceGivenToPatient());
 						formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_OTHER_NOTES, referral.getOtherNotes());
+						formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_TEST_RESULTS, referral.isTestResults()+"");
 						formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_REFERRAL_STATUS, referral.getReferralStatus() + "");
+
+
+						System.out.println("Coze: updated formsubmission = "+new Gson().toJson(formSubmission));
 						formSubmissionService.update(formSubmission);
 					} catch (Exception e) {
 						e.printStackTrace();
