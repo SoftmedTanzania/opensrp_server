@@ -70,6 +70,10 @@ public class ReferralsDTO {
     @JsonProperty
     private String facilityId;
 
+
+    @JsonProperty
+    private String intanceId;
+
     /*
 	 *  0 = new
 	 * -1 = rejected/discarded
@@ -254,7 +258,15 @@ public class ReferralsDTO {
 		this.serviceIndicatorIds = serviceIndicatorIds;
 	}
 
-	@Override
+    public String getIntanceId() {
+        return intanceId;
+    }
+
+    public void setIntanceId(String intanceId) {
+        this.intanceId = intanceId;
+    }
+
+    @Override
     public final boolean equals(Object o) {
         return EqualsBuilder.reflectionEquals(this, o);
     }

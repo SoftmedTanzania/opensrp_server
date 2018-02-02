@@ -51,6 +51,7 @@ public class PatientReferralRepository {
 		parameters.put(PatientReferral.COL_REFERRAL_STATUS , patientReferral.getReferralStatus());
 		parameters.put(PatientReferral.COL_INSTANCE_ID ,  patientReferral.getInstanceId());
 		parameters.put(PatientReferral.COL_REFERRAL_TYPE ,  patientReferral.getReferralType());
+		parameters.put(PatientReferral.COL_TEST_RESULTS ,  patientReferral.isTestResults());
 		parameters.put(PatientReferral.COL_CREATED_AT , patientReferral.getCreatedAt());
 		parameters.put(PatientReferral.COL_UPDATED_AT , patientReferral.getCreatedAt());
 
@@ -93,7 +94,7 @@ public class PatientReferralRepository {
 			patientReferral.setReferralReason(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_REASON)));
 			patientReferral.setFromFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FROM_FACILITY_ID)));
 			patientReferral.setServiceId(rs.getInt(rs.findColumn(PatientReferral.COL_SERVICE_ID)));
-			patientReferral.setReferralUUID(rs.getString(rs.findColumn(PatientReferral.COL_SERVICE_PROVIDER_UIID)));
+			patientReferral.setReferralUUID(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_UUID)));
 			patientReferral.setCtcNumber(rs.getString(rs.findColumn(PatientReferral.COL_CTC_NUMBER)));
 			patientReferral.setServiceProviderUIID(rs.getString(rs.findColumn(PatientReferral.COL_SERVICE_PROVIDER_UIID)));
 			patientReferral.setServiceProviderGroup(rs.getString(rs.findColumn(PatientReferral.COL_SERVICE_PROVIDER_GROUP)));
@@ -104,6 +105,10 @@ public class PatientReferralRepository {
 			patientReferral.setInstanceId(rs.getString(rs.findColumn(PatientReferral.COL_INSTANCE_ID)));
 			patientReferral.setReferralType(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_TYPE)));
 			patientReferral.setReferralSource(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_SOURCE)));
+			patientReferral.setServiceGivenToPatient(rs.getString(rs.findColumn(PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT)));
+			patientReferral.setTestResults(rs.getBoolean(rs.findColumn(PatientReferral.COL_TEST_RESULTS)));
+			patientReferral.setOtherClinicalInformation(rs.getString(rs.findColumn(PatientReferral.COL_OTHER_CLINICAL_INFORMATION)));
+			patientReferral.setOtherNotes(rs.getString(rs.findColumn(PatientReferral.COL_OTHER_NOTES)));
 			patientReferral.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientReferral.COL_CREATED_AT)).getTime()));
 			patientReferral.setUpdatedAt(rs.getDate(rs.findColumn(PatientReferral.COL_UPDATED_AT)));
 			return patientReferral;

@@ -156,7 +156,7 @@ public class ReferralPatientsService {
 
     public Boolean checkIfClientExists(PatientReferral patientReferral) throws SQLException {
         try {
-            String checkIfExistQuery = "SELECT count(*) from " + PatientReferral.tbName + " WHERE  _id = ?";
+            String checkIfExistQuery = "SELECT count(*) from " + PatientReferral.tbName + " WHERE  "+PatientReferral.COL_REFERRAL_ID+" = ?";
             Object[] args = new Object[1];
             args[0] = patientReferral.getId();
             int rowCount = patientsRepository.checkIfExists(checkIfExistQuery, args);

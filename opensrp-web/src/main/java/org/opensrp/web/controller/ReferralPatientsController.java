@@ -304,7 +304,7 @@ public class ReferralPatientsController {
 				patientReferralIndicatorRepository.save(referralIndicators);
 			}
 
-			List<PatientReferral> savedPatientReferrals = patientReferralRepository.getReferrals("SELECT * FROM "+PatientReferral.tbName+" ORDER BY _id DESC LIMIT 1 ",null);
+			List<PatientReferral> savedPatientReferrals = patientReferralRepository.getReferrals("SELECT * FROM "+PatientReferral.tbName+" ORDER BY "+PatientReferral.COL_REFERRAL_ID+" DESC LIMIT 1 ",null);
 			logger.debug(format("Added  ReferralsDTO Submissions: {0}", referralsDTO));
 
 			referralsDTO.setReferralId(savedPatientReferrals.get(0).getId());
@@ -456,7 +456,7 @@ public class ReferralPatientsController {
 				patientReferralRepository.executeQuery(sql);
 				System.out.println("Coze: updated referral feedback : "+sql);
 
-				if (referral.getReferralSource() == 0) {
+				if (referral.getReferralType() == 1) {
 					try {
 						FormSubmission formSubmission = formSubmissionService.findByInstanceId(referral.getInstanceId());
 						formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT, referral.getServiceGivenToPatient());
@@ -486,7 +486,7 @@ public class ReferralPatientsController {
 				JSONObject msg = new JSONObject(referralDTOJson);
 
 				try {
-					if(referral.getReferralType()==0)
+					if(referral.getReferralType()==1)
 						googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
 					else{
 						googleFCMService.SendPushNotification(msg, notificationObject, tokens, true);

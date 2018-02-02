@@ -329,6 +329,8 @@ public class PatientsConverter {
             referral.setOtherClinicalInformation(referralsDTO.getOtherClinicalInformation());
             referral.setOtherNotes(referralsDTO.getOtherNotes());
 
+	        referral.setInstanceId(referralsDTO.getIntanceId());
+
             referral.setCreatedAt(Calendar.getInstance().getTime());
             referral.setUpdatedAt(Calendar.getInstance().getTime());
 
@@ -352,10 +354,14 @@ public class PatientsConverter {
             referralsDTO.setReferralStatus(referral.getReferralStatus());
             referralsDTO.setReferralUUID(referral.getReferralUUID());
             referralsDTO.setReferralSource(referral.getReferralSource());
-            referralsDTO.setReferralType(referral.getReferralStatus());
+            referralsDTO.setReferralType((int)referral.getReferralType());
             referralsDTO.setOtherNotes(referral.getOtherNotes());
             referralsDTO.setServiceGivenToPatient(referral.getServiceGivenToPatient());
             referralsDTO.setTestResults(referral.isTestResults());
+            referralsDTO.setFromFacilityId(referral.getFromFacilityId());
+            referralsDTO.setOtherClinicalInformation(referral.getOtherClinicalInformation());
+            referralsDTO.setIntanceId(referral.getInstanceId());
+
 
             //TODO implement new mechanism for saving referral indicators
             referralsDTO.setServiceProviderUIID(referral.getServiceProviderUIID());
