@@ -3,6 +3,9 @@ package org.opensrp.web.controller;
 import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +66,7 @@ public class FormSubmissionController {
     private PatientReferralRepository patientReferralRepository;
     private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
     private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
+	private RapidProServiceImpl rapidProService;
 
     @Autowired
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
@@ -70,7 +74,8 @@ public class FormSubmissionController {
                                     HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
                                     ErrorTraceService errorTraceService,HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository,PatientReferralRepository patientReferralRepository,
 		                            GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService,
-		                            PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService) {
+		                            PatientReferralIndicatorRepository patientReferralIndicatorRepository,
+		                            ReferralPatientsService referralPatientService,RapidProServiceImpl rapidProService) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService=errorTraceService;
@@ -86,6 +91,7 @@ public class FormSubmissionController {
 	    this.googleFCMService =googleFCMService;
 	    this.patientReferralIndicatorRepository = patientReferralIndicatorRepository;
 	    this.referralPatientService = referralPatientService;
+	    this.rapidProService=rapidProService;
     }
 
     @RequestMapping(method = GET, value = "/form-submissions")
@@ -237,6 +243,35 @@ public class FormSubmissionController {
 				long patientReferralIndicatorId = patientReferralIndicatorRepository.save(referralIndicators);
 				referralIndicatorIds.add(patientReferralIndicatorId);
 			}
+
+
+
+			String phoneNumber = patient.getPhoneNumber();
+			PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+			try {
+				System.out.println("Coze: registered phone number : "+phoneNumber);
+				Phonenumber.PhoneNumber tzPhoneNumber = phoneUtil.parse(phoneNumber, "TZ");
+				phoneNumber = phoneUtil.format(tzPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+
+				System.out.println("Coze:formatted phone number : "+phoneNumber);
+			} catch (NumberParseException e) {
+				System.err.println("NumberParseException was thrown: " + e.toString());
+			}
+
+
+			List<String> urns;
+			urns = new ArrayList<String>();
+			urns.add("tel:"+phoneNumber);
+
+			try {
+				System.out.println("Coze: sending phone number to rapidpro : "+phoneNumber);
+				String response = rapidProService.startFlow(urns, "251c1c0c-a082-474b-826b-a0ab233013e3");
+
+				System.out.println("Coze: received rapidpro response : "+response);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+
 
 			Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),1};
 			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
