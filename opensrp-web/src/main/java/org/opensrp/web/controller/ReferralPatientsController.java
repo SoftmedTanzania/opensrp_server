@@ -2,6 +2,9 @@ package org.opensrp.web.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opensrp.common.AllConstants;
@@ -17,6 +20,7 @@ import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
 import org.opensrp.service.GoogleFCMService;
 import org.opensrp.service.PatientsConverter;
+import org.opensrp.service.RapidProServiceImpl;
 import org.opensrp.service.ReferralPatientsService;
 import org.opensrp.service.formSubmission.FormEntityConverter;
 import org.slf4j.Logger;
@@ -56,13 +60,14 @@ public class ReferralPatientsController {
 	private TaskSchedulerService scheduler;
 	private GoogleFCMService googleFCMService;
 	private ReferralPatientsService referralPatientService;
+	private RapidProServiceImpl rapidProService;
 
 	@Autowired
 	public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
 	                                  HealthFacilityRepository healthFacilityRepository, HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository, PatientsAppointmentsRepository patientsAppointmentsRepository,
 	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository, FormSubmissionService formSubmissionService,
 	                                  FormEntityConverter formEntityConverter, GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
-	                                  PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService) {
+	                                  PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService,RapidProServiceImpl rapidProService) {
 		this.patientsService = patientsService;
 		this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
@@ -78,6 +83,7 @@ public class ReferralPatientsController {
 		this.googleFCMService = googleFCMService;
 		this.patientReferralIndicatorRepository = patientReferralIndicatorRepository;
 		this.referralPatientService = referralPatientService;
+		this.rapidProService = rapidProService;
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
@@ -113,6 +119,31 @@ public class ReferralPatientsController {
 				googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
 			}
 
+			String phoneNumber = patientsDTO.getPhoneNumber();
+			PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+			try {
+				System.out.println("Coze: registered phone number : "+phoneNumber);
+				Phonenumber.PhoneNumber tzPhoneNumber = phoneUtil.parse(phoneNumber, "TZ");
+				phoneNumber = phoneUtil.format(tzPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+
+				System.out.println("Coze:formatted phone number : "+phoneNumber);
+			} catch (NumberParseException e) {
+				System.err.println("NumberParseException was thrown: " + e.toString());
+			}
+
+
+			List<String> urns;
+			urns = new ArrayList<String>();
+			urns.add("tel:"+phoneNumber);
+
+			try {
+				System.out.println("Coze: sending phone number to rapidpro : "+phoneNumber);
+				String response = rapidProService.startFlow(urns, "251c1c0c-a082-474b-826b-a0ab233013e3");
+
+				System.out.println("Coze: received rapidpro response : "+response);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 			logger.debug(format("Added  Patient to queue.\nSubmissions: {0}", patientsDTO));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -415,31 +446,31 @@ public class ReferralPatientsController {
 
 			List<org.opensrp.form.domain.FormField> formFields = new ArrayList<>();
 			formFields.add(new org.opensrp.form.domain.FormField("first_name", patient.getFirstName()==null?"":patient.getFirstName(), "followup_client.first_name"));
-			formFields.add(new org.opensrp.form.domain.FormField("middle_name", patient.getMiddleName()==null?"": patient.getMiddleName(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("surname", patient.getSurname()==null?"":patient.getSurname(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("date_of_birth", patient.getDateOfBirth().getTime()+"", null));
-			formFields.add(new org.opensrp.form.domain.FormField("community_based_hiv_service", patient.getCommunityBasedHivService()==null?"":patient.getCommunityBasedHivService(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("ctc_number", healthFacilitiesPatient.getCtcNumber()==null?"":healthFacilitiesPatient.getCtcNumber(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("care_taker_name", patient.getCareTakerName()==null?"":patient.getCareTakerName(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("care_taker_phone_number", patient.getCareTakerPhoneNumber()==null?"":patient.getCareTakerPhoneNumber(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("care_taker_relationship", patient.getCareTakerRelationship()==null?"":patient.getCareTakerRelationship(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("facility_id", patientReferral.getFromFacilityId()+ "", null));
-			formFields.add(new org.opensrp.form.domain.FormField("referral_reason", patientReferral.getReferralReason()==null?"":patientReferral.getReferralReason(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("gender", patient.getGender()==null?"":patient.getGender(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("phone_number", patient.getPhoneNumber()==null?"":patient.getPhoneNumber(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("comment",  "", null));
-			formFields.add(new org.opensrp.form.domain.FormField("referral_status",  "0", null));
-			formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid",  "", null));
-			formFields.add(new org.opensrp.form.domain.FormField("visit_date",  "", null));
-			formFields.add(new org.opensrp.form.domain.FormField("referral_date",  patientReferral.getReferralDate().getTime()+"", null));
-			formFields.add(new org.opensrp.form.domain.FormField("village",  patient.getVillage()==null?"":patient.getVillage(), null));
-			formFields.add(new org.opensrp.form.domain.FormField("relationalid",  uuid, null));
-			formFields.add(new org.opensrp.form.domain.FormField("is_valid",  "true", null));
-			formFields.add(new org.opensrp.form.domain.FormField("id",  uuid, null));
+			formFields.add(new org.opensrp.form.domain.FormField("middle_name", patient.getMiddleName()==null?"": patient.getMiddleName(), "followup_client.middlename"));
+			formFields.add(new org.opensrp.form.domain.FormField("surname", patient.getSurname()==null?"":patient.getSurname(), "followup_client.surname"));
+			formFields.add(new org.opensrp.form.domain.FormField("date_of_birth", patient.getDateOfBirth().getTime()+"", "followup_client.date_of_birth"));
+			formFields.add(new org.opensrp.form.domain.FormField("community_based_hiv_service", patient.getCommunityBasedHivService()==null?"":patient.getCommunityBasedHivService(), "followup_client.community_based_hiv_service"));
+			formFields.add(new org.opensrp.form.domain.FormField("ctc_number", healthFacilitiesPatient.getCtcNumber()==null?"":healthFacilitiesPatient.getCtcNumber(), "followup_client.ctc_number"));
+			formFields.add(new org.opensrp.form.domain.FormField("care_taker_name", patient.getCareTakerName()==null?"":patient.getCareTakerName(), "followup_client.care_taker_name"));
+			formFields.add(new org.opensrp.form.domain.FormField("care_taker_phone_number", patient.getCareTakerPhoneNumber()==null?"":patient.getCareTakerPhoneNumber(), "followup_client.care_taker_relationship"));
+			formFields.add(new org.opensrp.form.domain.FormField("care_taker_relationship", patient.getCareTakerRelationship()==null?"":patient.getCareTakerRelationship(), "followup_client.care_taker_relationship"));
+			formFields.add(new org.opensrp.form.domain.FormField("facility_id", patientReferral.getFromFacilityId()+ "", "followup_client.facility_id"));
+			formFields.add(new org.opensrp.form.domain.FormField("referral_reason", patientReferral.getReferralReason()==null?"":patientReferral.getReferralReason(), "followup_client.referral_reason"));
+			formFields.add(new org.opensrp.form.domain.FormField("gender", patient.getGender()==null?"":patient.getGender(), "followup_client.gender"));
+			formFields.add(new org.opensrp.form.domain.FormField("phone_number", patient.getPhoneNumber()==null?"":patient.getPhoneNumber(), "followup_client.phone_number"));
+			formFields.add(new org.opensrp.form.domain.FormField("comment",  "", "followup_client.comment"));
+			formFields.add(new org.opensrp.form.domain.FormField("referral_status",  "0", "followup_client.referral_status"));
+			formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid",  "", "followup_client.service_provider_uiid"));
+			formFields.add(new org.opensrp.form.domain.FormField("visit_date",  "", "followup_client.visit_date"));
+			formFields.add(new org.opensrp.form.domain.FormField("referral_date",  patientReferral.getReferralDate().getTime()+"", "followup_client.referral_date"));
+			formFields.add(new org.opensrp.form.domain.FormField("village",  patient.getVillage()==null?"":patient.getVillage(), "followup_client.village"));
+			formFields.add(new org.opensrp.form.domain.FormField("relationalid",  uuid, "followup_client.relationalid"));
+			formFields.add(new org.opensrp.form.domain.FormField("is_valid",  "true", "followup_client.is_valid"));
+			formFields.add(new org.opensrp.form.domain.FormField("id",  uuid, "followup_client.id"));
 
 			FormData formData = new FormData("followup_client", "/model/instance/follow_up_form/", formFields, null);
 			FormInstance formInstance = new FormInstance(formData);
-			FormSubmission formSubmission = new FormSubmission(patientReferral.getFromFacilityId()+"", uuid+"", "client_follow_up_form", patientReferral.getReferralUUID() + "", "1", 1, formInstance);
+			FormSubmission formSubmission = new FormSubmission(patientReferral.getFromFacilityId()+"", uuid+"", "client_follow_up_form", patientReferral.getReferralUUID() + "", "1", 4, formInstance);
 
 
 			System.out.println("Coze : saving referral form submission");

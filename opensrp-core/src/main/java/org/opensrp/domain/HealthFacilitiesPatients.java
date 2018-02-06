@@ -34,7 +34,7 @@ public class HealthFacilitiesPatients {
 	@JoinColumn(name=COL_PATIENT_ID)
 	private Patients patient;
 
-	@Column(name = COL_CTC_NUMBER,unique=true)
+	@Column(name = COL_CTC_NUMBER)
 	private String ctcNumber;
 
 	@Column(name = COL_FACILITY_ID)

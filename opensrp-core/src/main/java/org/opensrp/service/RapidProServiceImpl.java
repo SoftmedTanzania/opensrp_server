@@ -76,6 +76,7 @@ public class RapidProServiceImpl implements RapidProService {
 				jsonParams.put("channel", channel);
 			}
 
+
 			if (!jsonParams.has("urns") && !jsonParams.has("contacts") && !jsonParams.has("groups")) {
 				logger.info("RapidPro: No one to send message to!");
 				return "No recipients specified";
@@ -91,6 +92,47 @@ public class RapidProServiceImpl implements RapidProService {
 			String responseString = EntityUtils.toString(entity, "UTF-8");
 			return responseString;
 		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("", e);
+			return "Exception occurred";
+		}
+	}
+
+
+	public String startFlow(List<String> urns,String flow) {
+		try {
+			HttpPost post = new HttpPost();
+			String uri = rapidproUrl + "/api/v2/flow_starts.json";
+			post = setPostAuthHeader(uri, post);
+
+			JSONObject jsonParams = new JSONObject();
+
+			if (urns != null && !urns.isEmpty()) {
+				jsonParams.put("urns", new JSONArray(urns));
+			}
+
+			if (flow != null && !flow.isEmpty()) {
+				jsonParams.put("flow", flow);
+			}
+
+			if (!jsonParams.has("urns")) {
+				logger.info("RapidPro: No one to send message to!");
+				return "No recipients specified";
+			}
+			if (!jsonParams.has("flow")) {
+				logger.info("RapidPro: No flow specified");
+				return " No flow specified";
+			}
+
+
+			StringEntity params = new StringEntity(jsonParams.toString());
+			post.setEntity(params);
+			HttpResponse response = client.execute(post);
+			HttpEntity entity = response.getEntity();
+			String responseString = EntityUtils.toString(entity, "UTF-8");
+			return responseString;
+		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("", e);
 			return "Exception occurred";
 		}

@@ -257,7 +257,14 @@
 		    <artifactId>itextpdf</artifactId>
 		    <version>5.4.0</version>
 		</dependency>
-		
+
+
+        <dependency>
+            <groupId>com.googlecode.libphonenumber</groupId>
+            <artifactId>libphonenumber</artifactId>
+            <version>4.3</version>
+        </dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
 		<dependency>
 		    <groupId>com.google.zxing</groupId>
