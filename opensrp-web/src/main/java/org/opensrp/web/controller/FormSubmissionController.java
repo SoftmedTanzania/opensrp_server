@@ -17,6 +17,7 @@ import org.opensrp.connector.openmrs.service.HouseholdService;
 import org.opensrp.connector.openmrs.service.PatientService;
 import org.opensrp.domain.*;
 import org.opensrp.dto.PatientReferralsDTO;
+import org.opensrp.dto.PatientsDTO;
 import org.opensrp.dto.ReferralsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.dto.form.MultimediaDTO;
@@ -282,7 +283,10 @@ public class FormSubmissionController {
 
 
 			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
-			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
+
+			PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
+			patientsDTO.setCtcNumber(patientReferral.getCtcNumber());
+			patientReferralsDTO.setPatientsDTO(patientsDTO);
 
 
 			List<ReferralsDTO> referralsDTOS = new ArrayList<>();

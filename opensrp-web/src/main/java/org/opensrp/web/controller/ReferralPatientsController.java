@@ -592,12 +592,11 @@ public class ReferralPatientsController {
 				System.out.println ("hours: " + TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS));
 
 				//Failed referrals
-				if( (patientReferral.getServiceId()==malariaServiceId && TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)>24)  || (patientReferral.getServiceId()!=malariaServiceId && TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)>7)){
+				if( (patientReferral.getServiceId()==malariaServiceId && TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)>24)  || (patientReferral.getServiceId()!=malariaServiceId && TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)>3)){
 					patientReferral.setReferralStatus(-1);
 					String sql ="UPDATE " + PatientReferral.tbName + " SET " +
 							PatientReferral.COL_REFERRAL_STATUS + " = '" + patientReferral.getReferralStatus() + "' WHERE  " + PatientReferral.COL_REFERRAL_ID + " = " + patientReferral.getId();
 					patientReferralRepository.executeQuery(sql);
-
 
 
 					if (patientReferral.getReferralType() == 1) {
@@ -638,6 +637,27 @@ public class ReferralPatientsController {
 
 			}
 
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(CREATED);
+	}
+
+	@RequestMapping(method = GET, value = "/check-appointments")
+	@ResponseBody
+	public ResponseEntity<HttpStatus> checkUpcomingAppointments() {
+		try {
+
+			Date d = Calendar.getInstance().getTime();
+			List <PatientAppointments> patientAppointments  = patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_APPOINTMENT_DATE+" > '"+d.getTime()+"'",null);
+
+			System.out.println("Coze: checking appointment ");
+
+			for(PatientAppointments appointments : patientAppointments){
+				System.out.println("Coze: checking appointment "+appointments.getAppointmentDate());
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
