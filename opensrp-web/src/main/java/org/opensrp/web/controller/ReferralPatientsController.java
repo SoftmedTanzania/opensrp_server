@@ -100,11 +100,8 @@ public class ReferralPatientsController {
 
 			patientsDTO.setPatientId(healthfacilityPatientId);
 
-			JSONObject body = new JSONObject();
-			body.put("type", "PatientRegistration");
-
 			JSONObject notificationObject = new JSONObject();
-			notificationObject.put("body", body);
+			notificationObject.put("body", "New Patient Registered");
 
 			Object[] facilityParams = new Object[]{patientsDTO.getHealthFacilityCode(), 1};
 			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
@@ -116,6 +113,8 @@ public class ReferralPatientsController {
 			if(tokens.length()>0) {
 				String jsonData = new Gson().toJson(patientsDTO);
 				JSONObject msg = new JSONObject(jsonData);
+				msg.put("type","PatientRegistration");
+
 				googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
 			}
 
@@ -371,11 +370,9 @@ public class ReferralPatientsController {
 
 			if(referralsDTO.getReferralType()!=4) {
 
-				JSONObject body = new JSONObject();
-				body.put("type", "PatientReferral");
 
 				JSONObject notificationObject = new JSONObject();
-				notificationObject.put("body", body);
+				notificationObject.put("body", "PatientReferral");
 
 				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(), 1};
 				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
@@ -388,6 +385,7 @@ public class ReferralPatientsController {
 				String json = new Gson().toJson(patientReferralsDTO);
 
 				JSONObject msg = new JSONObject(json);
+				msg.put("type","New Patient Referral Received");
 
 				googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
 			}else{
@@ -532,11 +530,8 @@ public class ReferralPatientsController {
 					}
 				}
 
-				JSONObject body = new JSONObject();
-				body.put("type","ReferralFeedback");
-
 				JSONObject notificationObject = new JSONObject();
-				notificationObject.put("body",body);
+				notificationObject.put("body","New Referral Feedback Received");
 
 				Object[] facilityParams = new Object[]{referralsDTO.getServiceProviderUIID(),0};
 				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_USER_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
@@ -548,6 +543,7 @@ public class ReferralPatientsController {
 				String referralDTOJson = new Gson().toJson(referralsDTO);
 
 				JSONObject msg = new JSONObject(referralDTOJson);
+				msg.put("type","ReferralFeedback");
 
 				try {
 					if(referral.getReferralType()==1)
