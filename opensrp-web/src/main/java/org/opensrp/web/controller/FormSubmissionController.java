@@ -294,10 +294,9 @@ public class FormSubmissionController {
 			patientReferralsDTO.setPatientReferralsList(referralsDTOS);
 
 			JSONObject body = new JSONObject();
-			body.put("type","PatientReferral");
 
 			JSONObject notificationObject = new JSONObject();
-			notificationObject.put("body",body);
+			notificationObject.put("body","A new patient referral received");
 
 
 			String json = new Gson().toJson(patientReferralsDTO);
@@ -305,6 +304,7 @@ public class FormSubmissionController {
 			System.out.println("Coze = FCM msg : "+json);
 
 			JSONObject msg = new JSONObject(json);
+			msg.put("type","PatientReferral");
 
 			googleFCMService.SendPushNotification(msg,notificationObject,tokens,true);
 		} catch (Exception e) {
