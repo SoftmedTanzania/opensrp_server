@@ -242,7 +242,7 @@ public class FormSubmissionController {
 				referralIndicators.setReferralServiceIndicatorId(indicatorIds.getLong(i));
 
 				long patientReferralIndicatorId = patientReferralIndicatorRepository.save(referralIndicators);
-				referralIndicatorIds.add(patientReferralIndicatorId);
+				referralIndicatorIds.add(indicatorIds.getLong(i));
 			}
 
 
@@ -290,14 +290,12 @@ public class FormSubmissionController {
 
 
 			List<ReferralsDTO> referralsDTOS = new ArrayList<>();
-			referralsDTOS.add(PatientsConverter.toPatientDTO(patientReferral));
+			ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(patientReferral);
+			referralsDTO.setServiceIndicatorIds(referralIndicatorIds);
+			referralsDTOS.add(referralsDTO);
 			patientReferralsDTO.setPatientReferralsList(referralsDTOS);
 
 			JSONObject body = new JSONObject();
-
-			JSONObject notificationObject = new JSONObject();
-			notificationObject.put("body","A new patient referral received");
-
 
 			String json = new Gson().toJson(patientReferralsDTO);
 
@@ -306,7 +304,7 @@ public class FormSubmissionController {
 			JSONObject msg = new JSONObject(json);
 			msg.put("type","PatientReferral");
 
-			googleFCMService.SendPushNotification(msg,notificationObject,tokens,true);
+			googleFCMService.SendPushNotification(msg,tokens,true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));

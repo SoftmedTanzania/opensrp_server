@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class GoogleFCMService {
 
-	public void SendPushNotification(JSONObject msg,JSONObject notification, JSONArray to,boolean toFacilityUsers){
+	public void SendPushNotification(JSONObject msg, JSONArray to,boolean toFacilityUsers){
 		try {
 			String androidFcmKey;
 			if(toFacilityUsers) {
@@ -39,7 +39,6 @@ public class GoogleFCMService {
 			JSONObject json = new JSONObject();
 
 			json.put("data", msg);
-			json.put("notification", notification);
 			json.put("registration_ids", to);
 
 			System.out.println("FCM Data:"+json.toString());

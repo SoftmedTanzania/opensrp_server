@@ -102,8 +102,6 @@ public class ReferralPatientsController {
 
 			patientsDTO.setPatientId(healthfacilityPatientId);
 
-			JSONObject notificationObject = new JSONObject();
-			notificationObject.put("body", "New Patient Registered");
 
 			Object[] facilityParams = new Object[]{patientsDTO.getHealthFacilityCode(), 1};
 			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
@@ -117,7 +115,7 @@ public class ReferralPatientsController {
 				JSONObject msg = new JSONObject(jsonData);
 				msg.put("type","PatientRegistration");
 
-				googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
+				googleFCMService.SendPushNotification(msg, tokens, false);
 			}
 
 			String phoneNumber = patientsDTO.getPhoneNumber();
@@ -372,10 +370,6 @@ public class ReferralPatientsController {
 
 			if(referralsDTO.getReferralType()!=4) {
 
-
-				JSONObject notificationObject = new JSONObject();
-				notificationObject.put("body", "PatientReferral");
-
 				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(), 1};
 				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
 				JSONArray tokens = new JSONArray();
@@ -389,7 +383,7 @@ public class ReferralPatientsController {
 				JSONObject msg = new JSONObject(json);
 				msg.put("type","New Patient Referral Received");
 
-				googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
+				googleFCMService.SendPushNotification(msg, tokens, false);
 			}else{
 				String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
 						HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UIID + " = ?";
@@ -532,9 +526,6 @@ public class ReferralPatientsController {
 					}
 				}
 
-				JSONObject notificationObject = new JSONObject();
-				notificationObject.put("body","New Referral Feedback Received");
-
 				Object[] facilityParams = new Object[]{referralsDTO.getServiceProviderUIID()};
 				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_USER_UIID+" = ? ",facilityParams);
 				JSONArray tokens = new JSONArray();
@@ -549,9 +540,9 @@ public class ReferralPatientsController {
 
 				try {
 					if(referral.getReferralType()==1)
-						googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
+						googleFCMService.SendPushNotification(msg, tokens, false);
 					else{
-						googleFCMService.SendPushNotification(msg, notificationObject, tokens, true);
+						googleFCMService.SendPushNotification(msg, tokens, true);
 					}
 				}catch (Exception e){
 					e.printStackTrace();
@@ -606,12 +597,16 @@ public class ReferralPatientsController {
 						}
 					}
 
+
+					List <Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
+					System.out.println("Coze: Send notification sms to user "+patients.get(0).getPhoneNumber());
+
+
+
+
 					ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(patientReferral);
 					JSONObject body = new JSONObject();
 					body.put("type", "Failed Referrals");
-
-					JSONObject notificationObject = new JSONObject();
-					notificationObject.put("body", body);
 
 					Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),patientReferral.getFromFacilityId(), 1};
 					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName +
@@ -627,7 +622,7 @@ public class ReferralPatientsController {
 					if(tokens.length()>0) {
 						String jsonData = new Gson().toJson(referralsDTO);
 						JSONObject msg = new JSONObject(jsonData);
-						googleFCMService.SendPushNotification(msg, notificationObject, tokens, false);
+						googleFCMService.SendPushNotification(msg, tokens, false);
 					}
 				}
 
@@ -650,9 +645,21 @@ public class ReferralPatientsController {
 			List <PatientAppointments> patientAppointments  = patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_APPOINTMENT_DATE+" > '"+d.getTime()+"'",null);
 
 			System.out.println("Coze: checking appointment ");
+			Date now = Calendar.getInstance().getTime();
+			for(PatientAppointments appointments : patientAppointments) {
+				System.out.println("Coze: checking appointment " + appointments.getAppointmentDate());
 
-			for(PatientAppointments appointments : patientAppointments){
-				System.out.println("Coze: checking appointment "+appointments.getAppointmentDate());
+
+				long diff = appointments.getAppointmentDate().getTime() - now.getTime();
+
+				System.out.println("Coze: Days to appointment : "+TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
+				if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) == 3) {
+
+					List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+appointments.getHealthFacilitiesPatients().getHealthFacilityPatientId(),null);
+					List <Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+healthFacilitiesPatients.get(0).getPatient().getPatientId(),null);
+					System.out.println("Coze: Send notification to user "+patients.get(0).getPhoneNumber());
+
+				}
 			}
 
 		} catch (Exception e) {
