@@ -22,13 +22,15 @@ public class TBPatient  {
 
 	public static final String COL_VEO= "veo";
 
+	public static final String COL_TEST_TYPE = "test_type";
+
 	public static final String COL_WEIGHT = "weight";
 
 	public static final String COL_XRAY = "xray";
 
 	public static final String COL_MAKOHOZI = "makohozi";
 
-	public static final String COL_OTHER_TESTS = "other_tests";
+	public static final String COL_OTHER_TESTS_DETAILS = "other_tests_details";
 
 	public static final String COL_TREATMENT_TYPE = "treatment_type";
 
@@ -66,6 +68,12 @@ public class TBPatient  {
 	@Column(name = COL_VEO)
 	private String veo;
 
+	@Column(name = COL_TEST_TYPE)
+	private int testType;
+
+	@Column(name = COL_OTHER_TESTS_DETAILS)
+	private String otherTestsDetails;
+
 	@Column(name = COL_WEIGHT)
 	private double weight;
 
@@ -74,9 +82,6 @@ public class TBPatient  {
 
 	@Column(name = COL_MAKOHOZI)
 	private String makohozi;
-
-	@Column(name = COL_OTHER_TESTS)
-	private String otherTests;
 
 	@Column(name = COL_TREATMENT_TYPE)
 	private String treatment_type;
@@ -174,14 +179,6 @@ public class TBPatient  {
 		this.makohozi = makohozi;
 	}
 
-	public String getOtherTests() {
-		return otherTests;
-	}
-
-	public void setOtherTests(String otherTests) {
-		this.otherTests = otherTests;
-	}
-
 	public String getTreatment_type() {
 		return treatment_type;
 	}
@@ -220,6 +217,22 @@ public class TBPatient  {
 
 	public void setPregnant(boolean pregnant) {
 		isPregnant = pregnant;
+	}
+
+	public int getTestType() {
+		return testType;
+	}
+
+	public void setTestType(int testType) {
+		this.testType = testType;
+	}
+
+	public String getOtherTestsDetails() {
+		return otherTestsDetails;
+	}
+
+	public void setOtherTestsDetails(String otherTestsDetails) {
+		this.otherTestsDetails = otherTestsDetails;
 	}
 
 	public Date getCreatedAt() {

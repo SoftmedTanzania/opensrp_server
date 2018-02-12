@@ -29,11 +29,12 @@ public class TBEncounterRepository {
 				TBEncounter.COL_ENCOUNTER_MONTH + "," +
 				TBEncounter.COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION + "," +
 				TBEncounter.COL_MAKOHOZI + "," +
+				TBEncounter.COL_WEIGHT + "," +
 				TBEncounter.COL_SCHEDULED_DATE + "," +
 				TBEncounter.COL_MEDICATION_DATE + "," +
 				TBEncounter.COL_MEDICATION_STATUS + "," +
 				TBEncounter.COL_UPDATED_AT + "," +
-				TBEncounter.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?) ";
+				TBEncounter.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				tBEncounter.getTbPatientId(),
@@ -41,6 +42,7 @@ public class TBEncounterRepository {
 				tBEncounter.getEncounterMonth(),
 				tBEncounter.isHasFinishedPreviousMonthMedication(),
 		        tBEncounter.getMakohozi(),
+		        tBEncounter.getWeight(),
 				tBEncounter.getScheduledDate(),
 				tBEncounter.getMedicationDate(),
 				tBEncounter.isMedicationStatus(),
@@ -52,6 +54,7 @@ public class TBEncounterRepository {
 				Types.INTEGER,
 				Types.BOOLEAN,
 				Types.VARCHAR,
+				Types.DOUBLE,
 				Types.DATE,
 				Types.DATE,
 				Types.BOOLEAN,
@@ -68,6 +71,7 @@ public class TBEncounterRepository {
 				TBEncounter.COL_ENCOUNTER_MONTH + " = ? ," +
 				TBEncounter.COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION + " = ? ," +
 				TBEncounter.COL_MAKOHOZI + " = ? ," +
+				TBEncounter.COL_WEIGHT + " = ? ," +
 				TBEncounter.COL_MEDICATION_DATE + " = ? ," +
 				TBEncounter.COL_MEDICATION_STATUS + " = ?," +
 				TBEncounter.COL_UPDATED_AT + " = ? " +
@@ -77,6 +81,7 @@ public class TBEncounterRepository {
 				tBEncounter.getEncounterMonth(),
 				tBEncounter.isHasFinishedPreviousMonthMedication(),
 				tBEncounter.getMakohozi(),
+				tBEncounter.getWeight(),
 				tBEncounter.getMedicationDate(),
 				tBEncounter.isMedicationStatus(),
 				tBEncounter.getUpdatedAt(),
@@ -85,6 +90,7 @@ public class TBEncounterRepository {
 				Types.INTEGER,
 				Types.BOOLEAN,
 				Types.VARCHAR,
+				Types.DOUBLE,
 				Types.DATE,
 				Types.BOOLEAN,
 				Types.DATE,
@@ -123,6 +129,7 @@ public class TBEncounterRepository {
 			tbPatient.setEncounterMonth(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_MONTH)));
 			tbPatient.setHasFinishedPreviousMonthMedication(rs.getBoolean(rs.findColumn(TBEncounter.COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION)));
 			tbPatient.setMakohozi(rs.getString(rs.findColumn(TBEncounter.COL_MAKOHOZI)));
+			tbPatient.setWeight(rs.getDouble(rs.findColumn(TBEncounter.COL_WEIGHT)));
 			tbPatient.setScheduledDate(rs.getDate(rs.findColumn(TBEncounter.COL_SCHEDULED_DATE)));
 			tbPatient.setMedicationDate(rs.getDate(rs.findColumn(TBEncounter.COL_MEDICATION_DATE)));
 			tbPatient.setMedicationStatus(rs.getBoolean(rs.findColumn(TBEncounter.COL_MEDICATION_STATUS)));

@@ -35,7 +35,10 @@ public class TBPatientDTO {
 	private String makohozi;
 
 	@JsonProperty
-	private String otherTests;
+	private int testType;
+
+	@JsonProperty
+	private String otherTestsDetails;
 
 	@JsonProperty
 	private String treatment_type;
@@ -124,12 +127,20 @@ public class TBPatientDTO {
 		this.makohozi = makohozi;
 	}
 
-	public String getOtherTests() {
-		return otherTests;
+	public int getTestType() {
+		return testType;
 	}
 
-	public void setOtherTests(String otherTests) {
-		this.otherTests = otherTests;
+	public void setTestType(int testType) {
+		this.testType = testType;
+	}
+
+	public String getOtherTestsDetails() {
+		return otherTestsDetails;
+	}
+
+	public void setOtherTestsDetails(String otherTestsDetails) {
+		this.otherTestsDetails = otherTestsDetails;
 	}
 
 	public String getTreatment_type() {

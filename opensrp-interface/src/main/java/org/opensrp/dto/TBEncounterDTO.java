@@ -15,6 +15,9 @@ public class TBEncounterDTO {
 	private Long tbPatientId;
 
 	@JsonProperty
+	private double weight;
+
+	@JsonProperty
 	private String makohozi;
 
 	@JsonProperty
@@ -84,6 +87,14 @@ public class TBEncounterDTO {
 
 	public void setHasFinishedPreviousMonthMedication(boolean hasFinishedPreviousMonthMedication) {
 		this.hasFinishedPreviousMonthMedication = hasFinishedPreviousMonthMedication;
+	}
+
+	public double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 	public long getScheduledDate() {

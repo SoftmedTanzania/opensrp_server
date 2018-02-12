@@ -33,14 +33,15 @@ public class TBPatientsRepository {
 				TBPatient.COL_WEIGHT + "," +
 				TBPatient.COL_XRAY + "," +
 				TBPatient.COL_MAKOHOZI + "," +
-				TBPatient.COL_OTHER_TESTS + "," +
+				TBPatient.COL_OTHER_TESTS_DETAILS + "," +
+				TBPatient.COL_TEST_TYPE + "," +
 				TBPatient.COL_TREATMENT_TYPE + "," +
 				TBPatient.COL_OUTCOME + "," +
 				TBPatient.COL_OUTCOME_DATE + "," +
 				TBPatient.COL_OUTCOME_DETAILS + "," +
 				TBPatient.COL_IS_PREGNANT + "," +
 				TBPatient.COL_UPDATED_AT + "," +
-				TBPatient.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				TBPatient.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				tBPatient.getHealthFacilitiesPatients().getHealthFacilityPatientId(),
@@ -51,7 +52,8 @@ public class TBPatientsRepository {
 		        tBPatient.getWeight(),
 		        tBPatient.getXray(),
 		        tBPatient.getMakohozi(),
-		        tBPatient.getOtherTests(),
+		        tBPatient.getOtherTestsDetails(),
+		        tBPatient.getTestType(),
 		        tBPatient.getTreatment_type(),
 		        tBPatient.getOutcome(),
 		        tBPatient.getOutcomeDate(),
@@ -69,6 +71,7 @@ public class TBPatientsRepository {
 				Types.VARCHAR,
 				Types.VARCHAR,
 				Types.VARCHAR,
+				Types.INTEGER,
 				Types.VARCHAR,
 				Types.VARCHAR,
 				Types.DATE,
@@ -119,7 +122,8 @@ public class TBPatientsRepository {
 			tbPatient.setXray(rs.getString(rs.findColumn(TBPatient.COL_XRAY)));
 			tbPatient.setWeight(rs.getDouble(rs.findColumn(TBPatient.COL_WEIGHT)));
 			tbPatient.setMakohozi(rs.getString(rs.findColumn(TBPatient.COL_MAKOHOZI)));
-			tbPatient.setOtherTests(rs.getString(rs.findColumn(TBPatient.COL_OTHER_TESTS)));
+			tbPatient.setOtherTestsDetails(rs.getString(rs.findColumn(TBPatient.COL_OTHER_TESTS_DETAILS)));
+			tbPatient.setTestType(rs.getInt(rs.findColumn(TBPatient.COL_TEST_TYPE)));
 			tbPatient.setOutcome(rs.getString(rs.findColumn(TBPatient.COL_OUTCOME)));
 			tbPatient.setOutcomeDate(rs.getDate(rs.findColumn(TBPatient.COL_OUTCOME_DATE)));
 			tbPatient.setOutcomeDetails(rs.getString(rs.findColumn(TBPatient.COL_OUTCOME_DETAILS)));

@@ -16,6 +16,8 @@ public class TBEncounter implements Serializable {
 
 	public static final String COL_APPOINTMENT_ID= "appointment_id";
 
+	public static final String COL_WEIGHT= "weight";
+
 	public static final String COL_ENCOUNTER_MONTH = "encounter_month";
 
 	public static final String COL_SCHEDULED_DATE = "scheduled_date";
@@ -41,6 +43,9 @@ public class TBEncounter implements Serializable {
 
 	@Column(name = COL_MAKOHOZI)
 	private String makohozi;
+
+	@Column(name = COL_WEIGHT)
+	private double weight;
 
 	@Id
 	@Column(name = COL_APPOINTMENT_ID)
@@ -117,6 +122,14 @@ public class TBEncounter implements Serializable {
 
 	public void setHasFinishedPreviousMonthMedication(boolean hasFinishedPreviousMonthMedication) {
 		this.hasFinishedPreviousMonthMedication = hasFinishedPreviousMonthMedication;
+	}
+
+	public double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 	public Date getScheduledDate() {

@@ -281,6 +281,7 @@ public class ReferralPatientsController {
 				TBEncounter tbEncounter = tbEncounters.get(0);
 				tbEncounter.setUpdatedAt(Calendar.getInstance().getTime());
 				tbEncounter.setMakohozi(encounter.getMakohozi());
+				tbEncounter.setWeight(encounter.getWeight());
 				tbEncounter.setEncounterMonth(encounter.getEncounterMonth());
 				tbEncounter.setHasFinishedPreviousMonthMedication(encounter.isHasFinishedPreviousMonthMedication());
 				tbEncounter.setMedicationStatus(encounter.isMedicationStatus());

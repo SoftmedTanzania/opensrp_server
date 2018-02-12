@@ -137,7 +137,8 @@ public class PatientsConverter {
 	        outcomeDate.setTime(patientsDTO.getOutcomeDate());
 
             tbPatient.setOutcomeDate(outcomeDate);
-            tbPatient.setOtherTests(patientsDTO.getOtherTests());
+            tbPatient.setOtherTestsDetails(patientsDTO.getOtherTestsDetails());
+            tbPatient.setTestType(patientsDTO.getTestType());
             tbPatient.setMakohozi(patientsDTO.getMakohozi());
             tbPatient.setWeight(patientsDTO.getWeight());
             tbPatient.setXray(patientsDTO.getXray());
@@ -239,7 +240,8 @@ public class PatientsConverter {
 
             tbPatientDTO.setHealthFacilityPatientId(patient.getHealthFacilitiesPatients().getHealthFacilityPatientId());
             tbPatientDTO.setMakohozi(patient.getMakohozi());
-            tbPatientDTO.setOtherTests(patient.getOtherTests());
+            tbPatientDTO.setOtherTestsDetails(patient.getOtherTestsDetails());
+            tbPatientDTO.setTestType(patient.getTestType());
             tbPatientDTO.setOutcome(patient.getOutcome());
             tbPatientDTO.setOutcomeDate(patient.getOutcomeDate().getTime());
             tbPatientDTO.setOutcomeDetails(patient.getOutcomeDetails());
@@ -386,6 +388,7 @@ public class PatientsConverter {
            Date medicationDate = new Date();
            medicationDate.setTime(tbEncounterDTO.getMedicationDate());
 
+           encounter.setWeight(tbEncounterDTO.getWeight());
            encounter.setMedicationDate(medicationDate);
            encounter.setMedicationStatus(tbEncounterDTO.isMedicationStatus());
 
