@@ -369,8 +369,8 @@ public class ReferralPatientsController {
 
 			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
-			if(referralsDTO.getReferralType()!=4) {
-
+			if(referralsDTO.getReferralType()==4) {
+				System.out.println("chwreferral : "+savedPatientReferrals.get(0).getFacilityId());
 				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(), 1};
 				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
 				JSONArray tokens = new JSONArray();
@@ -379,10 +379,12 @@ public class ReferralPatientsController {
 				}
 
 
+				System.out.println("tokens : "+tokens.toString());
+
 				String json = new Gson().toJson(patientReferralsDTO);
 
 				JSONObject msg = new JSONObject(json);
-				msg.put("type","New Patient Referral Received");
+				msg.put("type","PatientReferral");
 
 				googleFCMService.SendPushNotification(msg, tokens, false);
 			}else{
@@ -602,14 +604,13 @@ public class ReferralPatientsController {
 					List <Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
 					System.out.println("Coze: Send notification sms to user "+patients.get(0).getPhoneNumber());
 
-
-
+					//TODO send notification to the user
 
 					ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(patientReferral);
 					JSONObject body = new JSONObject();
-					body.put("type", "Failed Referrals");
+					body.put("type", "FailedReferrals");
 
-					Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),patientReferral.getFromFacilityId(), 1};
+					Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),patientReferral.getFromFacilityId()};
 					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName +
 							" WHERE " +
 							GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? OR " +
@@ -639,14 +640,19 @@ public class ReferralPatientsController {
 
 	@RequestMapping(method = GET, value = "/check-appointments")
 	@ResponseBody
-	public ResponseEntity<HttpStatus> checkUpcomingAppointments() {
+	public ResponseEntity<String> checkUpcomingAppointments() {
 		try {
 
+			JSONArray phoneNumbers = new JSONArray();
 			Date d = Calendar.getInstance().getTime();
 			List <PatientAppointments> patientAppointments  = patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_APPOINTMENT_DATE+" > '"+d.getTime()+"'",null);
 
 			System.out.println("Coze: checking appointment ");
 			Date now = Calendar.getInstance().getTime();
+
+
+			List<String> threeDaysToAppointmentUrns= new ArrayList<String>();
+			List<String> aDayToAppointmentUrns= new ArrayList<String>();
 			for(PatientAppointments appointments : patientAppointments) {
 				System.out.println("Coze: checking appointment " + appointments.getAppointmentDate());
 
@@ -658,16 +664,76 @@ public class ReferralPatientsController {
 
 					List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+appointments.getHealthFacilitiesPatients().getHealthFacilityPatientId(),null);
 					List <Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+healthFacilitiesPatients.get(0).getPatient().getPatientId(),null);
-					System.out.println("Coze: Send notification to user "+patients.get(0).getPhoneNumber());
+					System.out.println("Coze: Send 3 days to Appointment notification to user "+patients.get(0).getPhoneNumber());
+
+					if(patients.get(0).getPhoneNumber().equals("")) {
+						phoneNumbers.put(patients.get(0).getPhoneNumber());
+
+
+
+						PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+						try {
+							System.out.println("Coze: registered phone number : "+patients.get(0).getPhoneNumber());
+							Phonenumber.PhoneNumber tzPhoneNumber = phoneUtil.parse(patients.get(0).getPhoneNumber(), "TZ");
+							String formatedPhoneNumber = phoneUtil.format(tzPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+
+							System.out.println("Coze:formatted phone number : "+formatedPhoneNumber);
+
+
+							threeDaysToAppointmentUrns.add("tel:"+formatedPhoneNumber);
+						} catch (NumberParseException e) {
+							System.err.println("NumberParseException was thrown: " + e.toString());
+						}
+
+					}
+
+				}else if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) == 1) {
+
+					List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+appointments.getHealthFacilitiesPatients().getHealthFacilityPatientId(),null);
+					List <Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+healthFacilitiesPatients.get(0).getPatient().getPatientId(),null);
+					System.out.println("Coze: Send 1 days to Appointment notification to user "+patients.get(0).getPhoneNumber());
+
+					if(patients.get(0).getPhoneNumber().equals("")) {
+
+						phoneNumbers.put(patients.get(0).getPhoneNumber());
+						PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+						try {
+							System.out.println("Coze: registered phone number : "+patients.get(0).getPhoneNumber());
+							Phonenumber.PhoneNumber tzPhoneNumber = phoneUtil.parse(patients.get(0).getPhoneNumber(), "TZ");
+							String formatedPhoneNumber = phoneUtil.format(tzPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+
+							System.out.println("Coze:formatted a day to appointment phone number : "+formatedPhoneNumber);
+
+
+							aDayToAppointmentUrns.add("tel:"+formatedPhoneNumber);
+						} catch (NumberParseException e) {
+							System.err.println("NumberParseException was thrown: " + e.toString());
+						}
+
+					}
 
 				}
 			}
+
+			try {
+				String response = rapidProService.startFlow(threeDaysToAppointmentUrns, "a5421259-c67b-4a41-967d-e9560170ecc1");
+				System.out.println("Coze: received rapidpro response for 3 days to appointment notifications : "+response);
+
+				String response2 = rapidProService.startFlow(aDayToAppointmentUrns, "2f09f8a5-6bef-4e1b-8d53-607ce3230cee");
+				System.out.println("Coze: received rapidpro response for a day to appointment notifications : "+response2);
+
+
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+
+
+			return new ResponseEntity<String>(phoneNumbers.toString(),HttpStatus.CREATED);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(CREATED);
 	}
 
 

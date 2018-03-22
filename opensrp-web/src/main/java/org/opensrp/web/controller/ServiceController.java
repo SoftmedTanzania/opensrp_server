@@ -69,6 +69,7 @@ public class ServiceController {
                 public ReferralService convert(ReferralServiceDTO boreshaAfyaServiceDTO) {
                     ReferralService referralService = new ReferralService();
                     referralService.setReferralServiceName(boreshaAfyaServiceDTO.getServiceName());
+                    referralService.setReferralServiceNameSw(boreshaAfyaServiceDTO.getReferralServiceNameSw());
                     referralService.setReferralCategoryName(boreshaAfyaServiceDTO.getCategory());
                     referralService.setActive(boreshaAfyaServiceDTO.isActive());
                     return referralService;
@@ -109,6 +110,7 @@ public class ServiceController {
                 public Indicator convert(IndicatorDTO referralIndicatorDTO) {
                     Indicator indicator = new Indicator();
                     indicator.setReferralIndicatorName(referralIndicatorDTO.getIndicatorName());
+                    indicator.setReferralIndicatorNameSw(referralIndicatorDTO.getIndicatorNameSw());
                     indicator.setActive(referralIndicatorDTO.isActive());
                     return indicator;
                 }
@@ -320,6 +322,7 @@ public class ServiceController {
             referralServiceIndicatorsDTO.setCategory(referralService.getReferralCategoryName());
             referralServiceIndicatorsDTO.setServiceId(referralService.getReferralServiceId());
             referralServiceIndicatorsDTO.setServiceName(referralService.getReferralServiceName());
+            referralServiceIndicatorsDTO.setServiceNameSw(referralService.getReferralServiceNameSw());
             referralServiceIndicatorsDTO.setActive(referralService.isActive());
 
 
@@ -352,6 +355,7 @@ public class ServiceController {
 
                 if(indicators.size()>0) {
                     indicatorDTO.setIndicatorName(indicators.get(0).getReferralIndicatorName());
+                    indicatorDTO.setIndicatorNameSw(indicators.get(0).getReferralIndicatorNameSw());
                     indicatorDTO.setReferralIndicatorId(indicators.get(0).getReferralIndicatorId());
                     indicatorDTO.setActive(indicators.get(0).isActive());
                 }

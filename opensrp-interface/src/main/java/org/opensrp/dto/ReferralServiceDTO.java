@@ -15,6 +15,9 @@ public class ReferralServiceDTO {
     private String serviceName;
 
     @JsonProperty
+    private String referralServiceNameSw;
+
+    @JsonProperty
     private String category;
 
     @JsonProperty
@@ -45,6 +48,14 @@ public class ReferralServiceDTO {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public String getReferralServiceNameSw() {
+        return referralServiceNameSw;
+    }
+
+    public void setReferralServiceNameSw(String referralServiceNameSw) {
+        this.referralServiceNameSw = referralServiceNameSw;
     }
 
     public String getCategory() {

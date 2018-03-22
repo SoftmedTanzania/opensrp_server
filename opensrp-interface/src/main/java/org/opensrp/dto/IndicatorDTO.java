@@ -18,12 +18,16 @@ public class IndicatorDTO {
     private String indicatorName;
 
     @JsonProperty
+    private String indicatorNameSw;
+
+    @JsonProperty
     private boolean isActive;
 
-    public IndicatorDTO(Long referralServiceIndicatorId, Long referralIndicatorId, String indicatorName, boolean isActive) {
+    public IndicatorDTO(Long referralServiceIndicatorId, Long referralIndicatorId, String indicatorName,String indicatorNameSw, boolean isActive) {
         this.referralServiceIndicatorId = referralServiceIndicatorId;
         this.referralIndicatorId = referralIndicatorId;
         this.indicatorName = indicatorName;
+        this.indicatorNameSw = indicatorNameSw;
         this.isActive = isActive;
     }
 
@@ -52,6 +56,14 @@ public class IndicatorDTO {
     }
 
     public IndicatorDTO() {
+    }
+
+    public String getIndicatorNameSw() {
+        return indicatorNameSw;
+    }
+
+    public void setIndicatorNameSw(String indicatorNameSw) {
+        this.indicatorNameSw = indicatorNameSw;
     }
 
     public boolean isActive() {

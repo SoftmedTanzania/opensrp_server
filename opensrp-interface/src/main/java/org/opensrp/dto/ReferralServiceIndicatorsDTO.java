@@ -15,6 +15,9 @@ public class ReferralServiceIndicatorsDTO {
     private String serviceName;
 
     @JsonProperty
+    private String serviceNameSw;
+
+    @JsonProperty
     private String category;
 
     @JsonProperty
@@ -24,9 +27,10 @@ public class ReferralServiceIndicatorsDTO {
     @JsonProperty
     List<IndicatorDTO> indicators;
 
-    public ReferralServiceIndicatorsDTO(Long serviceId, String serviceName, String category, boolean isActive, List<IndicatorDTO> indicators) {
+    public ReferralServiceIndicatorsDTO(Long serviceId, String serviceName, String serviceNameSw, String category, boolean isActive, List<IndicatorDTO> indicators) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
+        this.serviceNameSw = serviceNameSw;
         this.category = category;
         this.isActive = isActive;
         this.indicators = indicators;
@@ -49,6 +53,14 @@ public class ReferralServiceIndicatorsDTO {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public String getServiceNameSw() {
+        return serviceNameSw;
+    }
+
+    public void setServiceNameSw(String serviceNameSw) {
+        this.serviceNameSw = serviceNameSw;
     }
 
     public String getCategory() {

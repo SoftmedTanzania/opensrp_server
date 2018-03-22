@@ -11,6 +11,8 @@ public class Indicator {
 
 	public static final String COL_REFERRAL_INDICATOR_NAME = "referral_indicator_name";
 
+	public static final String COL_REFERRAL_INDICATOR_NAME_SW = "referral_indicator_name_sw";
+
 	public static final String COL_REFERRAL_INDICATOR_ID= "referral_indicator_id";
 
 	public static final String COL_IS_ACTIVE = "is_active";
@@ -26,6 +28,9 @@ public class Indicator {
 
 	@Column(name = COL_REFERRAL_INDICATOR_NAME,unique = true)
 	private String referralIndicatorName;
+
+	@Column(name = COL_REFERRAL_INDICATOR_NAME_SW,unique = true)
+	private String referralIndicatorNameSw;
 
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;
@@ -52,6 +57,14 @@ public class Indicator {
 
 	public void setReferralIndicatorName(String referralIndicatorName) {
 		this.referralIndicatorName = referralIndicatorName;
+	}
+
+	public String getReferralIndicatorNameSw() {
+		return referralIndicatorNameSw;
+	}
+
+	public void setReferralIndicatorNameSw(String referralIndicatorNameSw) {
+		this.referralIndicatorNameSw = referralIndicatorNameSw;
 	}
 
 	public boolean isActive() {

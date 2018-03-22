@@ -29,6 +29,7 @@ public class ReferralServiceRepository {
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(ReferralService.COL_REFERRAL_SERVICE_NAME , referralService.getReferralServiceName());
+		parameters.put(ReferralService.COL_REFERRAL_SERVICE_NAME_SW , referralService.getReferralServiceNameSw());
 		parameters.put(ReferralService.COL_REFERRAL_CATEGORY_NAME , referralService.getReferralCategoryName());
 		parameters.put(ReferralService.COL_IS_ACTIVE  , referralService.isActive());
 		parameters.put(ReferralService.COL_CREATED_AT , referralService.getCreatedAt());
@@ -67,6 +68,7 @@ public class ReferralServiceRepository {
 			referralService.setReferralServiceId(rs.getLong(rs.findColumn(ReferralService.COL_REFERRAL_SERVICE_ID)));
 			referralService.setReferralCategoryName(rs.getString(rs.findColumn(ReferralService.COL_REFERRAL_CATEGORY_NAME)));
 			referralService.setReferralServiceName(rs.getString(rs.findColumn(ReferralService.COL_REFERRAL_SERVICE_NAME)));
+			referralService.setReferralServiceNameSw(rs.getString(rs.findColumn(ReferralService.COL_REFERRAL_SERVICE_NAME_SW)));
 			referralService.setActive(rs.getBoolean(rs.findColumn(ReferralService.COL_IS_ACTIVE)));
 			referralService.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ReferralService.COL_CREATED_AT)).getTime()));
 			referralService.setUpdatedAt(rs.getDate(rs.findColumn(ReferralService.COL_UPDATED_AT)));

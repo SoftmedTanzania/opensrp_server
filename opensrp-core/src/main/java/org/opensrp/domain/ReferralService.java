@@ -11,6 +11,8 @@ public class ReferralService {
 
 	public static final String COL_REFERRAL_SERVICE_NAME = "referral_service_name";
 
+	public static final String COL_REFERRAL_SERVICE_NAME_SW = "referral_service_name_sw";
+
 	public static final String COL_REFERRAL_SERVICE_ID= "referral_service_id";
 
 	public static final String COL_REFERRAL_CATEGORY_NAME= "referral_category_name";
@@ -28,6 +30,9 @@ public class ReferralService {
 
 	@Column(name = COL_REFERRAL_SERVICE_NAME,unique = true)
 	private String referralServiceName;
+
+	@Column(name = COL_REFERRAL_SERVICE_NAME_SW,unique = true)
+	private String referralServiceNameSw;
 
 	@Column(name = COL_REFERRAL_CATEGORY_NAME)
 	private String referralCategoryName;
@@ -66,6 +71,14 @@ public class ReferralService {
 
 	public void setReferralCategoryName(String referralCategoryName) {
 		this.referralCategoryName = referralCategoryName;
+	}
+
+	public String getReferralServiceNameSw() {
+		return referralServiceNameSw;
+	}
+
+	public void setReferralServiceNameSw(String referralServiceNameSw) {
+		this.referralServiceNameSw = referralServiceNameSw;
 	}
 
 	public boolean isActive() {
