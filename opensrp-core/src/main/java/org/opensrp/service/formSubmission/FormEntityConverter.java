@@ -361,6 +361,9 @@ public class FormEntityConverter {
 				if(formField.name().equals(Patients.COL_PHONE_NUMBER))
 					patients.setPhoneNumber(formField.value());
 
+				if(formField.name().equals(Patients.COL_VILLAGE))
+					patients.setVillage(formField.value());
+
 				if(formField.name().equals(Patients.COL_DATE_OF_BIRTH)) {
 					Date startDate = new Date();
 					try{
