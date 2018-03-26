@@ -317,6 +317,8 @@ public class PatientsConverter {
             referral.setServiceProviderUIID(referralsDTO.getServiceProviderUIID());
             referral.setServiceProviderGroup(referralsDTO.getServiceProviderGroup());
             referral.setVillageLeader(referralsDTO.getVillageLeader());
+            referral.setTestResults(referralsDTO.getTestResults());
+            referral.setLabTest(referralsDTO.getLabTest());
 
 
             Date referralDate = new Date();
@@ -360,6 +362,7 @@ public class PatientsConverter {
             referralsDTO.setOtherNotes(referral.getOtherNotes());
             referralsDTO.setServiceGivenToPatient(referral.getServiceGivenToPatient());
             referralsDTO.setTestResults(referral.isTestResults());
+            referralsDTO.setLabTest(referral.getLabTest());
             referralsDTO.setFromFacilityId(referral.getFromFacilityId());
             referralsDTO.setOtherClinicalInformation(referral.getOtherClinicalInformation());
             referralsDTO.setIntanceId(referral.getInstanceId());

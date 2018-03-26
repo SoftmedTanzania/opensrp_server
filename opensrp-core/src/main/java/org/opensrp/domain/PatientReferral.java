@@ -37,6 +37,8 @@ public class PatientReferral {
 
 	public static final String COL_SERVICES_GIVEN_TO_PATIENT= "services_given_to_patient";
 
+	public static final String COL_LAB_TEST= "lab_test";
+
 	public static final String COL_TEST_RESULTS= "test_results";
 
 	public static final String COL_OTHER_NOTES= "other_notes";
@@ -131,6 +133,9 @@ public class PatientReferral {
 	@Column(name = COL_REFERRAL_STATUS)
 	private int referralStatus;
 
+
+	@Column(name = COL_LAB_TEST)
+	private int labTest;
 
 	@Column(name = COL_TEST_RESULTS)
 	private boolean testResults;
@@ -264,6 +269,14 @@ public class PatientReferral {
 
 	public void setServiceGivenToPatient(String serviceGivenToPatient) {
 		this.serviceGivenToPatient = serviceGivenToPatient;
+	}
+
+	public int getLabTest() {
+		return labTest;
+	}
+
+	public void setLabTest(int labTest) {
+		this.labTest = labTest;
 	}
 
 	public long getReferralType() {

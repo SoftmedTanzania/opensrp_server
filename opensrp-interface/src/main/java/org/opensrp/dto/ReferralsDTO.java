@@ -52,7 +52,10 @@ public class ReferralsDTO {
 
 
     @JsonProperty
-    private boolean testResults; //TODO handle its implementation
+    private int labTest;
+
+    @JsonProperty
+    private boolean testResults;
 
 
     @JsonProperty
@@ -224,6 +227,14 @@ public class ReferralsDTO {
 
     public void setServiceGivenToPatient(String serviceGivenToPatient) {
         this.serviceGivenToPatient = serviceGivenToPatient;
+    }
+
+    public int getLabTest() {
+        return labTest;
+    }
+
+    public void setLabTest(int labTest) {
+        this.labTest = labTest;
     }
 
     public int getReferralType() {

@@ -51,6 +51,7 @@ public class PatientReferralRepository {
 		parameters.put(PatientReferral.COL_REFERRAL_STATUS , patientReferral.getReferralStatus());
 		parameters.put(PatientReferral.COL_INSTANCE_ID ,  patientReferral.getInstanceId());
 		parameters.put(PatientReferral.COL_REFERRAL_TYPE ,  patientReferral.getReferralType());
+		parameters.put(PatientReferral.COL_LAB_TEST ,  patientReferral.getLabTest());
 		parameters.put(PatientReferral.COL_TEST_RESULTS ,  patientReferral.isTestResults());
 		parameters.put(PatientReferral.COL_CREATED_AT , patientReferral.getCreatedAt());
 		parameters.put(PatientReferral.COL_UPDATED_AT , patientReferral.getCreatedAt());
@@ -107,6 +108,7 @@ public class PatientReferralRepository {
 			patientReferral.setReferralSource(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_SOURCE)));
 			patientReferral.setServiceGivenToPatient(rs.getString(rs.findColumn(PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT)));
 			patientReferral.setTestResults(rs.getBoolean(rs.findColumn(PatientReferral.COL_TEST_RESULTS)));
+			patientReferral.setLabTest(rs.getInt(rs.findColumn(PatientReferral.COL_LAB_TEST)));
 			patientReferral.setOtherClinicalInformation(rs.getString(rs.findColumn(PatientReferral.COL_OTHER_CLINICAL_INFORMATION)));
 			patientReferral.setOtherNotes(rs.getString(rs.findColumn(PatientReferral.COL_OTHER_NOTES)));
 			patientReferral.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientReferral.COL_CREATED_AT)).getTime()));

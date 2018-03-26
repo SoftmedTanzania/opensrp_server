@@ -364,6 +364,10 @@ public class FormEntityConverter {
 				if(formField.name().equals(Patients.COL_VILLAGE))
 					patients.setVillage(formField.value());
 
+
+				if(formField.name().equals(Patients.COL_WARD))
+					patients.setWard(formField.value());
+
 				if(formField.name().equals(Patients.COL_DATE_OF_BIRTH)) {
 					Date startDate = new Date();
 					try{
