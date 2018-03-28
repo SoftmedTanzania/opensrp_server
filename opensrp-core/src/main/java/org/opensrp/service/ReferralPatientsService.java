@@ -77,7 +77,10 @@ public class ReferralPatientsService {
         String[] healthFacilityPatientArg = new String[1];
         healthFacilityPatientArg[0] =  facilityUUID;
 
-        return getPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_FACILITY_ID+" = ?",healthFacilityPatientArg);
+
+        return getPatients("SELECT * FROM " + HealthFacilitiesPatients.tbName +
+                " INNER JOIN "+HealthFacilities.tbName+" ON "+HealthFacilitiesPatients.tbName+"."+HealthFacilitiesPatients.COL_FACILITY_ID +" = "+HealthFacilities.tbName+"._id " +
+                " WHERE " + HealthFacilities.COL_OPENMRS_UIID + "=?",healthFacilityPatientArg);
     }
 
     public  List<PatientReferralsDTO> getPatients(String sql,Object[] healthFacilityPatientArg){

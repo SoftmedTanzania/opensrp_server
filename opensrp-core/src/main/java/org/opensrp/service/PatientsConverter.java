@@ -447,5 +447,44 @@ public class PatientsConverter {
 		}
 	}
 
+    public static List<TBEncounterDTO> toTbPatientEncounterDTOsList(List<TBEncounter> tbEncounters) {
+        try {
+
+            List<TBEncounterDTO> tbEncounterDTOS = new ArrayList<>();
+            for(TBEncounter tbEncounter :tbEncounters){
+                tbEncounterDTOS.add(toTbEncounterDTO(tbEncounter));
+            }
+
+            return tbEncounterDTOS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MessageFormat.format("Converting   List<TBEncounterDTO> :{0}, failed with error: {1}.", tbEncounters, e));
+            throw e;
+        }
+    }
+
+	public static TBEncounterDTO toTbEncounterDTO(TBEncounter tbEncounter) {
+		try {
+            TBEncounterDTO tbEncounterDTO = new TBEncounterDTO();
+
+            tbEncounterDTO.setAppointmentId(tbEncounter.getAppointmentId());
+            tbEncounterDTO.setEncounterMonth(tbEncounter.getEncounterMonth());
+            tbEncounterDTO.setHasFinishedPreviousMonthMedication(tbEncounter.isHasFinishedPreviousMonthMedication());
+            tbEncounterDTO.setId(tbEncounter.getId());
+            tbEncounterDTO.setMakohozi(tbEncounter.getMakohozi());
+            tbEncounterDTO.setMedicationDate(tbEncounter.getMedicationDate().getTime());
+            tbEncounterDTO.setMedicationStatus(tbEncounter.isMedicationStatus());
+            tbEncounterDTO.setTbPatientId(tbEncounter.getTbPatientId());
+            tbEncounterDTO.setWeight(tbEncounter.getWeight());
+            tbEncounterDTO.setScheduledDate(tbEncounter.getScheduledDate().getTime());
+
+			return tbEncounterDTO;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(MessageFormat.format("Converting TBEncounterDTO :{0}, failed with error: {1}.", tbEncounter, e));
+			throw e;
+		}
+	}
+
 
 }

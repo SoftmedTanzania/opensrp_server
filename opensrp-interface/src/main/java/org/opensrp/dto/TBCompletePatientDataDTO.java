@@ -17,6 +17,10 @@ public class TBCompletePatientDataDTO {
     @JsonProperty
     private List<PatientsAppointmentsDTO> patientsAppointmentsDTOS;
 
+
+    @JsonProperty
+    private List<TBEncounterDTO> tbEncounterDTOS;
+
     public PatientsDTO getPatientsDTO() {
         return patientsDTO;
     }
@@ -39,6 +43,14 @@ public class TBCompletePatientDataDTO {
 
     public void setTbPatientDTO(TBPatientDTO tbPatientDTO) {
         this.tbPatientDTO = tbPatientDTO;
+    }
+
+    public List<TBEncounterDTO> getTbEncounterDTOS() {
+        return tbEncounterDTOS;
+    }
+
+    public void setTbEncounterDTOS(List<TBEncounterDTO> tbEncounterDTOS) {
+        this.tbEncounterDTOS = tbEncounterDTOS;
     }
 
     @Override
