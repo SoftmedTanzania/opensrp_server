@@ -26,7 +26,9 @@ public class TBEncounterRepository {
 		String insertQuery = "insert into " + TBEncounter.tbName + " (" +
 				TBEncounter.COL_TB_PATIENT_ID + "," +
 				TBEncounter.COL_APPOINTMENT_ID + "," +
+				TBEncounter.COL_LOCAL_ID + "," +
 				TBEncounter.COL_ENCOUNTER_MONTH + "," +
+				TBEncounter.COL_ENCOUNTER_YEAR + "," +
 				TBEncounter.COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION + "," +
 				TBEncounter.COL_MAKOHOZI + "," +
 				TBEncounter.COL_WEIGHT + "," +
@@ -34,12 +36,14 @@ public class TBEncounterRepository {
 				TBEncounter.COL_MEDICATION_DATE + "," +
 				TBEncounter.COL_MEDICATION_STATUS + "," +
 				TBEncounter.COL_UPDATED_AT + "," +
-				TBEncounter.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?) ";
+				TBEncounter.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				tBEncounter.getTbPatientId(),
 				tBEncounter.getAppointmentId(),
+				tBEncounter.getLocalID(),
 				tBEncounter.getEncounterMonth(),
+				tBEncounter.getEncounterYear(),
 				tBEncounter.isHasFinishedPreviousMonthMedication(),
 		        tBEncounter.getMakohozi(),
 		        tBEncounter.getWeight(),
@@ -51,6 +55,8 @@ public class TBEncounterRepository {
 		int[] types = new int[] {
 				Types.BIGINT,
 				Types.BIGINT,
+				Types.VARCHAR,
+				Types.INTEGER,
 				Types.INTEGER,
 				Types.BOOLEAN,
 				Types.VARCHAR,
@@ -69,6 +75,7 @@ public class TBEncounterRepository {
 	public int update(TBEncounter tBEncounter) throws Exception {
 		String insertQuery = "UPDATE " + TBEncounter.tbName + " SET " +
 				TBEncounter.COL_ENCOUNTER_MONTH + " = ? ," +
+				TBEncounter.COL_ENCOUNTER_YEAR + " = ? ," +
 				TBEncounter.COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION + " = ? ," +
 				TBEncounter.COL_MAKOHOZI + " = ? ," +
 				TBEncounter.COL_WEIGHT + " = ? ," +
@@ -79,6 +86,7 @@ public class TBEncounterRepository {
 
 		Object[] params = new Object[] {
 				tBEncounter.getEncounterMonth(),
+				tBEncounter.getEncounterYear(),
 				tBEncounter.isHasFinishedPreviousMonthMedication(),
 				tBEncounter.getMakohozi(),
 				tBEncounter.getWeight(),
@@ -87,6 +95,7 @@ public class TBEncounterRepository {
 				tBEncounter.getUpdatedAt(),
 				tBEncounter.getId()};
 		int[] types = new int[] {
+				Types.INTEGER,
 				Types.INTEGER,
 				Types.BOOLEAN,
 				Types.VARCHAR,
@@ -127,7 +136,9 @@ public class TBEncounterRepository {
 			tbPatient.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(TBEncounter.COL_CREATED_AT)).getTime()));
 			tbPatient.setAppointmentId(rs.getLong(rs.findColumn(TBEncounter.COL_APPOINTMENT_ID)));
 			tbPatient.setEncounterMonth(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_MONTH)));
-			tbPatient.setHasFinishedPreviousMonthMedication(rs.getBoolean(rs.findColumn(TBEncounter.COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION)));
+			tbPatient.setEncounterYear(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_YEAR)));
+			tbPatient.setEncounterYear(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_YEAR)));
+			tbPatient.setLocalID(rs.getString(rs.findColumn(TBEncounter.COL_LOCAL_ID)));
 			tbPatient.setMakohozi(rs.getString(rs.findColumn(TBEncounter.COL_MAKOHOZI)));
 			tbPatient.setWeight(rs.getDouble(rs.findColumn(TBEncounter.COL_WEIGHT)));
 			tbPatient.setScheduledDate(rs.getDate(rs.findColumn(TBEncounter.COL_SCHEDULED_DATE)));

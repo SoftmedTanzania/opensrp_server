@@ -42,7 +42,7 @@ public class PatientsDTO {
     private Long dateOfDeath;
 
     @JsonProperty
-    private boolean hivStatus = false;
+    private boolean hivStatus;
 
     @JsonProperty
     private String communityBasedHivService;

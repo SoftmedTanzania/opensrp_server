@@ -18,7 +18,11 @@ public class TBEncounter implements Serializable {
 
 	public static final String COL_WEIGHT= "weight";
 
+	public static final String COL_LOCAL_ID= "local_id";
+
 	public static final String COL_ENCOUNTER_MONTH = "encounter_month";
+
+	public static final String COL_ENCOUNTER_YEAR= "encounter_year";
 
 	public static final String COL_SCHEDULED_DATE = "scheduled_date";
 
@@ -54,6 +58,12 @@ public class TBEncounter implements Serializable {
 	@Column(name = COL_ENCOUNTER_MONTH)
 	private int encounterMonth;
 
+	@Column(name = COL_ENCOUNTER_YEAR)
+	private int encounterYear;
+
+	@Column(name = COL_LOCAL_ID)
+	private String localID;
+
 	@Column(name = COL_HAS_FINISHED_PREVIOUS_MONTH_MEDICATION)
 	private boolean hasFinishedPreviousMonthMedication;
 
@@ -83,6 +93,13 @@ public class TBEncounter implements Serializable {
 		this.id = id;
 	}
 
+	public String getLocalID() {
+		return localID;
+	}
+
+	public void setLocalID(String localID) {
+		this.localID = localID;
+	}
 
 	public Long getTbPatientId() {
 		return tbPatientId;
@@ -114,6 +131,14 @@ public class TBEncounter implements Serializable {
 
 	public void setEncounterMonth(int encounterMonth) {
 		this.encounterMonth = encounterMonth;
+	}
+
+	public int getEncounterYear() {
+		return encounterYear;
+	}
+
+	public void setEncounterYear(int encounterYear) {
+		this.encounterYear = encounterYear;
 	}
 
 	public boolean isHasFinishedPreviousMonthMedication() {

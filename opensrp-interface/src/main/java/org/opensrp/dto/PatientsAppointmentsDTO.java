@@ -68,8 +68,8 @@ public class PatientsAppointmentsDTO {
         this.appointmentType = appointmentType;
     }
 
-    public void setCancelled(boolean cancelled) {
-        isCancelled = cancelled;
+    public void setIsCancelled(boolean isCancelled) {
+        this.isCancelled = isCancelled;
     }
 
     public String getStatus() {

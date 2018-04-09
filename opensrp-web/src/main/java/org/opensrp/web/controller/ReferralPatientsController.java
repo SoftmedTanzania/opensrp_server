@@ -311,11 +311,14 @@ public class ReferralPatientsController {
 
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-tb-encounters")
-	public ResponseEntity<TBEncounter> saveTBEncounter(@RequestBody String json) {
+	public ResponseEntity<TBEncounterDTO> saveTBEncounter(@RequestBody String json) {
+		System.out.println("saveTBEncounter : "+json);
 		TBEncounterDTO tbEncounterDTOS = new Gson().fromJson(json,TBEncounterDTO.class);
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbEncounterDTOS));
 			TBEncounter encounter = PatientsConverter.toTBEncounter(tbEncounterDTOS);
+
+			tbEncounterRepository.save(encounter);
 
 
 			String encounterQuery = "SELECT * FROM " + TBEncounter.tbName + " WHERE " +
@@ -330,16 +333,20 @@ public class ReferralPatientsController {
 			try {
 				tbEncounters = tbEncounterRepository.getTBEncounters(encounterQuery, tbEncountersParams);
 				TBEncounter tbEncounter = tbEncounters.get(0);
-				tbEncounter.setUpdatedAt(Calendar.getInstance().getTime());
-				tbEncounter.setMakohozi(encounter.getMakohozi());
-				tbEncounter.setWeight(encounter.getWeight());
-				tbEncounter.setEncounterMonth(encounter.getEncounterMonth());
-				tbEncounter.setHasFinishedPreviousMonthMedication(encounter.isHasFinishedPreviousMonthMedication());
-				tbEncounter.setMedicationStatus(encounter.isMedicationStatus());
-				tbEncounterRepository.update(tbEncounter);
+
+				TBEncounterDTO tbEncounterDTO = new TBEncounterDTO();
+				tbEncounterDTO.setId(tbEncounter.getId());
+				tbEncounterDTO.setLocalID(tbEncounter.getLocalID());
+				tbEncounterDTO.setMakohozi(tbEncounter.getMakohozi());
+				tbEncounterDTO.setWeight(tbEncounter.getWeight());
+				tbEncounterDTO.setEncounterMonth(tbEncounter.getEncounterMonth());
+				tbEncounterDTO.setEncounterYear(tbEncounter.getEncounterYear());
+				tbEncounterDTO.setHasFinishedPreviousMonthMedication(tbEncounter.isHasFinishedPreviousMonthMedication());
+				tbEncounterDTO.setMedicationStatus(tbEncounter.isMedicationStatus());
+
 
 				//Todo push notifications to other tablets in the facility.
-				return new ResponseEntity<TBEncounter>(tbEncounter,HttpStatus.CREATED);
+				return new ResponseEntity<TBEncounterDTO>(tbEncounterDTO,HttpStatus.CREATED);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -427,8 +434,8 @@ public class ReferralPatientsController {
 			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
 			if(referralsDTO.getReferralType()==4) {
-				System.out.println("chwreferral : "+savedPatientReferrals.get(0).getFacilityId());
-				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(), 1};
+				System.out.println("chwreferral : "+savedPatientReferrals.get(0).getFromFacilityId());
+				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFromFacilityId(), 1};
 				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
 				JSONArray tokens = new JSONArray();
 				for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {

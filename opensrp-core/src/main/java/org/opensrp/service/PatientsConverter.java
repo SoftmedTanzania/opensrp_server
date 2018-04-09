@@ -391,9 +391,12 @@ public class PatientsConverter {
            Date medicationDate = new Date();
            medicationDate.setTime(tbEncounterDTO.getMedicationDate());
 
+           encounter.setLocalID(tbEncounterDTO.getLocalID());
            encounter.setWeight(tbEncounterDTO.getWeight());
            encounter.setMedicationDate(medicationDate);
            encounter.setMedicationStatus(tbEncounterDTO.isMedicationStatus());
+
+           encounter.setEncounterYear(tbEncounterDTO.getEncounterYear());
 
            Date scheduledDate = new Date();
            scheduledDate.setTime(tbEncounterDTO.getScheduledDate());
@@ -434,7 +437,7 @@ public class PatientsConverter {
 
 			patientsAppointmentsDTO.setAppointment_id(patientAppointments.getAppointment_id());
 			patientsAppointmentsDTO.setAppointmentDate(patientAppointments.getAppointmentDate().getTime());
-			patientsAppointmentsDTO.setCancelled(patientAppointments.getIsCancelled());
+			patientsAppointmentsDTO.setIsCancelled(patientAppointments.getIsCancelled());
 			patientsAppointmentsDTO.setHealthFacilityPatientId(patientAppointments.getHealthFacilityPatientId());
 			patientsAppointmentsDTO.setStatus(patientAppointments.getStatus());
 			patientsAppointmentsDTO.setAppointmentType(patientAppointments.getAppointmentType());
@@ -467,8 +470,10 @@ public class PatientsConverter {
 		try {
             TBEncounterDTO tbEncounterDTO = new TBEncounterDTO();
 
+            tbEncounterDTO.setLocalID(tbEncounter.getLocalID());
             tbEncounterDTO.setAppointmentId(tbEncounter.getAppointmentId());
             tbEncounterDTO.setEncounterMonth(tbEncounter.getEncounterMonth());
+            tbEncounterDTO.setEncounterYear(tbEncounter.getEncounterYear());
             tbEncounterDTO.setHasFinishedPreviousMonthMedication(tbEncounter.isHasFinishedPreviousMonthMedication());
             tbEncounterDTO.setId(tbEncounter.getId());
             tbEncounterDTO.setMakohozi(tbEncounter.getMakohozi());

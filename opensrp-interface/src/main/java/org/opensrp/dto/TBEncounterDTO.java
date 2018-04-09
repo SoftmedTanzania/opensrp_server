@@ -27,6 +27,12 @@ public class TBEncounterDTO {
 	private int encounterMonth;
 
 	@JsonProperty
+	private int encounterYear;
+
+	@JsonProperty
+	private String localID;
+
+	@JsonProperty
 	private boolean hasFinishedPreviousMonthMedication;
 
 	@JsonProperty
@@ -55,6 +61,14 @@ public class TBEncounterDTO {
 
 	public void setTbPatientId(Long tbPatientId) {
 		this.tbPatientId = tbPatientId;
+	}
+
+	public String getLocalID() {
+		return localID;
+	}
+
+	public void setLocalID(String localID) {
+		this.localID = localID;
 	}
 
 	public String getMakohozi() {
@@ -87,6 +101,14 @@ public class TBEncounterDTO {
 
 	public void setHasFinishedPreviousMonthMedication(boolean hasFinishedPreviousMonthMedication) {
 		this.hasFinishedPreviousMonthMedication = hasFinishedPreviousMonthMedication;
+	}
+
+	public int getEncounterYear() {
+		return encounterYear;
+	}
+
+	public void setEncounterYear(int encounterYear) {
+		this.encounterYear = encounterYear;
 	}
 
 	public double getWeight() {
