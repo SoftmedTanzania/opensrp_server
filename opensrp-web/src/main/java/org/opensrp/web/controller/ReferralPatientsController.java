@@ -336,17 +336,21 @@ public class ReferralPatientsController {
 
 				TBEncounterDTO tbEncounterDTO = new TBEncounterDTO();
 				tbEncounterDTO.setId(tbEncounter.getId());
+				tbEncounterDTO.setTbPatientId(tbEncounter.getTbPatientId());
+				tbEncounterDTO.setAppointmentId(tbEncounter.getAppointmentId());
 				tbEncounterDTO.setLocalID(tbEncounter.getLocalID());
 				tbEncounterDTO.setMakohozi(tbEncounter.getMakohozi());
 				tbEncounterDTO.setWeight(tbEncounter.getWeight());
 				tbEncounterDTO.setEncounterMonth(tbEncounter.getEncounterMonth());
 				tbEncounterDTO.setEncounterYear(tbEncounter.getEncounterYear());
-				tbEncounterDTO.setHasFinishedPreviousMonthMedication(tbEncounter.isHasFinishedPreviousMonthMedication());
+				tbEncounterDTO.setScheduledDate(tbEncounter.getScheduledDate().getTime());
+				tbEncounterDTO.setMedicationDate(tbEncounter.getMedicationDate().getTime());
 				tbEncounterDTO.setMedicationStatus(tbEncounter.isMedicationStatus());
+				tbEncounterDTO.setHasFinishedPreviousMonthMedication(tbEncounter.isHasFinishedPreviousMonthMedication());
 
 
 				//Todo push notifications to other tablets in the facility.
-				return new ResponseEntity<TBEncounterDTO>(tbEncounterDTO,HttpStatus.CREATED);
+				return new ResponseEntity<TBEncounterDTO>(tbEncounterDTO,HttpStatus.OK);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -803,7 +807,6 @@ public class ReferralPatientsController {
 
 
 
-	//TODO implement regeration of appointments
 	private void createAppointments(long healthfacilityPatientId) {
 		for (int i = 1; i <= 8; i++) {
 			PatientAppointments appointments = new PatientAppointments();
@@ -824,6 +827,7 @@ public class ReferralPatientsController {
 		}
 
 	}
+
 
 	private int checkIfWeekend(Date d1) {
 		Calendar c1 = Calendar.getInstance();

@@ -131,22 +131,23 @@ public class TBEncounterRepository {
 	
 	public class TBEncounterRowMapper implements RowMapper<TBEncounter> {
 		public TBEncounter mapRow(ResultSet rs, int rowNum) throws SQLException {
-			TBEncounter tbPatient = new TBEncounter();
+			TBEncounter tbEncounter = new TBEncounter();
 
-			tbPatient.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(TBEncounter.COL_CREATED_AT)).getTime()));
-			tbPatient.setAppointmentId(rs.getLong(rs.findColumn(TBEncounter.COL_APPOINTMENT_ID)));
-			tbPatient.setEncounterMonth(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_MONTH)));
-			tbPatient.setEncounterYear(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_YEAR)));
-			tbPatient.setEncounterYear(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_YEAR)));
-			tbPatient.setLocalID(rs.getString(rs.findColumn(TBEncounter.COL_LOCAL_ID)));
-			tbPatient.setMakohozi(rs.getString(rs.findColumn(TBEncounter.COL_MAKOHOZI)));
-			tbPatient.setWeight(rs.getDouble(rs.findColumn(TBEncounter.COL_WEIGHT)));
-			tbPatient.setScheduledDate(rs.getDate(rs.findColumn(TBEncounter.COL_SCHEDULED_DATE)));
-			tbPatient.setMedicationDate(rs.getDate(rs.findColumn(TBEncounter.COL_MEDICATION_DATE)));
-			tbPatient.setMedicationStatus(rs.getBoolean(rs.findColumn(TBEncounter.COL_MEDICATION_STATUS)));
-			tbPatient.setUpdatedAt(rs.getDate(rs.findColumn(TBEncounter.COL_UPDATED_AT)));
-			tbPatient.setId(rs.getLong(rs.findColumn("_id")));
-			return tbPatient;
+			tbEncounter.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(TBEncounter.COL_CREATED_AT)).getTime()));
+			tbEncounter.setAppointmentId(rs.getLong(rs.findColumn(TBEncounter.COL_APPOINTMENT_ID)));
+			tbEncounter.setEncounterMonth(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_MONTH)));
+			tbEncounter.setEncounterYear(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_YEAR)));
+			tbEncounter.setEncounterYear(rs.getInt(rs.findColumn(TBEncounter.COL_ENCOUNTER_YEAR)));
+			tbEncounter.setTbPatientId(rs.getLong(rs.findColumn(TBEncounter.COL_TB_PATIENT_ID)));
+			tbEncounter.setLocalID(rs.getString(rs.findColumn(TBEncounter.COL_LOCAL_ID)));
+			tbEncounter.setMakohozi(rs.getString(rs.findColumn(TBEncounter.COL_MAKOHOZI)));
+			tbEncounter.setWeight(rs.getDouble(rs.findColumn(TBEncounter.COL_WEIGHT)));
+			tbEncounter.setScheduledDate(rs.getDate(rs.findColumn(TBEncounter.COL_SCHEDULED_DATE)));
+			tbEncounter.setMedicationDate(rs.getDate(rs.findColumn(TBEncounter.COL_MEDICATION_DATE)));
+			tbEncounter.setMedicationStatus(rs.getBoolean(rs.findColumn(TBEncounter.COL_MEDICATION_STATUS)));
+			tbEncounter.setUpdatedAt(rs.getDate(rs.findColumn(TBEncounter.COL_UPDATED_AT)));
+			tbEncounter.setId(rs.getLong(rs.findColumn("_id")));
+			return tbEncounter;
 		}
 		
 	}
