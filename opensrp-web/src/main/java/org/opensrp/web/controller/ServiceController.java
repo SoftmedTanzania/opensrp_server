@@ -3,7 +3,6 @@ package org.opensrp.web.controller;
 import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.dom4j.tree.ContentListFacade;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
@@ -37,14 +36,14 @@ public class ServiceController {
     private IndicatorRepository indicatorRepository;
     private ReferralTypeRepository referralTypeRepository;
     private ReferralServiceIndicatorRepository referralServiceIndicatorRepository;
-    private TBPatientTypeRepository tbPatientTypeRepository;
+    private TBPatientTestTypeRepository tbPatientTestTypeRepository;
     private TaskSchedulerService scheduler;
 
     @Autowired
-    public ServiceController(ReferralServiceRepository referralServiceRepository, TaskSchedulerService scheduler, TBPatientTypeRepository tbPatientTypeRepository,
-                             ReferralServiceIndicatorRepository referralServiceIndicatorRepository, IndicatorRepository indicatorRepository,ReferralTypeRepository referralTypeRepository) {
+    public ServiceController(ReferralServiceRepository referralServiceRepository, TaskSchedulerService scheduler, TBPatientTestTypeRepository tbPatientTestTypeRepository,
+                             ReferralServiceIndicatorRepository referralServiceIndicatorRepository, IndicatorRepository indicatorRepository, ReferralTypeRepository referralTypeRepository) {
         this.referralServiceRepository = referralServiceRepository;
-        this.tbPatientTypeRepository = tbPatientTypeRepository;
+        this.tbPatientTestTypeRepository = tbPatientTestTypeRepository;
         this.scheduler = scheduler;
         this.referralServiceIndicatorRepository = referralServiceIndicatorRepository;
         this.indicatorRepository = indicatorRepository;
@@ -523,18 +522,18 @@ public class ServiceController {
             List<TBPatientTypesDTO> tbPatientTypesDTOS1 = new Gson().fromJson(json, new TypeToken<List<TBPatientTypesDTO>>() {
             }.getType());
 
-            List<TBPatientType> tbPatientTypes =  with(tbPatientTypesDTOS1).convert(new Converter<TBPatientTypesDTO, TBPatientType>() {
+            List<TBPatientTestType> tbPatientTestTypes =  with(tbPatientTypesDTOS1).convert(new Converter<TBPatientTypesDTO, TBPatientTestType>() {
                 @Override
-                public TBPatientType convert(TBPatientTypesDTO tbPatientTypesDTO) {
-                    TBPatientType tbPatientType = new TBPatientType();
-                    tbPatientType.setPatientTypeName(tbPatientTypesDTO.getPatientTypeName());
-                    tbPatientType.setIsActive(tbPatientTypesDTO.isActive());
-                    return tbPatientType;
+                public TBPatientTestType convert(TBPatientTypesDTO tbPatientTypesDTO) {
+                    TBPatientTestType tbPatientTestType = new TBPatientTestType();
+                    tbPatientTestType.setTestTypeName(tbPatientTypesDTO.getPatientTypeName());
+                    tbPatientTestType.setIsActive(tbPatientTypesDTO.isActive());
+                    return tbPatientTestType;
                 }
             });
 
-            for (TBPatientType tbPatientType : tbPatientTypes) {
-                tbPatientTypeRepository.save(tbPatientType);
+            for (TBPatientTestType tbPatientTestType : tbPatientTestTypes) {
+                tbPatientTestTypeRepository.save(tbPatientTestType);
             }
 
             logger.debug(format("Saved TB Patient types to queue.\nSubmissions: {0}", tbPatientTypesDTOS));
@@ -545,21 +544,21 @@ public class ServiceController {
         return new ResponseEntity<>(CREATED);
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/tb-patient-types")
+    @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/tb-patient-test-types")
     @ResponseBody
-    public List<TBPatientTypesDTO> getTBPatientTypes() {
+    public List<TBPatientTypesDTO> getTBPatientTestTypes() {
 
-        List<TBPatientType> tbPatientTypes = null;
+        List<TBPatientTestType> tbPatientTestTypes = null;
         try {
-            tbPatientTypes = tbPatientTypeRepository.getTBPatientTypes("Select * from "+ TBPatientType.tbName,null);
+            tbPatientTestTypes = tbPatientTestTypeRepository.getTBPatientTypes("Select * from "+ TBPatientTestType.tbName,null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return with(tbPatientTypes).convert(new Converter<TBPatientType, TBPatientTypesDTO>() {
+        return with(tbPatientTestTypes).convert(new Converter<TBPatientTestType, TBPatientTypesDTO>() {
             @Override
-            public TBPatientTypesDTO convert(TBPatientType tbPatientType) {
-                return new TBPatientTypesDTO(tbPatientType.getId(),tbPatientType.getPatientTypeName(),tbPatientType.getIsActive());
+            public TBPatientTypesDTO convert(TBPatientTestType tbPatientTestType) {
+                return new TBPatientTypesDTO(tbPatientTestType.getId(), tbPatientTestType.getTestTypeName(), tbPatientTestType.getIsActive());
             }
         });
     }

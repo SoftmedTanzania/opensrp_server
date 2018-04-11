@@ -115,7 +115,7 @@ public class ReferralPatientsController {
 				JSONObject msg = new JSONObject(jsonData);
 				msg.put("type","PatientRegistration");
 
-				googleFCMService.SendPushNotification(msg, tokens, false);
+				googleFCMService.SendPushNotification(msg, tokens, true);
 			}
 
 			String phoneNumber = patientsDTO.getPhoneNumber();
@@ -204,7 +204,6 @@ public class ReferralPatientsController {
 		return new ResponseEntity<>(CREATED);
 	}
 
-
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-tb-patient")
 	@ResponseBody
 	public ResponseEntity<TBCompletePatientDataDTO> saveTBPatients(@RequestBody String json) {
@@ -249,6 +248,8 @@ public class ReferralPatientsController {
 					new Object[]{healthfacilityPatientId});
 			tbCompletePatientDataDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
 
+			//TODO implement push notification to other tablets in the same facility.
+
 			return new ResponseEntity<TBCompletePatientDataDTO>(tbCompletePatientDataDTO,HttpStatus.CREATED);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -257,7 +258,6 @@ public class ReferralPatientsController {
 		}
 		return null;
 	}
-
 
 	@RequestMapping("get-facility-tb-patients/{facilityUUID}")
 	@ResponseBody
@@ -309,9 +309,8 @@ public class ReferralPatientsController {
 		return null;
 	}
 
-
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-tb-encounters")
-	public ResponseEntity<TBEncounterDTO> saveTBEncounter(@RequestBody String json) {
+	public ResponseEntity<TBEncounterFeedbackDTO> saveTBEncounter(@RequestBody String json) {
 		System.out.println("saveTBEncounter : "+json);
 		TBEncounterDTO tbEncounterDTOS = new Gson().fromJson(json,TBEncounterDTO.class);
 		try {
@@ -320,7 +319,10 @@ public class ReferralPatientsController {
 
 			tbEncounterRepository.save(encounter);
 
+			List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_APPOINTMENT_ID + "=?",
+					new Object[]{encounter.getAppointmentId()});
 
+			recalculateAppointments(patientAppointments.get(0).getHealthFacilityPatientId(),encounter.getAppointmentId(),encounter.getMedicationDate().getTime());
 			String encounterQuery = "SELECT * FROM " + TBEncounter.tbName + " WHERE " +
 					TBEncounter.COL_TB_PATIENT_ID + " = ?    AND " +
 					TBEncounter.COL_APPOINTMENT_ID + " = ?  ";
@@ -348,9 +350,16 @@ public class ReferralPatientsController {
 				tbEncounterDTO.setMedicationStatus(tbEncounter.isMedicationStatus());
 				tbEncounterDTO.setHasFinishedPreviousMonthMedication(tbEncounter.isHasFinishedPreviousMonthMedication());
 
+				TBEncounterFeedbackDTO tbEncounterFeedbackDTO = new TBEncounterFeedbackDTO();
+				tbEncounterFeedbackDTO.setTbEncounterDTO(tbEncounterDTO);
 
-				//Todo push notifications to other tablets in the facility.
-				return new ResponseEntity<TBEncounterDTO>(tbEncounterDTO,HttpStatus.OK);
+				List<PatientAppointments> appointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
+						new Object[]{patientAppointments.get(0).getHealthFacilityPatientId()});
+				tbEncounterFeedbackDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(appointments));
+
+
+				//TODO push notifications to other tablets in the facility.
+				return new ResponseEntity<TBEncounterFeedbackDTO>(tbEncounterFeedbackDTO,HttpStatus.OK);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -379,7 +388,6 @@ public class ReferralPatientsController {
 		List<PatientReferralsDTO> patientReferralsDTOS = patientsService.getHealthFacilityReferrals(facilityUuid);
 		return patientReferralsDTOS;
 	}
-
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-facility-referral")
 	public ResponseEntity<ReferralsDTO> saveFacilityReferral(@RequestBody String jsonData) {
@@ -439,7 +447,7 @@ public class ReferralPatientsController {
 
 			if(referralsDTO.getReferralType()==4) {
 				System.out.println("chwreferral : "+savedPatientReferrals.get(0).getFromFacilityId());
-				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFromFacilityId(), 1};
+				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFromFacilityId(), 0};
 				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
 				JSONArray tokens = new JSONArray();
 				for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
@@ -455,7 +463,6 @@ public class ReferralPatientsController {
 				msg.put("type","PatientReferral");
 
 				googleFCMService.SendPushNotification(msg, tokens, false);
-			}else{
 				String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
 						HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UIID + " = ?";
 				Object[] healthFacilityParams = new Object[]{
@@ -474,6 +481,29 @@ public class ReferralPatientsController {
 				}catch (Exception e){
 					e.printStackTrace();
 				}
+
+			}else{
+				Object[] facilityParams;
+				if(referralsDTO.getReferralType()==3) {
+					System.out.println("facility-facility referral : " + savedPatientReferrals.get(0).getFacilityId());
+					facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(), 1};
+				}else{
+					System.out.println("intra-facility referral : " + savedPatientReferrals.get(0).getFacilityId());
+					facilityParams = new Object[]{savedPatientReferrals.get(0).getFromFacilityId(), 1};
+				}
+				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
+				JSONArray tokens = new JSONArray();
+				for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
+					tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
+				}
+				System.out.println("tokens : "+tokens.toString());
+
+				String json = new Gson().toJson(patientReferralsDTO);
+
+				JSONObject msg = new JSONObject(json);
+				msg.put("type","PatientReferral");
+
+				googleFCMService.SendPushNotification(msg, tokens, true);
 			}
 
 
@@ -484,7 +514,6 @@ public class ReferralPatientsController {
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}
 	}
-
 
 	public void saveReferralFollowup(PatientReferral patientReferral,String facilityId){
 		System.out.println("Coze : saving referral Form data for followup");
@@ -608,6 +637,8 @@ public class ReferralPatientsController {
 				JSONObject msg = new JSONObject(referralDTOJson);
 				msg.put("type","ReferralFeedback");
 
+
+				//TODO implement push notification to other tablets in the same facility.
 				try {
 					if(referral.getReferralType()==1)
 						googleFCMService.SendPushNotification(msg, tokens, false);
@@ -630,7 +661,6 @@ public class ReferralPatientsController {
 
 		return new ResponseEntity<String>("success",OK);
 	}
-
 
 	@RequestMapping(method = GET, value = "/check-status-of-referrals")
 	@ResponseBody
@@ -803,10 +833,6 @@ public class ReferralPatientsController {
 		}
 	}
 
-
-
-
-
 	private void createAppointments(long healthfacilityPatientId) {
 		for (int i = 1; i <= 8; i++) {
 			PatientAppointments appointments = new PatientAppointments();
@@ -828,6 +854,41 @@ public class ReferralPatientsController {
 
 	}
 
+	private void recalculateAppointments(long healthfacilityPatientId, long appointmentId, long appointmentDate) {
+
+		List <PatientAppointments> patientAppointments = null;
+		try {
+			patientAppointments  = patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthfacilityPatientId,null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+		int i = 1;
+		for (PatientAppointments patientAppointment:patientAppointments) {
+			System.out.println("Checking previous patient appointments");
+			if(patientAppointment.getAppointment_id()>appointmentId){
+
+				System.out.println("updating previous patient appointments date from "+patientAppointment.getAppointmentDate());
+				Calendar c = Calendar.getInstance();
+				c.setTimeInMillis(appointmentDate);
+				c.add(Calendar.MONTH, +i);
+				c.add(Calendar.DAY_OF_MONTH, +checkIfWeekend(c.getTime()));
+				patientAppointment.setAppointmentDate(c.getTime());
+
+				System.out.println("updating to new  patient appointments date  "+c.getTime());
+
+				try {
+					System.out.println("Coze:update appointment");
+					patientsAppointmentsRepository.executeQuery("UPDATE "+PatientAppointments.tbName+ " SET "+PatientAppointments.COL_APPOINTMENT_DATE+" = '"+c.getTime()+"' WHERE "+PatientAppointments.COL_APPOINTMENT_ID+" = "+patientAppointment.getAppointment_id());
+					System.out.println("Coze:update appointment query : UPDATE "+PatientAppointments.tbName+ " SET "+PatientAppointments.COL_APPOINTMENT_DATE+" = '"+c.getTime()+"' WHERE "+PatientAppointments.COL_APPOINTMENT_ID+" = "+patientAppointment.getAppointment_id());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
 
 	private int checkIfWeekend(Date d1) {
 		Calendar c1 = Calendar.getInstance();

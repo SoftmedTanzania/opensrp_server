@@ -56,6 +56,8 @@ public class PatientsAppointmentsRepository {
 		return jdbcTemplate.update(insertQuery, params, types);
 		
 	}
+
+
 	
 	public void executeQuery(String query) throws Exception {
 		jdbcTemplate.execute(query);

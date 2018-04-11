@@ -1,16 +1,15 @@
 package org.opensrp.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_tb_patient_type")
-public class TBPatientType {
+@Table(name = "tbl_TBPatient_test_type")
+public class TBPatientTestType {
 
-	public static final String tbName = "tbl_tb_patient_type";
+	public static final String tbName = "tbl_TBPatient_test_type";
 
-	public static final String COL_PATIENT_TYPE_NAME = "patient_type_name";
+	public static final String COL_TEST_TYPE_NAME = "test_type_name";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 
@@ -24,8 +23,8 @@ public class TBPatientType {
 	private Long id;
 
 	@Id
-	@Column(name = COL_PATIENT_TYPE_NAME)
-	private String patientTypeName;
+	@Column(name = COL_TEST_TYPE_NAME)
+	private String testTypeName;
 
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;
@@ -46,12 +45,12 @@ public class TBPatientType {
 		this.id = id;
 	}
 
-	public String getPatientTypeName() {
-		return patientTypeName;
+	public String getTestTypeName() {
+		return testTypeName;
 	}
 
-	public void setPatientTypeName(String patientTypeName) {
-		this.patientTypeName = patientTypeName;
+	public void setTestTypeName(String testTypeName) {
+		this.testTypeName = testTypeName;
 	}
 
 	public boolean isActive() {
