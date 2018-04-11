@@ -454,7 +454,6 @@ public class ReferralPatientsController {
 					tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
 				}
 
-
 				System.out.println("tokens : "+tokens.toString());
 
 				String json = new Gson().toJson(patientReferralsDTO);

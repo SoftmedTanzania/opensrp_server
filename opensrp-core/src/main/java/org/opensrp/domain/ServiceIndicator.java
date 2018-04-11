@@ -5,16 +5,16 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_referral_service_indicator")
-public class ReferralServiceIndicator implements Serializable {
+@Table(name = "tbl_service_indicator")
+public class ServiceIndicator implements Serializable {
 
-	public static final String tbName = "tbl_referral_service_indicator";
+	public static final String tbName = "tbl_service_indicator";
 
-	public static final String COL_REFERRAL_SERVICE_INDICATOR_ID = "referral_service_indicator_id";
+	public static final String COL_SERVICE_INDICATOR_ID = "service_indicator_id";
 
 	public static final String COL_SERVICE_ID = "service_id";
 
-	public static final String COL_REFERRAL_INDICATOR_ID= "referral_indicator_id";
+	public static final String COL_INDICATOR_ID = "indicator_id";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 
@@ -23,8 +23,8 @@ public class ReferralServiceIndicator implements Serializable {
 	public static final String COL_UPDATED_AT = "updated_at";
 
 
-	@Column(name = COL_REFERRAL_SERVICE_INDICATOR_ID)
-	private Long referralServiceIndicatorId;
+	@Column(name = COL_SERVICE_INDICATOR_ID)
+	private Long serviceIndicatorId;
 
 
 	@EmbeddedId
@@ -41,12 +41,12 @@ public class ReferralServiceIndicator implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getReferralServiceIndicatorId() {
-		return referralServiceIndicatorId;
+	public Long getServiceIndicatorId() {
+		return serviceIndicatorId;
 	}
 
-	public void setReferralServiceIndicatorId(Long referralServiceIndicatorId) {
-		this.referralServiceIndicatorId = referralServiceIndicatorId;
+	public void setServiceIndicatorId(Long serviceIndicatorId) {
+		this.serviceIndicatorId = serviceIndicatorId;
 	}
 
 
