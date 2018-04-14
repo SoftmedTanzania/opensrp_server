@@ -11,7 +11,6 @@ import org.opensrp.common.AllConstants;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
 import org.opensrp.form.domain.FormData;
-import org.opensrp.form.domain.FormField;
 import org.opensrp.form.domain.FormInstance;
 import org.opensrp.form.domain.FormSubmission;
 import org.opensrp.form.service.FormSubmissionService;
@@ -63,12 +62,15 @@ public class ReferralPatientsController {
 	private ReferralPatientsService referralPatientService;
 	private RapidProServiceImpl rapidProService;
 	private ReferralServiceRepository referralServiceRepository;
+	private TBPatientTestTypeRepository tbPatientTestTypeRepository;
+	private TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository;
 	@Autowired
 	public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
 	                                  HealthFacilityRepository healthFacilityRepository, HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository, PatientsAppointmentsRepository patientsAppointmentsRepository,
 	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository, FormSubmissionService formSubmissionService,
 	                                  FormEntityConverter formEntityConverter, GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
-	                                  PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService,RapidProServiceImpl rapidProService,ReferralServiceRepository referralServiceRepository) {
+	                                  PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService,RapidProServiceImpl rapidProService,ReferralServiceRepository referralServiceRepository,
+	                                  TBPatientTestTypeRepository tbPatientTestTypeRepository,TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository) {
 		this.patientsService = patientsService;
 		this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
@@ -86,6 +88,8 @@ public class ReferralPatientsController {
 		this.referralPatientService = referralPatientService;
 		this.rapidProService = rapidProService;
 		this.referralServiceRepository = referralServiceRepository;
+		this.tbPatientTestTypeRepository = tbPatientTestTypeRepository;
+		this.tbSputumMedicationRegimesRepository = tbSputumMedicationRegimesRepository;
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
@@ -829,6 +833,30 @@ public class ReferralPatientsController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(method = GET, value = "/get-tb-test-type")
+	@ResponseBody
+	public ResponseEntity<List<TBPatientTestType>> getTBTestTypes() {
+		try {
+			List<TBPatientTestType> tbPatientTestTypes  = tbPatientTestTypeRepository.getTBPatientTypes("SELECT * FROM "+TBPatientTestType.tbName,null);
+			return new ResponseEntity<List<TBPatientTestType>>(tbPatientTestTypes,HttpStatus.OK);
+		}catch (Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<List<TBPatientTestType>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(method = GET, value = "/get-tb-medication-regimes")
+	@ResponseBody
+	public ResponseEntity<List<TBMedicationRegime>> getTBSputumMedicationRegimes() {
+		try {
+			List<TBMedicationRegime> tbMedicationRegime = tbSputumMedicationRegimesRepository.getTBSputumMedicationRegime("SELECT * FROM "+ TBMedicationRegime.tbName,null);
+			return new ResponseEntity<List<TBMedicationRegime>>(tbMedicationRegime,HttpStatus.OK);
+		}catch (Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<List<TBMedicationRegime>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
