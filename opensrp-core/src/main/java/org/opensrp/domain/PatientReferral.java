@@ -111,11 +111,6 @@ public class PatientReferral {
 	@Column(name = COL_FROM_FACILITY_ID)
 	private String fromFacilityId;
 
-
-	/*
-	 *  0 = chw
-	 * 1 = facility
-	 */
 	@Column(name = COL_REFERRAL_SOURCE)
 	private int referralSource;
 

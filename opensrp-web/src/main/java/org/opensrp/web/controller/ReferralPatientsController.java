@@ -491,24 +491,24 @@ public class ReferralPatientsController {
 					System.out.println("facility-facility referral : " + savedPatientReferrals.get(0).getFacilityId());
 					facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(), 1};
 				}else{
-					System.out.println("intra-facility referral : " + savedPatientReferrals.get(0).getFacilityId());
+					System.out.println("intra-facility referral : " + savedPatientReferrals.get(0).getFromFacilityId());
 					facilityParams = new Object[]{savedPatientReferrals.get(0).getFromFacilityId(), 1};
 				}
-				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
-				JSONArray tokens = new JSONArray();
-				for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
-					tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
+				try {
+					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
+					JSONArray tokens = new JSONArray();
+					for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
+						tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
+					}
+					System.out.println("tokens : " + tokens.toString());
+					String json = new Gson().toJson(patientReferralsDTO);
+					JSONObject msg = new JSONObject(json);
+					msg.put("type", "PatientReferral");
+					googleFCMService.SendPushNotification(msg, tokens, true);
+				}catch (Exception e){
+					e.printStackTrace();
 				}
-				System.out.println("tokens : "+tokens.toString());
-
-				String json = new Gson().toJson(patientReferralsDTO);
-
-				JSONObject msg = new JSONObject(json);
-				msg.put("type","PatientReferral");
-
-				googleFCMService.SendPushNotification(msg, tokens, true);
 			}
-
 
 			return new ResponseEntity<ReferralsDTO>(referralsDTO,HttpStatus.OK);
 		} catch (Exception e) {
