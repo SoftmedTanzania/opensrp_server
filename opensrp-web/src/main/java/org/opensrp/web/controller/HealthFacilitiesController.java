@@ -44,8 +44,8 @@ public class HealthFacilitiesController {
         this.scheduler = scheduler;
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-health-facilities")
-    public ResponseEntity<HttpStatus> saveHealthFacility(@RequestBody String json) {
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-multiple-health-facilities")
+    public ResponseEntity<HttpStatus> saveHealthFacilities(@RequestBody String json) {
         try {
             System.out.println("Coze:save health facility");
             List<HealthFacilitiesDTO> healthFacilitiesDTOS = new Gson().fromJson(json, new TypeToken<List<HealthFacilitiesDTO>>() {}.getType());
@@ -60,6 +60,28 @@ public class HealthFacilitiesController {
             for (HealthFacilities healthFacility : healthFacilities) {
                 healthFacilitiesService.storeHealthFacilities(healthFacility);
             }
+
+            logger.debug(format("Saved Health Facility to queue.\nSubmissions: {0}", healthFacilitiesDTOS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(format("Health Facility processing failed with exception {0}.\nSubmissions: {1}", e, json));
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(CREATED);
+    }
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-health-facilities")
+    public ResponseEntity<HttpStatus> saveHealthFacility(@RequestBody String json) {
+        try {
+            System.out.println("Coze:save health facility");
+             HealthFacilitiesDTO healthFacilitiesDTOS = new Gson().fromJson(json, new TypeToken<List<HealthFacilitiesDTO>>() {}.getType());
+
+
+            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, healthFacilitiesDTOS));
+
+            HealthFacilities healthFacility =  HealthFacilitiesConverter.toHealthFacilities(healthFacilitiesDTOS);
+
+            healthFacilitiesService.storeHealthFacilities(healthFacility);
 
             logger.debug(format("Saved Health Facility to queue.\nSubmissions: {0}", healthFacilitiesDTOS));
         } catch (Exception e) {
