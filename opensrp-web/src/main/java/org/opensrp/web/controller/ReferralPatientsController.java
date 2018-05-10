@@ -860,6 +860,36 @@ public class ReferralPatientsController {
 		}
 	}
 
+
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-chw-referrals-summary")
+	@ResponseBody
+	public ResponseEntity<List<CHWReferralsSummaryDTO>> getCHWReferralsSummary(@RequestBody String json) {
+		List<String> chwUUIDS = new Gson().fromJson(json, new TypeToken<List<String>>() {}.getType());
+		String chwUIIDs = "";
+		for(String chwUUID :  chwUUIDS){
+			chwUIIDs+="'"+chwUUID+"',";
+		}
+
+		if ( chwUIIDs.length() > 0 && chwUIIDs.charAt(chwUIIDs.length() - 1) == ',') {
+			chwUIIDs = chwUIIDs.substring(0, chwUIIDs.length() - 1);
+		}
+
+		try {
+			List<CHWReferralsSummaryDTO> chwReferralsSummaryDTOS = patientReferralRepository.getCHWReferralsSummary(
+					"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count ,"+ReferralService.COL_REFERRAL_CATEGORY_NAME+" as service_name FROM "+PatientReferral.tbName +
+					"INNER JOIN "+ReferralService.tbName+" ON "+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+" = "+ReferralService.tbName+"."+ReferralService.COL_REFERRAL_SERVICE_ID +
+					"WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=1 " +
+					"GROUP BY "+ReferralService.COL_REFERRAL_CATEGORY_NAME,null);
+
+
+			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(chwReferralsSummaryDTOS,HttpStatus.OK);
+		}catch (Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	private void createAppointments(long healthfacilityPatientId) {
 		for (int i = 1; i <= 8; i++) {
 			PatientAppointments appointments = new PatientAppointments();

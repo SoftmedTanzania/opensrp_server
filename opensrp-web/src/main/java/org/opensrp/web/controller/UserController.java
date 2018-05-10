@@ -19,7 +19,9 @@ import org.opensrp.api.util.LocationTree;
 import org.opensrp.common.domain.UserDetail;
 import org.opensrp.connector.openmrs.service.OpenmrsLocationService;
 import org.opensrp.connector.openmrs.service.OpenmrsUserService;
+import org.opensrp.domain.HealthFacilities;
 import org.opensrp.dto.ReferralsDTO;
+import org.opensrp.repository.HealthFacilityRepository;
 import org.opensrp.web.security.DrishtiAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,13 +43,16 @@ public class UserController {
     private DrishtiAuthenticationProvider opensrpAuthenticationProvider;
 	private OpenmrsLocationService openmrsLocationService;
 	private OpenmrsUserService openmrsUserService;
+
+	private HealthFacilityRepository facilityRepository;
 	
     @Autowired
     public UserController(OpenmrsLocationService openmrsLocationService, OpenmrsUserService openmrsUserService, 
-            DrishtiAuthenticationProvider opensrpAuthenticationProvider) {
+            DrishtiAuthenticationProvider opensrpAuthenticationProvider, HealthFacilityRepository facilityRepository) {
 		this.openmrsLocationService = openmrsLocationService;
 		this.openmrsUserService = openmrsUserService;
         this.opensrpAuthenticationProvider = opensrpAuthenticationProvider;
+        this.facilityRepository = facilityRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/authenticate-user")
@@ -144,12 +149,41 @@ public class UserController {
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-team-members-by-facility-uuid")
 	public ResponseEntity<String> getTeamMembers(@RequestBody String jsonData) {
+		List<String> facilityHFRCodes = new Gson().fromJson(jsonData, new TypeToken<List<String>>() {}.getType());
 
-		List<String> facilityUUID = new Gson().fromJson(jsonData, new TypeToken<List<String>>() {}.getType());
+		String facilitiesHFRCodes = "";
+		for(String facilityHFR :  facilityHFRCodes){
+			facilitiesHFRCodes+="'"+facilityHFR+"',";
+		}
 
+		if ( facilitiesHFRCodes.length() > 0 && facilitiesHFRCodes.charAt(facilitiesHFRCodes.length() - 1) == ',') {
+			facilitiesHFRCodes = facilitiesHFRCodes.substring(0, facilitiesHFRCodes.length() - 1);
+		}
+
+		System.out.println("FACILITY-HFR : "+facilitiesHFRCodes);
+
+
+		List<HealthFacilities> healthFacilities = null;
+		try {
+			String sql = "SELECT * FROM "+ HealthFacilities.tbName+" WHERE "+HealthFacilities.COL_HFR_CODE+ " IN ("+facilitiesHFRCodes+")";
+			healthFacilities = facilityRepository.getHealthFacility(sql,null);
+
+			System.out.println("FACILITY-HFR-SQL : "+sql);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		List<String> healthFacilitiesOpenMRSUUIDS = new ArrayList<>();
+		for(HealthFacilities healthFacility:healthFacilities){
+			healthFacilitiesOpenMRSUUIDS.add(healthFacility.getOpenMRSUIID());
+			System.out.println("FACILITY-UUID : "+healthFacility.getOpenMRSUIID());
+		}
+
+		System.out.println("FACILITY-UUID-LIST : "+new Gson().toJson(healthFacilitiesOpenMRSUUIDS));
 		JSONArray jsonArray = null;
 		try {
-			jsonArray = openmrsUserService.getTeamMembersByFacilityId(facilityUUID);
+			jsonArray = openmrsUserService.getTeamMembersByFacilityId(healthFacilitiesOpenMRSUUIDS);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
