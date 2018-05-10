@@ -2,12 +2,10 @@ package org.opensrp.web.controller;
 
 import static org.opensrp.web.HttpHeaderFactory.allowOrigin;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.nio.charset.Charset;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +19,7 @@ import org.opensrp.api.util.LocationTree;
 import org.opensrp.common.domain.UserDetail;
 import org.opensrp.connector.openmrs.service.OpenmrsLocationService;
 import org.opensrp.connector.openmrs.service.OpenmrsUserService;
+import org.opensrp.dto.ReferralsDTO;
 import org.opensrp.web.security.DrishtiAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,10 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -143,5 +139,21 @@ public class UserController {
 		Map<String, Object> map = new HashMap<>();
 		map.put("serverDatetime", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"));
         return new ResponseEntity<>(new Gson().toJson(map), allowOrigin(opensrpSiteUrl), OK);
+	}
+
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-team-members-by-facility-uuid")
+	public ResponseEntity<String> getTeamMembers(@RequestBody String jsonData) {
+
+		List<String> facilityUUID = new Gson().fromJson(jsonData, new TypeToken<List<String>>() {}.getType());
+
+		JSONArray jsonArray = null;
+		try {
+			jsonArray = openmrsUserService.getTeamMembersByFacilityId(facilityUUID);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return new ResponseEntity<>(jsonArray.toString(), OK);
 	}
 }

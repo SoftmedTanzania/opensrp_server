@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class OpenmrsUserService extends OpenmrsService{
 
@@ -96,6 +98,25 @@ public class OpenmrsUserService extends OpenmrsService{
 	public JSONObject getTeamMember(String uuid) throws JSONException{
 		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL+"/"+uuid, "v=full", OPENMRS_USER, OPENMRS_PWD);
 		return new JSONObject(op.body());
+	}
+
+	public JSONArray getTeamMembersByFacilityId(List<String> openMRSTeamLocationsUUIDs) throws JSONException{
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=full", OPENMRS_USER, OPENMRS_PWD);
+		JSONObject object =  new JSONObject(op.body());
+
+		JSONArray teamMembers = new JSONArray();
+
+		JSONArray results = object.getJSONArray("results");
+
+		int size = results.length();
+		for(int i=0;i<size;i++){
+			JSONObject teamMember = results.getJSONObject(i);
+			String teamMembersFacilityUiid = (teamMember.getJSONObject("team")).getJSONObject("location").getString("uuid");
+			if(openMRSTeamLocationsUUIDs.contains(teamMembersFacilityUiid)){
+				teamMembers.put(teamMember);
+			}
+		}
+		return teamMembers;
 	}
 	
 	public JSONObject getProvider(String identifier) throws JSONException{
