@@ -6,6 +6,7 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.*;
@@ -865,11 +866,44 @@ public class ReferralPatientsController {
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-chw-referrals-summary")
 	@ResponseBody
 	public ResponseEntity<List<CHWReferralsSummaryDTO>> getCHWReferralsSummary(@RequestBody String json) {
-		List<String> chwUUIDS = new Gson().fromJson(json, new TypeToken<List<String>>() {}.getType());
-		String chwUIIDs = "";
-		for(String chwUUID :  chwUUIDS){
-			chwUIIDs+="'"+chwUUID+"',";
+		JSONObject object = null;
+		try {
+			object = new JSONObject(json);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
+		JSONArray array = null;
+		try {
+			array = object.getJSONArray("chw_uuid");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		//Default dates if the date range is not passed
+		String fromDate = "2017-01-01";
+		String toDate = "2020-01-01";
+		try {
+			toDate = object.getString("to_date");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			fromDate = object.getString("from_date");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		int size = array.length();
+		String chwUIIDs = "";
+		for(int i=0;i<size;i++){
+			try {
+				chwUIIDs+="'"+array.getString(i)+"',";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
 
 		if ( chwUIIDs.length() > 0 && chwUIIDs.charAt(chwUIIDs.length() - 1) == ',') {
 			chwUIIDs = chwUIIDs.substring(0, chwUIIDs.length() - 1);
@@ -878,9 +912,12 @@ public class ReferralPatientsController {
 		try {
 			List<CHWReferralsSummaryDTO> chwReferralsSummaryDTOS = patientReferralRepository.getCHWReferralsSummary(
 					"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count ,"+ReferralService.COL_REFERRAL_CATEGORY_NAME+" as service_name FROM "+PatientReferral.tbName +
-					"INNER JOIN "+ReferralService.tbName+" ON "+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+" = "+ReferralService.tbName+"."+ReferralService.COL_REFERRAL_SERVICE_ID +
-					"WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=1 " +
-					"GROUP BY "+ReferralService.COL_REFERRAL_CATEGORY_NAME,null);
+					" INNER JOIN "+ReferralService.tbName+" ON "+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+" = "+ReferralService.tbName+"."+ReferralService.COL_REFERRAL_SERVICE_ID +
+					" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=1 AND " +
+							PatientReferral.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
+							PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+							PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+					" GROUP BY "+ReferralService.COL_REFERRAL_CATEGORY_NAME,null);
 
 
 			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(chwReferralsSummaryDTOS,HttpStatus.OK);
