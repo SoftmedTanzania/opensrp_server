@@ -680,10 +680,12 @@ public class ReferralPatientsController {
 
 			for (PatientReferral patientReferral : patientReferrals) {
 				long diff = now.getTime() - patientReferral.getReferralDate().getTime();
-				System.out.println ("hours: " + TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS));
+				System.out.println ("hours since referrals Isued: " + TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS));
 
 				//Failed referrals
 				if( (patientReferral.getServiceId()==malariaServiceId && TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)>24)  || (patientReferral.getServiceId()!=malariaServiceId && TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)>3)){
+
+					System.out.println ("failed referral " + patientReferral.getId());
 					patientReferral.setReferralStatus(-1);
 					String sql ="UPDATE " + PatientReferral.tbName + " SET " +
 							PatientReferral.COL_REFERRAL_STATUS + " = '" + patientReferral.getReferralStatus() + "' WHERE  " + PatientReferral.COL_REFERRAL_ID + " = " + patientReferral.getId();
