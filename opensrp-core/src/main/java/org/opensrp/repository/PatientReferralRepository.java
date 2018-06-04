@@ -3,6 +3,8 @@ package org.opensrp.repository;
 import org.opensrp.domain.PatientReferral;
 import org.opensrp.domain.Patients;
 import org.opensrp.dto.CHWReferralsSummaryDTO;
+import org.opensrp.dto.FacilityDepartmentReferralSummaryDTO;
+import org.opensrp.dto.FacilityProvidersReferralSummaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -134,5 +135,83 @@ public class PatientReferralRepository {
 	}
 
 
+
+	public List<FacilityDepartmentReferralSummaryDTO> getFacilityDepartmentReferralsSummary(String sql, Object[] args) throws Exception {
+		return this.jdbcTemplate.query(sql, args, new HealthFacilityDepartmentReferralsSummaryRowMapper());
+	}
+
+
+
+	public class HealthFacilityDepartmentReferralsSummaryRowMapper implements RowMapper<FacilityDepartmentReferralSummaryDTO> {
+		public FacilityDepartmentReferralSummaryDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+			FacilityDepartmentReferralSummaryDTO facilityReferralsSummaryDTO =new FacilityDepartmentReferralSummaryDTO();
+
+
+			facilityReferralsSummaryDTO.setCount(rs.getInt(rs.findColumn("count")));
+
+
+			if(rs.getInt(rs.findColumn("referral_source")) == 0) {
+				facilityReferralsSummaryDTO.setDepartmentName("OPD");
+			}else if(rs.getInt(rs.findColumn("referral_source")) == 1){
+				facilityReferralsSummaryDTO.setDepartmentName("HIV Clinic");
+			}else if(rs.getInt(rs.findColumn("referral_source")) == 2){
+				facilityReferralsSummaryDTO.setDepartmentName("TB Clinic");
+			}
+
+
+			if(rs.getInt(rs.findColumn("referral_status")) == 1 )
+				facilityReferralsSummaryDTO.setStatus("Success");
+			else if(rs.getInt(rs.findColumn("referral_status")) == 0 ){
+				facilityReferralsSummaryDTO.setStatus("Pending");
+			}else{
+				facilityReferralsSummaryDTO.setStatus("Failed");
+			}
+
+
+			return  facilityReferralsSummaryDTO;
+		}
+
+	}
+
+
+
+	public List<FacilityProvidersReferralSummaryDTO> getFacilityProvidersReferralsSummary(String sql, Object[] args) throws Exception {
+		return this.jdbcTemplate.query(sql, args, new HealthFacilityDepartmentProvidersReferralsSummaryRowMapper());
+	}
+
+
+
+	public class HealthFacilityDepartmentProvidersReferralsSummaryRowMapper implements RowMapper<FacilityProvidersReferralSummaryDTO> {
+		public FacilityProvidersReferralSummaryDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+			FacilityProvidersReferralSummaryDTO facilityReferralsSummaryDTO =new FacilityProvidersReferralSummaryDTO();
+
+
+			facilityReferralsSummaryDTO.setCount(rs.getInt(rs.findColumn("count")));
+
+
+			if(rs.getInt(rs.findColumn("referral_source")) == 0) {
+				facilityReferralsSummaryDTO.setDepartmentName("OPD");
+			}else if(rs.getInt(rs.findColumn("referral_source")) == 1){
+				facilityReferralsSummaryDTO.setDepartmentName("HIV Clinic");
+			}else if(rs.getInt(rs.findColumn("referral_source")) == 2){
+				facilityReferralsSummaryDTO.setDepartmentName("TB Clinic");
+			}
+
+
+			facilityReferralsSummaryDTO.setProviderUuid(rs.getString(rs.findColumn("provider_uuid")));
+
+			if(rs.getInt(rs.findColumn("referral_status")) == 1 )
+				facilityReferralsSummaryDTO.setStatus("Success");
+			else if(rs.getInt(rs.findColumn("referral_status")) == 0 ){
+				facilityReferralsSummaryDTO.setStatus("Pending");
+			}else{
+				facilityReferralsSummaryDTO.setStatus("Failed");
+			}
+
+
+			return  facilityReferralsSummaryDTO;
+		}
+
+	}
 
 }

@@ -291,4 +291,12 @@ public class ReferralsDTO {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
 }
+
+
+    SELECT count(tbl_patient_referral.referral_service_id) as count, tbl_patient_referral.referral_source, tbl_patient_referral.referral_status FROM tbl_patient_referral GROUP BY tbl_patient_referral.referral_source,tbl_patient_referral.referral_status
+
+
+        SELECT count(tbl_patient_referral.referral_service_id) as count,  tbl_patient_referral.referral_source, tbl_patient_referral.service_provider_uiid, tbl_patient_referral.referral_status  FROM  tbl_patient_referral
+        GROUP BY tbl_patient_referral.referral_source,tbl_patient_referral.referral_status,tbl_patient_referral.service_provider_uiid

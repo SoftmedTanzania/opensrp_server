@@ -863,8 +863,6 @@ public class ReferralPatientsController {
 		}
 	}
 
-
-
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-chw-referrals-summary")
 	@ResponseBody
 	public ResponseEntity<List<CHWReferralsSummaryDTO>> getCHWReferralsSummary(@RequestBody String json) {
@@ -928,6 +926,153 @@ public class ReferralPatientsController {
 			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-facility-referrals-summary")
+	@ResponseBody
+	public ResponseEntity<List<FacilityReferralsSummaryDTO>> getFacilityReferralsSummary(@RequestBody String json) {
+		JSONObject object = null;
+		try {
+			object = new JSONObject(json);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		JSONArray array = null;
+		try {
+			array = object.getJSONArray("facilities");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		String toDate = "2020-01-01";
+		String fromDate = "2017-01-01";
+		try {
+			toDate = object.getString("to_date");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			fromDate = object.getString("from_date");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		List<FacilityReferralsSummaryDTO> referralsSummaryDTOS = new ArrayList<>();
+		int size = array.length();
+		for(int i=0;i<size;i++){
+			try {
+
+				String facilityName = array.getJSONObject(i).getString("facility_name");
+				String facilityId   = array.getJSONObject(i).getString("facility_id");
+
+				List<FacilityDepartmentReferralSummaryDTO> facilityReferralsSummaryDTOS = patientReferralRepository.getFacilityDepartmentReferralsSummary(
+						"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count, "+
+								PatientReferral.COL_REFERRAL_SOURCE+" as referral_source, "+
+								PatientReferral.COL_REFERRAL_STATUS+" as referral_status " +
+								" FROM "+PatientReferral.tbName +
+								" INNER JOIN "+HealthFacilities.tbName +" ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
+								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=2 AND " +
+								HealthFacilities.COL_HFR_CODE+" = '"+facilityId+"' AND "+
+								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+								" GROUP BY "+PatientReferral.COL_REFERRAL_SOURCE+" , "+PatientReferral.COL_REFERRAL_STATUS,null);
+
+
+				FacilityReferralsSummaryDTO facilityReferralsSummaryDTO = new FacilityReferralsSummaryDTO();
+
+				facilityReferralsSummaryDTO.setFacilityName(facilityName);
+				facilityReferralsSummaryDTO.setDepartmentReferralSummaryDTOList(facilityReferralsSummaryDTOS);
+
+				referralsSummaryDTOS.add(facilityReferralsSummaryDTO);
+
+
+
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+
+		return new ResponseEntity<List<FacilityReferralsSummaryDTO>>(referralsSummaryDTOS,HttpStatus.OK);
+
+
+	}
+
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-facility-providers-referrals-summary")
+	@ResponseBody
+	public ResponseEntity<List<FacilityReferralsProvidersSummaryDTO>> getFacilityProidersReferralsSummary(@RequestBody String json) {
+		JSONObject object = null;
+		try {
+			object = new JSONObject(json);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		JSONArray facilitiesArray = null;
+		try {
+			facilitiesArray = object.getJSONArray("facilities");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		String toDate = "2020-01-01";
+		String fromDate = "2017-01-01";
+		try {
+			toDate = object.getString("to_date");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			fromDate = object.getString("from_date");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		List<FacilityReferralsProvidersSummaryDTO> referralsSummaryDTOS = new ArrayList<>();
+		for(int i=0;i<facilitiesArray.length();i++){
+			try {
+				String facilityName = facilitiesArray.getJSONObject(i).getString("facility_name");
+				String facilityId   = facilitiesArray.getJSONObject(i).getString("facility_id");
+
+				List<FacilityProvidersReferralSummaryDTO> facilityProvidersReferralsSummary = patientReferralRepository.getFacilityProvidersReferralsSummary(
+						"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count, "+
+								PatientReferral.COL_REFERRAL_SOURCE+" as referral_source, "+
+								PatientReferral.COL_REFERRAL_STATUS+" as referral_status " +
+								PatientReferral.COL_SERVICE_PROVIDER_UIID+" as provider_uuid " +
+								" FROM "+PatientReferral.tbName +
+								" INNER JOIN "+HealthFacilities.tbName +" ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
+								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=2 AND " +
+								HealthFacilities.COL_HFR_CODE+" = '"+facilityId+"' AND "+
+								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+								" GROUP BY "+PatientReferral.COL_REFERRAL_SOURCE+" , "+PatientReferral.COL_REFERRAL_STATUS+","+PatientReferral.COL_SERVICE_PROVIDER_UIID+" as provider_uuid " ,null);
+
+
+				FacilityReferralsProvidersSummaryDTO facilityReferralsSummaryDTO = new FacilityReferralsProvidersSummaryDTO();
+
+				facilityReferralsSummaryDTO.setFacilityName(facilityName);
+				facilityReferralsSummaryDTO.setSummaryDTOS(facilityProvidersReferralsSummary);
+
+				referralsSummaryDTOS.add(facilityReferralsSummaryDTO);
+
+
+
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+
+		return new ResponseEntity<List<FacilityReferralsProvidersSummaryDTO>>(referralsSummaryDTOS,HttpStatus.OK);
+	}
+
+
 
 	private void createAppointments(long healthfacilityPatientId) {
 		for (int i = 1; i <= 8; i++) {
