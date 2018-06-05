@@ -90,8 +90,6 @@ public class ServiceController {
         return new ResponseEntity<>(CREATED);
     }
 
-
-
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-indicators")
     public ResponseEntity<HttpStatus> saveReferralIndicators(@RequestBody String json) {
         try {
@@ -237,7 +235,7 @@ public class ServiceController {
                     }
                 }
 
-                //TODO reimplement this
+                //TODO COZE reimplement this
 //                referralServiceIndicatorRepository.executeQuery("DELETE FROM "+ReferralServiceIndicator.tbName+" WHERE "+ReferralServiceIndicator.COL_SERVICE_ID+" = "+serviceId + " AND "+ReferralServiceIndicator.COL_INDICATOR_ID+" NOT IN ("+indicatorIds+")");
             }
 
@@ -251,56 +249,6 @@ public class ServiceController {
         }
         return new ResponseEntity<>(CREATED);
     }
-//
-//    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-service-indicator")
-//    public ResponseEntity<HttpStatus> saveReferralServiceIndicator(@RequestBody String json) {
-//        try {
-//            ReferralServiceIndicatorDTO referralServiceIndicatorDTO = new Gson().fromJson(json,ReferralServiceIndicatorDTO.class);
-//            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, referralServiceIndicatorDTO));
-//            List<ReferralServiceIndicator> referralIndicator =  new Converter<ReferralServiceIndicatorDTO,  List<ReferralServiceIndicator>>() {
-//                @Override
-//                public  List<ReferralServiceIndicator> convert(ReferralServiceIndicatorDTO referralServiceIndicatorDTO) {
-//                    List<ReferralServiceIndicator> referralIndicators = new ArrayList<>();
-//                    for (Long indicatorId:referralServiceIndicatorDTO.getReferralIndicatorId()) {
-//                        ReferralServiceIndicator referralServiceIndicator = new ReferralServiceIndicator();
-//                        PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(indicatorId, referralServiceIndicatorDTO.getReferralServiceId());
-//                        referralServiceIndicator.setPkReferralServiceIndicator(pkReferralServiceIndicator);
-//
-//                        referralIndicators.add(referralServiceIndicator);
-//                    }
-//                    return referralIndicators;
-//                }
-//            }.convert(referralServiceIndicatorDTO);
-//
-//            long id = 1;
-//            List<ReferralServiceIndicator> indicators =  referralServiceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM "+ReferralServiceIndicator.tbName+" ORDER BY "+ReferralServiceIndicator.COL_SERVICE_ID+" LIMIT 1",null);
-//            if(indicators.size()>0){
-//                id = indicators.get(0).getReferralServiceIndicatorId()+1;
-//            }
-//
-//            Exception exp = null;
-//            for (ReferralServiceIndicator referralServiceIndicator : referralIndicator) {
-//                try {
-//                    referralServiceIndicator.setReferralServiceIndicatorId(id);
-//                    id++;
-//                    referralServiceIndicatorRepository.save(referralServiceIndicator);
-//                }catch (Exception e){
-//                    exp = e;
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            if(exp!=null)
-//                throw  exp;
-//            logger.debug(format("Saved Referral Service Indicator to queue.\nSubmissions: {0}", referralServiceIndicatorDTO));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error(format("Referral Service Indicator processing failed with exception {0}.\nSubmissions: {1}", e, json));
-//            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
-//        }
-//        return new ResponseEntity<>(CREATED);
-//    }
-
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/boresha-afya-services")
     @ResponseBody
@@ -373,7 +321,6 @@ public class ServiceController {
         return referralServiceIndicatorsDTOS;
     }
 
-
     @RequestMapping("delete-referral-service-indicator/{referralServiceIndicatorId}")
     @ResponseBody
     private ResponseEntity<ServiceIndicator>  deleteReferralServiceIndicatorId(@PathVariable("referralServiceIndicatorId") String referralServiceIndicatorId) {
@@ -389,7 +336,6 @@ public class ServiceController {
         }
         return new ResponseEntity<ServiceIndicator>(OK);
     }
-
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/referral-types")
 	@ResponseBody
@@ -505,9 +451,6 @@ public class ServiceController {
         }
         return new ResponseEntity<Indicator>(OK);
     }
-
-
-
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-tb-patient-type")
     public ResponseEntity<HttpStatus> savePatientType(@RequestBody List<TBPatientTypesDTO> tbPatientTypesDTOS) {

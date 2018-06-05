@@ -13,6 +13,9 @@ public class FacilityProvidersReferralSummaryDTO {
     private String providerUuid;
 
     @JsonProperty
+    private String providerName;
+
+    @JsonProperty
     private String status;
 
     @JsonProperty
@@ -50,7 +53,15 @@ public class FacilityProvidersReferralSummaryDTO {
         this.providerUuid = providerUuid;
     }
 
-    @Override
+	public String getProviderName() {
+		return providerName;
+	}
+
+	public void setProviderName(String providerName) {
+		this.providerName = providerName;
+	}
+
+	@Override
     public boolean equals(Object o) {
         return EqualsBuilder.reflectionEquals(this, o);
     }

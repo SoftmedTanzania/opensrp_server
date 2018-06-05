@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opensrp.common.AllConstants;
+import org.opensrp.connector.openmrs.service.OpenmrsUserService;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
 import org.opensrp.form.domain.FormData;
@@ -71,7 +72,7 @@ public class ReferralPatientsController {
 	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository, FormSubmissionService formSubmissionService,
 	                                  FormEntityConverter formEntityConverter, GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
 	                                  PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService,RapidProServiceImpl rapidProService,ReferralServiceRepository referralServiceRepository,
-	                                  TBPatientTestTypeRepository tbPatientTestTypeRepository,TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository) {
+	                                  TBPatientTestTypeRepository tbPatientTestTypeRepository,TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository,OpenmrsUserService openmrsUserService) {
 		this.patientsService = patientsService;
 		this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
@@ -91,6 +92,7 @@ public class ReferralPatientsController {
 		this.referralServiceRepository = referralServiceRepository;
 		this.tbPatientTestTypeRepository = tbPatientTestTypeRepository;
 		this.tbSputumMedicationRegimesRepository = tbSputumMedicationRegimesRepository;
+		this.openmrsUserService = openmrsUserService;
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
@@ -519,65 +521,6 @@ public class ReferralPatientsController {
 		}
 	}
 
-	public void saveReferralFollowup(PatientReferral patientReferral,String facilityId){
-		System.out.println("Coze : saving referral Form data for followup");
-		List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
-		try {
-			healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_PATIENT_ID+ " = "+patientReferral.getPatient().getPatientId()+" AND "+HealthFacilitiesPatients.COL_FACILITY_ID+ " = '"+facilityId+"'",null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		List<Patients> patients = null;
-		try {
-			patients = patientsRepository.getPatients("SELECT * FROM "+ Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
-			Patients patient = patients.get(0);
-
-			HealthFacilitiesPatients healthFacilitiesPatient = healthFacilitiesPatients.get(0);
-
-			String uuid = UUID.randomUUID().toString();
-
-			List<org.opensrp.form.domain.FormField> formFields = new ArrayList<>();
-			formFields.add(new org.opensrp.form.domain.FormField("first_name", patient.getFirstName()==null?"":patient.getFirstName(), "followup_client.first_name"));
-			formFields.add(new org.opensrp.form.domain.FormField("middle_name", patient.getMiddleName()==null?"": patient.getMiddleName(), "followup_client.middlename"));
-			formFields.add(new org.opensrp.form.domain.FormField("surname", patient.getSurname()==null?"":patient.getSurname(), "followup_client.surname"));
-			formFields.add(new org.opensrp.form.domain.FormField("date_of_birth", patient.getDateOfBirth().getTime()+"", "followup_client.date_of_birth"));
-			formFields.add(new org.opensrp.form.domain.FormField("community_based_hiv_service", patient.getCommunityBasedHivService()==null?"":patient.getCommunityBasedHivService(), "followup_client.community_based_hiv_service"));
-			formFields.add(new org.opensrp.form.domain.FormField("ctc_number", healthFacilitiesPatient.getCtcNumber()==null?"":healthFacilitiesPatient.getCtcNumber(), "followup_client.ctc_number"));
-			formFields.add(new org.opensrp.form.domain.FormField("care_taker_name", patient.getCareTakerName()==null?"":patient.getCareTakerName(), "followup_client.care_taker_name"));
-			formFields.add(new org.opensrp.form.domain.FormField("care_taker_phone_number", patient.getCareTakerPhoneNumber()==null?"":patient.getCareTakerPhoneNumber(), "followup_client.care_taker_relationship"));
-			formFields.add(new org.opensrp.form.domain.FormField("care_taker_relationship", patient.getCareTakerRelationship()==null?"":patient.getCareTakerRelationship(), "followup_client.care_taker_relationship"));
-			formFields.add(new org.opensrp.form.domain.FormField("facility_id", patientReferral.getFromFacilityId()+ "", "followup_client.facility_id"));
-			formFields.add(new org.opensrp.form.domain.FormField("referral_reason", patientReferral.getReferralReason()==null?"":patientReferral.getReferralReason(), "followup_client.referral_reason"));
-			formFields.add(new org.opensrp.form.domain.FormField("gender", patient.getGender()==null?"":patient.getGender(), "followup_client.gender"));
-			formFields.add(new org.opensrp.form.domain.FormField("phone_number", patient.getPhoneNumber()==null?"":patient.getPhoneNumber(), "followup_client.phone_number"));
-			formFields.add(new org.opensrp.form.domain.FormField("comment",  "", "followup_client.comment"));
-			formFields.add(new org.opensrp.form.domain.FormField("referral_status",  "0", "followup_client.referral_status"));
-			formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid",  "", "followup_client.service_provider_uiid"));
-			formFields.add(new org.opensrp.form.domain.FormField("visit_date",  "", "followup_client.visit_date"));
-			formFields.add(new org.opensrp.form.domain.FormField("referral_date",  patientReferral.getReferralDate().getTime()+"", "followup_client.referral_date"));
-			formFields.add(new org.opensrp.form.domain.FormField("village",  patient.getVillage()==null?"":patient.getVillage(), "followup_client.village"));
-			formFields.add(new org.opensrp.form.domain.FormField("relationalid",  uuid, "followup_client.relationalid"));
-			formFields.add(new org.opensrp.form.domain.FormField("is_valid",  "true", "followup_client.is_valid"));
-			formFields.add(new org.opensrp.form.domain.FormField("id",  uuid, "followup_client.id"));
-
-			FormData formData = new FormData("followup_client", "/model/instance/follow_up_form/", formFields, null);
-			FormInstance formInstance = new FormInstance(formData);
-			FormSubmission formSubmission = new FormSubmission(patientReferral.getFromFacilityId()+"", uuid+"", "client_follow_up_form", patientReferral.getReferralUUID() + "", "1", 4, formInstance);
-
-
-			System.out.println("Coze : saving referral form submission");
-			formSubmissionService.submit(formSubmission);
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-
-	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/receive-feedback")
 	public ResponseEntity<String> saveReferralFeedback(@RequestBody String json) {
@@ -863,221 +806,71 @@ public class ReferralPatientsController {
 		}
 	}
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-chw-referrals-summary")
-	@ResponseBody
-	public ResponseEntity<List<CHWReferralsSummaryDTO>> getCHWReferralsSummary(@RequestBody String json) {
-		JSONObject object = null;
+
+	public void saveReferralFollowup(PatientReferral patientReferral,String facilityId){
+		System.out.println("Coze : saving referral Form data for followup");
+		List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
 		try {
-			object = new JSONObject(json);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		JSONArray array = null;
-		try {
-			array = object.getJSONArray("chw_uuid");
-		} catch (JSONException e) {
+			healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_PATIENT_ID+ " = "+patientReferral.getPatient().getPatientId()+" AND "+HealthFacilitiesPatients.COL_FACILITY_ID+ " = '"+facilityId+"'",null);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		//Default dates if the date range is not passed
-		String fromDate = "2017-01-01";
-		String toDate = "2020-01-01";
+		List<Patients> patients = null;
 		try {
-			toDate = object.getString("to_date");
-		} catch (JSONException e) {
+			patients = patientsRepository.getPatients("SELECT * FROM "+ Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		try {
-			fromDate = object.getString("from_date");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+			Patients patient = patients.get(0);
 
-		int size = array.length();
-		String chwUIIDs = "";
-		for(int i=0;i<size;i++){
-			try {
-				chwUIIDs+="'"+array.getString(i)+"',";
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
+			HealthFacilitiesPatients healthFacilitiesPatient = healthFacilitiesPatients.get(0);
+
+			String uuid = UUID.randomUUID().toString();
+
+			List<org.opensrp.form.domain.FormField> formFields = new ArrayList<>();
+			formFields.add(new org.opensrp.form.domain.FormField("first_name", patient.getFirstName()==null?"":patient.getFirstName(), "followup_client.first_name"));
+			formFields.add(new org.opensrp.form.domain.FormField("middle_name", patient.getMiddleName()==null?"": patient.getMiddleName(), "followup_client.middlename"));
+			formFields.add(new org.opensrp.form.domain.FormField("surname", patient.getSurname()==null?"":patient.getSurname(), "followup_client.surname"));
+			formFields.add(new org.opensrp.form.domain.FormField("date_of_birth", patient.getDateOfBirth().getTime()+"", "followup_client.date_of_birth"));
+			formFields.add(new org.opensrp.form.domain.FormField("community_based_hiv_service", patient.getCommunityBasedHivService()==null?"":patient.getCommunityBasedHivService(), "followup_client.community_based_hiv_service"));
+			formFields.add(new org.opensrp.form.domain.FormField("ctc_number", healthFacilitiesPatient.getCtcNumber()==null?"":healthFacilitiesPatient.getCtcNumber(), "followup_client.ctc_number"));
+			formFields.add(new org.opensrp.form.domain.FormField("care_taker_name", patient.getCareTakerName()==null?"":patient.getCareTakerName(), "followup_client.care_taker_name"));
+			formFields.add(new org.opensrp.form.domain.FormField("care_taker_phone_number", patient.getCareTakerPhoneNumber()==null?"":patient.getCareTakerPhoneNumber(), "followup_client.care_taker_relationship"));
+			formFields.add(new org.opensrp.form.domain.FormField("care_taker_relationship", patient.getCareTakerRelationship()==null?"":patient.getCareTakerRelationship(), "followup_client.care_taker_relationship"));
+			formFields.add(new org.opensrp.form.domain.FormField("facility_id", patientReferral.getFromFacilityId()+ "", "followup_client.facility_id"));
+			formFields.add(new org.opensrp.form.domain.FormField("referral_reason", patientReferral.getReferralReason()==null?"":patientReferral.getReferralReason(), "followup_client.referral_reason"));
+			formFields.add(new org.opensrp.form.domain.FormField("gender", patient.getGender()==null?"":patient.getGender(), "followup_client.gender"));
+			formFields.add(new org.opensrp.form.domain.FormField("phone_number", patient.getPhoneNumber()==null?"":patient.getPhoneNumber(), "followup_client.phone_number"));
+			formFields.add(new org.opensrp.form.domain.FormField("comment",  "", "followup_client.comment"));
+			formFields.add(new org.opensrp.form.domain.FormField("referral_status",  "0", "followup_client.referral_status"));
+			formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid",  "", "followup_client.service_provider_uiid"));
+			formFields.add(new org.opensrp.form.domain.FormField("visit_date",  "", "followup_client.visit_date"));
+			formFields.add(new org.opensrp.form.domain.FormField("referral_date",  patientReferral.getReferralDate().getTime()+"", "followup_client.referral_date"));
+			formFields.add(new org.opensrp.form.domain.FormField("village",  patient.getVillage()==null?"":patient.getVillage(), "followup_client.village"));
+			formFields.add(new org.opensrp.form.domain.FormField("relationalid",  uuid, "followup_client.relationalid"));
+			formFields.add(new org.opensrp.form.domain.FormField("is_valid",  "true", "followup_client.is_valid"));
+			formFields.add(new org.opensrp.form.domain.FormField("id",  uuid, "followup_client.id"));
+
+			FormData formData = new FormData("followup_client", "/model/instance/follow_up_form/", formFields, null);
+			FormInstance formInstance = new FormInstance(formData);
+			FormSubmission formSubmission = new FormSubmission(patientReferral.getFromFacilityId()+"", uuid+"", "client_follow_up_form", patientReferral.getReferralUUID() + "", "1", 4, formInstance);
 
 
-		if ( chwUIIDs.length() > 0 && chwUIIDs.charAt(chwUIIDs.length() - 1) == ',') {
-			chwUIIDs = chwUIIDs.substring(0, chwUIIDs.length() - 1);
-		}
-
-		try {
-			List<CHWReferralsSummaryDTO> chwReferralsSummaryDTOS = patientReferralRepository.getCHWReferralsSummary(
-					"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count ,"+ReferralService.COL_REFERRAL_SERVICE_NAME+" as service_name FROM "+PatientReferral.tbName +
-					" INNER JOIN "+ReferralService.tbName+" ON "+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+" = "+ReferralService.tbName+"."+ReferralService.COL_REFERRAL_SERVICE_ID +
-					" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=1 AND " +
-							PatientReferral.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
-							PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
-							PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
-					" GROUP BY "+ReferralService.COL_REFERRAL_SERVICE_NAME,null);
-
-
-			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(chwReferralsSummaryDTOS,HttpStatus.OK);
+			System.out.println("Coze : saving referral form submission");
+			formSubmissionService.submit(formSubmission);
 		}catch (Exception e){
 			e.printStackTrace();
-			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
-
-
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-facility-referrals-summary")
-	@ResponseBody
-	public ResponseEntity<List<FacilityReferralsSummaryDTO>> getFacilityReferralsSummary(@RequestBody String json) {
-		JSONObject object = null;
-		try {
-			object = new JSONObject(json);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		JSONArray array = null;
-		try {
-			array = object.getJSONArray("facilities");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		String toDate = "2020-01-01";
-		String fromDate = "2017-01-01";
-		try {
-			toDate = object.getString("to_date");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			fromDate = object.getString("from_date");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		List<FacilityReferralsSummaryDTO> referralsSummaryDTOS = new ArrayList<>();
-		int size = array.length();
-		for(int i=0;i<size;i++){
-			try {
-
-				String facilityName = array.getJSONObject(i).getString("facility_name");
-				String facilityId   = array.getJSONObject(i).getString("facility_id");
-
-				List<FacilityDepartmentReferralSummaryDTO> facilityReferralsSummaryDTOS = patientReferralRepository.getFacilityDepartmentReferralsSummary(
-						"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count, "+
-								PatientReferral.COL_REFERRAL_SOURCE+" as referral_source, "+
-								PatientReferral.COL_REFERRAL_STATUS+" as referral_status " +
-								" FROM "+PatientReferral.tbName +
-								" INNER JOIN "+HealthFacilities.tbName +" ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
-								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=2 AND " +
-								HealthFacilities.COL_HFR_CODE+" = '"+facilityId+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
-								" GROUP BY "+PatientReferral.COL_REFERRAL_SOURCE+" , "+PatientReferral.COL_REFERRAL_STATUS,null);
-
-
-				FacilityReferralsSummaryDTO facilityReferralsSummaryDTO = new FacilityReferralsSummaryDTO();
-
-				facilityReferralsSummaryDTO.setFacilityName(facilityName);
-				facilityReferralsSummaryDTO.setDepartmentReferralSummaryDTOList(facilityReferralsSummaryDTOS);
-
-				referralsSummaryDTOS.add(facilityReferralsSummaryDTO);
-
-
-
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-
-		return new ResponseEntity<List<FacilityReferralsSummaryDTO>>(referralsSummaryDTOS,HttpStatus.OK);
-
 
 	}
 
-
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-facility-providers-referrals-summary")
-	@ResponseBody
-	public ResponseEntity<List<FacilityReferralsProvidersSummaryDTO>> getFacilityProidersReferralsSummary(@RequestBody String json) {
-		JSONObject object = null;
-		try {
-			object = new JSONObject(json);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		JSONArray facilitiesArray = null;
-		try {
-			facilitiesArray = object.getJSONArray("facilities");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		String toDate = "2020-01-01";
-		String fromDate = "2017-01-01";
-		try {
-			toDate = object.getString("to_date");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			fromDate = object.getString("from_date");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		List<FacilityReferralsProvidersSummaryDTO> referralsSummaryDTOS = new ArrayList<>();
-		for(int i=0;i<facilitiesArray.length();i++){
-			try {
-				String facilityName = facilitiesArray.getJSONObject(i).getString("facility_name");
-				String facilityId   = facilitiesArray.getJSONObject(i).getString("facility_id");
-
-				List<FacilityProvidersReferralSummaryDTO> facilityProvidersReferralsSummary = patientReferralRepository.getFacilityProvidersReferralsSummary(
-						"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count, "+
-								PatientReferral.COL_REFERRAL_SOURCE+" as referral_source, "+
-								PatientReferral.COL_REFERRAL_STATUS+" as referral_status " +
-								PatientReferral.COL_SERVICE_PROVIDER_UIID+" as provider_uuid " +
-								" FROM "+PatientReferral.tbName +
-								" INNER JOIN "+HealthFacilities.tbName +" ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
-								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=2 AND " +
-								HealthFacilities.COL_HFR_CODE+" = '"+facilityId+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
-								" GROUP BY "+PatientReferral.COL_REFERRAL_SOURCE+" , "+PatientReferral.COL_REFERRAL_STATUS+","+PatientReferral.COL_SERVICE_PROVIDER_UIID+" as provider_uuid " ,null);
-
-
-				FacilityReferralsProvidersSummaryDTO facilityReferralsSummaryDTO = new FacilityReferralsProvidersSummaryDTO();
-
-				facilityReferralsSummaryDTO.setFacilityName(facilityName);
-				facilityReferralsSummaryDTO.setSummaryDTOS(facilityProvidersReferralsSummary);
-
-				referralsSummaryDTOS.add(facilityReferralsSummaryDTO);
-
-
-
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-
-		return new ResponseEntity<List<FacilityReferralsProvidersSummaryDTO>>(referralsSummaryDTOS,HttpStatus.OK);
-	}
-
-
-
-	private void createAppointments(long healthfacilityPatientId) {
+	private void createAppointments(long healthFacilityPatientId) {
 		for (int i = 1; i <= 8; i++) {
 			PatientAppointments appointments = new PatientAppointments();
-			appointments.setHealthFacilityPatientId(healthfacilityPatientId);
+			appointments.setHealthFacilityPatientId(healthFacilityPatientId);
 			appointments.setAppointmentType(2);
 			Calendar c = Calendar.getInstance();
 			c.add(Calendar.MONTH, +i);
@@ -1095,11 +888,10 @@ public class ReferralPatientsController {
 
 	}
 
-	private void recalculateAppointments(long healthfacilityPatientId, long appointmentId, long appointmentDate) {
-
+	private void recalculateAppointments(long healthFacilityPatientId, long appointmentId, long appointmentDate) {
 		List <PatientAppointments> patientAppointments = null;
 		try {
-			patientAppointments  = patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthfacilityPatientId,null);
+			patientAppointments  = patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthFacilityPatientId,null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
