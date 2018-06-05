@@ -20,8 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.google.gson.Gson;
-
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
@@ -113,9 +111,9 @@ public class ReportController {
 	}
 
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/report/get-facility-referrals-summary")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/report/get-intra-facility-departments-referrals-summary")
 	@ResponseBody
-	public ResponseEntity<List<FacilityReferralsSummaryDTO>> getFacilityReferralsSummaryReport(@RequestBody String json) {
+	public ResponseEntity<List<FacilityReferralsSummaryDTO>> getIntraFacilityDepartmentsReferralsSummaryReport(@RequestBody String json) {
 		JSONObject object = null;
 		try {
 			object = new JSONObject(json);
@@ -187,9 +185,9 @@ public class ReportController {
 	}
 
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/report/get-facility-providers-referrals-summary")
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/report/get-intra-facility-providers-referrals-summary")
 	@ResponseBody
-	public ResponseEntity<List<FacilityReferralsProvidersSummaryDTO>> getFacilityProvidersReferralsSummaryReport(@RequestBody String json) {
+	public ResponseEntity<List<IntraFacilityReferralsProvidersSummaryReport>> getIntraFacilityProvidersReferralsSummaryReport(@RequestBody String json) {
 		JSONObject object = null;
 		try {
 			object = new JSONObject(json);
@@ -217,7 +215,7 @@ public class ReportController {
 			e.printStackTrace();
 		}
 
-		List<FacilityReferralsProvidersSummaryDTO> referralsSummaryDTOS = new ArrayList<>();
+		List<IntraFacilityReferralsProvidersSummaryReport> referralsSummaryDTOS = new ArrayList<>();
 		for(int i=0;i<facilitiesArray.length();i++){
 			try {
 				String facilityName = facilitiesArray.getJSONObject(i).getString("facility_name");
@@ -240,7 +238,7 @@ public class ReportController {
 					facilityProvidersReferralsSummary.setProviderName(openmrsUserService.getTeamMember(facilityProvidersReferralsSummary.getProviderUuid()).getString("display"));
 				}
 
-				FacilityReferralsProvidersSummaryDTO facilityReferralsSummaryDTO = new FacilityReferralsProvidersSummaryDTO();
+				IntraFacilityReferralsProvidersSummaryReport facilityReferralsSummaryDTO = new IntraFacilityReferralsProvidersSummaryReport();
 
 				facilityReferralsSummaryDTO.setFacilityName(facilityName);
 				facilityReferralsSummaryDTO.setSummaryDTOS(facilityProvidersReferralsSummaries);
@@ -256,6 +254,75 @@ public class ReportController {
 			}
 		}
 
-		return new ResponseEntity<List<FacilityReferralsProvidersSummaryDTO>>(referralsSummaryDTOS,HttpStatus.OK);
+		return new ResponseEntity<List<IntraFacilityReferralsProvidersSummaryReport>>(referralsSummaryDTOS,HttpStatus.OK);
+	}
+
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/report/get-inter-facility-referrals-summary")
+	@ResponseBody
+	public ResponseEntity<List<InterFacilityReferralsSummaryReport>> getInterFacilityReferralsSummaryReport(@RequestBody String json) {
+		JSONObject object = null;
+		try {
+			object = new JSONObject(json);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		JSONArray facilitiesArray = null;
+		try {
+			facilitiesArray = object.getJSONArray("facilities");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		String toDate = "2020-01-01";
+		String fromDate = "2017-01-01";
+		try {
+			toDate = object.getString("to_date");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			fromDate = object.getString("from_date");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		List<InterFacilityReferralsSummaryReport> referralsSummaryDTOS = new ArrayList<>();
+		for(int i=0;i<facilitiesArray.length();i++){
+			try {
+				String facilityName = facilitiesArray.getJSONObject(i).getString("facility_name");
+				String facilityId   = facilitiesArray.getJSONObject(i).getString("facility_id");
+
+				List<InterFacilityReferralSummaryDTO> facilityProvidersReferralsSummaries = patientReferralRepository.getInterFacilityReferralsSummary(
+						"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_REFERRAL_ID+") as count, "+
+								PatientReferral.COL_REFERRAL_STATUS+" as referral_status, " +
+								"H2."+HealthFacilities.COL_FACILITY_NAME+" as to_facility_name " +
+								" FROM "+PatientReferral.tbName +
+								" INNER JOIN "+HealthFacilities.tbName +" H1 ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = H1."+HealthFacilities.COL_OPENMRS_UIID+
+								" INNER JOIN "+HealthFacilities.tbName +" H2 ON "+PatientReferral.tbName+"."+PatientReferral.COL_FACILITY_ID+" = H2."+HealthFacilities.COL_OPENMRS_UIID+
+								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"= 3 AND " +
+								"H1."+HealthFacilities.COL_HFR_CODE+" = '"+facilityId+"' AND "+
+								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+								" GROUP BY H2."+HealthFacilities.COL_FACILITY_NAME+" , "+PatientReferral.COL_REFERRAL_STATUS,null);
+
+				InterFacilityReferralsSummaryReport interFacilityReferralsSummaryReport = new InterFacilityReferralsSummaryReport();
+
+				interFacilityReferralsSummaryReport.setFacilityName(facilityName);
+				interFacilityReferralsSummaryReport.setSummaryDTOS(facilityProvidersReferralsSummaries);
+
+				referralsSummaryDTOS.add(interFacilityReferralsSummaryReport);
+
+
+
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return new ResponseEntity<List<InterFacilityReferralsSummaryReport>>(referralsSummaryDTOS,HttpStatus.OK);
 	}
 }

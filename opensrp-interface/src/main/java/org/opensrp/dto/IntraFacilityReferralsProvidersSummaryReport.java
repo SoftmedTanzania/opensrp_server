@@ -7,7 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.util.List;
 
-public class FacilityReferralsProvidersSummaryDTO {
+public class IntraFacilityReferralsProvidersSummaryReport {
     @JsonProperty
     private String facilityName;
     @JsonProperty

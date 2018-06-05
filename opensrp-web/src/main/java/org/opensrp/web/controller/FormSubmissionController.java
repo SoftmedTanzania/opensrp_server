@@ -325,8 +325,6 @@ public class FormSubmissionController {
 
 	}
 
-
-
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/multimedia-file")
     @ResponseBody
     public List<MultimediaDTO> getFiles(@RequestParam("anm-id") String providerId) {

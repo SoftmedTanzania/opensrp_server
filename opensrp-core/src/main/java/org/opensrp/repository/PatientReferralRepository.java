@@ -5,6 +5,7 @@ import org.opensrp.domain.Patients;
 import org.opensrp.dto.CHWReferralsSummaryDTO;
 import org.opensrp.dto.FacilityDepartmentReferralSummaryDTO;
 import org.opensrp.dto.FacilityProvidersReferralSummaryDTO;
+import org.opensrp.dto.InterFacilityReferralSummaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -173,8 +174,6 @@ public class PatientReferralRepository {
 
 	}
 
-
-
 	public List<FacilityProvidersReferralSummaryDTO> getFacilityProvidersReferralsSummary(String sql, Object[] args) throws Exception {
 		return this.jdbcTemplate.query(sql, args, new HealthFacilityDepartmentProvidersReferralsSummaryRowMapper());
 	}
@@ -213,5 +212,32 @@ public class PatientReferralRepository {
 		}
 
 	}
+
+
+	public List<InterFacilityReferralSummaryDTO> getInterFacilityReferralsSummary(String sql, Object[] args) throws Exception {
+		return this.jdbcTemplate.query(sql, args, new IntraHealthFacilityReferralsSummaryRowMapper());
+	}
+
+
+	public class IntraHealthFacilityReferralsSummaryRowMapper implements RowMapper<InterFacilityReferralSummaryDTO> {
+		public InterFacilityReferralSummaryDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+			InterFacilityReferralSummaryDTO interFacilityReferralSummaryDTO =new InterFacilityReferralSummaryDTO();
+
+			interFacilityReferralSummaryDTO.setCount(rs.getInt(rs.findColumn("count")));
+			interFacilityReferralSummaryDTO.setToFacilityName(rs.getString(rs.findColumn("to_facility_name")));
+
+			if(rs.getInt(rs.findColumn("referral_status")) == 1 )
+				interFacilityReferralSummaryDTO.setStatus("Success");
+			else if(rs.getInt(rs.findColumn("referral_status")) == 0 ){
+				interFacilityReferralSummaryDTO.setStatus("Pending");
+			}else{
+				interFacilityReferralSummaryDTO.setStatus("Failed");
+			}
+
+			return  interFacilityReferralSummaryDTO;
+		}
+
+	}
+
 
 }
