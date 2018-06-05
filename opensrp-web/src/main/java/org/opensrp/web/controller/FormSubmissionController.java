@@ -22,7 +22,9 @@ import org.opensrp.dto.ReferralsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.dto.form.MultimediaDTO;
 import org.opensrp.form.domain.FormSubmission;
+import org.opensrp.form.service.FormAttributeParser;
 import org.opensrp.form.service.FormSubmissionConverter;
+import org.opensrp.form.service.FormSubmissionMap;
 import org.opensrp.form.service.FormSubmissionService;
 import org.opensrp.repository.*;
 import org.opensrp.scheduler.SystemEvent;
@@ -39,6 +41,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +75,7 @@ public class FormSubmissionController {
     private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
     private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
 	private RapidProServiceImpl rapidProService;
+	;
 
     @Autowired
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
@@ -172,7 +180,22 @@ public class FormSubmissionController {
     }
     
     private void addFormToOpenMRS(FormSubmission formSubmission) throws ParseException, IllegalStateException, JSONException{
-//    	if(formEntityConverter.isOpenmrsForm(formSubmission)){
+
+	    FormSubmissionMap formSubmissionMap = null;
+	    try {
+		    formSubmissionMap = formSubmissionService.formAttributeParser.createFormSubmissionMap(formSubmission);
+	    } catch (ParserConfigurationException e) {
+		    e.printStackTrace();
+	    } catch (SAXException e) {
+		    e.printStackTrace();
+	    } catch (IOException e) {
+		    e.printStackTrace();
+	    } catch (XPathExpressionException e) {
+		    e.printStackTrace();
+	    }
+
+
+	    if(formEntityConverter.isOpenmrsForm(formSubmissionMap)){
     		Client c = formEntityConverter.getClientFromFormSubmission(formSubmission);
 			Event e = formEntityConverter.getEventFromFormSubmission(formSubmission);
 			Map<String, Map<String, Object>> dep = formEntityConverter.getDependentClientsFromFormSubmission(formSubmission);
@@ -206,11 +229,11 @@ public class FormSubmissionController {
         			System.out.println(encounterService.createEncounter(evin));
     			}
     		}
-    	//}
+    	}
     }
 
 	private void saveFormToOpenSRP(FormSubmission formSubmission) throws ParseException, IllegalStateException, JSONException{
-        System.out.println("Coze = saving patient into OpenSRP");
+        logger.info("saveFormToOpenSRP : saving patient into OpenSRP");
         Patients patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
         PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
 		try {
@@ -222,12 +245,12 @@ public class FormSubmissionController {
 			patient.setPatientId(healthFacilitiesPatients.get(0).getPatient().getPatientId());
 			patientReferral.setPatient(patient);
 
-            //TODO remove hardcoding of these values
+            //TODO Coze remove hardcoding of these values. This is a temporally patch to be removed later on
             patientReferral.setReferralSource(0);
             patientReferral.setReferralStatus(0);
             patientReferral.setReferralType(1);
 
-            System.out.println("Coze = saving referral Data");
+            logger.info("saveFormToOpenSRP : saving referral Data");
             long id = patientReferralRepository.save(patientReferral);
             patientReferral.setId(id);
 
@@ -246,18 +269,8 @@ public class FormSubmissionController {
 			}
 
 
-
 			String phoneNumber = patient.getPhoneNumber();
-			PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-			try {
-				System.out.println("Coze: registered phone number : "+phoneNumber);
-				Phonenumber.PhoneNumber tzPhoneNumber = phoneUtil.parse(phoneNumber, "TZ");
-				phoneNumber = phoneUtil.format(tzPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
-
-				System.out.println("Coze:formatted phone number : "+phoneNumber);
-			} catch (NumberParseException e) {
-				System.err.println("NumberParseException was thrown: " + e.toString());
-			}
+			phoneNumber = reformatPhoneNumber(phoneNumber);
 
 
 			List<String> urns;
@@ -265,10 +278,8 @@ public class FormSubmissionController {
 			urns.add("tel:"+phoneNumber);
 
 			try {
-				System.out.println("Coze: sending phone number to rapidpro : "+phoneNumber);
 				String response = rapidProService.startFlow(urns, "251c1c0c-a082-474b-826b-a0ab233013e3");
-
-				System.out.println("Coze: received rapidpro response : "+response);
+				logger.info("Received rapidpro response : "+response);
 			}catch (Exception e){
 				e.printStackTrace();
 			}
@@ -299,7 +310,7 @@ public class FormSubmissionController {
 
 			String json = new Gson().toJson(patientReferralsDTO);
 
-			System.out.println("Coze = FCM msg : "+json);
+			logger.info("saveFormToOpenSRP: FCM msg = "+json);
 
 			JSONObject msg = new JSONObject(json);
 			msg.put("type","PatientReferral");
@@ -329,4 +340,19 @@ public class FormSubmissionController {
 			}
 		});
     }
+
+	public String reformatPhoneNumber(String phoneNumber){
+		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+		try {
+			logger.info("ReformatPhoneNumber: registered phone number = "+phoneNumber);
+			Phonenumber.PhoneNumber tzPhoneNumber = phoneUtil.parse(phoneNumber, "TZ");
+			phoneNumber = phoneUtil.format(tzPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+
+			return phoneNumber;
+		} catch (NumberParseException e) {
+			e.printStackTrace();
+			return "";
+		}
+
+	}
 }

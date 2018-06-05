@@ -69,7 +69,7 @@ public class ReferralPatientsService {
     }
 
     public List<PatientReferralsDTO> getAllPatientReferrals(){
-        return getPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName,null);
+        return getPatientsReferralsDTO("SELECT * FROM "+ HealthFacilitiesPatients.tbName,null);
     }
 
     public List<PatientReferralsDTO> getHealthFacilityReferrals(String facilityUUID){
@@ -78,16 +78,16 @@ public class ReferralPatientsService {
         healthFacilityPatientArg[0] =  facilityUUID;
 
 
-        return getPatients("SELECT * FROM " + HealthFacilitiesPatients.tbName +
+        return getPatientsReferralsDTO("SELECT * FROM " + HealthFacilitiesPatients.tbName +
                 " INNER JOIN "+HealthFacilities.tbName+" ON "+HealthFacilitiesPatients.tbName+"."+HealthFacilitiesPatients.COL_FACILITY_ID +" = "+HealthFacilities.tbName+"._id " +
                 " WHERE " + HealthFacilities.COL_OPENMRS_UIID + "=?",healthFacilityPatientArg);
     }
 
-    public  List<PatientReferralsDTO> getPatients(String sql,Object[] healthFacilityPatientArg){
+    public  List<PatientReferralsDTO> getPatientsReferralsDTO(String sql, Object[] arg){
 
         List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
         try {
-            healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients(sql,healthFacilityPatientArg);
+            healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients(sql,arg);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -139,6 +139,15 @@ public class ReferralPatientsService {
         return patientReferralsDTOS;
     }
 
+    public List<Patients> getPatients(String sql, Object[] args){
+        try {
+            return patientsRepository.getPatients(sql,args);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
     public Boolean checkIfClientExists(Patients patient) throws SQLException {
         try {
             String checkIfExistQuery = "SELECT count(*) from " + Patients.tbName + " WHERE " + Patients.COL_PATIENT_ID + " = ?";
@@ -185,8 +194,6 @@ public class ReferralPatientsService {
 
         return rephrase;
     }
-
-
 
     public long savePatient(Patients patient, String healthFacilityCode, String ctcNumber) {
         String query = "SELECT * FROM " + Patients.tbName + " WHERE " +

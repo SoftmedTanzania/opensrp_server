@@ -25,6 +25,9 @@ public class FormSubmissionService {
     private AllFormSubmissions allFormSubmissions;
 
     @Autowired
+    public FormAttributeParser formAttributeParser;
+
+    @Autowired
     public FormSubmissionService(AllFormSubmissions allFormSubmissions) {
         this.allFormSubmissions = allFormSubmissions;
     }

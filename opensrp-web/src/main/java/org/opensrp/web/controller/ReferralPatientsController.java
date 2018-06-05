@@ -48,7 +48,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 public class ReferralPatientsController {
 	private static Logger logger = LoggerFactory.getLogger(ReferralPatientsController.class.toString());
 	private ReferralPatientsService patientsService;
-	private PatientsRepository patientsRepository;
 	private HealthFacilityRepository healthFacilityRepository;
 	private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
 	private TBEncounterRepository tbEncounterRepository;
@@ -67,14 +66,13 @@ public class ReferralPatientsController {
 	private TBPatientTestTypeRepository tbPatientTestTypeRepository;
 	private TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository;
 	@Autowired
-	public ReferralPatientsController(ReferralPatientsService patientsService, PatientsRepository patientsRepository, TaskSchedulerService scheduler,
+	public ReferralPatientsController(ReferralPatientsService patientsService, TaskSchedulerService scheduler,
 	                                  HealthFacilityRepository healthFacilityRepository, HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository, PatientsAppointmentsRepository patientsAppointmentsRepository,
 	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository, FormSubmissionService formSubmissionService,
 	                                  FormEntityConverter formEntityConverter, GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
 	                                  PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService,RapidProServiceImpl rapidProService,ReferralServiceRepository referralServiceRepository,
 	                                  TBPatientTestTypeRepository tbPatientTestTypeRepository,TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository,OpenmrsUserService openmrsUserService) {
 		this.patientsService = patientsService;
-		this.patientsRepository = patientsRepository;
 		this.scheduler = scheduler;
 		this.healthFacilityRepository = healthFacilityRepository;
 		this.healthFacilitiesPatientsRepository = healthFacilitiesPatientsRepository;
@@ -92,7 +90,6 @@ public class ReferralPatientsController {
 		this.referralServiceRepository = referralServiceRepository;
 		this.tbPatientTestTypeRepository = tbPatientTestTypeRepository;
 		this.tbSputumMedicationRegimesRepository = tbSputumMedicationRegimesRepository;
-		this.openmrsUserService = openmrsUserService;
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
@@ -242,7 +239,8 @@ public class ReferralPatientsController {
 					new Object[]{healthfacilityPatientId});
 
 			HealthFacilitiesPatients healthFacilitiesPatient = healthFacilitiesPatients.get(0);
-			List<Patients> patients = patientsRepository.getPatients("SELECT * FROM " + org.opensrp.domain.Patients.tbName + " WHERE " + org.opensrp.domain.Patients.COL_PATIENT_ID + "=?",
+
+			List<Patients> patients = referralPatientService.getPatients("SELECT * FROM " + org.opensrp.domain.Patients.tbName + " WHERE " + org.opensrp.domain.Patients.COL_PATIENT_ID + "=?",
 					new Object[]{healthFacilitiesPatient.getPatient().getPatientId()});
 
 			tbCompletePatientDataDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients.get(0)));
@@ -279,7 +277,7 @@ public class ReferralPatientsController {
 				try {
 					TBCompletePatientDataDTO tbCompletePatientDataDTO = new TBCompletePatientDataDTO();
 
-					List<Patients> patients = patientsRepository.getPatients("SELECT * FROM " + org.opensrp.domain.Patients.tbName + " WHERE " + org.opensrp.domain.Patients.COL_PATIENT_ID + "=?",
+					List<Patients> patients = referralPatientService.getPatients("SELECT * FROM " + org.opensrp.domain.Patients.tbName + " WHERE " + org.opensrp.domain.Patients.COL_PATIENT_ID + "=?",
 							new Object[]{healthFacilitiesPatient.getPatient().getPatientId()});
 
 					tbCompletePatientDataDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients.get(0)));
@@ -431,7 +429,7 @@ public class ReferralPatientsController {
 
 			Object[] patientParams = new Object[]{
 					savedPatientReferrals.get(0).getPatient().getPatientId()};
-			List<Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" =?",patientParams);
+			List<Patients> patients = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" =?",patientParams);
 
 			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
 			patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients.get(0)));
@@ -647,7 +645,7 @@ public class ReferralPatientsController {
 					}
 
 
-					List <Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
+					List <Patients> patients = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
 					System.out.println("Coze: Send notification sms to user "+patients.get(0).getPhoneNumber());
 
 					//TODO send notification to the user
@@ -709,7 +707,7 @@ public class ReferralPatientsController {
 				if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) == 3) {
 
 					List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+appointments.getHealthFacilitiesPatients().getHealthFacilityPatientId(),null);
-					List <Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+healthFacilitiesPatients.get(0).getPatient().getPatientId(),null);
+					List <Patients> patients = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+healthFacilitiesPatients.get(0).getPatient().getPatientId(),null);
 					System.out.println("Coze: Send 3 days to Appointment notification to user "+patients.get(0).getPhoneNumber());
 
 					if(patients.get(0).getPhoneNumber().equals("")) {
@@ -736,7 +734,7 @@ public class ReferralPatientsController {
 				}else if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) == 1) {
 
 					List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+appointments.getHealthFacilitiesPatients().getHealthFacilityPatientId(),null);
-					List <Patients> patients = patientsRepository.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+healthFacilitiesPatients.get(0).getPatient().getPatientId(),null);
+					List <Patients> patients = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+healthFacilitiesPatients.get(0).getPatient().getPatientId(),null);
 					System.out.println("Coze: Send 1 days to Appointment notification to user "+patients.get(0).getPhoneNumber());
 
 					if(patients.get(0).getPhoneNumber().equals("")) {
@@ -818,7 +816,7 @@ public class ReferralPatientsController {
 
 		List<Patients> patients = null;
 		try {
-			patients = patientsRepository.getPatients("SELECT * FROM "+ Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
+			patients = referralPatientService.getPatients("SELECT * FROM "+ Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
