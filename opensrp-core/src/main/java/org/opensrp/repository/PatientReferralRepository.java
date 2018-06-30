@@ -51,11 +51,13 @@ public class PatientReferralRepository {
 		parameters.put(PatientReferral.COL_OTHER_NOTES, patientReferral.getOtherNotes());
 		parameters.put(PatientReferral.COL_REFERRAL_SOURCE, patientReferral.getReferralSource());
 		parameters.put(PatientReferral.COL_REFERRAL_DATE, patientReferral.getReferralDate());
+		parameters.put(PatientReferral.COL_APPOINTMENT_DATE, patientReferral.getAppointmentDate());
 		parameters.put(PatientReferral.COL_REFERRAL_STATUS, patientReferral.getReferralStatus());
 		parameters.put(PatientReferral.COL_INSTANCE_ID, patientReferral.getInstanceId());
 		parameters.put(PatientReferral.COL_REFERRAL_TYPE, patientReferral.getReferralType());
 		parameters.put(PatientReferral.COL_LAB_TEST, patientReferral.getLabTest());
 		parameters.put(PatientReferral.COL_TEST_RESULTS, patientReferral.isTestResults());
+		parameters.put(PatientReferral.COL_IS_EMERGENCY, patientReferral.isEmergency());
 		parameters.put(PatientReferral.COL_CREATED_AT, patientReferral.getCreatedAt());
 		parameters.put(PatientReferral.COL_UPDATED_AT, patientReferral.getCreatedAt());
 
@@ -107,13 +109,15 @@ public class PatientReferralRepository {
 			patientReferral.setServiceProviderGroup(rs.getString(rs.findColumn(PatientReferral.COL_SERVICE_PROVIDER_GROUP)));
 			patientReferral.setVillageLeader(rs.getString(rs.findColumn(PatientReferral.COL_VILLAGE_LEADER)));
 			patientReferral.setReferralDate(rs.getDate(rs.findColumn(PatientReferral.COL_REFERRAL_DATE)));
+			patientReferral.setAppointmentDate(rs.getDate(rs.findColumn(PatientReferral.COL_APPOINTMENT_DATE)));
 			patientReferral.setFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FACILITY_ID)));
 			patientReferral.setReferralStatus(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_STATUS)));
 			patientReferral.setInstanceId(rs.getString(rs.findColumn(PatientReferral.COL_INSTANCE_ID)));
 			patientReferral.setReferralType(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_TYPE)));
 			patientReferral.setReferralSource(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_SOURCE)));
 			patientReferral.setServiceGivenToPatient(rs.getString(rs.findColumn(PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT)));
-			patientReferral.setTestResults(rs.getBoolean(rs.findColumn(PatientReferral.COL_TEST_RESULTS)));
+			patientReferral.setTestResults(rs.getInt(rs.findColumn(PatientReferral.COL_TEST_RESULTS)));
+			patientReferral.setEmergency(rs.getBoolean(rs.findColumn(PatientReferral.COL_IS_EMERGENCY)));
 			patientReferral.setLabTest(rs.getInt(rs.findColumn(PatientReferral.COL_LAB_TEST)));
 			patientReferral.setOtherClinicalInformation(rs.getString(rs.findColumn(PatientReferral.COL_OTHER_CLINICAL_INFORMATION)));
 			patientReferral.setOtherNotes(rs.getString(rs.findColumn(PatientReferral.COL_OTHER_NOTES)));

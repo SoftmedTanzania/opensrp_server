@@ -278,7 +278,9 @@ public class FormSubmissionController {
 			urns.add("tel:"+phoneNumber);
 
 			try {
-				String response = rapidProService.startFlow(urns, "251c1c0c-a082-474b-826b-a0ab233013e3");
+
+				//TODO RAPIDPRO, fix the message sent
+				String response = rapidProService.sendMessage(urns,null,null, "Successful registration",null);
 				logger.info("Received rapidpro response : "+response);
 			}catch (Exception e){
 				e.printStackTrace();

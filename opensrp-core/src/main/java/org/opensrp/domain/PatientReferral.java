@@ -27,6 +27,10 @@ public class PatientReferral {
 
 	public static final String COL_REFERRAL_DATE= "referral_date";
 
+	public static final String COL_APPOINTMENT_DATE= "appointment_date";
+
+	public static final String COL_IS_EMERGENCY= "is_emergency";
+
 	public static final String COL_SERVICE_PROVIDER_UIID= "service_provider_uiid";
 
 	public static final String COL_SERVICE_PROVIDER_GROUP= "service_provider_group";
@@ -117,6 +121,12 @@ public class PatientReferral {
 	@Column(name = COL_REFERRAL_DATE)
 	private Date referralDate;
 
+	@Column(name = COL_APPOINTMENT_DATE)
+	private Date appointmentDate;
+
+	@Column(name = COL_IS_EMERGENCY)
+	private boolean isEmergency;
+
 	@Column(name = COL_FACILITY_ID)
 	private String facilityId;
 
@@ -133,7 +143,7 @@ public class PatientReferral {
 	private int labTest;
 
 	@Column(name = COL_TEST_RESULTS)
-	private boolean testResults;
+	private int testResults;
 
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
@@ -306,12 +316,28 @@ public class PatientReferral {
 		this.fromFacilityId = fromFacilityId;
 	}
 
-	public boolean isTestResults() {
+	public int isTestResults() {
 		return testResults;
 	}
 
-	public void setTestResults(boolean testResults) {
+	public void setTestResults(int testResults) {
 		this.testResults = testResults;
+	}
+
+	public Date getAppointmentDate() {
+		return appointmentDate;
+	}
+
+	public void setAppointmentDate(Date appointmentDate) {
+		this.appointmentDate = appointmentDate;
+	}
+
+	public boolean isEmergency() {
+		return isEmergency;
+	}
+
+	public void setEmergency(boolean emergency) {
+		isEmergency = emergency;
 	}
 
 	public String getReferralUUID() {

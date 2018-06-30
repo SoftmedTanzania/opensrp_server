@@ -58,8 +58,10 @@ public class RapidProServiceImpl implements RapidProService {
 				logger.info("RapidPro: Message character limit of 480 exceeded");
 				return "Empty text or text longer than 480 characters not allowed";
 			}
-			String uri = rapidproUrl + "/api/v1/broadcasts.json";
+			String uri = rapidproUrl + "/api/v2/broadcasts.json";
 			post = setPostAuthHeader(uri, post);
+
+			logger.info("RapidPro: "+uri);
 
 			JSONObject jsonParams = new JSONObject();
 

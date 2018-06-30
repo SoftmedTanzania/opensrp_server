@@ -71,6 +71,10 @@ public class PatientsDTO {
     private boolean currentOnTbTreatment;
 
 
+    @JsonProperty
+    private Long updatedAt;
+
+
     public PatientsDTO() {
     }
 
@@ -224,6 +228,15 @@ public class PatientsDTO {
 
     public void setCurrentOnTbTreatment(boolean currentOnTbTreatment) {
         this.currentOnTbTreatment = currentOnTbTreatment;
+    }
+
+
+    public Long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override

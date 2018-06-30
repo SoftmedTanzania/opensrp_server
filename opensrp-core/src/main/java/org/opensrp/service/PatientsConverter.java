@@ -72,14 +72,18 @@ public class PatientsConverter {
             patients.setDateOfBirth(dob);
             patients.setGender(patientsDTO.getGender());
 
-            Date deathDate = new Date();
-            deathDate.setTime(patientsDTO.getDateOfDeath());
+            try {
+                Date deathDate = new Date();
+                deathDate.setTime(patientsDTO.getDateOfDeath());
+                patients.setDateOfDeath(deathDate);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
             patients.setCareTakerName(patientsDTO.getCareTakerName());
             patients.setCareTakerPhoneNumber(patientsDTO.getCareTakerPhoneNumber());
             patients.setCareTakerRelationship(patientsDTO.getCareTakerRelationship());
 
-            patients.setDateOfDeath(deathDate);
             patients.setCreatedAt(Calendar.getInstance().getTime());
             patients.setUpdatedAt(Calendar.getInstance().getTime());
             patients.setHivStatus(patientsDTO.isHivStatus());
@@ -172,17 +176,6 @@ public class PatientsConverter {
 		            patientAppointment.setAppointmentDate(appointDate);
 		            patientAppointment.setIsCancelled(appointment.isCancelled());
 
-
-		            try {
-			            Date rowVersion = new Date();
-			            rowVersion.setTime(appointment.getRowVersion());
-			            patientAppointment.setRowVersion(rowVersion);
-		            }catch (Exception e){
-		            	e.printStackTrace();
-			            patientAppointment.setRowVersion(null);
-		            }
-
-
 		            patientAppointment.setStatus("0");
 		            patientAppointment.setAppointmentType(1);
 		            patientAppointments.add(patientAppointment);
@@ -224,6 +217,12 @@ public class PatientsConverter {
             }catch (Exception e){
 	            patientsDTO.setDateOfDeath((long)0);
             	e.printStackTrace();
+            }
+
+            try {
+                patientsDTO.setUpdatedAt(patients.getUpdatedAt().getTime());
+            }catch (Exception e){
+                e.printStackTrace();
             }
             patientsDTO.setHivStatus(patients.isHivStatus());
 
@@ -312,7 +311,6 @@ public class PatientsConverter {
             referral.setReferralUUID(referralsDTO.getReferralUUID());
             referral.setReferralType(referralsDTO.getReferralType());
 
-            //TODO implement new mechanism for saving referral indicators
             referral.setReferralStatus(referralsDTO.getReferralStatus());
             referral.setServiceProviderUIID(referralsDTO.getServiceProviderUIID());
             referral.setServiceProviderGroup(referralsDTO.getServiceProviderGroup());
@@ -323,9 +321,29 @@ public class PatientsConverter {
 
             Date referralDate = new Date();
             referralDate.setTime(referralsDTO.getReferralDate());
-
             referral.setReferralDate(referralDate);
+
+            try {
+                Date appointmentDate = new Date();
+                appointmentDate.setTime(referralsDTO.getAppointmentDate());
+                referral.setAppointmentDate(appointmentDate);
+            }catch (Exception e){
+                e.printStackTrace();
+
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(referralsDTO.getReferralDate());
+                c.add(Calendar.DATE,3);
+                referral.setAppointmentDate(c.getTime());
+            }
+
             referral.setFacilityId(referralsDTO.getFacilityId());
+
+            try {
+                referral.setEmergency(referralsDTO.isEmergency());
+            }catch (Exception e){
+                e.printStackTrace();
+                referral.setEmergency(false);
+            }
 
             referral.setReferralSource(referralsDTO.getReferralSource());
             referral.setServiceGivenToPatient(referralsDTO.getServiceGivenToPatient());
@@ -365,10 +383,36 @@ public class PatientsConverter {
             referralsDTO.setLabTest(referral.getLabTest());
             referralsDTO.setFromFacilityId(referral.getFromFacilityId());
             referralsDTO.setOtherClinicalInformation(referral.getOtherClinicalInformation());
+
             referralsDTO.setIntanceId(referral.getInstanceId());
+            try {
+                referralsDTO.setUpdatedAt(referral.getUpdatedAt().getTime());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
 
-            //TODO implement new mechanism for saving referral indicators
+
+            try {
+
+                referralsDTO.setAppointmentDate(referral.getAppointmentDate().getTime());
+            }catch (Exception e){
+                e.printStackTrace();
+
+                Calendar c = Calendar.getInstance();
+                c.setTime(referral.getReferralDate());
+                c.add(Calendar.DATE,3);
+                referralsDTO.setAppointmentDate(c.getTime().getTime());
+            }
+
+            try {
+                referralsDTO.setEmergency(referral.isEmergency());
+            }catch (Exception e){
+                e.printStackTrace();
+                referralsDTO.setEmergency(false);
+            }
+
+
             referralsDTO.setServiceProviderUIID(referral.getServiceProviderUIID());
             referralsDTO.setServiceProviderGroup(referral.getServiceProviderGroup());
             referralsDTO.setVillageLeader(referral.getVillageLeader());
@@ -438,7 +482,7 @@ public class PatientsConverter {
 			patientsAppointmentsDTO.setAppointment_id(patientAppointments.getAppointment_id());
 			patientsAppointmentsDTO.setAppointmentDate(patientAppointments.getAppointmentDate().getTime());
 			patientsAppointmentsDTO.setIsCancelled(patientAppointments.getIsCancelled());
-			patientsAppointmentsDTO.setHealthFacilityPatientId(patientAppointments.getHealthFacilityPatientId());
+			patientsAppointmentsDTO.setHealthFacilityPatientId(patientAppointments.getHealthFacilitiesPatients().getHealthFacilityPatientId());
 			patientsAppointmentsDTO.setStatus(patientAppointments.getStatus());
 			patientsAppointmentsDTO.setAppointmentType(patientAppointments.getAppointmentType());
 

@@ -4,6 +4,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.opensrp.domain.*;
 import org.opensrp.dto.PatientReferralsDTO;
+import org.opensrp.dto.PatientsDTO;
 import org.opensrp.dto.ReferralsDTO;
 import org.opensrp.repository.*;
 import org.slf4j.Logger;
@@ -99,7 +100,10 @@ public class ReferralPatientsService {
                 Patients patient = patientsRepository.getPatients(getPatientsSQL,null).get(0);
 
                 PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
-                patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patient));
+                PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
+                patientsDTO.setCtcNumber(facilitiesPatients.getCtcNumber());
+                patientReferralsDTO.setPatientsDTO(patientsDTO);
+
 
                 String getReferralPatientsSQL = "SELECT * from " + PatientReferral.tbName+" WHERE "+PatientReferral.COL_PATIENT_ID +" =?";
                 Object[] args = new Object[]{patient.getPatientId()};

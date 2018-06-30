@@ -55,8 +55,13 @@ public class ReferralsDTO {
     private int labTest;
 
     @JsonProperty
-    private boolean testResults;
+    private int testResults;
 
+    @JsonProperty
+    private long appointmentDate;
+
+    @JsonProperty
+    private boolean isEmergency;
 
     @JsonProperty
     private String fromFacilityId;
@@ -84,6 +89,9 @@ public class ReferralsDTO {
 	 */
     @JsonProperty
     private int referralStatus;
+
+    @JsonProperty
+    private long updatedAt;
 
 	@JsonProperty
     private List<Long> serviceIndicatorIds;
@@ -161,11 +169,11 @@ public class ReferralsDTO {
         this.referralId = referralId;
     }
 
-    public boolean getTestResults() {
+    public int getTestResults() {
         return testResults;
     }
 
-    public void setTestResults(boolean testResults) {
+    public void setTestResults(int testResults) {
         this.testResults = testResults;
     }
 
@@ -269,12 +277,36 @@ public class ReferralsDTO {
 		this.serviceIndicatorIds = serviceIndicatorIds;
 	}
 
+	public long getAppointmentDate() {
+		return appointmentDate;
+	}
+
+	public void setAppointmentDate(long appointmentDate) {
+		this.appointmentDate = appointmentDate;
+	}
+
+	public boolean isEmergency() {
+        return isEmergency;
+    }
+
+    public void setEmergency(boolean emergency) {
+        isEmergency = emergency;
+    }
+
     public String getIntanceId() {
         return intanceId;
     }
 
     public void setIntanceId(String intanceId) {
         this.intanceId = intanceId;
+    }
+
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override

@@ -24,8 +24,6 @@ public class PatientAppointments implements Serializable {
 
 	public static final String COL_APPOINTMENT_TYPE = "appointment_type";
 
-	public static final String COL_ROW_VERSION = "row_version";
-
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
@@ -33,8 +31,6 @@ public class PatientAppointments implements Serializable {
 
 	@Column(name = COL_APPOINTMENT_ID, unique = true, nullable = false, insertable = false, updatable = false)
 	private Long appointment_id;
-
-	private Long healthFacilityPatientId;
 
 	@Id
 	@ManyToOne
@@ -51,9 +47,6 @@ public class PatientAppointments implements Serializable {
 
 	@Column(name = COL_STATUS)
 	private String status;
-
-	@Column(name = COL_ROW_VERSION)
-	private Date rowVersion;
 
 
 	//TODO implement table and configurations for saving this
@@ -89,13 +82,6 @@ public class PatientAppointments implements Serializable {
 		this.appointment_id = appointment_id;
 	}
 
-	public Long getHealthFacilityPatientId() {
-		return healthFacilityPatientId;
-	}
-
-	public void setHealthFacilityPatientId(Long healthFacilityPatientId) {
-		this.healthFacilityPatientId = healthFacilityPatientId;
-	}
 
 	public Date getAppointmentDate() {
 		return appointmentDate;
@@ -127,14 +113,6 @@ public class PatientAppointments implements Serializable {
 
 	public void setAppointmentType(int appointmentType) {
 		this.appointmentType = appointmentType;
-	}
-
-	public Date getRowVersion() {
-		return rowVersion;
-	}
-
-	public void setRowVersion(Date rowVersion) {
-		this.rowVersion = rowVersion;
 	}
 
 	public Date getCreatedAt() {

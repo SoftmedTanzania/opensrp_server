@@ -77,6 +77,7 @@ public class PatientsRepository {
 		public Patients mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Patients patients = new Patients();
 			patients.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(Patients.COL_CREATED_AT)).getTime()));
+			patients.setUpdatedAt(new Date(rs.getTimestamp(rs.findColumn(Patients.COL_UPDATED_AT)).getTime()));
 			patients.setPatientId(rs.getLong(rs.findColumn(Patients.COL_PATIENT_ID)));
 			patients.setFirstName(rs.getString(rs.findColumn(Patients.COL_PATIENT_FIRST_NAME)));
 			patients.setSurname(rs.getString(rs.findColumn(Patients.COL_PATIENT_SURNAME)));

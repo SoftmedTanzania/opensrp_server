@@ -426,7 +426,6 @@ public class FormEntityConverter {
 				if(formField.name().equals("id"))
 					patientReferral.setReferralUUID(formField.value());
 
-				//TODO implement new mechanism for storing referral indicators
 				if(formField.name().equals(PatientReferral.COL_REFERRAL_DATE)) {
 					Date startDate = new Date();
 					try {
@@ -436,6 +435,20 @@ public class FormEntityConverter {
 						e.printStackTrace();
 					}
 				}
+
+
+				if(formField.name().equals(PatientReferral.COL_APPOINTMENT_DATE)) {
+					Date startDate = new Date();
+					try {
+						startDate.setTime(Long.parseLong(formField.value()));
+						patientReferral.setAppointmentDate(startDate);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+				}
+
+				if(formField.name().equals(PatientReferral.COL_IS_EMERGENCY))
+					patientReferral.setEmergency(Boolean.valueOf(formField.value()));
 
 				if(formField.name().equals(PatientReferral.COL_REFERRAL_REASON))
 					patientReferral.setReferralReason(formField.value());

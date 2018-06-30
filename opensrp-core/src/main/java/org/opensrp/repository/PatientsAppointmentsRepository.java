@@ -28,17 +28,15 @@ public class PatientsAppointmentsRepository {
 				PatientAppointments.COL_APPOINTMENT_DATE + "," +
 				PatientAppointments.COL_IS_CANCELLED + "," +
 				PatientAppointments.COL_STATUS + "," +
-				PatientAppointments.COL_ROW_VERSION + "," +
 				PatientAppointments.COL_APPOINTMENT_TYPE + "," +
 				PatientAppointments.COL_UPDATED_AT + "," +
-				PatientAppointments.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?) ";
+				PatientAppointments.COL_CREATED_AT + ") values (?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
-				patientAppointments.getHealthFacilityPatientId(),
+				patientAppointments.getHealthFacilitiesPatients().getHealthFacilityPatientId(),
 				patientAppointments.getAppointmentDate(),
 				patientAppointments.getIsCancelled(),
 				patientAppointments.getStatus(),
-				patientAppointments.getRowVersion(),
 				patientAppointments.getAppointmentType(),
 				patientAppointments.getUpdatedAt(),
 				patientAppointments.getCreatedAt() };
@@ -47,7 +45,6 @@ public class PatientsAppointmentsRepository {
 				Types.BIGINT,
 				Types.DATE,
 				Types.BOOLEAN,
-				Types.VARCHAR,
 				Types.VARCHAR,
 				Types.INTEGER,
 				Types.DATE,
@@ -86,11 +83,14 @@ public class PatientsAppointmentsRepository {
 			PatientAppointments patientAppointments = new PatientAppointments();
 
 			patientAppointments.setAppointment_id(rs.getLong(rs.findColumn(PatientAppointments.COL_APPOINTMENT_ID)));
-			patientAppointments.setHealthFacilityPatientId(rs.getLong(rs.findColumn(PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID)));
+
+			HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
+			healthFacilitiesPatients.setHealthFacilityPatientId(rs.getLong(rs.findColumn(PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID)));
+
+			patientAppointments.setHealthFacilitiesPatients(healthFacilitiesPatients);
 			patientAppointments.setAppointmentDate(rs.getDate(rs.findColumn(PatientAppointments.COL_APPOINTMENT_DATE)));
 			patientAppointments.setIsCancelled(rs.getBoolean(rs.findColumn(PatientAppointments.COL_IS_CANCELLED)));
 			patientAppointments.setStatus(rs.getString(rs.findColumn(PatientAppointments.COL_STATUS)));
-			patientAppointments.setRowVersion(rs.getDate(rs.findColumn(PatientAppointments.COL_ROW_VERSION)));
 			patientAppointments.setAppointmentType(rs.getInt(rs.findColumn(PatientAppointments.COL_APPOINTMENT_TYPE)));
 			patientAppointments.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientAppointments.COL_CREATED_AT)).getTime()));
 			patientAppointments.setUpdatedAt(rs.getDate(rs.findColumn(PatientAppointments.COL_UPDATED_AT)));

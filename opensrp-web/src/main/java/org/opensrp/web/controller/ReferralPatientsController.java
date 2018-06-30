@@ -189,7 +189,11 @@ public class ReferralPatientsController {
 						System.out.println("saving appointment");
 						patientAppointment.setAppointment_id(id);
 						patientAppointment.setAppointmentType(1);
-						patientAppointment.setHealthFacilityPatientId(healthfacilityPatientId);
+
+						HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
+						healthFacilitiesPatients.setHealthFacilityPatientId(healthfacilityPatientId);
+
+						patientAppointment.setHealthFacilitiesPatients(healthFacilitiesPatients);
 						patientsAppointmentsRepository.save(patientAppointment);
 						id++;
 					}
@@ -327,7 +331,7 @@ public class ReferralPatientsController {
 			List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_APPOINTMENT_ID + "=?",
 					new Object[]{encounter.getAppointmentId()});
 
-			recalculateAppointments(patientAppointments.get(0).getHealthFacilityPatientId(),encounter.getAppointmentId(),encounter.getMedicationDate().getTime());
+			recalculateAppointments(patientAppointments.get(0).getHealthFacilitiesPatients().getHealthFacilityPatientId(),encounter.getAppointmentId(),encounter.getMedicationDate().getTime());
 			String encounterQuery = "SELECT * FROM " + TBEncounter.tbName + " WHERE " +
 					TBEncounter.COL_TB_PATIENT_ID + " = ?    AND " +
 					TBEncounter.COL_APPOINTMENT_ID + " = ?  ";
@@ -359,7 +363,7 @@ public class ReferralPatientsController {
 				tbEncounterFeedbackDTO.setTbEncounterDTO(tbEncounterDTO);
 
 				List<PatientAppointments> appointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
-						new Object[]{patientAppointments.get(0).getHealthFacilityPatientId()});
+						new Object[]{patientAppointments.get(0).getHealthFacilitiesPatients().getHealthFacilityPatientId()});
 				tbEncounterFeedbackDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(appointments));
 
 
@@ -459,18 +463,23 @@ public class ReferralPatientsController {
 					tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
 				}
 
-				System.out.println("tokens : "+tokens.toString());
+				logger.info("tokens : "+tokens.toString());
 
 				String json = new Gson().toJson(patientReferralsDTO);
 
 				JSONObject msg = new JSONObject(json);
 				msg.put("type","PatientReferral");
 
-				googleFCMService.SendPushNotification(msg, tokens, false);
+				try {
+					googleFCMService.SendPushNotification(msg, tokens, false);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+
 				String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
 						HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UIID + " = ?";
 				Object[] healthFacilityParams = new Object[]{
-						patientReferral.getFacilityId(),patientReferral.getFacilityId()};
+						patientReferral.getFromFacilityId(),patientReferral.getFromFacilityId()};
 
 				List<HealthFacilities> healthFacilities = null;
 				try {
@@ -489,10 +498,10 @@ public class ReferralPatientsController {
 			}else{
 				Object[] facilityParams;
 				if(referralsDTO.getReferralType()==3) {
-					System.out.println("facility-facility referral : " + savedPatientReferrals.get(0).getFacilityId());
+					logger.info("facility-facility referral : " + savedPatientReferrals.get(0).getFacilityId());
 					facilityParams = new Object[]{savedPatientReferrals.get(0).getFacilityId(), 1};
 				}else{
-					System.out.println("intra-facility referral : " + savedPatientReferrals.get(0).getFromFacilityId());
+					logger.info("intra-facility referral : " + savedPatientReferrals.get(0).getFromFacilityId());
 					facilityParams = new Object[]{savedPatientReferrals.get(0).getFromFacilityId(), 1};
 				}
 				try {
@@ -501,11 +510,16 @@ public class ReferralPatientsController {
 					for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
 						tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
 					}
-					System.out.println("tokens : " + tokens.toString());
+					logger.info("tokens : " + tokens.toString());
 					String json = new Gson().toJson(patientReferralsDTO);
 					JSONObject msg = new JSONObject(json);
 					msg.put("type", "PatientReferral");
-					googleFCMService.SendPushNotification(msg, tokens, true);
+
+					try {
+						googleFCMService.SendPushNotification(msg, tokens, true);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
 				}catch (Exception e){
 					e.printStackTrace();
 				}
@@ -523,7 +537,7 @@ public class ReferralPatientsController {
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/receive-feedback")
 	public ResponseEntity<String> saveReferralFeedback(@RequestBody String json) {
 		try {
-			System.out.println("Coze: receive feedback");
+			logger.info("Coze: receive feedback");
 			ReferralsDTO referralsDTO = new Gson().fromJson(json,ReferralsDTO.class);
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
 
@@ -539,7 +553,7 @@ public class ReferralPatientsController {
 				referral.setTestResults(referralsDTO.getTestResults());
 			}catch (Exception e){
 				e.printStackTrace();
-				System.out.println("Coze: referral not found");
+				logger.info("Coze: referral not found");
 				return new ResponseEntity<String>("referral not found",PRECONDITION_FAILED);
 			}
 
@@ -550,12 +564,12 @@ public class ReferralPatientsController {
 						PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT + " = '" + referral.getServiceGivenToPatient() + "' , " +
 						PatientReferral.COL_OTHER_NOTES + " = '" + referral.getOtherNotes() + "' WHERE  " + PatientReferral.COL_REFERRAL_ID + " = " + referral.getId();
 				patientReferralRepository.executeQuery(sql);
-				System.out.println("Coze: updated referral feedback : "+sql);
+				logger.info("Coze: updated referral feedback : "+sql);
 
 				if (referral.getReferralType() == 1) {
 					try {
 						FormSubmission formSubmission = formSubmissionService.findByInstanceId(referral.getInstanceId());
-						System.out.println("Coze: formsubmission to be updated = "+new Gson().toJson(formSubmission));
+						logger.info("Coze: formsubmission to be updated = "+new Gson().toJson(formSubmission));
 
 						formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT, referral.getServiceGivenToPatient());
 						formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_OTHER_NOTES, referral.getOtherNotes());
@@ -563,7 +577,7 @@ public class ReferralPatientsController {
 						formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_REFERRAL_STATUS, referral.getReferralStatus() + "");
 
 
-						System.out.println("Coze: updated formsubmission = "+new Gson().toJson(formSubmission));
+						logger.info("Coze: updated formsubmission = "+new Gson().toJson(formSubmission));
 						formSubmissionService.update(formSubmission);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -621,12 +635,12 @@ public class ReferralPatientsController {
 
 			for (PatientReferral patientReferral : patientReferrals) {
 				long diff = now.getTime() - patientReferral.getReferralDate().getTime();
-				System.out.println ("hours since referrals Isued: " + TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS));
+				logger.info ("hours since referrals Isued: " + TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS));
 
 				//Failed referrals
 				if( (patientReferral.getServiceId()==malariaServiceId && TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)>24)  || (patientReferral.getServiceId()!=malariaServiceId && TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)>3)){
 
-					System.out.println ("failed referral " + patientReferral.getId());
+					logger.info ("failed referral " + patientReferral.getId());
 					patientReferral.setReferralStatus(-1);
 					String sql ="UPDATE " + PatientReferral.tbName + " SET " +
 							PatientReferral.COL_REFERRAL_STATUS + " = '" + patientReferral.getReferralStatus() + "' WHERE  " + PatientReferral.COL_REFERRAL_ID + " = " + patientReferral.getId();
@@ -637,7 +651,7 @@ public class ReferralPatientsController {
 						try {
 							FormSubmission formSubmission = formSubmissionService.findByInstanceId(patientReferral.getInstanceId());
 							formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_REFERRAL_STATUS, patientReferral.getReferralStatus() + "");
-							System.out.println("Coze: updated formsubmission = "+new Gson().toJson(formSubmission));
+							logger.info("Coze: updated formsubmission = "+new Gson().toJson(formSubmission));
 							formSubmissionService.update(formSubmission);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -646,7 +660,7 @@ public class ReferralPatientsController {
 
 
 					List <Patients> patients = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+patientReferral.getPatient().getPatientId(),null);
-					System.out.println("Coze: Send notification sms to user "+patients.get(0).getPhoneNumber());
+					logger.info("Coze: Send notification sms to user "+patients.get(0).getPhoneNumber());
 
 					//TODO send notification to the user
 
@@ -691,65 +705,66 @@ public class ReferralPatientsController {
 			Date d = Calendar.getInstance().getTime();
 			List <PatientAppointments> patientAppointments  = patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_APPOINTMENT_DATE+" > '"+d.getTime()+"'",null);
 
-			System.out.println("Coze: checking appointment ");
+			logger.info("Coze: checking appointment ");
 			Date now = Calendar.getInstance().getTime();
 
 
 			List<String> threeDaysToAppointmentUrns= new ArrayList<String>();
 			List<String> aDayToAppointmentUrns= new ArrayList<String>();
 			for(PatientAppointments appointments : patientAppointments) {
-				System.out.println("Coze: checking appointment " + appointments.getAppointmentDate());
+				logger.info("Coze: checking appointment " + appointments.getAppointmentDate());
 
 
 				long diff = appointments.getAppointmentDate().getTime() - now.getTime();
 
-				System.out.println("Coze: Days to appointment : "+TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
-				if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) == 3) {
+				logger.info("Coze: Days to appointment : "+TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
+
+				if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) <= 2) {
 
 					List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+appointments.getHealthFacilitiesPatients().getHealthFacilityPatientId(),null);
 					List <Patients> patients = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+healthFacilitiesPatients.get(0).getPatient().getPatientId(),null);
-					System.out.println("Coze: Send 3 days to Appointment notification to user "+patients.get(0).getPhoneNumber());
+					logger.info("Coze: Send 1 days to Appointment notification to user "+patients.get(0).getPhoneNumber());
 
-					if(patients.get(0).getPhoneNumber().equals("")) {
+					if(!patients.get(0).getPhoneNumber().equals("")) {
+
 						phoneNumbers.put(patients.get(0).getPhoneNumber());
-
-
-
 						PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 						try {
-							System.out.println("Coze: registered phone number : "+patients.get(0).getPhoneNumber());
+							logger.info("Coze: registered phone number : "+patients.get(0).getPhoneNumber());
 							Phonenumber.PhoneNumber tzPhoneNumber = phoneUtil.parse(patients.get(0).getPhoneNumber(), "TZ");
 							String formatedPhoneNumber = phoneUtil.format(tzPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
 
-							System.out.println("Coze:formatted phone number : "+formatedPhoneNumber);
+							logger.info("Coze:formatted a day to appointment phone number : "+formatedPhoneNumber);
 
 
-							threeDaysToAppointmentUrns.add("tel:"+formatedPhoneNumber);
+							aDayToAppointmentUrns.add("tel:"+formatedPhoneNumber);
 						} catch (NumberParseException e) {
 							System.err.println("NumberParseException was thrown: " + e.toString());
 						}
 
 					}
 
-				}else if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) == 1) {
+				}else if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) < 5) {
 
 					List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+appointments.getHealthFacilitiesPatients().getHealthFacilityPatientId(),null);
 					List <Patients> patients = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = "+healthFacilitiesPatients.get(0).getPatient().getPatientId(),null);
-					System.out.println("Coze: Send 1 days to Appointment notification to user "+patients.get(0).getPhoneNumber());
+					logger.info("Coze: Send 3 days to Appointment notification to user "+patients.get(0).getPhoneNumber());
 
-					if(patients.get(0).getPhoneNumber().equals("")) {
-
+					if(!patients.get(0).getPhoneNumber().equals("")) {
 						phoneNumbers.put(patients.get(0).getPhoneNumber());
+
+
+
 						PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 						try {
-							System.out.println("Coze: registered phone number : "+patients.get(0).getPhoneNumber());
+							logger.info("Coze: registered phone number : "+patients.get(0).getPhoneNumber());
 							Phonenumber.PhoneNumber tzPhoneNumber = phoneUtil.parse(patients.get(0).getPhoneNumber(), "TZ");
 							String formatedPhoneNumber = phoneUtil.format(tzPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
 
-							System.out.println("Coze:formatted a day to appointment phone number : "+formatedPhoneNumber);
+							logger.info("Coze:formatted phone number : "+formatedPhoneNumber);
 
 
-							aDayToAppointmentUrns.add("tel:"+formatedPhoneNumber);
+							threeDaysToAppointmentUrns.add("tel:"+formatedPhoneNumber);
 						} catch (NumberParseException e) {
 							System.err.println("NumberParseException was thrown: " + e.toString());
 						}
@@ -760,11 +775,12 @@ public class ReferralPatientsController {
 			}
 
 			try {
-				String response = rapidProService.startFlow(threeDaysToAppointmentUrns, "a5421259-c67b-4a41-967d-e9560170ecc1");
-				System.out.println("Coze: received rapidpro response for 3 days to appointment notifications : "+response);
+				//TODO RAPIDPRO, fix the message sent
+				String response = rapidProService.sendMessage(threeDaysToAppointmentUrns,null,null, "test message 3 days to appointment",null);
+				logger.info("Coze: received rapidpro response for 3 days to appointment notifications : "+response);
 
-				String response2 = rapidProService.startFlow(aDayToAppointmentUrns, "2f09f8a5-6bef-4e1b-8d53-607ce3230cee");
-				System.out.println("Coze: received rapidpro response for a day to appointment notifications : "+response2);
+				String response2 = rapidProService.sendMessage(aDayToAppointmentUrns,null,null, "test message 3 days to appointment",null);
+				logger.info("Coze: received rapidpro response for a day to appointment notifications : "+response2);
 
 
 			}catch (Exception e){
@@ -806,7 +822,10 @@ public class ReferralPatientsController {
 
 
 	public void saveReferralFollowup(PatientReferral patientReferral,String facilityId){
-		System.out.println("Coze : saving referral Form data for followup");
+		logger.info("saveReferralFollowup : saving referral Form data for followup = "+new Gson().toJson(patientReferral));
+		logger.info("saveReferralFollowup : saving referral Form data for facilityId = "+facilityId);
+
+
 		List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
 		try {
 			healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_PATIENT_ID+ " = "+patientReferral.getPatient().getPatientId()+" AND "+HealthFacilitiesPatients.COL_FACILITY_ID+ " = '"+facilityId+"'",null);
@@ -857,7 +876,7 @@ public class ReferralPatientsController {
 			FormSubmission formSubmission = new FormSubmission(patientReferral.getFromFacilityId()+"", uuid+"", "client_follow_up_form", patientReferral.getReferralUUID() + "", "1", 4, formInstance);
 
 
-			System.out.println("Coze : saving referral form submission");
+			logger.info("Coze : saving referral form submission");
 			formSubmissionService.submit(formSubmission);
 		}catch (Exception e){
 			e.printStackTrace();
@@ -868,7 +887,11 @@ public class ReferralPatientsController {
 	private void createAppointments(long healthFacilityPatientId) {
 		for (int i = 1; i <= 8; i++) {
 			PatientAppointments appointments = new PatientAppointments();
-			appointments.setHealthFacilityPatientId(healthFacilityPatientId);
+
+			HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
+			healthFacilitiesPatients.setHealthFacilityPatientId(healthFacilityPatientId);
+
+			appointments.setHealthFacilitiesPatients(healthFacilitiesPatients);
 			appointments.setAppointmentType(2);
 			Calendar c = Calendar.getInstance();
 			c.add(Calendar.MONTH, +i);
@@ -877,7 +900,7 @@ public class ReferralPatientsController {
 			appointments.setIsCancelled(false);
 
 			try {
-				System.out.println("Coze:save appointment");
+				logger.info("Coze:save appointment");
 				patientsAppointmentsRepository.save(appointments);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -897,22 +920,22 @@ public class ReferralPatientsController {
 
 		int i = 1;
 		for (PatientAppointments patientAppointment:patientAppointments) {
-			System.out.println("Checking previous patient appointments");
+			logger.info("Checking previous patient appointments");
 			if(patientAppointment.getAppointment_id()>appointmentId){
 
-				System.out.println("updating previous patient appointments date from "+patientAppointment.getAppointmentDate());
+				logger.info("updating previous patient appointments date from "+patientAppointment.getAppointmentDate());
 				Calendar c = Calendar.getInstance();
 				c.setTimeInMillis(appointmentDate);
 				c.add(Calendar.MONTH, +i);
 				c.add(Calendar.DAY_OF_MONTH, +checkIfWeekend(c.getTime()));
 				patientAppointment.setAppointmentDate(c.getTime());
 
-				System.out.println("updating to new  patient appointments date  "+c.getTime());
+				logger.info("updating to new  patient appointments date  "+c.getTime());
 
 				try {
-					System.out.println("Coze:update appointment");
+					logger.info("Coze:update appointment");
 					patientsAppointmentsRepository.executeQuery("UPDATE "+PatientAppointments.tbName+ " SET "+PatientAppointments.COL_APPOINTMENT_DATE+" = '"+c.getTime()+"' WHERE "+PatientAppointments.COL_APPOINTMENT_ID+" = "+patientAppointment.getAppointment_id());
-					System.out.println("Coze:update appointment query : UPDATE "+PatientAppointments.tbName+ " SET "+PatientAppointments.COL_APPOINTMENT_DATE+" = '"+c.getTime()+"' WHERE "+PatientAppointments.COL_APPOINTMENT_ID+" = "+patientAppointment.getAppointment_id());
+					logger.info("Coze:update appointment query : UPDATE "+PatientAppointments.tbName+ " SET "+PatientAppointments.COL_APPOINTMENT_DATE+" = '"+c.getTime()+"' WHERE "+PatientAppointments.COL_APPOINTMENT_ID+" = "+patientAppointment.getAppointment_id());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
