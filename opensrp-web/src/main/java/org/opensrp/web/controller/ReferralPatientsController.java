@@ -27,6 +27,7 @@ import org.opensrp.service.formSubmission.FormEntityConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -331,6 +332,10 @@ public class ReferralPatientsController {
 			List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_APPOINTMENT_ID + "=?",
 					new Object[]{encounter.getAppointmentId()});
 
+			if(patientAppointments.size()==0){
+				return new ResponseEntity<>(PRECONDITION_FAILED);
+			}
+
 			recalculateAppointments(patientAppointments.get(0).getHealthFacilitiesPatients().getHealthFacilityPatientId(),encounter.getAppointmentId(),encounter.getMedicationDate().getTime());
 			String encounterQuery = "SELECT * FROM " + TBEncounter.tbName + " WHERE " +
 					TBEncounter.COL_TB_PATIENT_ID + " = ?    AND " +
@@ -370,13 +375,15 @@ public class ReferralPatientsController {
 				//TODO push notifications to other tablets in the facility.
 				return new ResponseEntity<TBEncounterFeedbackDTO>(tbEncounterFeedbackDTO,HttpStatus.OK);
 
-			} catch (Exception e) {
+			}catch (Exception e) {
 				e.printStackTrace();
 			}
 
 
 			logger.debug(format("Added  TB Encounters Submissions: {0}", tbEncounterDTOS));
-		} catch (Exception e) {
+		}catch (DataIntegrityViolationException e){
+			return new ResponseEntity<>(PRECONDITION_FAILED);
+		}catch (Exception e) {
 			logger.error(format("TB Encounters processing failed with exception {0}.\nSubmissions: {1}", e, tbEncounterDTOS));
 			return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
 		}

@@ -142,7 +142,13 @@ public class FormSubmissionController {
             if (formSubmissionsDTO.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
-            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.FORM_SUBMISSION, formSubmissionsDTO));
+
+	        System.out.println("\n");
+	        System.out.println("DrTest received formsubmission: "+formSubmissionsDTO.toString());
+
+//	        scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.FORM_SUBMISSION, formSubmissionsDTO));
+
+	        System.out.println("DrTest received saving data ");
             
             try{
 
@@ -157,7 +163,10 @@ public class FormSubmissionController {
             });
 	            for (FormSubmission formSubmission : fsl) {
 	            	try{
+			            System.out.println("DrTest received saving data to openSRP ");
 			            saveFormToOpenSRP(formSubmission);
+
+			            System.out.println("DrTest received saving data to openMRS ");
 	            		addFormToOpenMRS(formSubmission);
 	            	}
 	            	catch(Exception e){

@@ -45,7 +45,7 @@ public class HttpAgent {
 
         SchemeRegistry registry = new SchemeRegistry();
         registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        registry.register(new Scheme("https", sslSocketFactoryWithDrishtiCertificate(), 443));
+//        registry.register(new Scheme("https", sslSocketFactoryWithDrishtiCertificate(), 443));
 
         ClientConnectionManager connectionManager = new ThreadSafeClientConnManager(basicHttpParams, registry);
         httpClient = new DefaultHttpClient(connectionManager, basicHttpParams);
