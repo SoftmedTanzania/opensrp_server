@@ -202,13 +202,16 @@ public class PatientsConverter {
             patientsDTO.setSurname(patients.getSurname());
             patientsDTO.setMiddleName(patients.getMiddleName());
             patientsDTO.setPhoneNumber(patients.getPhoneNumber());
+
             patientsDTO.setDateOfBirth(patients.getDateOfBirth().getTime());
+
             patientsDTO.setGender(patients.getGender());
             patientsDTO.setWard(patients.getWard());
             patientsDTO.setVillage(patients.getVillage());
             patientsDTO.setHamlet(patients.getHamlet());
 
             patientsDTO.setCareTakerName(patients.getCareTakerName());
+
             patientsDTO.setCareTakerPhoneNumber(patients.getCareTakerPhoneNumber());
             patientsDTO.setCareTakerRelationship(patients.getCareTakerRelationship());
 

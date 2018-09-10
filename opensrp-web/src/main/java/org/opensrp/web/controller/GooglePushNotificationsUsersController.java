@@ -42,16 +42,19 @@ public class GooglePushNotificationsUsersController {
         try {
             System.out.println("Coze: saving google push notifications users");
             System.out.println("Coze: google push notifications users = "+json);
-            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, json));
+
+            try {
+                scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, json));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
             GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO =  new Gson().fromJson(json, GooglePushNotificationsUsersDTO.class);
 
             System.out.println("Coze: google push notifications DTO object = "+new Gson().toJson(googlePushNotificationsUsersDTO));
-
             GooglePushNotificationsUsers googlePushNotificationsUser = new Converter<GooglePushNotificationsUsersDTO, GooglePushNotificationsUsers>() {
                 @Override
                 public GooglePushNotificationsUsers convert(GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO) {
-
                     GooglePushNotificationsUsers googlePushNotificationsUsers = new GooglePushNotificationsUsers();
                     googlePushNotificationsUsers.setGooglePushNotificationToken(googlePushNotificationsUsersDTO.getGooglePushNotificationToken());
                     googlePushNotificationsUsers.setUserUiid(googlePushNotificationsUsersDTO.getUserUiid());

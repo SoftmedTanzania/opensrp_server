@@ -146,7 +146,13 @@ public class FormSubmissionController {
 	        System.out.println("\n");
 	        System.out.println("DrTest received formsubmission: "+formSubmissionsDTO.toString());
 
-//	        scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.FORM_SUBMISSION, formSubmissionsDTO));
+	        try {
+		        System.out.println("DrTest saving to couchdb formsubmission: "+formSubmissionsDTO.toString());
+		        scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.FORM_SUBMISSION, formSubmissionsDTO));
+	        }catch (Exception e){
+		        System.out.println("Error saving to couchdb : "+formSubmissionsDTO.toString());
+	        	e.printStackTrace();
+	        }
 
 	        System.out.println("DrTest received saving data ");
             

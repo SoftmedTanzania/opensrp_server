@@ -100,7 +100,11 @@ public class ReferralPatientsController {
 			if (patientsDTO==null) {
 				return new ResponseEntity<>(BAD_REQUEST);
 			}
-			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTO));
+			try {
+				scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTO));
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 
 			Patients patient = PatientsConverter.toPatients(patientsDTO);
 			long healthfacilityPatientId = referralPatientService.savePatient(patient, patientsDTO.getHealthFacilityCode(), patientsDTO.getCtcNumber());
@@ -168,8 +172,12 @@ public class ReferralPatientsController {
 			if (patientsDTOS.isEmpty()) {
 				return new ResponseEntity<>(BAD_REQUEST);
 			}
-			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
 
+			try {
+				scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 
 			for (CTCPatientsDTO dto : patientsDTOS) {
 				try {
@@ -218,7 +226,12 @@ public class ReferralPatientsController {
 	public ResponseEntity<TBCompletePatientDataDTO> saveTBPatients(@RequestBody String json) {
 		TBPatientMobileClientDTO tbPatientMobileClientDTO = new Gson().fromJson(json,TBPatientMobileClientDTO.class);
 		try {
-			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbPatientMobileClientDTO));
+
+			try {
+				scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbPatientMobileClientDTO));
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 
 			Patients convertedPatient = PatientsConverter.toPatients(tbPatientMobileClientDTO);
 
@@ -324,7 +337,12 @@ public class ReferralPatientsController {
 		System.out.println("saveTBEncounter : "+json);
 		TBEncounterDTO tbEncounterDTOS = new Gson().fromJson(json,TBEncounterDTO.class);
 		try {
-			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbEncounterDTOS));
+			try {
+				scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, tbEncounterDTOS));
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+
 			TBEncounter encounter = PatientsConverter.toTBEncounter(tbEncounterDTOS);
 
 			tbEncounterRepository.save(encounter);
@@ -335,6 +353,10 @@ public class ReferralPatientsController {
 			if(patientAppointments.size()==0){
 				return new ResponseEntity<>(PRECONDITION_FAILED);
 			}
+
+			PatientAppointments patientAppointments1 = patientAppointments.get(0);
+			patientsAppointmentsRepository.executeQuery("UPDATE "+PatientAppointments.tbName+" SET "+PatientAppointments.COL_STATUS+" = '1' WHERE "+PatientAppointments.COL_APPOINTMENT_ID+" = "+patientAppointments1.getAppointment_id());
+
 
 			recalculateAppointments(patientAppointments.get(0).getHealthFacilitiesPatients().getHealthFacilityPatientId(),encounter.getAppointmentId(),encounter.getMedicationDate().getTime());
 			String encounterQuery = "SELECT * FROM " + TBEncounter.tbName + " WHERE " +
@@ -410,7 +432,11 @@ public class ReferralPatientsController {
 		ReferralsDTO referralsDTO = new Gson().fromJson(jsonData,ReferralsDTO.class);
 		try {
 			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 
+		try {
 			PatientReferral patientReferral = PatientsConverter.toPatientReferral(referralsDTO);
 			Long referralId = patientReferralRepository.save(patientReferral);
 
@@ -471,8 +497,9 @@ public class ReferralPatientsController {
 				}
 
 				logger.info("tokens : "+tokens.toString());
-
 				String json = new Gson().toJson(patientReferralsDTO);
+
+				logger.info("ChwReferralObject : "+json);
 
 				JSONObject msg = new JSONObject(json);
 				msg.put("type","PatientReferral");
@@ -546,7 +573,12 @@ public class ReferralPatientsController {
 		try {
 			logger.info("Coze: receive feedback");
 			ReferralsDTO referralsDTO = new Gson().fromJson(json,ReferralsDTO.class);
-			scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
+
+			try {
+				scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 
 			List<PatientReferral> referrals = patientReferralRepository.getReferrals("SELECT * FROM " + org.opensrp.domain.PatientReferral.tbName + " WHERE " + PatientReferral.COL_REFERRAL_ID + "=?",
 					new Object[]{referralsDTO.getReferralId()});
@@ -827,7 +859,6 @@ public class ReferralPatientsController {
 		}
 	}
 
-
 	public void saveReferralFollowup(PatientReferral patientReferral,String facilityId){
 		logger.info("saveReferralFollowup : saving referral Form data for followup = "+new Gson().toJson(patientReferral));
 		logger.info("saveReferralFollowup : saving referral Form data for facilityId = "+facilityId);
@@ -905,6 +936,7 @@ public class ReferralPatientsController {
 			c.add(Calendar.DAY_OF_MONTH, +checkIfWeekend(c.getTime()));
 			appointments.setAppointmentDate(c.getTime());
 			appointments.setIsCancelled(false);
+			appointments.setStatus("0");
 
 			try {
 				logger.info("Coze:save appointment");
