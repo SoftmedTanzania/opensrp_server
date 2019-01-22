@@ -110,10 +110,14 @@ public class OpenmrsUserService extends OpenmrsService{
 
 		int size = results.length();
 		for(int i=0;i<size;i++){
-			JSONObject teamMember = results.getJSONObject(i);
-			String teamMembersFacilityUiid = (teamMember.getJSONObject("team")).getJSONObject("location").getString("uuid");
-			if(openMRSTeamLocationsUUIDs.contains(teamMembersFacilityUiid)){
-				teamMembers.put(teamMember);
+			try {
+				JSONObject teamMember = results.getJSONObject(i);
+				String teamMembersFacilityUiid = (teamMember.getJSONObject("team")).getJSONObject("location").getString("uuid");
+				if (openMRSTeamLocationsUUIDs.contains(teamMembersFacilityUiid)) {
+					teamMembers.put(teamMember);
+				}
+			}catch (Exception e){
+				e.printStackTrace();
 			}
 		}
 		return teamMembers;
