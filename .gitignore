@@ -10,4 +10,4 @@ target/
 logfile
 *.log*
 .springBeans
-asser
+assets/config/opensrp.properties
