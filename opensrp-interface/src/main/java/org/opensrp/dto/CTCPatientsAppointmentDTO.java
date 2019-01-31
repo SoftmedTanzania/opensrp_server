@@ -8,13 +8,14 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import java.util.Date;
 import java.util.Map;
 
-public class CTCPatientsAppointmesDTO {
+public class CTCPatientsAppointmentDTO {
 
     @JsonProperty
     private Long rowVersion;
 
     @JsonProperty
-    private boolean cancelled;
+    private int status;
+
 
     @JsonProperty
     private Long dateOfAppointment;
@@ -27,12 +28,12 @@ public class CTCPatientsAppointmesDTO {
         this.rowVersion = rowVersion;
     }
 
-    public boolean isCancelled() {
-        return cancelled;
+    public int getStatus() {
+        return status;
     }
 
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public Long getDateOfAppointment() {

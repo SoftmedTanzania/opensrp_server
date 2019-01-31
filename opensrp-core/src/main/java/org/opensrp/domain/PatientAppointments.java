@@ -45,6 +45,14 @@ public class PatientAppointments implements Serializable {
 	@Column(name = COL_IS_CANCELLED)
 	private boolean isCancelled;
 
+	//TODO implement a configuration table for storing Appointments Status
+	/***
+	 * Appointments Status
+     * -1 = canceled
+	 * 0 = new
+	 * 1 = completed
+	 */
+
 	@Column(name = COL_STATUS)
 	private String status;
 

@@ -165,18 +165,15 @@ public class PatientsConverter {
         try {
 
             List<PatientAppointments> patientAppointments = new ArrayList<>();
-            List<CTCPatientsAppointmesDTO> appointments = patientsDTO.getPatientAppointments();
+            List<CTCPatientsAppointmentDTO> appointments = patientsDTO.getPatientAppointments();
 
             if (appointments!=null) {
-	            for (CTCPatientsAppointmesDTO appointment : appointments) {
+	            for (CTCPatientsAppointmentDTO appointment : appointments) {
 		            PatientAppointments patientAppointment = new PatientAppointments();
 		            Date appointDate = new Date();
 		            appointDate.setTime(appointment.getDateOfAppointment());
-
 		            patientAppointment.setAppointmentDate(appointDate);
-		            patientAppointment.setIsCancelled(appointment.isCancelled());
-
-		            patientAppointment.setStatus("0");
+		            patientAppointment.setStatus(appointment.getStatus());
 		            patientAppointment.setAppointmentType(1);
 		            patientAppointments.add(patientAppointment);
 	            }

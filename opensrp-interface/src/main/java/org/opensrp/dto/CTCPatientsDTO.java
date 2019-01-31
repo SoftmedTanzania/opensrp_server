@@ -56,7 +56,7 @@ public class CTCPatientsDTO {
 	private String healthFacilityCode;
 
 	@JsonProperty
-	private List<CTCPatientsAppointmesDTO> patientAppointments;
+	private List<CTCPatientsAppointmentDTO> patientAppointments;
 
 	public String getFirstName() {
 		return firstName;
@@ -122,11 +122,11 @@ public class CTCPatientsDTO {
 		this.dateOfDeath = dateOfDeath;
 	}
 
-	public List<CTCPatientsAppointmesDTO> getPatientAppointments() {
+	public List<CTCPatientsAppointmentDTO> getPatientAppointments() {
 		return patientAppointments;
 	}
 
-	public void setPatientAppointments(List<CTCPatientsAppointmesDTO> patientAppointments) {
+	public void setPatientAppointments(List<CTCPatientsAppointmentDTO> patientAppointments) {
 		this.patientAppointments = patientAppointments;
 	}
 

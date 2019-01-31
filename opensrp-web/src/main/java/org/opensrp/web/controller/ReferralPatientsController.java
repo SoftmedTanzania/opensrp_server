@@ -187,24 +187,18 @@ public class ReferralPatientsController {
 					long healthfacilityPatientId = referralPatientService.savePatient(patient, dto.getHealthFacilityCode(), dto.getCtcNumber());
 
 					List<PatientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
-
-					long id = 1;
-					List<PatientAppointments> patientAppointments =  patientsAppointmentsRepository.getAppointments("SELECT * FROM "+PatientAppointments.tbName+" ORDER BY "+PatientAppointments.COL_APPOINTMENT_ID+" LIMIT 1",null);
-					if(patientAppointments.size()>0){
-						id = patientAppointments.get(0).getAppointment_id()+1;
-					}
-
 					for (PatientAppointments patientAppointment : appointments) {
 						System.out.println("saving appointment");
-						patientAppointment.setAppointment_id(id);
 						patientAppointment.setAppointmentType(1);
-
 						HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
 						healthFacilitiesPatients.setHealthFacilityPatientId(healthfacilityPatientId);
 
 						patientAppointment.setHealthFacilitiesPatients(healthFacilitiesPatients);
-						patientsAppointmentsRepository.save(patientAppointment);
-						id++;
+						try {
+							patientsAppointmentsRepository.save(patientAppointment);
+						}catch (Exception e){
+							e.printStackTrace();
+						}
 					}
 				}catch (Exception e){
 					e.printStackTrace();
@@ -234,13 +228,10 @@ public class ReferralPatientsController {
 			}
 
 			Patients convertedPatient = PatientsConverter.toPatients(tbPatientMobileClientDTO);
-
-			System.out.println("Coze:Patient data = "+new Gson().toJson(convertedPatient));
+			logger.info("Patient data",new Gson().toJson(convertedPatient));
 
 			TBPatient tbPatient = PatientsConverter.toTBPatients(tbPatientMobileClientDTO);
-
-
-			System.out.println("Coze:TB patient data = "+new Gson().toJson(tbPatient));
+			logger.info("TB patient data",new Gson().toJson(tbPatient));
 
 			long healthfacilityPatientId = referralPatientService.savePatient(convertedPatient, tbPatientMobileClientDTO.getHealthFacilityCode(), null);
 
@@ -308,13 +299,9 @@ public class ReferralPatientsController {
 							new Object[]{healthFacilitiesPatient.getPatient().getPatientId()});
 					tbCompletePatientDataDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
 
-
-
 					List<TBEncounter> tbEncounters = tbEncounterRepository.getTBEncounters("SELECT * FROM " + TBEncounter.tbName + " WHERE " + TBEncounter.COL_TB_PATIENT_ID + "=?",
 							new Object[]{tbPatients.get(0).getTbPatientId()});
 					tbCompletePatientDataDTO.setTbEncounterDTOS(PatientsConverter.toTbPatientEncounterDTOsList(tbEncounters));
-
-
 
 					tbCompletePatientDataDTOS.add(tbCompletePatientDataDTO);
 				}catch (Exception e){
@@ -575,7 +562,7 @@ public class ReferralPatientsController {
 			ReferralsDTO referralsDTO = new Gson().fromJson(json,ReferralsDTO.class);
 
 			try {
-				scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, referralsDTO));
+				scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRAL_FEEDBACK, referralsDTO));
 			}catch (Exception e){
 				e.printStackTrace();
 			}
@@ -616,7 +603,7 @@ public class ReferralPatientsController {
 						formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_REFERRAL_STATUS, referral.getReferralStatus() + "");
 
 
-						logger.info("Coze: updated formsubmission = "+new Gson().toJson(formSubmission));
+						logger.info("Updated formsubmission = "+new Gson().toJson(formSubmission));
 						formSubmissionService.update(formSubmission);
 					} catch (Exception e) {
 						e.printStackTrace();

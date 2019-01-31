@@ -175,6 +175,7 @@ public class AllConstants {
 		
 		public static final String FORM_SUBMISSION = "FORM_SUBMISSION";
 		public static final String REFERRED_PATIENTS_SUBMISSION = "REFERRED_PATIENTS_SUBMISSION";
+		public static final String REFERRAL_FEEDBACK = "REFERRAL_FEEDBACK";
 		public static final String HEALTH_FACILITY_SUBMISSION = "HEALTH_FACILITY_SUBMISSION";
 
 		public static class BaseEntity {
