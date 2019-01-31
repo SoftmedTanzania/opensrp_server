@@ -72,8 +72,8 @@ public class PatientsConverter {
             patients.setDateOfBirth(dob);
             patients.setGender(patientsDTO.getGender());
 
-            patients.setWard(patientsDTO.getCareTakerName());
-            patients.setVillage(patientsDTO.getCareTakerPhoneNumber());
+            patients.setWard(patientsDTO.getWard());
+            patients.setVillage(patientsDTO.getVillage());
 
             try {
                 Date deathDate = new Date();

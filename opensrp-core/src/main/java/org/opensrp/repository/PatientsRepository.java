@@ -45,7 +45,7 @@ public class PatientsRepository {
 		parameters.put(Patients.COL_HAMLET , patients.getHamlet());
 		parameters.put(Patients.COL_COMMUNITY_BASED_HIV_SERVICE , patients.getCommunityBasedHivService());
 		parameters.put(Patients.COL_CARE_TAKER_NAME , patients.getCareTakerName());
-		parameters.put(Patients.COL_CARE_TAKER_PHONE_NUMBER, patients.getPhoneNumber());
+		parameters.put(Patients.COL_CARE_TAKER_PHONE_NUMBER, patients.getCareTakerPhoneNumber());
 		parameters.put(Patients.COL_CARE_TAKER_RELATIONSHIP, patients.getCareTakerRelationship());
 		parameters.put(Patients.COL_CREATED_AT , patients.getCreatedAt());
 		parameters.put(Patients.COL_UPDATED_AT , patients.getCreatedAt());
