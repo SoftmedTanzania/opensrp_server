@@ -23,7 +23,7 @@ public class PatientsAppointmentsDTO {
     private boolean isCancelled;
 
     @JsonProperty
-    private String status;
+    private int status;
 
     @JsonProperty
     private Long rowVersion;
@@ -72,11 +72,11 @@ public class PatientsAppointmentsDTO {
         this.isCancelled = isCancelled;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

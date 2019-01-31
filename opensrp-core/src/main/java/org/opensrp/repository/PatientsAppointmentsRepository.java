@@ -90,7 +90,7 @@ public class PatientsAppointmentsRepository {
 			patientAppointments.setHealthFacilitiesPatients(healthFacilitiesPatients);
 			patientAppointments.setAppointmentDate(rs.getDate(rs.findColumn(PatientAppointments.COL_APPOINTMENT_DATE)));
 			patientAppointments.setIsCancelled(rs.getBoolean(rs.findColumn(PatientAppointments.COL_IS_CANCELLED)));
-			patientAppointments.setStatus(rs.getString(rs.findColumn(PatientAppointments.COL_STATUS)));
+			patientAppointments.setStatus(rs.getInt(rs.findColumn(PatientAppointments.COL_STATUS)));
 			patientAppointments.setAppointmentType(rs.getInt(rs.findColumn(PatientAppointments.COL_APPOINTMENT_TYPE)));
 			patientAppointments.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientAppointments.COL_CREATED_AT)).getTime()));
 			patientAppointments.setUpdatedAt(rs.getDate(rs.findColumn(PatientAppointments.COL_UPDATED_AT)));

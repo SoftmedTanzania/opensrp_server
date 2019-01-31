@@ -54,7 +54,7 @@ public class PatientAppointments implements Serializable {
 	 */
 
 	@Column(name = COL_STATUS)
-	private String status;
+	private int status;
 
 
 	//TODO implement table and configurations for saving this
@@ -107,11 +107,11 @@ public class PatientAppointments implements Serializable {
 		this.isCancelled = isCancelled;
 	}
 
-	public String getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 
