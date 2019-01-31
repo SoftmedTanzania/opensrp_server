@@ -156,7 +156,7 @@ public class ReportController {
 								" FROM "+PatientReferral.tbName +
 								" INNER JOIN "+ HealthFacilities.tbName +" ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
 								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=2 AND " +
-								HealthFacilities.COL_HFR_CODE+" = '"+facilityId+"' AND "+
+								HealthFacilities.COL_OPENMRS_UIID+" = '"+facilityId+"' AND "+
 								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
 								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
 								" GROUP BY "+PatientReferral.COL_REFERRAL_SOURCE+" , "+PatientReferral.COL_REFERRAL_STATUS,null);
@@ -229,7 +229,7 @@ public class ReportController {
 								" FROM "+PatientReferral.tbName +
 								" INNER JOIN "+HealthFacilities.tbName +" ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
 								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=2 AND " +
-								HealthFacilities.COL_HFR_CODE+" = '"+facilityId+"' AND "+
+								HealthFacilities.COL_OPENMRS_UIID+" = '"+facilityId+"' AND "+
 								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
 								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
 								" GROUP BY "+PatientReferral.COL_REFERRAL_SOURCE+" , "+PatientReferral.COL_REFERRAL_STATUS+","+PatientReferral.COL_SERVICE_PROVIDER_UIID ,null);
@@ -302,7 +302,7 @@ public class ReportController {
 								" INNER JOIN "+HealthFacilities.tbName +" H1 ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = H1."+HealthFacilities.COL_OPENMRS_UIID+
 								" INNER JOIN "+HealthFacilities.tbName +" H2 ON "+PatientReferral.tbName+"."+PatientReferral.COL_FACILITY_ID+" = H2."+HealthFacilities.COL_OPENMRS_UIID+
 								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"= 3 AND " +
-								"H1."+HealthFacilities.COL_HFR_CODE+" = '"+facilityId+"' AND "+
+								"H1."+HealthFacilities.COL_OPENMRS_UIID+" = '"+facilityId+"' AND "+
 								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
 								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
 								" GROUP BY H2."+HealthFacilities.COL_FACILITY_NAME+" , "+PatientReferral.COL_REFERRAL_STATUS,null);

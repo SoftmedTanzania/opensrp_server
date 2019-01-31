@@ -149,23 +149,23 @@ public class UserController {
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-team-members-by-facility-uuid")
 	public ResponseEntity<String> getTeamMembers(@RequestBody String jsonData) {
-		List<String> facilityHFRCodes = new Gson().fromJson(jsonData, new TypeToken<List<String>>() {}.getType());
+		List<String> facilitiesOPENMRSUUids = new Gson().fromJson(jsonData, new TypeToken<List<String>>() {}.getType());
 
-		String facilitiesHFRCodes = "";
-		for(String facilityHFR :  facilityHFRCodes){
-			facilitiesHFRCodes+="'"+facilityHFR+"',";
+		String facilitiesUUIDs = "";
+		for(String facilityHFR :  facilitiesOPENMRSUUids){
+			facilitiesUUIDs+="'"+facilityHFR+"',";
 		}
 
-		if ( facilitiesHFRCodes.length() > 0 && facilitiesHFRCodes.charAt(facilitiesHFRCodes.length() - 1) == ',') {
-			facilitiesHFRCodes = facilitiesHFRCodes.substring(0, facilitiesHFRCodes.length() - 1);
+		if ( facilitiesUUIDs.length() > 0 && facilitiesUUIDs.charAt(facilitiesUUIDs.length() - 1) == ',') {
+			facilitiesUUIDs = facilitiesUUIDs.substring(0, facilitiesUUIDs.length() - 1);
 		}
 
-		System.out.println("FACILITY-HFR : "+facilitiesHFRCodes);
+		System.out.println("FACILITY-HFR : "+facilitiesUUIDs);
 
 
 		List<HealthFacilities> healthFacilities = null;
 		try {
-			String sql = "SELECT * FROM "+ HealthFacilities.tbName+" WHERE "+HealthFacilities.COL_HFR_CODE+ " IN ("+facilitiesHFRCodes+")";
+			String sql = "SELECT * FROM "+ HealthFacilities.tbName+" WHERE "+HealthFacilities.COL_OPENMRS_UIID+ " IN ("+facilitiesUUIDs+")";
 			healthFacilities = facilityRepository.getHealthFacility(sql,null);
 
 			System.out.println("FACILITY-HFR-SQL : "+sql);
