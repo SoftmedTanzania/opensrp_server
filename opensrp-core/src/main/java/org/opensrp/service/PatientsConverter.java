@@ -66,11 +66,14 @@ public class PatientsConverter {
             patients.setFirstName(patientsDTO.getFirstName());
 	        patients.setMiddleName(patientsDTO.getMiddleName());
             patients.setSurname(patientsDTO.getSurname());
-            patients.setPhoneNumber(patientsDTO.getContact());
+            patients.setPhoneNumber(patientsDTO.getPhoneNumber());
             Date dob = new Date();
             dob.setTime(patientsDTO.getDateOfBirth());
             patients.setDateOfBirth(dob);
             patients.setGender(patientsDTO.getGender());
+
+            patients.setWard(patientsDTO.getCareTakerName());
+            patients.setVillage(patientsDTO.getCareTakerPhoneNumber());
 
             try {
                 Date deathDate = new Date();

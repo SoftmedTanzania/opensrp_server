@@ -18,7 +18,19 @@ public class CTCPatientsDTO {
 	private String ctcNumber;
 
 	@JsonProperty
-	private String contact;
+	private String phoneNumber;
+
+	@JsonProperty
+	private String careTakerName;
+
+	@JsonProperty
+	private String careTakerPhoneNumber;
+
+	@JsonProperty
+	private String ward;
+
+	@JsonProperty
+	private String village;
 
 	@JsonProperty
 	private Long dateOfBirth;
@@ -35,14 +47,6 @@ public class CTCPatientsDTO {
 
 	@JsonProperty
 	private String communityBasedHivService;
-
-
-	@JsonProperty
-	private String careTakerName;
-
-
-	@JsonProperty
-	private String careTakerPhoneNumber;
 
 
 	@JsonProperty
@@ -82,12 +86,12 @@ public class CTCPatientsDTO {
 		this.ctcNumber = ctcNumber;
 	}
 
-	public String getContact() {
-		return contact;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setContact(String contact) {
-		this.contact = contact;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public Long getDateOfBirth() {
@@ -120,6 +124,22 @@ public class CTCPatientsDTO {
 
 	public void setDateOfDeath(Long dateOfDeath) {
 		this.dateOfDeath = dateOfDeath;
+	}
+
+	public String getWard() {
+		return ward;
+	}
+
+	public void setWard(String ward) {
+		this.ward = ward;
+	}
+
+	public String getVillage() {
+		return village;
+	}
+
+	public void setVillage(String village) {
+		this.village = village;
 	}
 
 	public List<CTCPatientsAppointmentDTO> getPatientAppointments() {
@@ -192,4 +212,6 @@ public class CTCPatientsDTO {
 	public void setCareTakerRelationship(String careTakerRelationship) {
 		this.careTakerRelationship = careTakerRelationship;
 	}
+
+
 }
