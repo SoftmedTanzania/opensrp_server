@@ -923,7 +923,7 @@ public class ReferralPatientsController {
 			c.add(Calendar.DAY_OF_MONTH, +checkIfWeekend(c.getTime()));
 			appointments.setAppointmentDate(c.getTime());
 			appointments.setIsCancelled(false);
-			appointments.setStatus("0");
+			appointments.setStatus(0);
 
 			try {
 				logger.info("Coze:save appointment");
