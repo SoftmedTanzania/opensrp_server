@@ -12,10 +12,10 @@ public class CTCPayloadDTO {
 	private List<CTCPatientsDTO> ctcPatientsDTOS;
 
 	@JsonProperty
-	private String facilityCTC2Id;
+	private String facilityCTC2Code;
 
 	@JsonProperty
-	private String facilityUUID;
+	private String hfrCode;
 
 	public List<CTCPatientsDTO> getCtcPatientsDTOS() {
 		return ctcPatientsDTOS;
@@ -25,20 +25,20 @@ public class CTCPayloadDTO {
 		this.ctcPatientsDTOS = ctcPatientsDTOS;
 	}
 
-	public String getFacilityCTC2Id() {
-		return facilityCTC2Id;
+	public String getFacilityCTC2Code() {
+		return facilityCTC2Code;
 	}
 
-	public void setFacilityCTC2Id(String facilityCTC2Id) {
-		this.facilityCTC2Id = facilityCTC2Id;
+	public void setFacilityCTC2Code(String facilityCTC2Code) {
+		this.facilityCTC2Code = facilityCTC2Code;
 	}
 
-	public String getFacilityUUID() {
-		return facilityUUID;
+	public String getHfrCode() {
+		return hfrCode;
 	}
 
-	public void setFacilityUUID(String facilityUUID) {
-		this.facilityUUID = facilityUUID;
+	public void setHfrCode(String hfrCode) {
+		this.hfrCode = hfrCode;
 	}
 
 	@Override

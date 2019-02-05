@@ -1,12 +1,10 @@
 package org.opensrp.web.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.opensrp.common.AllConstants;
 import org.opensrp.connector.openmrs.service.OpenmrsUserService;
@@ -176,9 +174,16 @@ public class ReferralPatientsController {
 			}
 
 			List<HealthFacilities> healthFacilities = facilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE "+
-					HealthFacilities.COL_HFR_CODE+" = '"+ctcPayloadDTO.getFacilityCTC2Id()+"'",null);
+					HealthFacilities.COL_FACILITY_CTC_CODE+" = '"+ctcPayloadDTO.getFacilityCTC2Code()+"'",null);
 			if(healthFacilities.size()==0){
-				facilityRepository.executeQuery("UPDATE "+HealthFacilities.tbName+"  SET "+HealthFacilities.COL_HFR_CODE+" = '"+ctcPayloadDTO.getFacilityCTC2Id()+"' WHERE "+HealthFacilities.COL_OPENMRS_UIID+" = '"+ctcPayloadDTO.getFacilityUUID()+"'");
+				facilityRepository.executeQuery("UPDATE "+HealthFacilities.tbName+"  SET "+HealthFacilities.COL_FACILITY_CTC_CODE+" = '"+ctcPayloadDTO.getFacilityCTC2Code()+"' WHERE "+HealthFacilities.COL_HFR_CODE+" = '"+ctcPayloadDTO.getHfrCode()+"'");
+			}
+
+			List<HealthFacilities> healthFacilitiesCheck = facilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE "+
+					HealthFacilities.COL_FACILITY_CTC_CODE+" = '"+ctcPayloadDTO.getFacilityCTC2Code()+"'",null);
+
+			if (healthFacilitiesCheck.isEmpty()) {
+				return new ResponseEntity<>(BAD_REQUEST);
 			}
 
 
