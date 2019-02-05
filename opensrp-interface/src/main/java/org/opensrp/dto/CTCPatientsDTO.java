@@ -18,13 +18,13 @@ public class CTCPatientsDTO {
 	private String ctcNumber;
 
 	@JsonProperty
-	private String phoneNumber;
+	private String phoneNumber="";
 
 	@JsonProperty
 	private String careTakerName;
 
 	@JsonProperty
-	private String careTakerPhoneNumber;
+	private String careTakerPhoneNumber="";
 
 	@JsonProperty
 	private String ward;
