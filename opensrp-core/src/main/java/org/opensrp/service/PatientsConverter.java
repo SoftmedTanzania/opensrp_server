@@ -24,7 +24,11 @@ public class PatientsConverter {
             patients.setFirstName(patientsDTO.getFirstName());
             patients.setMiddleName(patientsDTO.getMiddleName());
             patients.setSurname(patientsDTO.getSurname());
-            patients.setPhoneNumber(patientsDTO.getPhoneNumber());
+
+            if(patientsDTO.getPhoneNumber()!=null)
+                patients.setPhoneNumber(patientsDTO.getPhoneNumber());
+            else
+                patients.setPhoneNumber("");
 
             Date dob = new Date();
             dob.setTime(patientsDTO.getDateOfBirth());
