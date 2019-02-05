@@ -66,12 +66,13 @@ public class ReferralPatientsController {
 	private ReferralServiceRepository referralServiceRepository;
 	private TBPatientTestTypeRepository tbPatientTestTypeRepository;
 	private TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository;
+	private HealthFacilityRepository facilityRepository;
 	@Autowired
 	public ReferralPatientsController(ReferralPatientsService patientsService, TaskSchedulerService scheduler,
 	                                  HealthFacilityRepository healthFacilityRepository, HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository, PatientsAppointmentsRepository patientsAppointmentsRepository,
 	                                  TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository, FormSubmissionService formSubmissionService,
 	                                  FormEntityConverter formEntityConverter, GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
-	                                  PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService,RapidProServiceImpl rapidProService,ReferralServiceRepository referralServiceRepository,
+	                                  PatientReferralIndicatorRepository patientReferralIndicatorRepository,ReferralPatientsService referralPatientService,RapidProServiceImpl rapidProService,ReferralServiceRepository referralServiceRepository,HealthFacilityRepository facilityRepository,
 	                                  TBPatientTestTypeRepository tbPatientTestTypeRepository,TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository,OpenmrsUserService openmrsUserService) {
 		this.patientsService = patientsService;
 		this.scheduler = scheduler;
@@ -91,6 +92,7 @@ public class ReferralPatientsController {
 		this.referralServiceRepository = referralServiceRepository;
 		this.tbPatientTestTypeRepository = tbPatientTestTypeRepository;
 		this.tbSputumMedicationRegimesRepository = tbSputumMedicationRegimesRepository;
+		this.facilityRepository = facilityRepository;
 	}
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
@@ -166,12 +168,19 @@ public class ReferralPatientsController {
 	public ResponseEntity<HttpStatus> saveCtcPatients(@RequestBody String json) {
 		try {
 
-			List<CTCPatientsDTO> patientsDTOS = new Gson().fromJson(json, new TypeToken<List<CTCPatientsDTO>>() {
-			}.getType());
+			CTCPayloadDTO ctcPayloadDTO = new Gson().fromJson(json,CTCPayloadDTO.class);
+			List<CTCPatientsDTO> patientsDTOS = ctcPayloadDTO.getCtcPatientsDTOS();
 
 			if (patientsDTOS.isEmpty()) {
 				return new ResponseEntity<>(BAD_REQUEST);
 			}
+
+			List<HealthFacilities> healthFacilities = facilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE "+
+					HealthFacilities.COL_HFR_CODE+" = '"+ctcPayloadDTO.getFacilityCTC2Id()+"'",null);
+			if(healthFacilities.size()==0){
+				facilityRepository.executeQuery("UPDATE "+HealthFacilities.tbName+"  SET "+HealthFacilities.COL_HFR_CODE+" = '"+ctcPayloadDTO.getFacilityCTC2Id()+"' WHERE "+HealthFacilities.COL_OPENMRS_UIID+" = '"+ctcPayloadDTO.getFacilityUUID()+"'");
+			}
+
 
 			try {
 				scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
