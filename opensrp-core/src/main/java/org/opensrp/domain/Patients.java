@@ -61,7 +61,7 @@ public class Patients {
 	private String surname;
 
 	@Column(name = COL_PHONE_NUMBER)
-	private String phoneNumber;
+	private String phoneNumber="";
 
 	@Column(name = COL_WARD)
 	private String ward;
