@@ -219,7 +219,7 @@ public class ReferralPatientsController {
 				}
 			}
 
-
+			//TODO send push notifications to facility apps
 			logger.debug(format("Added  Patients and their appointments from CTC to queue.\nSubmissions: {0}", patientsDTOS));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -270,11 +270,11 @@ public class ReferralPatientsController {
 
 			List<TBPatient> tbPatients = tbPatientsRepository.getTBPatients("SELECT * FROM " + org.opensrp.domain.TBPatient.tbName + " WHERE " + TBPatient.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
 					new Object[]{healthFacilitiesPatient.getPatient().getPatientId()});
-			tbCompletePatientDataDTO.setTbPatientDTO(PatientsConverter.toTbPatientDTO(tbPatients.get(0)));
+			tbCompletePatientDataDTO.setTbPatientDTO(PatientsConverter.toTbPatientDTO(tbPatients.get(0),patients.get(0).getPatientId()));
 
 			List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
 					new Object[]{healthfacilityPatientId});
-			tbCompletePatientDataDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
+			tbCompletePatientDataDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments,patients.get(0).getPatientId()));
 
 			//TODO implement push notification to other tablets in the same facility.
 
@@ -307,11 +307,11 @@ public class ReferralPatientsController {
 
 					List<TBPatient> tbPatients = tbPatientsRepository.getTBPatients("SELECT * FROM " + org.opensrp.domain.TBPatient.tbName + " WHERE " + TBPatient.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
 							new Object[]{healthFacilitiesPatient.getPatient().getPatientId()});
-					tbCompletePatientDataDTO.setTbPatientDTO(PatientsConverter.toTbPatientDTO(tbPatients.get(0)));
+					tbCompletePatientDataDTO.setTbPatientDTO(PatientsConverter.toTbPatientDTO(tbPatients.get(0),patients.get(0).getPatientId()));
 
 					List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
 							new Object[]{healthFacilitiesPatient.getPatient().getPatientId()});
-					tbCompletePatientDataDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments));
+					tbCompletePatientDataDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments,patients.get(0).getPatientId()));
 
 					List<TBEncounter> tbEncounters = tbEncounterRepository.getTBEncounters("SELECT * FROM " + TBEncounter.tbName + " WHERE " + TBEncounter.COL_TB_PATIENT_ID + "=?",
 							new Object[]{tbPatients.get(0).getTbPatientId()});
@@ -359,6 +359,7 @@ public class ReferralPatientsController {
 			patientsAppointmentsRepository.executeQuery("UPDATE "+PatientAppointments.tbName+" SET "+PatientAppointments.COL_STATUS+" = '1' WHERE "+PatientAppointments.COL_APPOINTMENT_ID+" = "+patientAppointments1.getAppointment_id());
 
 
+
 			recalculateAppointments(patientAppointments.get(0).getHealthFacilitiesPatients().getHealthFacilityPatientId(),encounter.getAppointmentId(),encounter.getMedicationDate().getTime());
 			String encounterQuery = "SELECT * FROM " + TBEncounter.tbName + " WHERE " +
 					TBEncounter.COL_TB_PATIENT_ID + " = ?    AND " +
@@ -390,9 +391,14 @@ public class ReferralPatientsController {
 				TBEncounterFeedbackDTO tbEncounterFeedbackDTO = new TBEncounterFeedbackDTO();
 				tbEncounterFeedbackDTO.setTbEncounterDTO(tbEncounterDTO);
 
-				List<PatientAppointments> appointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID + "=?",
+				List<PatientAppointments> appointments = patientsAppointmentsRepository.getAppointments("SELECT * FROM " + PatientAppointments.tbName + " WHERE " + PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID + " =?",
 						new Object[]{patientAppointments.get(0).getHealthFacilitiesPatients().getHealthFacilityPatientId()});
-				tbEncounterFeedbackDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(appointments));
+
+
+				List<HealthFacilitiesPatients>  healthFacilitiesPatients =  healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+ " =?",
+						new Object[]{patientAppointments.get(0).getHealthFacilitiesPatients().getHealthFacilityPatientId()});
+
+				tbEncounterFeedbackDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(appointments,healthFacilitiesPatients.get(0).getPatient().getPatientId()));
 
 
 				//TODO push notifications to other tablets in the facility.

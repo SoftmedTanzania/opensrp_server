@@ -240,11 +240,11 @@ public class PatientsConverter {
         }
     }
 
-    public static TBPatientDTO toTbPatientDTO(TBPatient patient) {
+    public static TBPatientDTO toTbPatientDTO(TBPatient patient,long patientId) {
         try {
             TBPatientDTO tbPatientDTO = new TBPatientDTO();
 
-            tbPatientDTO.setHealthFacilityPatientId(patient.getHealthFacilitiesPatients().getHealthFacilityPatientId());
+            tbPatientDTO.setHealthFacilityPatientId(patientId);
             tbPatientDTO.setMakohozi(patient.getMakohozi());
             tbPatientDTO.setOtherTestsDetails(patient.getOtherTestsDetails());
             tbPatientDTO.setTestType(patient.getTestType());
@@ -466,12 +466,12 @@ public class PatientsConverter {
     }
 
 
-	public static List<PatientsAppointmentsDTO> toPatientAppointmentDTOsList(List<PatientAppointments> patientAppointments) {
+	public static List<PatientsAppointmentsDTO> toPatientAppointmentDTOsList(List<PatientAppointments> patientAppointments,long patientId) {
 		try {
 
 			List<PatientsAppointmentsDTO> patientsAppointmentsDTOS = new ArrayList<>();
 			for(PatientAppointments appointments:patientAppointments){
-				patientsAppointmentsDTOS.add(toPatientAppointmentsDTO(appointments));
+				patientsAppointmentsDTOS.add(toPatientAppointmentsDTO(appointments, patientId));
 			}
 
 			return patientsAppointmentsDTOS;
@@ -482,14 +482,14 @@ public class PatientsConverter {
 		}
 	}
 
-	public static PatientsAppointmentsDTO toPatientAppointmentsDTO(PatientAppointments patientAppointments) {
+	public static PatientsAppointmentsDTO toPatientAppointmentsDTO(PatientAppointments patientAppointments, long patientId) {
 		try {
 			PatientsAppointmentsDTO patientsAppointmentsDTO = new PatientsAppointmentsDTO();
 
 			patientsAppointmentsDTO.setAppointment_id(patientAppointments.getAppointment_id());
 			patientsAppointmentsDTO.setAppointmentDate(patientAppointments.getAppointmentDate().getTime());
 			patientsAppointmentsDTO.setIsCancelled(patientAppointments.getIsCancelled());
-			patientsAppointmentsDTO.setHealthFacilityPatientId(patientAppointments.getHealthFacilitiesPatients().getHealthFacilityPatientId());
+			patientsAppointmentsDTO.setHealthFacilityPatientId(patientId);
 			patientsAppointmentsDTO.setStatus(patientAppointments.getStatus());
 			patientsAppointmentsDTO.setAppointmentType(patientAppointments.getAppointmentType());
 
