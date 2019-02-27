@@ -173,7 +173,7 @@ public class FormSubmissionController {
 			            saveFormToOpenSRP(formSubmission);
 
 			            System.out.println("DrTest received saving data to openMRS ");
-	            		addFormToOpenMRS(formSubmission);
+//	            		addFormToOpenMRS(formSubmission);
 	            	}
 	            	catch(Exception e){
 	            		e.printStackTrace();

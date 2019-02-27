@@ -495,9 +495,12 @@ public class ReferralPatientsController {
 			patientReferralsDTO.setPatientReferralsList(patientReferrals);
 
 			if(referralsDTO.getReferralType()==4) {
-				System.out.println("chwreferral : "+savedPatientReferrals.get(0).getFromFacilityId());
-				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFromFacilityId(), 0};
-				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
+				System.out.println("chwreferral FROM FACILITY ID : "+savedPatientReferrals.get(0).getFromFacilityId());
+				System.out.println("chwreferral CHW UUID : "+referralsDTO.getFacilityId());
+
+
+				Object[] facilityParams = new Object[]{savedPatientReferrals.get(0).getFromFacilityId(), referralsDTO.getFacilityId()};
+				List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UIID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_UIID + " = ?", facilityParams);
 				JSONArray tokens = new JSONArray();
 				for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
 					tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
