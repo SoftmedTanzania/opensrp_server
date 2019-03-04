@@ -202,12 +202,12 @@ public class ReferralPatientsService {
     public long savePatient(Patients patient, String healthFacilityCode, String ctcNumber) {
         String query = "SELECT * FROM " + Patients.tbName + " WHERE " +
                 Patients.COL_PATIENT_FIRST_NAME + " = ?     AND " +
-                Patients.COL_PATIENT_MIDDLE_NAME + " = ?    AND " +
+                Patients.COL_DATE_OF_BIRTH + " = ?    AND " +
                 Patients.COL_PATIENT_SURNAME + " = ?        AND " +
                 Patients.COL_PHONE_NUMBER + " = ?";
         Object[] params = new Object[]{
                 patient.getFirstName(),
-                patient.getMiddleName(),
+                patient.getDateOfBirth(),
                 patient.getSurname(),
                 patient.getPhoneNumber()};
         List<Patients> patientsResults = null;
@@ -216,13 +216,11 @@ public class ReferralPatientsService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("Coze = number of patients found = " + patientsResults.size());
+
         long id;
         if (patientsResults.size() > 0) {
-            System.out.println("Coze = using the received patients ");
             id = patientsResults.get(0).getPatientId();
         } else {
-            System.out.println("Coze = saving patient Data ");
             try {
                 id = patientsRepository.save(patient);
             } catch (Exception e) {
@@ -231,13 +229,12 @@ public class ReferralPatientsService {
             }
         }
 
-        //Obtaining health facilityId from tbl_facilities
+        //Obtaining facilityId from tbl_facilities
         String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
                 HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UIID + " = ?";
         Object[] healthFacilityParams = new Object[]{
                 healthFacilityCode,healthFacilityCode};
 
-        System.out.println("Coze facility ctc code = " + healthFacilityCode);
         Long healthFacilityId = (long) 0;
         List<HealthFacilities> healthFacilities = null;
         try {

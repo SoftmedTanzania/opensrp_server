@@ -41,6 +41,8 @@ public class Patients {
 
 	public static final String COL_CARE_TAKER_RELATIONSHIP= "care_taker_relationship";
 
+	public static final String COL_VEO= "veo";
+
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
@@ -98,6 +100,10 @@ public class Patients {
 
 	@Column(name = COL_CARE_TAKER_RELATIONSHIP)
 	private String careTakerRelationship;
+
+
+	@Column(name = COL_VEO)
+	private String veo;
 
 
 
@@ -253,5 +259,12 @@ public class Patients {
 		this.createdAt = createdAt;
 	}
 
+	public String getVeo() {
+		return veo;
+	}
+
+	public void setVeo(String veo) {
+		this.veo = veo;
+	}
 }
 

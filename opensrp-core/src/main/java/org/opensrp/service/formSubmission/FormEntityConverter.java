@@ -368,6 +368,15 @@ public class FormEntityConverter {
 				if(formField.name().equals(Patients.COL_WARD))
 					patients.setWard(formField.value());
 
+				if(formField.name().equals(Patients.COL_CARE_TAKER_NAME))
+					patients.setCareTakerName(formField.value());
+
+				if(formField.name().equals(Patients.COL_CARE_TAKER_PHONE_NUMBER))
+					patients.setCareTakerPhoneNumber(formField.value());
+
+				if(formField.name().equals(Patients.COL_VEO))
+					patients.setVeo(formField.value());
+
 				if(formField.name().equals(Patients.COL_DATE_OF_BIRTH)) {
 					Date startDate = new Date();
 					try{
@@ -386,6 +395,21 @@ public class FormEntityConverter {
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	public FormSubmission updateClientIdInFormSubmission(FormSubmission fsubmission,String temporallyClientId, long clientId) throws IllegalStateException {
+		FormData formData = fsubmission.instance().form();
+		List<org.opensrp.form.domain.FormField> formFields = formData.fields();
+		for(org.opensrp.form.domain.FormField formField : formFields){
+			if(formField.name().equals("client_id")) {
+				if(formField.value().equalsIgnoreCase(temporallyClientId)) {
+					formField.setValue(String.valueOf(clientId));
+					System.out.println("saveFormToOpenSRP : Updating form submissions from client Id "+temporallyClientId+" To Client Id = "+clientId);
+				}
+			}
+		}
+
+		return fsubmission;
 	}
 
 	public JSONArray getReferralIndicatorsFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
@@ -640,6 +664,24 @@ public class FormEntityConverter {
 				| XPathExpressionException | ParserConfigurationException
 				| SAXException | IOException | ParseException e) {
 			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+	}
+
+
+	public String getTempClientIdFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
+		String clientId="";
+		try {
+			FormData formData = fsubmission.instance().form();
+			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
+			for(org.opensrp.form.domain.FormField formField : formFields){
+				if(formField.name().equals("client_id"))
+					clientId = formField.value();
+
+			}
+
+			return clientId;
+		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
 	}

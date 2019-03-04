@@ -47,6 +47,7 @@ public class PatientsRepository {
 		parameters.put(Patients.COL_CARE_TAKER_NAME , patients.getCareTakerName());
 		parameters.put(Patients.COL_CARE_TAKER_PHONE_NUMBER, patients.getCareTakerPhoneNumber());
 		parameters.put(Patients.COL_CARE_TAKER_RELATIONSHIP, patients.getCareTakerRelationship());
+		parameters.put(Patients.COL_VEO, patients.getVeo());
 		parameters.put(Patients.COL_CREATED_AT , patients.getCreatedAt());
 		parameters.put(Patients.COL_UPDATED_AT , patients.getCreatedAt());
 
@@ -92,6 +93,7 @@ public class PatientsRepository {
 			patients.setCareTakerName(rs.getString(rs.findColumn(Patients.COL_CARE_TAKER_NAME)));
 			patients.setCareTakerPhoneNumber(rs.getString(rs.findColumn(Patients.COL_CARE_TAKER_PHONE_NUMBER)));
 			patients.setCareTakerRelationship(rs.getString(rs.findColumn(Patients.COL_CARE_TAKER_RELATIONSHIP)));
+			patients.setVeo(rs.getString(rs.findColumn(Patients.COL_VEO)));
 			patients.setHivStatus(rs.getBoolean(rs.findColumn(Patients.COL_HIV_STATUS)));
 			patients.setDateOfDeath(rs.getDate(rs.findColumn(Patients.COL_DATE_OF_DEATH)));
 			return patients;
