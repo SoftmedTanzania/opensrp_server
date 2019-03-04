@@ -250,8 +250,6 @@ public class FormSubmissionController {
 	private void saveFormToOpenSRP(FormSubmission formSubmission) throws ParseException, IllegalStateException, JSONException{
         logger.info("saveFormToOpenSRP : saving patient into OpenSRP");
 
-		formSubmission.getId()
-
         try{
         	if (formSubmission.formName().equalsIgnoreCase("client_registration_form")){
 				Patients patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
