@@ -669,13 +669,13 @@ public class FormEntityConverter {
 	}
 
 
-	public String getTempClientIdFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
+	public String getFieldValueFromFormSubmission(FormSubmission fsubmission, String fieldName) throws IllegalStateException {
 		String clientId="";
 		try {
 			FormData formData = fsubmission.instance().form();
 			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
 			for(org.opensrp.form.domain.FormField formField : formFields){
-				if(formField.name().equals("client_id"))
+				if(formField.name().equals(fieldName))
 					clientId = formField.value();
 
 			}

@@ -253,7 +253,7 @@ public class FormSubmissionController {
         try{
         	if (formSubmission.formName().equalsIgnoreCase("client_registration_form")){
 				Patients patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
-				String temporallyClientId = formEntityConverter.getTempClientIdFromFormSubmission(formSubmission);
+				String temporallyClientId = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,"client_id");
 
 				//TODO reimplement this to only obtain CTC_NUMBER,CBHS_NUMBER and FACILITY_ID
 				PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
@@ -293,8 +293,10 @@ public class FormSubmissionController {
 				try {
 					PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
 
+					String clientId = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,"client_id");
+
 					Object[] args = new Object[1];
-					args[0] = patientReferral.getId();
+					args[0] = clientId;
 
 					Patients patient = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = ?",args).get(0);
 					long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), patientReferral.getCtcNumber());
