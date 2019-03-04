@@ -250,6 +250,8 @@ public class FormSubmissionController {
 	private void saveFormToOpenSRP(FormSubmission formSubmission) throws ParseException, IllegalStateException, JSONException{
         logger.info("saveFormToOpenSRP : saving patient into OpenSRP");
 
+		formSubmission.getId()
+
         try{
         	if (formSubmission.formName().equalsIgnoreCase("client_registration_form")){
 				Patients patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
@@ -273,9 +275,12 @@ public class FormSubmissionController {
 				logger.info("saveFormToOpenSRP : saving patient. Updating form submissions with client Id "+temporallyClientId+" To Client Id = "+patient.getPatientId());
 
 
+				//Retrieve the saved form in couchdb to be updated
+				FormSubmission savedSubmission = formSubmissionService.findByInstanceId(formSubmission.getInstanceId());
+
 				//Updating the formsubmission with the correct clientId;
-				formEntityConverter.updateClientIdInFormSubmission(formSubmission,temporallyClientId,patient.getPatientId());
-				formSubmissionService.update(formSubmission);
+				formEntityConverter.updateClientIdInFormSubmission(savedSubmission,temporallyClientId,patient.getPatientId());
+				formSubmissionService.update(savedSubmission);
 
 				//updating any existing referrals with the correct clientId
 				List<FormSubmission> referralSubmissions= formSubmissionService.findByFormName("referral_form",4);
