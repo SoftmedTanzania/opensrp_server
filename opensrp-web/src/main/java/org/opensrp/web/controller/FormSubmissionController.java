@@ -22,7 +22,6 @@ import org.opensrp.dto.ReferralsDTO;
 import org.opensrp.dto.form.FormSubmissionDTO;
 import org.opensrp.dto.form.MultimediaDTO;
 import org.opensrp.form.domain.FormSubmission;
-import org.opensrp.form.service.FormAttributeParser;
 import org.opensrp.form.service.FormSubmissionConverter;
 import org.opensrp.form.service.FormSubmissionMap;
 import org.opensrp.form.service.FormSubmissionService;
@@ -289,7 +288,6 @@ public class FormSubmissionController {
 
 
 			}else if(formSubmission.formName().equalsIgnoreCase("referral_form")){
-
 				try {
 					PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
 
@@ -299,185 +297,20 @@ public class FormSubmissionController {
 					args[0] = clientId;
 
 					Patients patient = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = ?",args).get(0);
-					long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), patientReferral.getCtcNumber());
-
-					List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthfacilityPatientId,null);
-
-					patient.setPatientId(healthFacilitiesPatients.get(0).getPatient().getPatientId());
-					patientReferral.setPatient(patient);
-
-					//TODO Coze remove hardcoding of these initiation values. This is a temporally patch to be removed later on
-					patientReferral.setReferralSource(0);
-					patientReferral.setReferralStatus(0);
-					patientReferral.setReferralType(1);
-
-					logger.info("saveFormToOpenSRP : saving referral Data");
-					long id = patientReferralRepository.save(patientReferral);
-					patientReferral.setId(id);
-
-					JSONArray indicatorIds = formEntityConverter.getReferralIndicatorsFromFormSubmission(formSubmission);
-					int size  = indicatorIds.length();
-
-					List<Long> referralIndicatorIds = new ArrayList<>();
-					for(int i=0;i<size;i++){
-						PatientReferralIndicators referralIndicators = new PatientReferralIndicators();
-						referralIndicators.setActive(true);
-						referralIndicators.setReferralId(id);
-						referralIndicators.setReferralServiceIndicatorId(indicatorIds.getLong(i));
-
-						long patientReferralIndicatorId = patientReferralIndicatorRepository.save(referralIndicators);
-						referralIndicatorIds.add(indicatorIds.getLong(i));
-					}
-
-
-					String phoneNumber = patient.getPhoneNumber();
-					phoneNumber = reformatPhoneNumber(phoneNumber);
-
-
-					List<String> urns;
-					urns = new ArrayList<String>();
-					urns.add("tel:"+phoneNumber);
-
-					try {
-
-						//TODO RAPIDPRO, fix the message sent
-						String response = rapidProService.sendMessage(urns,null,null, "Successful registration",null);
-						logger.info("Received rapidpro response : "+response);
-					}catch (Exception e){
-						e.printStackTrace();
-					}
-
-
-					Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),1};
-					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
-					JSONArray tokens = new JSONArray();
-					for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
-						tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
-					}
-
-
-					PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
-					PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
-					patientsDTO.setCtcNumber(patientReferral.getCtcNumber());
-					patientReferralsDTO.setPatientsDTO(patientsDTO);
-
-
-					List<ReferralsDTO> referralsDTOS = new ArrayList<>();
-					ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(patientReferral);
-					referralsDTO.setServiceIndicatorIds(referralIndicatorIds);
-					referralsDTOS.add(referralsDTO);
-					patientReferralsDTO.setPatientReferralsList(referralsDTOS);
-
-					JSONObject body = new JSONObject();
-
-					String json = new Gson().toJson(patientReferralsDTO);
-
-					logger.info("saveFormToOpenSRP: FCM msg = "+json);
-
-					JSONObject msg = new JSONObject(json);
-					msg.put("type","PatientReferral");
-
-					googleFCMService.SendPushNotification(msg,tokens,true);
+					saveReferralData(patient,patientReferral,formSubmission);
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
-
 				}
 
 
 			}else{
-        		//TODO clear this block of code only used for testing purposes on an already running server for backward compatibility with old versions of community app
+        		//TODO This block of code only used for providing backward compatibility with old versions of community app
 
 				logger.info("saveFormToOpenSRP : saving patient into OpenSRP");
 				Patients patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
 				PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
-				try {
-
-					long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), patientReferral.getCtcNumber());
-
-					List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthfacilityPatientId,null);
-
-					patient.setPatientId(healthFacilitiesPatients.get(0).getPatient().getPatientId());
-					patientReferral.setPatient(patient);
-
-					//TODO Coze remove hardcoding of these values. This is a temporally patch to be removed later on
-					patientReferral.setReferralSource(0);
-					patientReferral.setReferralStatus(0);
-					patientReferral.setReferralType(1);
-
-					logger.info("saveFormToOpenSRP : saving referral Data");
-					long id = patientReferralRepository.save(patientReferral);
-					patientReferral.setId(id);
-
-					JSONArray indicatorIds = formEntityConverter.getReferralIndicatorsFromFormSubmission(formSubmission);
-					int size  = indicatorIds.length();
-
-					List<Long> referralIndicatorIds = new ArrayList<>();
-					for(int i=0;i<size;i++){
-						PatientReferralIndicators referralIndicators = new PatientReferralIndicators();
-						referralIndicators.setActive(true);
-						referralIndicators.setReferralId(id);
-						referralIndicators.setReferralServiceIndicatorId(indicatorIds.getLong(i));
-
-						long patientReferralIndicatorId = patientReferralIndicatorRepository.save(referralIndicators);
-						referralIndicatorIds.add(indicatorIds.getLong(i));
-					}
-
-
-					String phoneNumber = patient.getPhoneNumber();
-					phoneNumber = reformatPhoneNumber(phoneNumber);
-
-
-					List<String> urns;
-					urns = new ArrayList<String>();
-					urns.add("tel:"+phoneNumber);
-
-					try {
-
-						//TODO RAPIDPRO, fix the message sent
-						String response = rapidProService.sendMessage(urns,null,null, "Successful registration",null);
-						logger.info("Received rapidpro response : "+response);
-					}catch (Exception e){
-						e.printStackTrace();
-					}
-
-
-					Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),1};
-					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
-					JSONArray tokens = new JSONArray();
-					for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
-						tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
-					}
-
-
-					PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
-
-					PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
-					patientsDTO.setCtcNumber(patientReferral.getCtcNumber());
-					patientReferralsDTO.setPatientsDTO(patientsDTO);
-
-
-					List<ReferralsDTO> referralsDTOS = new ArrayList<>();
-					ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(patientReferral);
-					referralsDTO.setServiceIndicatorIds(referralIndicatorIds);
-					referralsDTOS.add(referralsDTO);
-					patientReferralsDTO.setPatientReferralsList(referralsDTOS);
-
-					JSONObject body = new JSONObject();
-
-					String json = new Gson().toJson(patientReferralsDTO);
-
-					logger.info("saveFormToOpenSRP: FCM msg = "+json);
-
-					JSONObject msg = new JSONObject(json);
-					msg.put("type","PatientReferral");
-
-					googleFCMService.SendPushNotification(msg,tokens,true);
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
-
-				}
+				saveReferralData(patient,patientReferral,formSubmission);
 
 			}
 		}catch (Exception e){
@@ -514,5 +347,95 @@ public class FormSubmissionController {
 			return "";
 		}
 
+	}
+
+	public void saveReferralData(Patients patient, PatientReferral patientReferral, FormSubmission formSubmission ){
+		try {
+
+			long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), patientReferral.getCtcNumber());
+
+			List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthfacilityPatientId,null);
+
+			patient.setPatientId(healthFacilitiesPatients.get(0).getPatient().getPatientId());
+			patientReferral.setPatient(patient);
+
+			//TODO Coze remove hardcoding of these values. This is a temporally patch to be removed later on
+			patientReferral.setReferralSource(0);
+			patientReferral.setReferralStatus(0);
+			patientReferral.setReferralType(1);
+
+			logger.info("saveFormToOpenSRP : saving referral Data");
+			long id = patientReferralRepository.save(patientReferral);
+			patientReferral.setId(id);
+
+			JSONArray indicatorIds = formEntityConverter.getReferralIndicatorsFromFormSubmission(formSubmission);
+			int size  = indicatorIds.length();
+
+			List<Long> referralIndicatorIds = new ArrayList<>();
+			for(int i=0;i<size;i++){
+				PatientReferralIndicators referralIndicators = new PatientReferralIndicators();
+				referralIndicators.setActive(true);
+				referralIndicators.setReferralId(id);
+				referralIndicators.setReferralServiceIndicatorId(indicatorIds.getLong(i));
+
+				long patientReferralIndicatorId = patientReferralIndicatorRepository.save(referralIndicators);
+				referralIndicatorIds.add(indicatorIds.getLong(i));
+			}
+
+
+			String phoneNumber = patient.getPhoneNumber();
+			phoneNumber = reformatPhoneNumber(phoneNumber);
+
+
+			List<String> urns;
+			urns = new ArrayList<String>();
+			urns.add("tel:"+phoneNumber);
+
+			try {
+
+				//TODO RAPIDPRO, fix the message sent
+				String response = rapidProService.sendMessage(urns,null,null, "Successful registration",null);
+				logger.info("Received rapidpro response : "+response);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+
+
+			Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),1};
+			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
+			JSONArray tokens = new JSONArray();
+			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
+				tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
+			}
+
+
+			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
+
+			PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
+			patientsDTO.setCtcNumber(patientReferral.getCtcNumber());
+			patientReferralsDTO.setPatientsDTO(patientsDTO);
+
+
+			List<ReferralsDTO> referralsDTOS = new ArrayList<>();
+			ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(patientReferral);
+			referralsDTO.setServiceIndicatorIds(referralIndicatorIds);
+			referralsDTOS.add(referralsDTO);
+			patientReferralsDTO.setPatientReferralsList(referralsDTOS);
+
+			JSONObject body = new JSONObject();
+
+			String json = new Gson().toJson(patientReferralsDTO);
+
+			logger.info("saveFormToOpenSRP: FCM msg = "+json);
+
+			JSONObject msg = new JSONObject(json);
+			msg.put("type","PatientReferral");
+
+			googleFCMService.SendPushNotification(msg,tokens,true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
+
+		}
 	}
 }
