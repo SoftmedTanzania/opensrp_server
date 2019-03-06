@@ -287,6 +287,35 @@ public class FormSubmissionController {
 				}
 
 
+				try {
+					Object[] userUUID = new Object[]{formEntityConverter.getFieldValueFromFormSubmission(formSubmission, "service_provider_uuid"), 1};
+					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UIID + " = ? ", userUUID);
+					JSONArray fcmTokens = new JSONArray();
+
+					for (GooglePushNotificationsUsers users : googlePushNotificationsUsers) {
+						fcmTokens.put(users.getGooglePushNotificationToken());
+					}
+
+
+					//Sending a push notification to the tablet to force updating of the client IDs used for future referrals
+					JSONObject body = new JSONObject();
+					body.put("GENERATED_CLIENT_ID", patient.getPatientId());
+					body.put("TEMP_CLIENT_ID", temporallyClientId);
+
+					String json = new Gson().toJson(body);
+
+					logger.info("saveFormToOpenSRP: FCM msg = " + json);
+
+					JSONObject msg = new JSONObject(json);
+					msg.put("type", "UpdateClientId");
+
+					googleFCMService.SendPushNotification(msg, fcmTokens, false);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+
+
+
 			}else if(formSubmission.formName().equalsIgnoreCase("referral_form")){
 				try {
 
