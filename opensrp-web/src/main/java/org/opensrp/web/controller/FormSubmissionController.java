@@ -288,7 +288,11 @@ public class FormSubmissionController {
 
 
 				try {
-					Object[] userUUID = new Object[]{formEntityConverter.getFieldValueFromFormSubmission(formSubmission, "service_provider_uuid")};
+					String userUUIDString = formEntityConverter.getFieldValueFromFormSubmission(formSubmission, "service_provider_uuid");
+
+
+					logger.info("saveFormToOpenSRP : sending notification. User UUID  = "+userUUIDString);
+					Object[] userUUID = new Object[]{};
 					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UIID + " = ? ", userUUID);
 					JSONArray fcmTokens = new JSONArray();
 
