@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
-import jdk.internal.jline.internal.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opensrp.common.AllConstants;
@@ -581,7 +580,7 @@ public class ReferralPatientsController {
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/receive-feedback")
     public ResponseEntity<String> saveReferralFeedback(@RequestBody String json) {
         try {
-            logger.info("Coze: receive feedback = "+json );
+            logger.info("Coze: receive feedback = " + json);
             ReferralsDTO referralsDTO = new Gson().fromJson(json, ReferralsDTO.class);
 
             List<PatientReferral> referrals = patientReferralRepository.getReferrals("SELECT * FROM " + org.opensrp.domain.PatientReferral.tbName + " WHERE " + PatientReferral.COL_REFERRAL_ID + "=?",
@@ -630,7 +629,7 @@ public class ReferralPatientsController {
                 Object[] facilityParams = new Object[]{referralsDTO.getServiceProviderUIID()};
                 List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UIID + " = ? ", facilityParams);
 
-                logger.info("User uuid for sending feedback notification = "+referralsDTO.getServiceProviderUIID());
+                logger.info("User uuid for sending feedback notification = " + referralsDTO.getServiceProviderUIID());
                 JSONArray tokens = new JSONArray();
                 for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
                     tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
