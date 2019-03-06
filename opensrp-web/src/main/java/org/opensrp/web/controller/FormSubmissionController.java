@@ -291,7 +291,11 @@ public class FormSubmissionController {
 				try {
 
 					FormSubmission updatedFormSubmission =formSubmissionService.findByInstanceId(formSubmission.getInstanceId());
+					if(updatedFormSubmission==null){
+						updatedFormSubmission = formSubmission;
+					}
 					PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(updatedFormSubmission);
+
 
 					String clientId = formEntityConverter.getFieldValueFromFormSubmission(updatedFormSubmission,"client_id");
 
