@@ -288,7 +288,7 @@ public class FormSubmissionController {
 
 
 				try {
-					Object[] userUUID = new Object[]{formEntityConverter.getFieldValueFromFormSubmission(formSubmission, "service_provider_uuid"), 1};
+					Object[] userUUID = new Object[]{formEntityConverter.getFieldValueFromFormSubmission(formSubmission, "service_provider_uuid")};
 					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UIID + " = ? ", userUUID);
 					JSONArray fcmTokens = new JSONArray();
 
