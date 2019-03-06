@@ -295,6 +295,8 @@ public class FormSubmissionController {
 
 					String clientId = formEntityConverter.getFieldValueFromFormSubmission(updatedFormSubmission,"client_id");
 
+					logger.info("saveFormToOpenSRP : saving referral.  Client Id = "+clientId);
+
 					Object[] args = new Object[1];
 					args[0] = clientId;
 
