@@ -289,15 +289,17 @@ public class FormSubmissionController {
 
 			}else if(formSubmission.formName().equalsIgnoreCase("referral_form")){
 				try {
-					PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
 
-					String clientId = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,"client_id");
+					FormSubmission updatedFormSubmission =formSubmissionService.findByInstanceId(formSubmission.getInstanceId());
+					PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(updatedFormSubmission);
+
+					String clientId = formEntityConverter.getFieldValueFromFormSubmission(updatedFormSubmission,"client_id");
 
 					Object[] args = new Object[1];
 					args[0] = clientId;
 
 					Patients patient = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = ?",args).get(0);
-					saveReferralData(patient,patientReferral,formSubmission);
+					saveReferralData(patient,patientReferral,updatedFormSubmission);
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
