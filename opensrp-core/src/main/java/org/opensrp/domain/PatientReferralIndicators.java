@@ -14,7 +14,7 @@ public class PatientReferralIndicators implements Serializable {
 
 	public static final String COL_REFERRAL_ID = "referral_id";
 
-	public static final String COL_REFERRAL_SERVICE_INDICATOR_ID = "referral_service_indicator_id";
+	public static final String COL_REFERRAL_SERVICE_INDICATOR_ID = "service_indicator_id";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 
@@ -28,8 +28,13 @@ public class PatientReferralIndicators implements Serializable {
 	@Column(name = COL_PATIENT_REFERRAL_INDICATOR_ID)
 	private Long patientReferralIndicatorId;
 
-	@Column(name = COL_REFERRAL_ID)
-	private Long referralId;
+	@ManyToOne
+	@JoinColumn(name=COL_REFERRAL_ID)
+	private PatientReferral patientReferral;
+
+	@ManyToOne
+	@JoinColumn(name=COL_REFERRAL_ID)
+	private ServiceIndicator serviceIndicator;
 
 	@Column(name = COL_REFERRAL_SERVICE_INDICATOR_ID)
 	private Long referralServiceIndicatorId;
@@ -54,12 +59,20 @@ public class PatientReferralIndicators implements Serializable {
 		this.patientReferralIndicatorId = patientReferralIndicatorId;
 	}
 
-	public Long getReferralId() {
-		return referralId;
+	public PatientReferral getPatientReferral() {
+		return patientReferral;
 	}
 
-	public void setReferralId(Long referralId) {
-		this.referralId = referralId;
+	public void setPatientReferral(PatientReferral patientReferral) {
+		this.patientReferral = patientReferral;
+	}
+
+	public ServiceIndicator getServiceIndicator() {
+		return serviceIndicator;
+	}
+
+	public void setServiceIndicator(ServiceIndicator serviceIndicator) {
+		this.serviceIndicator = serviceIndicator;
 	}
 
 	public Long getReferralServiceIndicatorId() {

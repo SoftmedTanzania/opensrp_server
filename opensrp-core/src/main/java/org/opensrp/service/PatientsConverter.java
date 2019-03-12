@@ -311,17 +311,17 @@ public class PatientsConverter {
 	        patient.setPatientId(referralsDTO.getPatientId());
 	        referral.setId(referralsDTO.getReferralId());
             referral.setPatient(patient);
-            referral.setCommunityBasedHivService(referralsDTO.getCommunityBasedHivService());
             referral.setReferralReason(referralsDTO.getReferralReason());
             referral.setServiceId(referralsDTO.getServiceId());
-            referral.setCtcNumber(referralsDTO.getServiceProviderGroup());
             referral.setReferralUUID(referralsDTO.getReferralUUID());
-            referral.setReferralType(referralsDTO.getReferralType());
+
+            ReferralType referralType = new ReferralType();
+            referralType.setReferralTypeId(((long)referralsDTO.getReferralType()));
+
+            referral.setReferralType(referralType);
 
             referral.setReferralStatus(referralsDTO.getReferralStatus());
             referral.setServiceProviderUIID(referralsDTO.getServiceProviderUIID());
-            referral.setServiceProviderGroup(referralsDTO.getServiceProviderGroup());
-            referral.setVillageLeader(referralsDTO.getVillageLeader());
             referral.setTestResults(referralsDTO.getTestResults());
             referral.setLabTest(referralsDTO.getLabTest());
 
@@ -376,14 +376,19 @@ public class PatientsConverter {
             ReferralsDTO referralsDTO = new ReferralsDTO();
 
             referralsDTO.setPatientId(referral.getPatient().getPatientId());
-            referralsDTO.setCommunityBasedHivService(referral.getCommunityBasedHivService());
             referralsDTO.setReferralReason(referral.getReferralReason());
             referralsDTO.setServiceId(referral.getServiceId());
             referralsDTO.setReferralId(referral.getId());
             referralsDTO.setReferralStatus(referral.getReferralStatus());
             referralsDTO.setReferralUUID(referral.getReferralUUID());
             referralsDTO.setReferralSource(referral.getReferralSource());
-            referralsDTO.setReferralType((int)referral.getReferralType());
+
+            try {
+                referralsDTO.setReferralType(Integer.parseInt(referral.getReferralType().getReferralTypeId().toString()));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
             referralsDTO.setOtherNotes(referral.getOtherNotes());
             referralsDTO.setServiceGivenToPatient(referral.getServiceGivenToPatient());
             referralsDTO.setTestResults(referral.isTestResults());
@@ -421,8 +426,6 @@ public class PatientsConverter {
 
 
             referralsDTO.setServiceProviderUIID(referral.getServiceProviderUIID());
-            referralsDTO.setServiceProviderGroup(referral.getServiceProviderGroup());
-            referralsDTO.setVillageLeader(referral.getVillageLeader());
             referralsDTO.setReferralDate(referral.getReferralDate().getTime());
             referralsDTO.setFacilityId(referral.getFacilityId());
 

@@ -1,6 +1,8 @@
 package org.opensrp.repository;
 
+import org.opensrp.domain.Indicator;
 import org.opensrp.domain.PKReferralServiceIndicator;
+import org.opensrp.domain.ReferralService;
 import org.opensrp.domain.ServiceIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,8 +33,10 @@ public class ReferralServiceIndicatorRepository {
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(ServiceIndicator.COL_SERVICE_INDICATOR_ID, serviceIndicator.getServiceIndicatorId());
-		parameters.put(ServiceIndicator.COL_INDICATOR_ID, serviceIndicator.getPkReferralServiceIndicator().getIndicatorId());
-		parameters.put(ServiceIndicator.COL_SERVICE_ID, serviceIndicator.getPkReferralServiceIndicator().getServiceId());
+
+		parameters.put(ServiceIndicator.COL_INDICATOR_ID, serviceIndicator.getPkReferralServiceIndicator().getIndicator().getReferralIndicatorId());
+		parameters.put(ServiceIndicator.COL_SERVICE_ID, serviceIndicator.getPkReferralServiceIndicator().getReferralService().getReferralServiceId());
+
 		parameters.put(ServiceIndicator.COL_IS_ACTIVE  , serviceIndicator.isActive());
 		parameters.put(ServiceIndicator.COL_CREATED_AT , serviceIndicator.getCreatedAt());
 		parameters.put(ServiceIndicator.COL_UPDATED_AT , serviceIndicator.getCreatedAt());
@@ -69,7 +73,14 @@ public class ReferralServiceIndicatorRepository {
 
 			serviceIndicator.setServiceIndicatorId(rs.getLong(rs.findColumn(ServiceIndicator.COL_SERVICE_INDICATOR_ID)));
 
-			PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(rs.getLong(rs.findColumn(ServiceIndicator.COL_INDICATOR_ID)),rs.getLong(rs.findColumn(ServiceIndicator.COL_SERVICE_ID)));
+			ReferralService referralService = new ReferralService();
+			referralService.setReferralServiceId(rs.getLong(rs.findColumn(ServiceIndicator.COL_SERVICE_ID)));
+
+			Indicator indicator = new Indicator();
+			indicator.setReferralIndicatorId(rs.getLong(rs.findColumn(ServiceIndicator.COL_INDICATOR_ID)));
+
+
+			PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(referralService,indicator);
 			serviceIndicator.setPkReferralServiceIndicator(pkReferralServiceIndicator);
 
 

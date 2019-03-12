@@ -2,6 +2,8 @@ package org.opensrp.repository;
 
 import org.opensrp.domain.PatientReferral;
 import org.opensrp.domain.Patients;
+import org.opensrp.domain.ReferralFeedback;
+import org.opensrp.domain.ReferralType;
 import org.opensrp.dto.CHWReferralsSummaryDTO;
 import org.opensrp.dto.FacilityDepartmentReferralSummaryDTO;
 import org.opensrp.dto.FacilityProvidersReferralSummaryDTO;
@@ -36,15 +38,11 @@ public class PatientReferralRepository {
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(PatientReferral.COL_PATIENT_ID, patientReferral.getPatient().getPatientId());
-		parameters.put(PatientReferral.COL_COMMUNITY_BASED_HIV_SERVICE, patientReferral.getCommunityBasedHivService());
 		parameters.put(PatientReferral.COL_REFERRAL_REASON, patientReferral.getReferralReason());
 		parameters.put(PatientReferral.COL_SERVICE_ID, patientReferral.getServiceId());
 		parameters.put(PatientReferral.COL_REFERRAL_UUID, patientReferral.getReferralUUID());
 		parameters.put(PatientReferral.COL_FACILITY_ID, patientReferral.getFacilityId());
-		parameters.put(PatientReferral.COL_CTC_NUMBER, patientReferral.getCtcNumber());
 		parameters.put(PatientReferral.COL_SERVICE_PROVIDER_UIID, patientReferral.getServiceProviderUIID());
-		parameters.put(PatientReferral.COL_SERVICE_PROVIDER_GROUP, patientReferral.getServiceProviderGroup());
-		parameters.put(PatientReferral.COL_VILLAGE_LEADER, patientReferral.getVillageLeader());
 		parameters.put(PatientReferral.COL_FROM_FACILITY_ID, patientReferral.getFromFacilityId());
 		parameters.put(PatientReferral.COL_OTHER_CLINICAL_INFORMATION, patientReferral.getOtherClinicalInformation());
 		parameters.put(PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT, patientReferral.getServiceGivenToPatient());
@@ -58,6 +56,7 @@ public class PatientReferralRepository {
 		parameters.put(PatientReferral.COL_LAB_TEST, patientReferral.getLabTest());
 		parameters.put(PatientReferral.COL_TEST_RESULTS, patientReferral.isTestResults());
 		parameters.put(PatientReferral.COL_IS_EMERGENCY, patientReferral.isEmergency());
+		parameters.put(PatientReferral.COL_REFERRAL_FEEDBACK, patientReferral.getReferralFeedback().getId());
 		parameters.put(PatientReferral.COL_CREATED_AT, patientReferral.getCreatedAt());
 		parameters.put(PatientReferral.COL_UPDATED_AT, patientReferral.getCreatedAt());
 
@@ -99,22 +98,28 @@ public class PatientReferralRepository {
 			patient.setPatientId(rs.getLong(rs.findColumn(PatientReferral.COL_PATIENT_ID)));
 			patientReferral.setPatient(patient);
 
-			patientReferral.setCommunityBasedHivService(rs.getString(rs.findColumn(PatientReferral.COL_COMMUNITY_BASED_HIV_SERVICE)));
 			patientReferral.setReferralReason(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_REASON)));
 			patientReferral.setFromFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FROM_FACILITY_ID)));
 			patientReferral.setServiceId(rs.getInt(rs.findColumn(PatientReferral.COL_SERVICE_ID)));
 			patientReferral.setReferralUUID(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_UUID)));
-			patientReferral.setCtcNumber(rs.getString(rs.findColumn(PatientReferral.COL_CTC_NUMBER)));
 			patientReferral.setServiceProviderUIID(rs.getString(rs.findColumn(PatientReferral.COL_SERVICE_PROVIDER_UIID)));
-			patientReferral.setServiceProviderGroup(rs.getString(rs.findColumn(PatientReferral.COL_SERVICE_PROVIDER_GROUP)));
-			patientReferral.setVillageLeader(rs.getString(rs.findColumn(PatientReferral.COL_VILLAGE_LEADER)));
 			patientReferral.setReferralDate(rs.getDate(rs.findColumn(PatientReferral.COL_REFERRAL_DATE)));
 			patientReferral.setAppointmentDate(rs.getDate(rs.findColumn(PatientReferral.COL_APPOINTMENT_DATE)));
 			patientReferral.setFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FACILITY_ID)));
 			patientReferral.setReferralStatus(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_STATUS)));
 			patientReferral.setInstanceId(rs.getString(rs.findColumn(PatientReferral.COL_INSTANCE_ID)));
-			patientReferral.setReferralType(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_TYPE)));
+
+			ReferralType referralType = new ReferralType();
+			referralType.setReferralTypeId(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_TYPE)));
+			patientReferral.setReferralType(referralType);
+
+			ReferralFeedback referralFeedback = new ReferralFeedback();
+			referralFeedback.setId(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_FEEDBACK)));
+			patientReferral.setReferralFeedback(referralFeedback);
+
+
 			patientReferral.setReferralSource(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_SOURCE)));
+
 			patientReferral.setServiceGivenToPatient(rs.getString(rs.findColumn(PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT)));
 			patientReferral.setTestResults(rs.getInt(rs.findColumn(PatientReferral.COL_TEST_RESULTS)));
 			patientReferral.setEmergency(rs.getBoolean(rs.findColumn(PatientReferral.COL_IS_EMERGENCY)));

@@ -26,8 +26,6 @@ public class HealthFacilitiesConverter {
 
             healthFacilities.setHfrCode(healthFacilitiesDTO.getHfrCode());
 
-            healthFacilities.setParentHFRCode(healthFacilitiesDTO.getParentHFRCode());
-
             healthFacilities.setFacilityName(healthFacilitiesDTO.getFacilityName());
 
             healthFacilities.setFacilityCtcCode(healthFacilitiesDTO.getFacilityCTCCode());

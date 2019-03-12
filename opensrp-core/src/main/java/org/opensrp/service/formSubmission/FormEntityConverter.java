@@ -438,11 +438,6 @@ public class FormEntityConverter {
 			patientReferral.setInstanceId(fsubmission.getInstanceId());
 
 			for(org.opensrp.form.domain.FormField formField : formFields){
-				if(formField.name().equals(PatientReferral.COL_CTC_NUMBER))
-					patientReferral.setCtcNumber(formField.value());
-
-				if(formField.name().equals(PatientReferral.COL_COMMUNITY_BASED_HIV_SERVICE))
-					patientReferral.setCommunityBasedHivService(formField.value());
 
 				if(formField.name().equals(PatientReferral.COL_FACILITY_ID))
 					patientReferral.setFacilityId(formField.value());
@@ -477,11 +472,6 @@ public class FormEntityConverter {
 				if(formField.name().equals(PatientReferral.COL_REFERRAL_REASON))
 					patientReferral.setReferralReason(formField.value());
 
-				if(formField.name().equals(PatientReferral.COL_VILLAGE_LEADER))
-					patientReferral.setVillageLeader(formField.value());
-
-				if(formField.name().equals(PatientReferral.COL_SERVICE_PROVIDER_GROUP))
-					patientReferral.setServiceProviderGroup(formField.value());
 
 				if(formField.name().equals(PatientReferral.COL_SERVICE_PROVIDER_UIID))
 					patientReferral.setServiceProviderUIID(formField.value());

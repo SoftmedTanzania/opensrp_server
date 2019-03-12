@@ -200,7 +200,14 @@ public class ServiceController {
                     for (Long indicatorId:referralServiceIndicatorDTO.getReferralIndicatorId()) {
 
                         ServiceIndicator serviceIndicator = new ServiceIndicator();
-                        PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(indicatorId, referralServiceIndicatorDTO.getReferralServiceId());
+
+                        Indicator indicator = new Indicator();
+                        indicator.setReferralIndicatorId(indicatorId);
+
+                        ReferralService referralService = new ReferralService();
+                        referralService.setReferralServiceId(referralServiceIndicatorDTO.getReferralServiceId());
+
+                        PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(referralService, indicator);
                         serviceIndicator.setPkReferralServiceIndicator(pkReferralServiceIndicator);
 
                         referralIndicators.add(serviceIndicator);
@@ -223,8 +230,8 @@ public class ServiceController {
                 long serviceId = 0;
                 for (ServiceIndicator serviceIndicator : serviceIndicatorsList) {
                     try {
-                        indicatorIds+= serviceIndicator.getPkReferralServiceIndicator().getIndicatorId();
-                        serviceId = serviceIndicator.getPkReferralServiceIndicator().getServiceId();
+                        indicatorIds+= serviceIndicator.getPkReferralServiceIndicator().getIndicator().getReferralIndicatorId();
+                        serviceId = serviceIndicator.getPkReferralServiceIndicator().getReferralService().getReferralServiceId();
 
                         serviceIndicator.setServiceIndicatorId(id);
                         id++;
@@ -291,7 +298,7 @@ public class ServiceController {
 
 
                 Object[] objects = new Object[]{
-                        serviceIndicator.getPkReferralServiceIndicator().getIndicatorId()
+                        serviceIndicator.getPkReferralServiceIndicator().getIndicator().getReferralIndicatorId()
                 };
                 List<Indicator> indicators = null;
                 try {

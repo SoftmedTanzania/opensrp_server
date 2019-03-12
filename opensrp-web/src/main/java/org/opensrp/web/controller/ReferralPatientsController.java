@@ -449,7 +449,12 @@ public class ReferralPatientsController {
             try {
                 for (Long indicatorId : referralsDTO.getServiceIndicatorIds()) {
                     PatientReferralIndicators referralIndicators = new PatientReferralIndicators();
-                    referralIndicators.setReferralId(referralId);
+
+
+                    PatientReferral referral = new PatientReferral();
+                    referral.setId(referralId);
+
+                    referralIndicators.setPatientReferral(referral);
                     referralIndicators.setReferralServiceIndicatorId(indicatorId);
                     referralIndicators.setActive(true);
 
@@ -608,7 +613,7 @@ public class ReferralPatientsController {
                 patientReferralRepository.executeQuery(sql);
                 logger.info("Coze: updated referral feedback : " + sql);
 
-                if (referral.getReferralType() == 1) {
+                if (referral.getReferralType().getReferralTypeId() == 1) {
                     try {
                         FormSubmission formSubmission = formSubmissionService.findByInstanceId(referral.getInstanceId());
                         logger.info("Coze: formsubmission to be updated = " + new Gson().toJson(formSubmission));
@@ -643,7 +648,7 @@ public class ReferralPatientsController {
 
                 //TODO implement push notification to other tablets in the same facility.
                 try {
-                    if (referral.getReferralType() == 1)
+                    if (referral.getReferralType().getReferralTypeId() == 1)
                         googleFCMService.SendPushNotification(msg, tokens, false);
                     else {
                         googleFCMService.SendPushNotification(msg, tokens, true);
@@ -691,7 +696,7 @@ public class ReferralPatientsController {
                     patientReferralRepository.executeQuery(sql);
 
 
-                    if (patientReferral.getReferralType() == 1) {
+                    if (patientReferral.getReferralType().getReferralTypeId() == 1) {
                         try {
                             FormSubmission formSubmission = formSubmissionService.findByInstanceId(patientReferral.getInstanceId());
                             formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, PatientReferral.COL_REFERRAL_STATUS, patientReferral.getReferralStatus() + "");

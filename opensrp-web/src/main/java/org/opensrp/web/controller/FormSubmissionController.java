@@ -253,10 +253,11 @@ public class FormSubmissionController {
         	if (formSubmission.formName().equalsIgnoreCase("client_registration_form")){
 				Patients patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
 				String temporallyClientId = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,"client_id");
+				String ctcNumber = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,HealthFacilitiesPatients.COL_CTC_NUMBER);
 
 				//TODO reimplement this to only obtain CTC_NUMBER,CBHS_NUMBER and FACILITY_ID
 				PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
-				long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), patientReferral.getCtcNumber());
+				long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), ctcNumber);
 
 
 				List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
@@ -393,7 +394,9 @@ public class FormSubmissionController {
 	public void saveReferralData(Patients patient, PatientReferral patientReferral, FormSubmission formSubmission ){
 		try {
 
-			long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), patientReferral.getCtcNumber());
+
+			String ctcNumber = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,HealthFacilitiesPatients.COL_CTC_NUMBER);
+			long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), ctcNumber);
 
 			List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthfacilityPatientId,null);
 
@@ -401,9 +404,14 @@ public class FormSubmissionController {
 			patientReferral.setPatient(patient);
 
 			//TODO Coze remove hardcoding of these values. This is a temporally patch to be removed later on
-			patientReferral.setReferralSource(0);
 			patientReferral.setReferralStatus(0);
-			patientReferral.setReferralType(1);
+			patientReferral.setReferralSource(0);
+
+
+			ReferralType referralType = new ReferralType();
+			referralType.setReferralTypeId((long)1);
+
+			patientReferral.setReferralType(referralType);
 
 			logger.info("saveFormToOpenSRP : saving referral Data");
 			long id = patientReferralRepository.save(patientReferral);
@@ -416,7 +424,11 @@ public class FormSubmissionController {
 			for(int i=0;i<size;i++){
 				PatientReferralIndicators referralIndicators = new PatientReferralIndicators();
 				referralIndicators.setActive(true);
-				referralIndicators.setReferralId(id);
+
+				PatientReferral referral = new PatientReferral();
+				referral.setId(id);
+
+				referralIndicators.setPatientReferral(referral);
 				referralIndicators.setReferralServiceIndicatorId(indicatorIds.getLong(i));
 
 				long patientReferralIndicatorId = patientReferralIndicatorRepository.save(referralIndicators);
@@ -453,7 +465,7 @@ public class FormSubmissionController {
 			PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
 
 			PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
-			patientsDTO.setCtcNumber(patientReferral.getCtcNumber());
+			patientsDTO.setCtcNumber(ctcNumber);
 			patientReferralsDTO.setPatientsDTO(patientsDTO);
 
 
