@@ -23,7 +23,7 @@ public class ServiceIndicator implements Serializable {
 	public static final String COL_UPDATED_AT = "updated_at";
 
 
-	@Id
+
 	@GeneratedValue
 	@Column(name = COL_SERVICE_INDICATOR_ID)
 	private Long serviceIndicatorId;
@@ -31,6 +31,18 @@ public class ServiceIndicator implements Serializable {
 
 	@EmbeddedId
 	private PKReferralServiceIndicator pkReferralServiceIndicator;
+
+
+	@MapsId("referralServiceId")
+	@ManyToOne
+	@JoinColumn(name = COL_SERVICE_ID, referencedColumnName = "referral_service_id")
+	private ReferralService referralService;
+
+	@MapsId("referralServiceId")
+	@ManyToOne
+	@JoinColumn(name=COL_INDICATOR_ID, referencedColumnName = "referral_indicator_id")
+	private Indicator indicator;
+
 
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;

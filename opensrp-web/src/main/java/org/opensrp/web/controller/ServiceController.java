@@ -204,10 +204,7 @@ public class ServiceController {
                         Indicator indicator = new Indicator();
                         indicator.setReferralIndicatorId(indicatorId);
 
-                        ReferralService referralService = new ReferralService();
-                        referralService.setReferralServiceId(referralServiceIndicatorDTO.getReferralServiceId());
-
-                        PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(referralService, indicator);
+                        PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(referralServiceIndicatorDTO.getReferralServiceId(), indicatorId);
                         serviceIndicator.setPkReferralServiceIndicator(pkReferralServiceIndicator);
 
                         referralIndicators.add(serviceIndicator);
@@ -230,8 +227,8 @@ public class ServiceController {
                 long serviceId = 0;
                 for (ServiceIndicator serviceIndicator : serviceIndicatorsList) {
                     try {
-                        indicatorIds+= serviceIndicator.getPkReferralServiceIndicator().getIndicator().getReferralIndicatorId();
-                        serviceId = serviceIndicator.getPkReferralServiceIndicator().getReferralService().getReferralServiceId();
+                        indicatorIds+= serviceIndicator.getPkReferralServiceIndicator().getIndicatorId();
+                        serviceId = serviceIndicator.getPkReferralServiceIndicator().getServiceId();
 
                         serviceIndicator.setServiceIndicatorId(id);
                         id++;
@@ -298,7 +295,7 @@ public class ServiceController {
 
 
                 Object[] objects = new Object[]{
-                        serviceIndicator.getPkReferralServiceIndicator().getIndicator().getReferralIndicatorId()
+                        serviceIndicator.getPkReferralServiceIndicator().getIndicatorId()
                 };
                 List<Indicator> indicators = null;
                 try {

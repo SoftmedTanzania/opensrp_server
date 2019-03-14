@@ -34,8 +34,8 @@ public class ReferralServiceIndicatorRepository {
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(ServiceIndicator.COL_SERVICE_INDICATOR_ID, serviceIndicator.getServiceIndicatorId());
 
-		parameters.put(ServiceIndicator.COL_INDICATOR_ID, serviceIndicator.getPkReferralServiceIndicator().getIndicator().getReferralIndicatorId());
-		parameters.put(ServiceIndicator.COL_SERVICE_ID, serviceIndicator.getPkReferralServiceIndicator().getReferralService().getReferralServiceId());
+		parameters.put(ServiceIndicator.COL_INDICATOR_ID, serviceIndicator.getPkReferralServiceIndicator().getIndicatorId());
+		parameters.put(ServiceIndicator.COL_SERVICE_ID, serviceIndicator.getPkReferralServiceIndicator().getServiceId());
 
 		parameters.put(ServiceIndicator.COL_IS_ACTIVE  , serviceIndicator.isActive());
 		parameters.put(ServiceIndicator.COL_CREATED_AT , serviceIndicator.getCreatedAt());
@@ -73,14 +73,8 @@ public class ReferralServiceIndicatorRepository {
 
 			serviceIndicator.setServiceIndicatorId(rs.getLong(rs.findColumn(ServiceIndicator.COL_SERVICE_INDICATOR_ID)));
 
-			ReferralService referralService = new ReferralService();
-			referralService.setReferralServiceId(rs.getLong(rs.findColumn(ServiceIndicator.COL_SERVICE_ID)));
 
-			Indicator indicator = new Indicator();
-			indicator.setReferralIndicatorId(rs.getLong(rs.findColumn(ServiceIndicator.COL_INDICATOR_ID)));
-
-
-			PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(referralService,indicator);
+			PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(rs.getLong(rs.findColumn(ServiceIndicator.COL_SERVICE_ID)),rs.getLong(rs.findColumn(ServiceIndicator.COL_INDICATOR_ID)));
 			serviceIndicator.setPkReferralServiceIndicator(pkReferralServiceIndicator);
 
 
