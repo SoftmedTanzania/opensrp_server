@@ -117,7 +117,7 @@ public class ReferralPatientsService {
 
                     List<Long> patientReferralIndicatorsIds = new ArrayList<>();
                     for(PatientReferralIndicators referralIndicator:patientReferralIndicators){
-                        patientReferralIndicatorsIds.add(referralIndicator.getReferralServiceIndicatorId());
+                        patientReferralIndicatorsIds.add(referralIndicator.getServiceIndicator().getServiceIndicatorId());
                     }
 
                     referralsDTO.setServiceIndicatorIds(patientReferralIndicatorsIds);

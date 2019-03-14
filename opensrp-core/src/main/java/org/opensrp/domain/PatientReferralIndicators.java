@@ -33,11 +33,8 @@ public class PatientReferralIndicators implements Serializable {
 	private PatientReferral patientReferral;
 
 	@ManyToOne
-	@JoinColumn(name=COL_REFERRAL_ID)
+	@JoinColumn(name=COL_REFERRAL_SERVICE_INDICATOR_ID)
 	private ServiceIndicator serviceIndicator;
-
-	@Column(name = COL_REFERRAL_SERVICE_INDICATOR_ID)
-	private Long referralServiceIndicatorId;
 
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;
@@ -75,13 +72,6 @@ public class PatientReferralIndicators implements Serializable {
 		this.serviceIndicator = serviceIndicator;
 	}
 
-	public Long getReferralServiceIndicatorId() {
-		return referralServiceIndicatorId;
-	}
-
-	public void setReferralServiceIndicatorId(Long referralServiceIndicatorId) {
-		this.referralServiceIndicatorId = referralServiceIndicatorId;
-	}
 
 	public boolean isActive() {
 		return isActive;

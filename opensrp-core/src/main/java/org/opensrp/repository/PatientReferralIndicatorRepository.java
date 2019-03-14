@@ -3,6 +3,7 @@ package org.opensrp.repository;
 import org.opensrp.domain.PatientReferral;
 import org.opensrp.domain.PatientReferralIndicators;
 import org.opensrp.domain.PatientReferralIndicators;
+import org.opensrp.domain.ServiceIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,7 +33,7 @@ public class PatientReferralIndicatorRepository {
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(PatientReferralIndicators.COL_REFERRAL_ID , patientReferralIndicator.getPatientReferral().getId());
-		parameters.put(PatientReferralIndicators.COL_REFERRAL_SERVICE_INDICATOR_ID , patientReferralIndicator.getReferralServiceIndicatorId());
+		parameters.put(PatientReferralIndicators.COL_REFERRAL_SERVICE_INDICATOR_ID , patientReferralIndicator.getServiceIndicator().getServiceIndicatorId());
 		parameters.put(PatientReferralIndicators.COL_IS_ACTIVE  , patientReferralIndicator.isActive());
 		parameters.put(PatientReferralIndicators.COL_CREATED_AT , patientReferralIndicator.getCreatedAt());
 		parameters.put(PatientReferralIndicators.COL_UPDATED_AT , patientReferralIndicator.getCreatedAt());
@@ -73,7 +74,12 @@ public class PatientReferralIndicatorRepository {
 			patientReferral.setId(rs.getLong(rs.findColumn(PatientReferralIndicators.COL_REFERRAL_ID)));
 
 			patientReferralIndicator.setPatientReferral(patientReferral);
-			patientReferralIndicator.setReferralServiceIndicatorId(rs.getLong(rs.findColumn(PatientReferralIndicators.COL_REFERRAL_SERVICE_INDICATOR_ID)));
+
+			ServiceIndicator serviceIndicator = new ServiceIndicator();
+			serviceIndicator.setServiceIndicatorId(rs.getLong(rs.findColumn(PatientReferralIndicators.COL_REFERRAL_SERVICE_INDICATOR_ID)));
+
+			patientReferralIndicator.setServiceIndicator(serviceIndicator);
+
 			patientReferralIndicator.setActive(rs.getBoolean(rs.findColumn(PatientReferralIndicators.COL_IS_ACTIVE)));
 			patientReferralIndicator.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientReferralIndicators.COL_CREATED_AT)).getTime()));
 			patientReferralIndicator.setUpdatedAt(rs.getDate(rs.findColumn(PatientReferralIndicators.COL_UPDATED_AT)));

@@ -455,7 +455,12 @@ public class ReferralPatientsController {
                     referral.setId(referralId);
 
                     referralIndicators.setPatientReferral(referral);
-                    referralIndicators.setReferralServiceIndicatorId(indicatorId);
+
+                    ServiceIndicator serviceIndicator = new ServiceIndicator();
+                    serviceIndicator.setServiceIndicatorId(indicatorId);
+
+                    referralIndicators.setServiceIndicator(serviceIndicator);
+
                     referralIndicators.setActive(true);
 
                     try {
@@ -491,7 +496,7 @@ public class ReferralPatientsController {
                 List<PatientReferralIndicators> patientReferralIndicators = patientReferralIndicatorRepository.getPatientReferralIndicators("SELECT * FROM " + PatientReferralIndicators.tbName + " WHERE " + PatientReferralIndicators.COL_REFERRAL_ID + " =?", args2);
                 List<Long> patientReferralIndicatorsIds = new ArrayList<>();
                 for (PatientReferralIndicators referralIndicator : patientReferralIndicators) {
-                    patientReferralIndicatorsIds.add(referralIndicator.getReferralServiceIndicatorId());
+                    patientReferralIndicatorsIds.add(referralIndicator.getServiceIndicator().getServiceIndicatorId());
                 }
                 refDTO.setServiceIndicatorIds(patientReferralIndicatorsIds);
             }

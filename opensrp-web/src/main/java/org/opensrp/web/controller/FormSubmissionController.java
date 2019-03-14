@@ -429,7 +429,11 @@ public class FormSubmissionController {
 				referral.setId(id);
 
 				referralIndicators.setPatientReferral(referral);
-				referralIndicators.setReferralServiceIndicatorId(indicatorIds.getLong(i));
+
+				ServiceIndicator serviceIndicator = new ServiceIndicator();
+				serviceIndicator.setServiceIndicatorId(indicatorIds.getLong(i));
+
+				referralIndicators.setServiceIndicator(serviceIndicator);
 
 				long patientReferralIndicatorId = patientReferralIndicatorRepository.save(referralIndicators);
 				referralIndicatorIds.add(indicatorIds.getLong(i));
