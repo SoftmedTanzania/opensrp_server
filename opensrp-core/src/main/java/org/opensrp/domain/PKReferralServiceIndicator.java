@@ -10,12 +10,12 @@ import java.util.Objects;
 public class PKReferralServiceIndicator implements Serializable {
     public static final String COL_SERVICE_ID = "service_id";
 
-    public static final String COL_REFERRAL_INDICATOR_ID = "referral_indicator_id";
+    public static final String COL_INDICATOR_ID = "indicator_id";
 
     @Column(name = COL_SERVICE_ID)
     private long serviceId;
 
-    @Column(name = COL_REFERRAL_INDICATOR_ID)
+    @Column(name = COL_INDICATOR_ID)
     private long indicatorId;
 
 

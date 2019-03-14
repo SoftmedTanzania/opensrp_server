@@ -64,6 +64,7 @@ public class ReferralPatientsController {
     private TBPatientTestTypeRepository tbPatientTestTypeRepository;
     private TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository;
     private HealthFacilityRepository facilityRepository;
+    private ServiceIndicatorRepository serviceIndicatorRepository;
 
     @Autowired
     public ReferralPatientsController(ReferralPatientsService patientsService, TaskSchedulerService scheduler,
@@ -71,7 +72,7 @@ public class ReferralPatientsController {
                                       TBEncounterRepository tbEncounterRepository, PatientReferralRepository patientReferralRepository, TBPatientsRepository tbPatientsRepository, FormSubmissionService formSubmissionService,
                                       FormEntityConverter formEntityConverter, GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
                                       PatientReferralIndicatorRepository patientReferralIndicatorRepository, ReferralPatientsService referralPatientService, RapidProServiceImpl rapidProService, ReferralServiceRepository referralServiceRepository, HealthFacilityRepository facilityRepository,
-                                      TBPatientTestTypeRepository tbPatientTestTypeRepository, TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository, OpenmrsUserService openmrsUserService) {
+                                      TBPatientTestTypeRepository tbPatientTestTypeRepository, TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository, OpenmrsUserService openmrsUserService,ServiceIndicatorRepository serviceIndicatorRepository) {
         this.patientsService = patientsService;
         this.scheduler = scheduler;
         this.healthFacilityRepository = healthFacilityRepository;
@@ -91,6 +92,7 @@ public class ReferralPatientsController {
         this.tbPatientTestTypeRepository = tbPatientTestTypeRepository;
         this.tbSputumMedicationRegimesRepository = tbSputumMedicationRegimesRepository;
         this.facilityRepository = facilityRepository;
+        this.serviceIndicatorRepository = serviceIndicatorRepository;
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
@@ -447,24 +449,23 @@ public class ReferralPatientsController {
             Long referralId = patientReferralRepository.save(patientReferral);
 
             try {
-                for (Long indicatorId : referralsDTO.getServiceIndicatorIds()) {
-                    PatientReferralIndicators referralIndicators = new PatientReferralIndicators();
-
+                for (Long serviceIndicatorId : referralsDTO.getServiceIndicatorIds()) {
+                    PatientReferralIndicators patientReferralIndicators = new PatientReferralIndicators();
 
                     PatientReferral referral = new PatientReferral();
                     referral.setId(referralId);
+                    patientReferralIndicators.setPatientReferral(referral);
 
-                    referralIndicators.setPatientReferral(referral);
 
-                    ServiceIndicator serviceIndicator = new ServiceIndicator();
-                    serviceIndicator.setServiceIndicatorId(indicatorId);
+                    ServiceIndicator serviceIndicator = serviceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM "+ServiceIndicator.tbName+" WHERE "+ServiceIndicator.COL_SERVICE_INDICATOR_ID+"=?",
+                            new Object[]{serviceIndicatorId}).get(0);
 
-                    referralIndicators.setServiceIndicator(serviceIndicator);
+                    patientReferralIndicators.setServiceIndicator(serviceIndicator);
 
-                    referralIndicators.setActive(true);
+                    patientReferralIndicators.setActive(true);
 
                     try {
-                        patientReferralIndicatorRepository.save(referralIndicators);
+                        patientReferralIndicatorRepository.save(patientReferralIndicators);
                     } catch (Exception e) {
                         e.printStackTrace();
                         return new ResponseEntity<>(CONFLICT);
@@ -680,8 +681,8 @@ public class ReferralPatientsController {
     public ResponseEntity<HttpStatus> checkStatusOfReferrals() {
         try {
 
-            List<ReferralService> referralServices = referralServiceRepository.getReferralServices("SELECT * FROM " + ReferralService.tbName + " WHERE " + ReferralService.COL_REFERRAL_CATEGORY_NAME + " = 'malaria' ", null);
-            long malariaServiceId = referralServices.get(0).getReferralServiceId();
+            List<ReferralService> referralServices = referralServiceRepository.getReferralServices("SELECT * FROM " + ReferralService.tbName + " WHERE " + ReferralService.COL_CATEGORY_NAME + " = 'malaria' ", null);
+            long malariaServiceId = referralServices.get(0).getServiceId();
 
             List<PatientReferral> patientReferrals = patientReferralRepository.getReferrals("SELECT * FROM " + PatientReferral.tbName + " WHERE " + PatientReferral.COL_REFERRAL_STATUS + " = 0 ", null);
 

@@ -94,13 +94,13 @@ public class ReportController {
 
 		try {
 			List<CHWReferralsSummaryDTO> chwReferralsSummaryDTOS = patientReferralRepository.getCHWReferralsSummary(
-					"SELECT COUNT("+ PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count ,"+ ReferralService.COL_REFERRAL_SERVICE_NAME+" as service_name FROM "+PatientReferral.tbName +
-							" INNER JOIN "+ReferralService.tbName+" ON "+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+" = "+ReferralService.tbName+"."+ReferralService.COL_REFERRAL_SERVICE_ID +
+					"SELECT COUNT("+ PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count ,"+ ReferralService.COL_SERVICE_NAME +" as service_name FROM "+PatientReferral.tbName +
+							" INNER JOIN "+ReferralService.tbName+" ON "+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+" = "+ReferralService.tbName+"."+ReferralService.COL_SERVICE_ID +
 							" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=1 AND " +
 							PatientReferral.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
 							PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
 							PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
-							" GROUP BY "+ReferralService.COL_REFERRAL_SERVICE_NAME,null);
+							" GROUP BY "+ReferralService.COL_SERVICE_NAME,null);
 
 
 			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(chwReferralsSummaryDTOS,HttpStatus.OK);

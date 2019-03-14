@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 @Repository
-public class ReferralServiceIndicatorRepository {
+public class ServiceIndicatorRepository {
 
 
 	@Autowired

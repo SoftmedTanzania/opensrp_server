@@ -33,7 +33,14 @@ public class PatientReferralIndicators implements Serializable {
 	private PatientReferral patientReferral;
 
 	@ManyToOne
-	@JoinColumn(name=COL_REFERRAL_SERVICE_INDICATOR_ID)
+	@JoinColumns({
+			@JoinColumn(
+					name = "service_id",
+					referencedColumnName = "service_id"),
+			@JoinColumn(
+					name = "indicator_id",
+					referencedColumnName = "indicator_id")
+	})
 	private ServiceIndicator serviceIndicator;
 
 	@Column(name = COL_IS_ACTIVE)

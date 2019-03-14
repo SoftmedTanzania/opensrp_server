@@ -26,11 +26,11 @@ public class IndicatorRepository {
 	
 	public Long save(Indicator indicator) throws Exception {
 
-		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(Indicator.tbName).usingGeneratedKeyColumns(Indicator.COL_REFERRAL_INDICATOR_ID);
+		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(Indicator.tbName).usingGeneratedKeyColumns(Indicator.COL_INDICATOR_ID);
 
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put(Indicator.COL_REFERRAL_INDICATOR_NAME , indicator.getReferralIndicatorName());
-		parameters.put(Indicator.COL_REFERRAL_INDICATOR_NAME_SW , indicator.getReferralIndicatorNameSw());
+		parameters.put(Indicator.COL_INDICATOR_NAME, indicator.getIndicatorName());
+		parameters.put(Indicator.COL_INDICATOR_NAME_SW, indicator.getIndicatorNameSw());
 		parameters.put(Indicator.COL_IS_ACTIVE  , indicator.isActive());
 		parameters.put(Indicator.COL_CREATED_AT , indicator.getCreatedAt());
 		parameters.put(Indicator.COL_UPDATED_AT , indicator.getCreatedAt());
@@ -65,9 +65,9 @@ public class IndicatorRepository {
 		public Indicator mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Indicator indicator = new Indicator();
 
-			indicator.setReferralIndicatorId(rs.getLong(rs.findColumn(Indicator.COL_REFERRAL_INDICATOR_ID)));
-			indicator.setReferralIndicatorName(rs.getString(rs.findColumn(Indicator.COL_REFERRAL_INDICATOR_NAME)));
-			indicator.setReferralIndicatorNameSw(rs.getString(rs.findColumn(Indicator.COL_REFERRAL_INDICATOR_NAME_SW)));
+			indicator.setIndicatorId(rs.getLong(rs.findColumn(Indicator.COL_INDICATOR_ID)));
+			indicator.setIndicatorName(rs.getString(rs.findColumn(Indicator.COL_INDICATOR_NAME)));
+			indicator.setIndicatorNameSw(rs.getString(rs.findColumn(Indicator.COL_INDICATOR_NAME_SW)));
 			indicator.setActive(rs.getBoolean(rs.findColumn(Indicator.COL_IS_ACTIVE)));
 			indicator.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(Indicator.COL_CREATED_AT)).getTime()));
 			indicator.setUpdatedAt(rs.getDate(rs.findColumn(Indicator.COL_UPDATED_AT)));

@@ -33,14 +33,14 @@ public class ServiceIndicator implements Serializable {
 	private PKReferralServiceIndicator pkReferralServiceIndicator;
 
 
-	@MapsId("referralServiceId")
+	@MapsId("serviceId")
 	@ManyToOne
-	@JoinColumn(name = COL_SERVICE_ID, referencedColumnName = "referral_service_id")
+	@JoinColumn(name = COL_SERVICE_ID)
 	private ReferralService referralService;
 
-	@MapsId("referralServiceId")
+	@MapsId("indicatorId")
 	@ManyToOne
-	@JoinColumn(name=COL_INDICATOR_ID, referencedColumnName = "referral_indicator_id")
+	@JoinColumn(name=COL_INDICATOR_ID)
 	private Indicator indicator;
 
 
