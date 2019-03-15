@@ -297,7 +297,6 @@ public class ServiceController {
                 IndicatorDTO indicatorDTO = new IndicatorDTO();
                 indicatorDTO.setReferralServiceIndicatorId(serviceIndicator.getServiceIndicatorId());
 
-
                 Object[] objects = new Object[]{
                         serviceIndicator.getPkReferralServiceIndicator().getIndicatorId()
                 };

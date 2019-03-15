@@ -73,10 +73,8 @@ public class ServiceIndicatorRepository {
 
 			serviceIndicator.setServiceIndicatorId(rs.getLong(rs.findColumn(ServiceIndicator.COL_SERVICE_INDICATOR_ID)));
 
-
-			PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(rs.getLong(rs.findColumn(ServiceIndicator.COL_SERVICE_ID)),rs.getLong(rs.findColumn(ServiceIndicator.COL_INDICATOR_ID)));
+			PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(rs.getLong(rs.findColumn(ServiceIndicator.COL_INDICATOR_ID)),rs.getLong(rs.findColumn(ServiceIndicator.COL_SERVICE_ID)));
 			serviceIndicator.setPkReferralServiceIndicator(pkReferralServiceIndicator);
-
 
 			serviceIndicator.setActive(rs.getBoolean(rs.findColumn(ServiceIndicator.COL_IS_ACTIVE)));
 			serviceIndicator.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ServiceIndicator.COL_CREATED_AT)).getTime()));
