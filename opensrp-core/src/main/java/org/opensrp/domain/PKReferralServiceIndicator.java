@@ -20,6 +20,8 @@ public class PKReferralServiceIndicator implements Serializable {
 
 
     public PKReferralServiceIndicator(long indicatorId, long serviceId) {
+        this.indicatorId=indicatorId;
+        this.serviceId=serviceId;
     }
 
     public long getServiceId() {
