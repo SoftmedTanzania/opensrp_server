@@ -24,19 +24,19 @@ public class ReferralPatientsService {
     private HttpClient client;
 
     @Autowired
-    private PatientsRepository patientsRepository;
+    private ClientsRepository clientsRepository;
 
     @Autowired
-    private PatientReferralRepository patientReferralRepository;
+    private ClientReferralRepository clientReferralRepository;
 
     @Autowired
-    private PatientsAppointmentsRepository patientsAppointmentsRepository;
+    private ClientsAppointmentsRepository clientsAppointmentsRepository;
 
 	@Autowired
-	private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
+	private ClientReferralIndicatorRepository clientReferralIndicatorRepository;
 
     @Autowired
-    private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
+    private HealthFacilitiesClientsRepository healthFacilitiesClientsRepository;
 
     @Autowired
     private HealthFacilityRepository healthFacilityRepository;
@@ -46,11 +46,11 @@ public class ReferralPatientsService {
         this.client = HttpClientBuilder.create().build();
     }
 
-    public void storeCTCPatients(Patients patient) throws SQLException {
+    public void storeCTCPatients(ReferralClient patient) throws SQLException {
         // create jdbc template to persist the ids
         try {
             if (!this.checkIfClientExists(patient)) {
-                patientsRepository.save(patient);
+                clientsRepository.save(patient);
                 logger.info("Successfully saved client " + patient.getFirstName());
             }
         } catch (Exception e) {
@@ -58,10 +58,10 @@ public class ReferralPatientsService {
         }
     }
 
-    public void storeHealthFacilityRefferal(PatientReferral patientReferral) throws SQLException {
-        if (!this.checkIfClientExists(patientReferral)) {
+    public void storeHealthFacilityRefferal(ClientReferrals clientReferrals) throws SQLException {
+        if (!this.checkIfClientExists(clientReferrals)) {
             try {
-                patientReferralRepository.save(patientReferral);
+                clientReferralRepository.save(clientReferrals);
             } catch (Exception e) {
                 logger.error("", e);
             }
@@ -70,7 +70,7 @@ public class ReferralPatientsService {
     }
 
     public List<PatientReferralsDTO> getAllPatientReferrals(){
-        return getPatientsReferralsDTO("SELECT * FROM "+ HealthFacilitiesPatients.tbName,null);
+        return getPatientsReferralsDTO("SELECT * FROM "+ HealthFacilitiesReferralClients.tbName,null);
     }
 
     public List<PatientReferralsDTO> getHealthFacilityReferrals(String facilityUUID){
@@ -79,25 +79,25 @@ public class ReferralPatientsService {
         healthFacilityPatientArg[0] =  facilityUUID;
 
 
-        return getPatientsReferralsDTO("SELECT * FROM " + HealthFacilitiesPatients.tbName +
-                " INNER JOIN "+HealthFacilities.tbName+" ON "+HealthFacilitiesPatients.tbName+"."+HealthFacilitiesPatients.COL_FACILITY_ID +" = "+HealthFacilities.tbName+"._id " +
+        return getPatientsReferralsDTO("SELECT * FROM " + HealthFacilitiesReferralClients.tbName +
+                " INNER JOIN "+HealthFacilities.tbName+" ON "+ HealthFacilitiesReferralClients.tbName+"."+ HealthFacilitiesReferralClients.COL_FACILITY_ID +" = "+HealthFacilities.tbName+"._id " +
                 " WHERE " + HealthFacilities.COL_OPENMRS_UIID + "=?",healthFacilityPatientArg);
     }
 
     public  List<PatientReferralsDTO> getPatientsReferralsDTO(String sql, Object[] arg){
 
-        List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
+        List<HealthFacilitiesReferralClients> healthFacilitiesPatients = null;
         try {
-            healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients(sql,arg);
+            healthFacilitiesPatients = healthFacilitiesClientsRepository.getHealthFacilityPatients(sql,arg);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
-        for(HealthFacilitiesPatients facilitiesPatients:healthFacilitiesPatients){
-            String getPatientsSQL = "SELECT * from " + Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+ " = "+facilitiesPatients.getPatient().getPatientId();
+        for(HealthFacilitiesReferralClients facilitiesPatients:healthFacilitiesPatients){
+            String getPatientsSQL = "SELECT * from " + ReferralClient.tbName+" WHERE "+ ReferralClient.COL_CLIENT_ID + " = "+facilitiesPatients.getPatient().getClientId();
             try {
-                Patients patient = patientsRepository.getPatients(getPatientsSQL,null).get(0);
+                ReferralClient patient = clientsRepository.getPatients(getPatientsSQL,null).get(0);
 
                 PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
                 PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
@@ -105,18 +105,18 @@ public class ReferralPatientsService {
                 patientReferralsDTO.setPatientsDTO(patientsDTO);
 
 
-                String getReferralPatientsSQL = "SELECT * from " + PatientReferral.tbName+" WHERE "+PatientReferral.COL_PATIENT_ID +" =?";
-                Object[] args = new Object[]{patient.getPatientId()};
+                String getReferralPatientsSQL = "SELECT * from " + ClientReferrals.tbName+" WHERE "+ ClientReferrals.COL_CLIENT_ID +" =?";
+                Object[] args = new Object[]{patient.getClientId()};
 
-                List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(patientReferralRepository.getReferrals(getReferralPatientsSQL,args));
+                List<ReferralsDTO> referralsDTOS = PatientsConverter.toPatientReferralDTOsList(clientReferralRepository.getReferrals(getReferralPatientsSQL,args));
                 for(ReferralsDTO referralsDTO:referralsDTOS) {
 
                     Object[] args2 = new Object[]{referralsDTO.getReferralId()};
 
-                    List<PatientReferralIndicators> patientReferralIndicators = patientReferralIndicatorRepository.getPatientReferralIndicators("SELECT * FROM " + PatientReferralIndicators.tbName + " WHERE " + PatientReferralIndicators.COL_REFERRAL_ID + " =?", args2);
+                    List<ClientReferralIndicators> clientReferralIndicators = clientReferralIndicatorRepository.getPatientReferralIndicators("SELECT * FROM " + ClientReferralIndicators.tbName + " WHERE " + ClientReferralIndicators.COL_REFERRAL_ID + " =?", args2);
 
                     List<Long> patientReferralIndicatorsIds = new ArrayList<>();
-                    for(PatientReferralIndicators referralIndicator:patientReferralIndicators){
+                    for(ClientReferralIndicators referralIndicator: clientReferralIndicators){
                         patientReferralIndicatorsIds.add(referralIndicator.getServiceIndicator().getServiceIndicatorId());
                     }
 
@@ -126,11 +126,11 @@ public class ReferralPatientsService {
                 patientReferralsDTO.setPatientReferralsList(referralsDTOS);
 
 
-                Object[] args2 = new Object[]{facilitiesPatients.getHealthFacilityPatientId()};
-                String getPatientsAppointmentsSQL = "SELECT * from " + PatientAppointments.tbName+" WHERE "+PatientAppointments.COL_HEALTH_FACILITY_PATIENT_ID +" =?";
-                List<PatientAppointments> patientAppointments = patientsAppointmentsRepository.getAppointments(getPatientsAppointmentsSQL,args2);
+                Object[] args2 = new Object[]{facilitiesPatients.getHealthFacilityClientId()};
+                String getPatientsAppointmentsSQL = "SELECT * from " + ClientAppointments.tbName+" WHERE "+ ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID +" =?";
+                List<ClientAppointments> clientAppointments = clientsAppointmentsRepository.getAppointments(getPatientsAppointmentsSQL,args2);
 
-                patientReferralsDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(patientAppointments,patient.getPatientId()));
+                patientReferralsDTO.setPatientsAppointmentsDTOS(PatientsConverter.toPatientAppointmentDTOsList(clientAppointments,patient.getClientId()));
 
                 patientReferralsDTOS.add(patientReferralsDTO);
 
@@ -143,22 +143,22 @@ public class ReferralPatientsService {
         return patientReferralsDTOS;
     }
 
-    public List<Patients> getPatients(String sql, Object[] args){
+    public List<ReferralClient> getPatients(String sql, Object[] args){
         try {
-            return patientsRepository.getPatients(sql,args);
+            return clientsRepository.getPatients(sql,args);
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
     }
 
-    public Boolean checkIfClientExists(Patients patient) throws SQLException {
+    public Boolean checkIfClientExists(ReferralClient patient) throws SQLException {
         try {
-            String checkIfExistQuery = "SELECT count(*) from " + Patients.tbName + " WHERE " + Patients.COL_PATIENT_ID + " = ?";
+            String checkIfExistQuery = "SELECT count(*) from " + ReferralClient.tbName + " WHERE " + ReferralClient.COL_CLIENT_ID + " = ?";
             String[] args = new String[1];
-            args[0] = patient.getPatientId()+"";
+            args[0] = patient.getClientId()+"";
 
-            int rowCount = patientsRepository.checkIfExists(checkIfExistQuery, args);
+            int rowCount = clientsRepository.checkIfExists(checkIfExistQuery, args);
 
             logger.info(
                     "[checkIfClientExists] - Card Number:" + args[0] + " - [Exists] " + (rowCount == 0 ? "false" : "true"));
@@ -170,12 +170,12 @@ public class ReferralPatientsService {
         }
     }
 
-    public Boolean checkIfClientExists(PatientReferral patientReferral) throws SQLException {
+    public Boolean checkIfClientExists(ClientReferrals clientReferrals) throws SQLException {
         try {
-            String checkIfExistQuery = "SELECT count(*) from " + PatientReferral.tbName + " WHERE  "+PatientReferral.COL_REFERRAL_ID+" = ?";
+            String checkIfExistQuery = "SELECT count(*) from " + ClientReferrals.tbName + " WHERE  "+ ClientReferrals.COL_REFERRAL_ID+" = ?";
             Object[] args = new Object[1];
-            args[0] = patientReferral.getId();
-            int rowCount = patientsRepository.checkIfExists(checkIfExistQuery, args);
+            args[0] = clientReferrals.getId();
+            int rowCount = clientsRepository.checkIfExists(checkIfExistQuery, args);
 
             logger.info(
                     "[checkIfClientExists] - Referral ID:" + args[0] + " - [Exists] " + (rowCount == 0 ? "false" : "true"));
@@ -199,30 +199,30 @@ public class ReferralPatientsService {
         return rephrase;
     }
 
-    public long savePatient(Patients patient, String healthFacilityCode, String ctcNumber) {
-        String query = "SELECT * FROM " + Patients.tbName + " WHERE " +
-                Patients.COL_PATIENT_FIRST_NAME + " = ?     AND " +
-                Patients.COL_DATE_OF_BIRTH + " = ?    AND " +
-                Patients.COL_PATIENT_SURNAME + " = ?        AND " +
-                Patients.COL_PHONE_NUMBER + " = ?";
+    public long savePatient(ReferralClient patient, String healthFacilityCode, String ctcNumber) {
+        String query = "SELECT * FROM " + ReferralClient.tbName + " WHERE " +
+                ReferralClient.COL_PATIENT_FIRST_NAME + " = ?     AND " +
+                ReferralClient.COL_DATE_OF_BIRTH + " = ?    AND " +
+                ReferralClient.COL_PATIENT_SURNAME + " = ?        AND " +
+                ReferralClient.COL_PHONE_NUMBER + " = ?";
         Object[] params = new Object[]{
                 patient.getFirstName(),
                 patient.getDateOfBirth(),
                 patient.getSurname(),
                 patient.getPhoneNumber()};
-        List<Patients> patientsResults = null;
+        List<ReferralClient> referralClientResults = null;
         try {
-            patientsResults = patientsRepository.getPatients(query, params);
+            referralClientResults = clientsRepository.getPatients(query, params);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         long id;
-        if (patientsResults.size() > 0) {
-            id = patientsResults.get(0).getPatientId();
+        if (referralClientResults.size() > 0) {
+            id = referralClientResults.get(0).getClientId();
         } else {
             try {
-                id = patientsRepository.save(patient);
+                id = clientsRepository.save(patient);
             } catch (Exception e) {
                 e.printStackTrace();
                 id = -1;
@@ -246,38 +246,38 @@ public class ReferralPatientsService {
             healthFacilityId = healthFacilities.get(0).getId();
         }
 
-        HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
+        HealthFacilitiesReferralClients healthFacilitiesReferralClients = new HealthFacilitiesReferralClients();
 
-        Patients patients = new Patients();
-        patients.setPatientId(id);
+        ReferralClient referralClient = new ReferralClient();
+        referralClient.setClientId(id);
 
-        healthFacilitiesPatients.setPatient(patients);
-        healthFacilitiesPatients.setCtcNumber(ctcNumber);
-        healthFacilitiesPatients.setFacilityId(healthFacilityId);
+        healthFacilitiesReferralClients.setPatient(referralClient);
+        healthFacilitiesReferralClients.setCtcNumber(ctcNumber);
+        healthFacilitiesReferralClients.setFacilityId(healthFacilityId);
 
 
-        String healthFacilityPatientsquery = "SELECT * FROM " + HealthFacilitiesPatients.tbName + " WHERE " +
-                HealthFacilitiesPatients.COL_PATIENT_ID + " = ?    AND " +
-                HealthFacilitiesPatients.COL_FACILITY_ID + " = ?";
+        String healthFacilityPatientsquery = "SELECT * FROM " + HealthFacilitiesReferralClients.tbName + " WHERE " +
+                HealthFacilitiesReferralClients.COL_CLIENT_ID + " = ?    AND " +
+                HealthFacilitiesReferralClients.COL_FACILITY_ID + " = ?";
 
         Object[] healthFacilityPatientsparams = new Object[]{
-                healthFacilitiesPatients.getPatient().getPatientId(),
-                healthFacilitiesPatients.getFacilityId()};
+                healthFacilitiesReferralClients.getPatient().getClientId(),
+                healthFacilitiesReferralClients.getFacilityId()};
 
-        List<HealthFacilitiesPatients> healthFacilitiesPatientsResults = null;
+        List<HealthFacilitiesReferralClients> healthFacilitiesReferralClientsResults = null;
         try {
-            healthFacilitiesPatientsResults = healthFacilitiesPatientsRepository.getHealthFacilityPatients(healthFacilityPatientsquery, healthFacilityPatientsparams);
+            healthFacilitiesReferralClientsResults = healthFacilitiesClientsRepository.getHealthFacilityPatients(healthFacilityPatientsquery, healthFacilityPatientsparams);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         long healthfacilityPatientId = -1;
-        if (healthFacilitiesPatientsResults.size() > 0) {
-            healthfacilityPatientId = healthFacilitiesPatientsResults.get(0).getHealthFacilityPatientId();
+        if (healthFacilitiesReferralClientsResults.size() > 0) {
+            healthfacilityPatientId = healthFacilitiesReferralClientsResults.get(0).getHealthFacilityClientId();
         } else {
             try {
-                healthfacilityPatientId = healthFacilitiesPatientsRepository.save(healthFacilitiesPatients);
+                healthfacilityPatientId = healthFacilitiesClientsRepository.save(healthFacilitiesReferralClients);
             } catch (Exception e) {
                 e.printStackTrace();
             }

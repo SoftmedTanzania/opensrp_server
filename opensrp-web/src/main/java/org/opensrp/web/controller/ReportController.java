@@ -9,11 +9,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.opensrp.connector.openmrs.service.OpenmrsReportingService;
 import org.opensrp.connector.openmrs.service.OpenmrsUserService;
+import org.opensrp.domain.ClientReferrals;
 import org.opensrp.domain.HealthFacilities;
-import org.opensrp.domain.PatientReferral;
 import org.opensrp.domain.ReferralService;
 import org.opensrp.dto.*;
-import org.opensrp.repository.PatientReferralRepository;
+import org.opensrp.repository.ClientReferralRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +26,14 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 public class ReportController {
 
 	private OpenmrsReportingService reportService;
-	private PatientReferralRepository patientReferralRepository;
+	private ClientReferralRepository clientReferralRepository;
 	private OpenmrsUserService openmrsUserService;
 	
 	@Autowired
-	public ReportController(OpenmrsReportingService reportService,PatientReferralRepository patientReferralRepository,OpenmrsUserService openmrsUserService) {
+	public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService) {
 		this.reportService = reportService;
 		this.openmrsUserService = openmrsUserService;
-		this.patientReferralRepository = patientReferralRepository;
+		this.clientReferralRepository = clientReferralRepository;
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/report/report-definitions")
@@ -93,13 +93,13 @@ public class ReportController {
 		}
 
 		try {
-			List<CHWReferralsSummaryDTO> chwReferralsSummaryDTOS = patientReferralRepository.getCHWReferralsSummary(
-					"SELECT COUNT("+ PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count ,"+ ReferralService.COL_SERVICE_NAME +" as service_name FROM "+PatientReferral.tbName +
-							" INNER JOIN "+ReferralService.tbName+" ON "+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+" = "+ReferralService.tbName+"."+ReferralService.COL_SERVICE_ID +
-							" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=1 AND " +
-							PatientReferral.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
-							PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
-							PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+			List<CHWReferralsSummaryDTO> chwReferralsSummaryDTOS = clientReferralRepository.getCHWReferralsSummary(
+					"SELECT COUNT("+ ClientReferrals.tbName+"."+ ClientReferrals.COL_SERVICE_ID+") as count ,"+ ReferralService.COL_SERVICE_NAME +" as service_name FROM "+ ClientReferrals.tbName +
+							" INNER JOIN "+ReferralService.tbName+" ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_SERVICE_ID+" = "+ReferralService.tbName+"."+ReferralService.COL_SERVICE_ID +
+							" WHERE "+ ClientReferrals.COL_REFERRAL_TYPE+"=1 AND " +
+							ClientReferrals.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
+							ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+							ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
 							" GROUP BY "+ReferralService.COL_SERVICE_NAME,null);
 
 
@@ -149,17 +149,17 @@ public class ReportController {
 				String facilityName = array.getJSONObject(i).getString("facility_name");
 				String facilityId   = array.getJSONObject(i).getString("facility_id");
 
-				List<FacilityDepartmentReferralSummaryDTO> facilityReferralsSummaryDTOS = patientReferralRepository.getFacilityDepartmentReferralsSummary(
-						"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count, "+
-								PatientReferral.COL_REFERRAL_SOURCE+" as referral_source, "+
-								PatientReferral.COL_REFERRAL_STATUS+" as referral_status " +
-								" FROM "+PatientReferral.tbName +
-								" INNER JOIN "+ HealthFacilities.tbName +" ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
-								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=2 AND " +
+				List<FacilityDepartmentReferralSummaryDTO> facilityReferralsSummaryDTOS = clientReferralRepository.getFacilityDepartmentReferralsSummary(
+						"SELECT COUNT("+ ClientReferrals.tbName+"."+ ClientReferrals.COL_SERVICE_ID+") as count, "+
+								ClientReferrals.COL_REFERRAL_SOURCE+" as referral_source, "+
+								ClientReferrals.COL_REFERRAL_STATUS+" as referral_status " +
+								" FROM "+ ClientReferrals.tbName +
+								" INNER JOIN "+ HealthFacilities.tbName +" ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
+								" WHERE "+ ClientReferrals.COL_REFERRAL_TYPE+"=2 AND " +
 								HealthFacilities.COL_OPENMRS_UIID+" = '"+facilityId+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
-								" GROUP BY "+PatientReferral.COL_REFERRAL_SOURCE+" , "+PatientReferral.COL_REFERRAL_STATUS,null);
+								ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+								ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+								" GROUP BY "+ ClientReferrals.COL_REFERRAL_SOURCE+" , "+ ClientReferrals.COL_REFERRAL_STATUS,null);
 
 
 				FacilityReferralsSummaryDTO facilityReferralsSummaryDTO = new FacilityReferralsSummaryDTO();
@@ -221,18 +221,18 @@ public class ReportController {
 				String facilityName = facilitiesArray.getJSONObject(i).getString("facility_name");
 				String facilityId   = facilitiesArray.getJSONObject(i).getString("facility_id");
 
-				List<FacilityProvidersReferralSummaryDTO> facilityProvidersReferralsSummaries = patientReferralRepository.getFacilityProvidersReferralsSummary(
-						"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_SERVICE_ID+") as count, "+
-								PatientReferral.COL_REFERRAL_SOURCE+" as referral_source, "+
-								PatientReferral.COL_REFERRAL_STATUS+" as referral_status, " +
-								PatientReferral.COL_SERVICE_PROVIDER_UIID+" as provider_uuid " +
-								" FROM "+PatientReferral.tbName +
-								" INNER JOIN "+HealthFacilities.tbName +" ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
-								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"=2 AND " +
+				List<FacilityProvidersReferralSummaryDTO> facilityProvidersReferralsSummaries = clientReferralRepository.getFacilityProvidersReferralsSummary(
+						"SELECT COUNT("+ ClientReferrals.tbName+"."+ ClientReferrals.COL_SERVICE_ID+") as count, "+
+								ClientReferrals.COL_REFERRAL_SOURCE+" as referral_source, "+
+								ClientReferrals.COL_REFERRAL_STATUS+" as referral_status, " +
+								ClientReferrals.COL_SERVICE_PROVIDER_UIID+" as provider_uuid " +
+								" FROM "+ ClientReferrals.tbName +
+								" INNER JOIN "+HealthFacilities.tbName +" ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
+								" WHERE "+ ClientReferrals.COL_REFERRAL_TYPE+"=2 AND " +
 								HealthFacilities.COL_OPENMRS_UIID+" = '"+facilityId+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
-								" GROUP BY "+PatientReferral.COL_REFERRAL_SOURCE+" , "+PatientReferral.COL_REFERRAL_STATUS+","+PatientReferral.COL_SERVICE_PROVIDER_UIID ,null);
+								ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+								ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+								" GROUP BY "+ ClientReferrals.COL_REFERRAL_SOURCE+" , "+ ClientReferrals.COL_REFERRAL_STATUS+","+ ClientReferrals.COL_SERVICE_PROVIDER_UIID ,null);
 
 				for (FacilityProvidersReferralSummaryDTO facilityProvidersReferralsSummary:facilityProvidersReferralsSummaries) {
 					facilityProvidersReferralsSummary.setProviderName(openmrsUserService.getTeamMember(facilityProvidersReferralsSummary.getProviderUuid()).getString("display"));
@@ -294,18 +294,18 @@ public class ReportController {
 				String facilityName = facilitiesArray.getJSONObject(i).getString("facility_name");
 				String facilityId   = facilitiesArray.getJSONObject(i).getString("facility_id");
 
-				List<InterFacilityReferralSummaryDTO> facilityProvidersReferralsSummaries = patientReferralRepository.getInterFacilityReferralsSummary(
-						"SELECT COUNT("+PatientReferral.tbName+"."+PatientReferral.COL_REFERRAL_ID+") as count, "+
-								PatientReferral.COL_REFERRAL_STATUS+" as referral_status, " +
+				List<InterFacilityReferralSummaryDTO> facilityProvidersReferralsSummaries = clientReferralRepository.getInterFacilityReferralsSummary(
+						"SELECT COUNT("+ ClientReferrals.tbName+"."+ ClientReferrals.COL_REFERRAL_ID+") as count, "+
+								ClientReferrals.COL_REFERRAL_STATUS+" as referral_status, " +
 								"H2."+HealthFacilities.COL_FACILITY_NAME+" as to_facility_name " +
-								" FROM "+PatientReferral.tbName +
-								" INNER JOIN "+HealthFacilities.tbName +" H1 ON "+PatientReferral.tbName+"."+PatientReferral.COL_FROM_FACILITY_ID+" = H1."+HealthFacilities.COL_OPENMRS_UIID+
-								" INNER JOIN "+HealthFacilities.tbName +" H2 ON "+PatientReferral.tbName+"."+PatientReferral.COL_FACILITY_ID+" = H2."+HealthFacilities.COL_OPENMRS_UIID+
-								" WHERE "+PatientReferral.COL_REFERRAL_TYPE+"= 3 AND " +
+								" FROM "+ ClientReferrals.tbName +
+								" INNER JOIN "+HealthFacilities.tbName +" H1 ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FROM_FACILITY_ID+" = H1."+HealthFacilities.COL_OPENMRS_UIID+
+								" INNER JOIN "+HealthFacilities.tbName +" H2 ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FACILITY_ID+" = H2."+HealthFacilities.COL_OPENMRS_UIID+
+								" WHERE "+ ClientReferrals.COL_REFERRAL_TYPE+"= 3 AND " +
 								"H1."+HealthFacilities.COL_OPENMRS_UIID+" = '"+facilityId+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
-								PatientReferral.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
-								" GROUP BY H2."+HealthFacilities.COL_FACILITY_NAME+" , "+PatientReferral.COL_REFERRAL_STATUS,null);
+								ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+								ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+								" GROUP BY H2."+HealthFacilities.COL_FACILITY_NAME+" , "+ ClientReferrals.COL_REFERRAL_STATUS,null);
 
 				InterFacilityReferralsSummaryReport interFacilityReferralsSummaryReport = new InterFacilityReferralsSummaryReport();
 

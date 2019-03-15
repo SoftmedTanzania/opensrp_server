@@ -3,8 +3,6 @@ package org.opensrp.domain;
 import javax.persistence.*;
 import java.util.Date;
 
-import static org.opensrp.domain.ReferralType.COL_REFERRAL_TYPE_ID;
-
 @Entity
 @Table(name = "tbl_referral_feedback")
 public class ReferralFeedback {
@@ -15,7 +13,7 @@ public class ReferralFeedback {
 
 	public static final String COL_DESC_SW = "desc_sw";
 
-	public static final String COL_REFERRAL_TYPE = "referral_type";
+	public static final String COL_REFERRAL_TYPE_ID = "referral_type_id";
 
 	public static final String COL_CREATED_AT = "created_at";
 
@@ -33,7 +31,7 @@ public class ReferralFeedback {
 	private String descSw;
 
 	@ManyToOne
-	@JoinColumn(name=COL_REFERRAL_TYPE, referencedColumnName=COL_REFERRAL_TYPE_ID)
+	@JoinColumn(name= COL_REFERRAL_TYPE_ID, referencedColumnName= ReferralType.COL_REFERRAL_TYPE_ID)
 	private ReferralType referralType;
 
 

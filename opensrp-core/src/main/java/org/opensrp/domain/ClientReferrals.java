@@ -6,12 +6,12 @@ import java.util.Date;
 import static org.opensrp.domain.ReferralType.COL_REFERRAL_TYPE_ID;
 
 @Entity
-@Table(name = "tbl_patient_referral")
-public class PatientReferral {
+@Table(name = "tbl_client_referral")
+public class ClientReferrals {
 
-	public static final String tbName = "tbl_patient_referral";
+	public static final String tbName = "tbl_client_referral";
 
-	public static final String COL_PATIENT_ID = "patient_id";
+	public static final String COL_CLIENT_ID = "client_id";
 
 	public static final String COL_REFERRAL_ID = "referral_id";
 
@@ -31,13 +31,11 @@ public class PatientReferral {
 
 	public static final String COL_SERVICE_PROVIDER_UIID= "service_provider_uiid";
 
-	public static final String COL_REFERRAL_FEEDBACK= "referral_feedback";
+	public static final String COL_REFERRAL_FEEDBACK_ID = "referral_feedback_id";
 
 	public static final String COL_FROM_FACILITY_ID= "from_facility_id";
 
 	public static final String COL_OTHER_CLINICAL_INFORMATION= "other_clinical_information";
-
-	public static final String COL_SERVICES_GIVEN_TO_PATIENT= "services_given_to_patient";
 
 	public static final String COL_LAB_TEST= "lab_test";
 
@@ -65,8 +63,8 @@ public class PatientReferral {
 
 
 	@ManyToOne
-	@JoinColumn(name=COL_PATIENT_ID)
-	private Patients patient;
+	@JoinColumn(name= COL_CLIENT_ID)
+	private ReferralClient patient;
 
 	@Column(name = COL_REFERRAL_REASON)
 	private String referralReason;
@@ -89,15 +87,12 @@ public class PatientReferral {
 	@Column(name = COL_OTHER_NOTES)
 	private String otherNotes;
 
-	@Column(name = COL_SERVICES_GIVEN_TO_PATIENT)
-	private String serviceGivenToPatient;
-
 	@ManyToOne
 	@JoinColumn(name=COL_REFERRAL_TYPE, referencedColumnName=COL_REFERRAL_TYPE_ID)
 	private ReferralType referralType;
 
 	@ManyToOne
-	@JoinColumn(name=COL_REFERRAL_FEEDBACK, referencedColumnName="_id")
+	@JoinColumn(name= COL_REFERRAL_FEEDBACK_ID, referencedColumnName="_id")
 	private ReferralFeedback referralFeedback;
 
 	@Column(name = COL_FROM_FACILITY_ID)
@@ -142,11 +137,11 @@ public class PatientReferral {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Patients getPatient() {
+	public ReferralClient getPatient() {
 		return patient;
 	}
 
-	public void setPatient(Patients patient) {
+	public void setPatient(ReferralClient patient) {
 		this.patient = patient;
 	}
 
@@ -220,14 +215,6 @@ public class PatientReferral {
 
 	public void setOtherNotes(String otherNotes) {
 		this.otherNotes = otherNotes;
-	}
-
-	public String getServiceGivenToPatient() {
-		return serviceGivenToPatient;
-	}
-
-	public void setServiceGivenToPatient(String serviceGivenToPatient) {
-		this.serviceGivenToPatient = serviceGivenToPatient;
 	}
 
 	public int getLabTest() {

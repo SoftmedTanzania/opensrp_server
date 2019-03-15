@@ -5,12 +5,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_patient_referral_indicator")
-public class PatientReferralIndicators implements Serializable {
+@Table(name = "tbl_client_referral_indicator")
+public class ClientReferralIndicators implements Serializable {
 
-	public static final String tbName = "tbl_patient_referral_indicator";
+	public static final String tbName = "tbl_client_referral_indicator";
 
-	public static final String COL_PATIENT_REFERRAL_INDICATOR_ID = "patient_referral_indicator_id";
+	public static final String COL_CLIENT_REFERRAL_INDICATOR_ID = "client_referral_indicator_id";
 
 	public static final String COL_REFERRAL_ID = "referral_id";
 
@@ -25,12 +25,12 @@ public class PatientReferralIndicators implements Serializable {
 
 	@Id
 	@GeneratedValue
-	@Column(name = COL_PATIENT_REFERRAL_INDICATOR_ID)
-	private Long patientReferralIndicatorId;
+	@Column(name = COL_CLIENT_REFERRAL_INDICATOR_ID)
+	private Long clientReferralIndicatorId;
 
 	@ManyToOne
 	@JoinColumn(name=COL_REFERRAL_ID)
-	private PatientReferral patientReferral;
+	private ClientReferrals clientReferrals;
 
 	@ManyToOne
 	@JoinColumns({
@@ -55,20 +55,20 @@ public class PatientReferralIndicators implements Serializable {
 	private Date updatedAt;
 
 
-	public Long getPatientReferralIndicatorId() {
-		return patientReferralIndicatorId;
+	public Long getClientReferralIndicatorId() {
+		return clientReferralIndicatorId;
 	}
 
-	public void setPatientReferralIndicatorId(Long patientReferralIndicatorId) {
-		this.patientReferralIndicatorId = patientReferralIndicatorId;
+	public void setClientReferralIndicatorId(Long clientReferralIndicatorId) {
+		this.clientReferralIndicatorId = clientReferralIndicatorId;
 	}
 
-	public PatientReferral getPatientReferral() {
-		return patientReferral;
+	public ClientReferrals getClientReferrals() {
+		return clientReferrals;
 	}
 
-	public void setPatientReferral(PatientReferral patientReferral) {
-		this.patientReferral = patientReferral;
+	public void setClientReferrals(ClientReferrals clientReferrals) {
+		this.clientReferrals = clientReferrals;
 	}
 
 	public ServiceIndicator getServiceIndicator() {

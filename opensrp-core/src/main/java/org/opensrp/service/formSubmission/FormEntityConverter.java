@@ -2,9 +2,7 @@
 package org.opensrp.service.formSubmission;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,7 +17,6 @@ import org.opensrp.common.FormEntityConstants.FormEntity;
 import org.opensrp.common.FormEntityConstants.Person;
 import org.opensrp.common.util.DateUtil;
 import org.opensrp.domain.*;
-import org.opensrp.dto.PatientsDTO;
 import org.opensrp.form.domain.*;
 import org.opensrp.form.service.FormAttributeParser;
 import org.opensrp.form.service.FormFieldMap;
@@ -343,55 +340,55 @@ public class FormEntityConverter {
 	}
 
 
-	public Patients getPatientFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
-		Patients patients = new Patients();
+	public ReferralClient getPatientFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
+		ReferralClient referralClient = new ReferralClient();
 		try {
 			FormData formData = fsubmission.instance().form();
 			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
 			for(org.opensrp.form.domain.FormField formField : formFields){
-				if(formField.name().equals(Patients.COL_PATIENT_FIRST_NAME))
-					patients.setFirstName(formField.value());
+				if(formField.name().equals(ReferralClient.COL_PATIENT_FIRST_NAME))
+					referralClient.setFirstName(formField.value());
 
-				if(formField.name().equals(Patients.COL_PATIENT_MIDDLE_NAME))
-					patients.setMiddleName(formField.value());
+				if(formField.name().equals(ReferralClient.COL_PATIENT_MIDDLE_NAME))
+					referralClient.setMiddleName(formField.value());
 
-				if(formField.name().equals(Patients.COL_PATIENT_SURNAME))
-					patients.setSurname(formField.value());
+				if(formField.name().equals(ReferralClient.COL_PATIENT_SURNAME))
+					referralClient.setSurname(formField.value());
 
-				if(formField.name().equals(Patients.COL_PHONE_NUMBER))
-					patients.setPhoneNumber(formField.value());
+				if(formField.name().equals(ReferralClient.COL_PHONE_NUMBER))
+					referralClient.setPhoneNumber(formField.value());
 
-				if(formField.name().equals(Patients.COL_VILLAGE))
-					patients.setVillage(formField.value());
+				if(formField.name().equals(ReferralClient.COL_VILLAGE))
+					referralClient.setVillage(formField.value());
 
 
-				if(formField.name().equals(Patients.COL_WARD))
-					patients.setWard(formField.value());
+				if(formField.name().equals(ReferralClient.COL_WARD))
+					referralClient.setWard(formField.value());
 
-				if(formField.name().equals(Patients.COL_CARE_TAKER_NAME))
-					patients.setCareTakerName(formField.value());
+				if(formField.name().equals(ReferralClient.COL_CARE_TAKER_NAME))
+					referralClient.setCareTakerName(formField.value());
 
-				if(formField.name().equals(Patients.COL_CARE_TAKER_PHONE_NUMBER))
-					patients.setCareTakerPhoneNumber(formField.value());
+				if(formField.name().equals(ReferralClient.COL_CARE_TAKER_PHONE_NUMBER))
+					referralClient.setCareTakerPhoneNumber(formField.value());
 
-				if(formField.name().equals(Patients.COL_VEO))
-					patients.setVeo(formField.value());
+				if(formField.name().equals(ReferralClient.COL_VEO))
+					referralClient.setVeo(formField.value());
 
-				if(formField.name().equals(Patients.COL_DATE_OF_BIRTH)) {
+				if(formField.name().equals(ReferralClient.COL_DATE_OF_BIRTH)) {
 					Date startDate = new Date();
 					try{
 						startDate.setTime(Long.parseLong(formField.value()));
-						patients.setDateOfBirth(startDate);
+						referralClient.setDateOfBirth(startDate);
 					}catch (Exception e1){
 						e1.printStackTrace();
 					}
 				}
 
-				if(formField.name().equals(Patients.COL_GENDER))
-					patients.setGender(formField.value());
+				if(formField.name().equals(ReferralClient.COL_GENDER))
+					referralClient.setGender(formField.value());
 			}
 
-			return patients;
+			return referralClient;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
@@ -413,7 +410,7 @@ public class FormEntityConverter {
 	}
 
 	public JSONArray getReferralIndicatorsFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
-		Patients patients = new Patients();
+		ReferralClient referralClient = new ReferralClient();
 		try {
 			FormData formData = fsubmission.instance().form();
 			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
@@ -429,62 +426,62 @@ public class FormEntityConverter {
 		}
 	}
 
-	public PatientReferral getPatientReferralFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
-		PatientReferral patientReferral = new PatientReferral();
+	public ClientReferrals getPatientReferralFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
+		ClientReferrals clientReferrals = new ClientReferrals();
 		try {
 			FormData formData = fsubmission.instance().form();
 			List<org.opensrp.form.domain.FormField> formFields = formData.fields();
 
-			patientReferral.setInstanceId(fsubmission.getInstanceId());
+			clientReferrals.setInstanceId(fsubmission.getInstanceId());
 
 			for(org.opensrp.form.domain.FormField formField : formFields){
 
-				if(formField.name().equals(PatientReferral.COL_FACILITY_ID))
-					patientReferral.setFacilityId(formField.value());
+				if(formField.name().equals(ClientReferrals.COL_FACILITY_ID))
+					clientReferrals.setFacilityId(formField.value());
 
 				if(formField.name().equals("id"))
-					patientReferral.setReferralUUID(formField.value());
+					clientReferrals.setReferralUUID(formField.value());
 
-				if(formField.name().equals(PatientReferral.COL_REFERRAL_DATE)) {
+				if(formField.name().equals(ClientReferrals.COL_REFERRAL_DATE)) {
 					Date startDate = new Date();
 					try {
 						startDate.setTime(Long.parseLong(formField.value()));
-						patientReferral.setReferralDate(startDate);
+						clientReferrals.setReferralDate(startDate);
 					}catch (Exception e){
 						e.printStackTrace();
 					}
 				}
 
 
-				if(formField.name().equals(PatientReferral.COL_APPOINTMENT_DATE)) {
+				if(formField.name().equals(ClientReferrals.COL_APPOINTMENT_DATE)) {
 					Date startDate = new Date();
 					try {
 						startDate.setTime(Long.parseLong(formField.value()));
-						patientReferral.setAppointmentDate(startDate);
+						clientReferrals.setAppointmentDate(startDate);
 					}catch (Exception e){
 						e.printStackTrace();
 					}
 				}
 
-				if(formField.name().equals(PatientReferral.COL_IS_EMERGENCY))
-					patientReferral.setEmergency(Boolean.valueOf(formField.value()));
+				if(formField.name().equals(ClientReferrals.COL_IS_EMERGENCY))
+					clientReferrals.setEmergency(Boolean.valueOf(formField.value()));
 
-				if(formField.name().equals(PatientReferral.COL_REFERRAL_REASON))
-					patientReferral.setReferralReason(formField.value());
+				if(formField.name().equals(ClientReferrals.COL_REFERRAL_REASON))
+					clientReferrals.setReferralReason(formField.value());
 
 
-				if(formField.name().equals(PatientReferral.COL_SERVICE_PROVIDER_UIID))
-					patientReferral.setServiceProviderUIID(formField.value());
+				if(formField.name().equals(ClientReferrals.COL_SERVICE_PROVIDER_UIID))
+					clientReferrals.setServiceProviderUIID(formField.value());
 
-				if(formField.name().equals(PatientReferral.COL_SERVICE_ID))
-					patientReferral.setServiceId(Integer.parseInt(formField.value()));
+				if(formField.name().equals(ClientReferrals.COL_SERVICE_ID))
+					clientReferrals.setServiceId(Integer.parseInt(formField.value()));
 
-				if(formField.name().equals(PatientReferral.COL_REFERRAL_STATUS))
-					patientReferral.setReferralStatus(0);
+				if(formField.name().equals(ClientReferrals.COL_REFERRAL_STATUS))
+					clientReferrals.setReferralStatus(0);
 
 			}
 
-			return patientReferral;
+			return clientReferrals;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}

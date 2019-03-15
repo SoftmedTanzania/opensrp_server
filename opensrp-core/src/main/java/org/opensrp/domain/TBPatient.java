@@ -1,20 +1,19 @@
 package org.opensrp.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_tb_patients")
+@Table(name = "tbl_TB_clients")
 public class TBPatient  {
 
-	public static final String tbName = "tbl_tb_patients";
+	public static final String tbName = "tbl_TB_clients";
 
-	public static final String COL_HEALTH_FACILITY_PATIENT_ID = "health_facility_patient_id";
+	public static final String COL_HEALTH_FACILITY_CLIENT_ID = "health_facility_client_id";
 
 	public static final String COL_PATIENT_TYPE = "patient_type";
 
-	public static final String COL_TB_PATIENT_ID = "tb_patient_id";
+	public static final String COL_TB_CLIENT_ID = "tb_client_id";
 
 	public static final String COL_TRANSFER_TYPE= "transfer_type";
 
@@ -48,13 +47,13 @@ public class TBPatient  {
 
 	@Id
 	@GeneratedValue
-	@Column(name = COL_TB_PATIENT_ID)
-	private Long tbPatientId;
+	@Column(name = COL_TB_CLIENT_ID)
+	private Long tbClientId;
 
 	//TODO recheck this implementation for reoccuring tb cases
 	@OneToOne
-	@JoinColumn(name=COL_HEALTH_FACILITY_PATIENT_ID,unique=true)
-	private HealthFacilitiesPatients healthFacilitiesPatients;
+	@JoinColumn(name= COL_HEALTH_FACILITY_CLIENT_ID,unique=true)
+	private HealthFacilitiesReferralClients healthFacilitiesReferralClients;
 
 	@Column(name = COL_PATIENT_TYPE)
 	private int patientType;
@@ -107,20 +106,20 @@ public class TBPatient  {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getTbPatientId() {
-		return tbPatientId;
+	public Long getTbClientId() {
+		return tbClientId;
 	}
 
-	public void setTbPatientId(Long tbPatientId) {
-		this.tbPatientId = tbPatientId;
+	public void setTbClientId(Long tbClientId) {
+		this.tbClientId = tbClientId;
 	}
 
-	public HealthFacilitiesPatients getHealthFacilitiesPatients() {
-		return healthFacilitiesPatients;
+	public HealthFacilitiesReferralClients getHealthFacilitiesReferralClients() {
+		return healthFacilitiesReferralClients;
 	}
 
-	public void setHealthFacilitiesPatients(HealthFacilitiesPatients healthFacilitiesPatients) {
-		this.healthFacilitiesPatients = healthFacilitiesPatients;
+	public void setHealthFacilitiesReferralClients(HealthFacilitiesReferralClients healthFacilitiesReferralClients) {
+		this.healthFacilitiesReferralClients = healthFacilitiesReferralClients;
 	}
 
 	public int getPatientType() {

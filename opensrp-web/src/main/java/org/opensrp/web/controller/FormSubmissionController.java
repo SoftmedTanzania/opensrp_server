@@ -69,21 +69,21 @@ public class FormSubmissionController {
     private ErrorTraceService errorTraceService;
     private MultimediaService multimediaService;
     private MultimediaRepository multimediaRepository;
-    private HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository;
-    private PatientReferralRepository patientReferralRepository;
-    private PatientReferralIndicatorRepository patientReferralIndicatorRepository;
+    private HealthFacilitiesClientsRepository healthFacilitiesClientsRepository;
+    private ClientReferralRepository clientReferralRepository;
+    private ClientReferralIndicatorRepository clientReferralIndicatorRepository;
     private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
 	private RapidProServiceImpl rapidProService;
 	;
 
     @Autowired
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
-                                    EncounterService encounterService, FormEntityConverter formEntityConverter, PatientService patientService,
-                                    HouseholdService householdService,MultimediaService multimediaService, MultimediaRepository multimediaRepository,
-                                    ErrorTraceService errorTraceService,HealthFacilitiesPatientsRepository healthFacilitiesPatientsRepository,PatientReferralRepository patientReferralRepository,
-		                            GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository,GoogleFCMService googleFCMService,
-		                            PatientReferralIndicatorRepository patientReferralIndicatorRepository,
-		                            ReferralPatientsService referralPatientService,RapidProServiceImpl rapidProService) {
+									EncounterService encounterService, FormEntityConverter formEntityConverter, PatientService patientService,
+									HouseholdService householdService, MultimediaService multimediaService, MultimediaRepository multimediaRepository,
+									ErrorTraceService errorTraceService, HealthFacilitiesClientsRepository healthFacilitiesClientsRepository, ClientReferralRepository clientReferralRepository,
+									GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
+									ClientReferralIndicatorRepository clientReferralIndicatorRepository,
+									ReferralPatientsService referralPatientService, RapidProServiceImpl rapidProService) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService=errorTraceService;
@@ -93,11 +93,11 @@ public class FormSubmissionController {
         this.householdService = householdService;
         this.multimediaService = multimediaService;
         this.multimediaRepository = multimediaRepository;
-        this.healthFacilitiesPatientsRepository = healthFacilitiesPatientsRepository;
-        this.patientReferralRepository = patientReferralRepository;
+        this.healthFacilitiesClientsRepository = healthFacilitiesClientsRepository;
+        this.clientReferralRepository = clientReferralRepository;
         this.googlePushNotificationsUsersRepository = googlePushNotificationsUsersRepository;
 	    this.googleFCMService =googleFCMService;
-	    this.patientReferralIndicatorRepository = patientReferralIndicatorRepository;
+	    this.clientReferralIndicatorRepository = clientReferralIndicatorRepository;
 	    this.referralPatientService = referralPatientService;
 	    this.rapidProService=rapidProService;
     }
@@ -251,39 +251,39 @@ public class FormSubmissionController {
 
         try{
         	if (formSubmission.formName().equalsIgnoreCase("client_registration_form")){
-				Patients patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
+				ReferralClient patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
 				String temporallyClientId = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,"client_id");
-				String ctcNumber = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,HealthFacilitiesPatients.COL_CTC_NUMBER);
+				String ctcNumber = formEntityConverter.getFieldValueFromFormSubmission(formSubmission, HealthFacilitiesReferralClients.COL_CTC_NUMBER);
 
 				//TODO reimplement this to only obtain CTC_NUMBER,CBHS_NUMBER and FACILITY_ID
-				PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
-				long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), ctcNumber);
+				ClientReferrals clientReferrals = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
+				long healthfacilityPatientId = referralPatientService.savePatient(patient, clientReferrals.getFacilityId(), ctcNumber);
 
 
-				List<HealthFacilitiesPatients> healthFacilitiesPatients = null;
+				List<HealthFacilitiesReferralClients> healthFacilitiesPatients = null;
 				try {
-					healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthfacilityPatientId,null);
+					healthFacilitiesPatients = healthFacilitiesClientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesReferralClients.tbName+" WHERE "+ HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID +" = "+healthfacilityPatientId,null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
-				patient.setPatientId(healthFacilitiesPatients.get(0).getPatient().getPatientId());
+				patient.setClientId(healthFacilitiesPatients.get(0).getPatient().getClientId());
 
-				logger.info("saveFormToOpenSRP : saving patient. Generated Client Id = "+patient.getPatientId());
-				logger.info("saveFormToOpenSRP : saving patient. Updating form submissions with client Id "+temporallyClientId+" To Client Id = "+patient.getPatientId());
+				logger.info("saveFormToOpenSRP : saving patient. Generated Client Id = "+patient.getClientId());
+				logger.info("saveFormToOpenSRP : saving patient. Updating form submissions with client Id "+temporallyClientId+" To Client Id = "+patient.getClientId());
 
 
 				//Retrieve the saved form in couchdb to be updated
 				FormSubmission savedSubmission = formSubmissionService.findByInstanceId(formSubmission.getInstanceId());
 
 				//Updating the formsubmission with the correct clientId;
-				formEntityConverter.updateClientIdInFormSubmission(savedSubmission,temporallyClientId,patient.getPatientId());
+				formEntityConverter.updateClientIdInFormSubmission(savedSubmission,temporallyClientId,patient.getClientId());
 				formSubmissionService.update(savedSubmission);
 
 				//updating any existing referrals with the correct clientId
 				List<FormSubmission> referralSubmissions= formSubmissionService.findByFormName("referral_form",4);
 				for(FormSubmission submission: referralSubmissions){
-					formEntityConverter.updateClientIdInFormSubmission(submission,temporallyClientId,patient.getPatientId());
+					formEntityConverter.updateClientIdInFormSubmission(submission,temporallyClientId,patient.getClientId());
 					formSubmissionService.update(submission);
 				}
 
@@ -304,7 +304,7 @@ public class FormSubmissionController {
 
 					//Sending a push notification to the tablet to force updating of the client IDs used for future referrals
 					JSONObject body = new JSONObject();
-					body.put("GENERATED_CLIENT_ID", patient.getPatientId());
+					body.put("GENERATED_CLIENT_ID", patient.getClientId());
 					body.put("TEMP_CLIENT_ID", temporallyClientId);
 
 					String json = new Gson().toJson(body);
@@ -328,7 +328,7 @@ public class FormSubmissionController {
 					if(updatedFormSubmission==null){
 						updatedFormSubmission = formSubmission;
 					}
-					PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(updatedFormSubmission);
+					ClientReferrals clientReferrals = formEntityConverter.getPatientReferralFromFormSubmission(updatedFormSubmission);
 
 
 					String clientId = formEntityConverter.getFieldValueFromFormSubmission(updatedFormSubmission,"client_id");
@@ -338,8 +338,8 @@ public class FormSubmissionController {
 					Object[] args = new Object[1];
 					args[0] = clientId;
 
-					Patients patient = referralPatientService.getPatients("SELECT * FROM "+Patients.tbName+" WHERE "+Patients.COL_PATIENT_ID+" = ?",args).get(0);
-					saveReferralData(patient,patientReferral,updatedFormSubmission);
+					ReferralClient patient = referralPatientService.getPatients("SELECT * FROM "+ ReferralClient.tbName+" WHERE "+ ReferralClient.COL_CLIENT_ID +" = ?",args).get(0);
+					saveReferralData(patient, clientReferrals,updatedFormSubmission);
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
@@ -350,9 +350,9 @@ public class FormSubmissionController {
         		//TODO This block of code only used for providing backward compatibility with old versions of community app
 
 				logger.info("saveFormToOpenSRP : saving patient into OpenSRP");
-				Patients patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
-				PatientReferral patientReferral = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
-				saveReferralData(patient,patientReferral,formSubmission);
+				ReferralClient patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
+				ClientReferrals clientReferrals = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
+				saveReferralData(patient, clientReferrals,formSubmission);
 
 			}
 		}catch (Exception e){
@@ -391,51 +391,51 @@ public class FormSubmissionController {
 
 	}
 
-	public void saveReferralData(Patients patient, PatientReferral patientReferral, FormSubmission formSubmission ){
+	public void saveReferralData(ReferralClient patient, ClientReferrals clientReferrals, FormSubmission formSubmission ){
 		try {
 
 
-			String ctcNumber = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,HealthFacilitiesPatients.COL_CTC_NUMBER);
-			long healthfacilityPatientId = referralPatientService.savePatient(patient, patientReferral.getFacilityId(), ctcNumber);
+			String ctcNumber = formEntityConverter.getFieldValueFromFormSubmission(formSubmission, HealthFacilitiesReferralClients.COL_CTC_NUMBER);
+			long healthfacilityPatientId = referralPatientService.savePatient(patient, clientReferrals.getFacilityId(), ctcNumber);
 
-			List<HealthFacilitiesPatients> healthFacilitiesPatients = healthFacilitiesPatientsRepository.getHealthFacilityPatients("SELECT * FROM "+HealthFacilitiesPatients.tbName+" WHERE "+HealthFacilitiesPatients.COL_HEALTH_FACILITY_PATIENT_ID+" = "+healthfacilityPatientId,null);
+			List<HealthFacilitiesReferralClients> healthFacilitiesPatients = healthFacilitiesClientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesReferralClients.tbName+" WHERE "+ HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID +" = "+healthfacilityPatientId,null);
 
-			patient.setPatientId(healthFacilitiesPatients.get(0).getPatient().getPatientId());
-			patientReferral.setPatient(patient);
+			patient.setClientId(healthFacilitiesPatients.get(0).getPatient().getClientId());
+			clientReferrals.setPatient(patient);
 
 			//TODO Coze remove hardcoding of these values. This is a temporally patch to be removed later on
-			patientReferral.setReferralStatus(0);
-			patientReferral.setReferralSource(0);
+			clientReferrals.setReferralStatus(0);
+			clientReferrals.setReferralSource(0);
 
 
 			ReferralType referralType = new ReferralType();
 			referralType.setReferralTypeId((long)1);
 
-			patientReferral.setReferralType(referralType);
+			clientReferrals.setReferralType(referralType);
 
 			logger.info("saveFormToOpenSRP : saving referral Data");
-			long id = patientReferralRepository.save(patientReferral);
-			patientReferral.setId(id);
+			long id = clientReferralRepository.save(clientReferrals);
+			clientReferrals.setId(id);
 
 			JSONArray indicatorIds = formEntityConverter.getReferralIndicatorsFromFormSubmission(formSubmission);
 			int size  = indicatorIds.length();
 
 			List<Long> referralIndicatorIds = new ArrayList<>();
 			for(int i=0;i<size;i++){
-				PatientReferralIndicators referralIndicators = new PatientReferralIndicators();
+				ClientReferralIndicators referralIndicators = new ClientReferralIndicators();
 				referralIndicators.setActive(true);
 
-				PatientReferral referral = new PatientReferral();
+				ClientReferrals referral = new ClientReferrals();
 				referral.setId(id);
 
-				referralIndicators.setPatientReferral(referral);
+				referralIndicators.setClientReferrals(referral);
 
 				ServiceIndicator serviceIndicator = new ServiceIndicator();
 				serviceIndicator.setServiceIndicatorId(indicatorIds.getLong(i));
 
 				referralIndicators.setServiceIndicator(serviceIndicator);
 
-				long patientReferralIndicatorId = patientReferralIndicatorRepository.save(referralIndicators);
+				long patientReferralIndicatorId = clientReferralIndicatorRepository.save(referralIndicators);
 				referralIndicatorIds.add(indicatorIds.getLong(i));
 			}
 
@@ -458,7 +458,7 @@ public class FormSubmissionController {
 			}
 
 
-			Object[] facilityParams = new Object[]{patientReferral.getFacilityId(),1};
+			Object[] facilityParams = new Object[]{clientReferrals.getFacilityId(),1};
 			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
 			JSONArray tokens = new JSONArray();
 			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
@@ -474,7 +474,7 @@ public class FormSubmissionController {
 
 
 			List<ReferralsDTO> referralsDTOS = new ArrayList<>();
-			ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(patientReferral);
+			ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(clientReferrals);
 			referralsDTO.setServiceIndicatorIds(referralIndicatorIds);
 			referralsDTOS.add(referralsDTO);
 			patientReferralsDTO.setPatientReferralsList(referralsDTOS);

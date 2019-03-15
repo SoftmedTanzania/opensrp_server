@@ -4,12 +4,12 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_patients")
-public class Patients {
+@Table(name = "tbl_clients")
+public class ReferralClient {
 
-	public static final String tbName = "tbl_patients";
+	public static final String tbName = "tbl_clients";
 
-	public static final String COL_PATIENT_ID = "patient_id";
+	public static final String COL_CLIENT_ID = "client_id";
 
 	public static final String COL_PATIENT_FIRST_NAME = "first_name";
 
@@ -49,8 +49,8 @@ public class Patients {
 
 	@Id
 	@GeneratedValue
-	@Column(name = COL_PATIENT_ID)
-	private Long patientId;
+	@Column(name = COL_CLIENT_ID)
+	private Long clientId;
 
 	@Column(name = COL_PATIENT_FIRST_NAME)
 	private String firstName;
@@ -115,12 +115,12 @@ public class Patients {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getPatientId() {
-		return patientId;
+	public Long getClientId() {
+		return clientId;
 	}
 
-	public void setPatientId(Long patientId) {
-		this.patientId = patientId;
+	public void setClientId(Long clientId) {
+		this.clientId = clientId;
 	}
 
 	public String getFirstName() {

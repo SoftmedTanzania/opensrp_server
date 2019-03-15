@@ -1,20 +1,17 @@
 package org.opensrp.domain;
 
-import jdk.nashorn.internal.objects.annotations.Getter;
-import jdk.nashorn.internal.objects.annotations.Setter;
-
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_health_facility_patients")
-public class HealthFacilitiesPatients {
+@Table(name = "tbl_health_facility_clients")
+public class HealthFacilitiesReferralClients {
 
-	public static final String tbName = "tbl_health_facility_patients";
+	public static final String tbName = "tbl_health_facility_clients";
 
-	public static final String COL_HEALTH_FACILITY_PATIENT_ID = "health_facility_patient_id";
+	public static final String COL_HEALTH_FACILITY_CLIENT_ID = "health_facility_client_id";
 
-	public static final String COL_PATIENT_ID = "patient_id";
+	public static final String COL_CLIENT_ID = "client_id";
 
 	public static final String COL_FACILITY_ID = "facility_id";
 
@@ -27,12 +24,12 @@ public class HealthFacilitiesPatients {
 
 	@Id
 	@GeneratedValue
-	@Column(name = COL_HEALTH_FACILITY_PATIENT_ID)
-	private Long healthFacilityPatientId;
+	@Column(name = COL_HEALTH_FACILITY_CLIENT_ID)
+	private Long healthFacilityClientId;
 
 	@ManyToOne
-	@JoinColumn(name=COL_PATIENT_ID)
-	private Patients patient;
+	@JoinColumn(name= COL_CLIENT_ID)
+	private ReferralClient patient;
 
 	@Column(name = COL_CTC_NUMBER)
 	private String ctcNumber;
@@ -48,19 +45,19 @@ public class HealthFacilitiesPatients {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getHealthFacilityPatientId() {
-		return healthFacilityPatientId;
+	public Long getHealthFacilityClientId() {
+		return healthFacilityClientId;
 	}
 
-	public void setHealthFacilityPatientId(Long healthFacilityPatientId) {
-		this.healthFacilityPatientId = healthFacilityPatientId;
+	public void setHealthFacilityClientId(Long healthFacilityClientId) {
+		this.healthFacilityClientId = healthFacilityClientId;
 	}
 
-	public Patients getPatient() {
+	public ReferralClient getPatient() {
 		return patient;
 	}
 
-	public void setPatient(Patients patient) {
+	public void setPatient(ReferralClient patient) {
 		this.patient = patient;
 	}
 

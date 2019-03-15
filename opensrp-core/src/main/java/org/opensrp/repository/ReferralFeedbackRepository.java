@@ -1,13 +1,7 @@
 package org.opensrp.repository;
 
 import org.opensrp.domain.ReferralFeedback;
-import org.opensrp.domain.Patients;
-import org.opensrp.domain.ReferralFeedback;
 import org.opensrp.domain.ReferralType;
-import org.opensrp.dto.CHWReferralsSummaryDTO;
-import org.opensrp.dto.FacilityDepartmentReferralSummaryDTO;
-import org.opensrp.dto.FacilityProvidersReferralSummaryDTO;
-import org.opensrp.dto.InterFacilityReferralSummaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -40,7 +34,7 @@ public class ReferralFeedbackRepository {
 		parameters.put("_id", referralFeedback.getId());
 		parameters.put(ReferralFeedback.COL_DESC, referralFeedback.getDesc());
 		parameters.put(ReferralFeedback.COL_DESC_SW, referralFeedback.getDescSw());
-		parameters.put(ReferralFeedback.COL_REFERRAL_TYPE, referralFeedback.getReferralType());
+		parameters.put(ReferralFeedback.COL_REFERRAL_TYPE_ID, referralFeedback.getReferralType());
 		parameters.put(ReferralFeedback.COL_CREATED_AT, referralFeedback.getCreatedAt());
 		parameters.put(ReferralFeedback.COL_UPDATED_AT, referralFeedback.getCreatedAt());
 
@@ -75,7 +69,7 @@ public class ReferralFeedbackRepository {
 			referralFeedback.setId(rs.getLong(rs.findColumn("_id")));
 
 			ReferralType referralType = new ReferralType();
-			referralType.setReferralTypeId(rs.getLong(rs.findColumn(ReferralFeedback.COL_REFERRAL_TYPE)));
+			referralType.setReferralTypeId(rs.getLong(rs.findColumn(ReferralFeedback.COL_REFERRAL_TYPE_ID)));
 			referralFeedback.setReferralType(referralType);
 
 			referralFeedback.setDesc(rs.getString(rs.findColumn(ReferralFeedback.COL_DESC)));

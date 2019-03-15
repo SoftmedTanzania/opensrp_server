@@ -1,7 +1,6 @@
 package org.opensrp.repository;
 
-import org.opensrp.domain.HealthFacilitiesPatients;
-import org.opensrp.domain.TBPatient;
+import org.opensrp.domain.HealthFacilitiesReferralClients;
 import org.opensrp.domain.TBPatient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +24,7 @@ public class TBPatientsRepository {
 	
 	public int save(TBPatient tBPatient) throws Exception {
 		String insertQuery = "insert into " + TBPatient.tbName + " (" +
-				TBPatient.COL_HEALTH_FACILITY_PATIENT_ID + "," +
+				TBPatient.COL_HEALTH_FACILITY_CLIENT_ID + "," +
 				TBPatient.COL_PATIENT_TYPE + "," +
 				TBPatient.COL_TRANSFER_TYPE + "," +
 				TBPatient.COL_REFERRAL_TYPE + "," +
@@ -44,7 +43,7 @@ public class TBPatientsRepository {
 				TBPatient.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
-				tBPatient.getHealthFacilitiesPatients().getHealthFacilityPatientId(),
+				tBPatient.getHealthFacilitiesReferralClients().getHealthFacilityClientId(),
 				tBPatient.getPatientType(),
 				tBPatient.getTransferType(),
 				tBPatient.getReferralType(),
@@ -110,10 +109,10 @@ public class TBPatientsRepository {
 
 			tbPatient.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(TBPatient.COL_CREATED_AT)).getTime()));
 
-			HealthFacilitiesPatients healthFacilitiesPatients = new HealthFacilitiesPatients();
-			healthFacilitiesPatients.setHealthFacilityPatientId(rs.getLong(rs.findColumn(TBPatient.COL_HEALTH_FACILITY_PATIENT_ID)));
+			HealthFacilitiesReferralClients healthFacilitiesReferralClients = new HealthFacilitiesReferralClients();
+			healthFacilitiesReferralClients.setHealthFacilityClientId(rs.getLong(rs.findColumn(TBPatient.COL_HEALTH_FACILITY_CLIENT_ID)));
 
-			tbPatient.setHealthFacilitiesPatients(healthFacilitiesPatients);
+			tbPatient.setHealthFacilitiesReferralClients(healthFacilitiesReferralClients);
 			tbPatient.setPatientType(rs.getInt(rs.findColumn(TBPatient.COL_PATIENT_TYPE)));
 			tbPatient.setTransferType(rs.getInt(rs.findColumn(TBPatient.COL_TRANSFER_TYPE)));
 			tbPatient.setReferralType(rs.getInt(rs.findColumn(TBPatient.COL_REFERRAL_TYPE)));
@@ -128,7 +127,7 @@ public class TBPatientsRepository {
 			tbPatient.setOutcomeDate(rs.getDate(rs.findColumn(TBPatient.COL_OUTCOME_DATE)));
 			tbPatient.setOutcomeDetails(rs.getString(rs.findColumn(TBPatient.COL_OUTCOME_DETAILS)));
 			tbPatient.setUpdatedAt(rs.getDate(rs.findColumn(TBPatient.COL_UPDATED_AT)));
-			tbPatient.setTbPatientId(rs.getLong(rs.findColumn(TBPatient.COL_TB_PATIENT_ID)));
+			tbPatient.setTbClientId(rs.getLong(rs.findColumn(TBPatient.COL_TB_CLIENT_ID)));
 			tbPatient.setPregnant(rs.getBoolean(rs.findColumn(TBPatient.COL_IS_PREGNANT)));
 			return tbPatient;
 		}

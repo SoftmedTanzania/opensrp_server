@@ -1,7 +1,7 @@
 package org.opensrp.repository;
 
-import org.opensrp.domain.PatientReferral;
-import org.opensrp.domain.Patients;
+import org.opensrp.domain.ClientReferrals;
+import org.opensrp.domain.ReferralClient;
 import org.opensrp.domain.ReferralFeedback;
 import org.opensrp.domain.ReferralType;
 import org.opensrp.dto.CHWReferralsSummaryDTO;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 
 @Repository
-public class PatientReferralRepository {
+public class ClientReferralRepository {
 
 
 	@Autowired
@@ -31,34 +31,33 @@ public class PatientReferralRepository {
 	private SimpleJdbcInsert insert;
 
 
-	public long save(PatientReferral patientReferral) throws Exception {
+	public long save(ClientReferrals clientReferrals) throws Exception {
 
 
-		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(PatientReferral.tbName).usingGeneratedKeyColumns(PatientReferral.COL_REFERRAL_ID);
+		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(ClientReferrals.tbName).usingGeneratedKeyColumns(ClientReferrals.COL_REFERRAL_ID);
 
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put(PatientReferral.COL_PATIENT_ID, patientReferral.getPatient().getPatientId());
-		parameters.put(PatientReferral.COL_REFERRAL_REASON, patientReferral.getReferralReason());
-		parameters.put(PatientReferral.COL_SERVICE_ID, patientReferral.getServiceId());
-		parameters.put(PatientReferral.COL_REFERRAL_UUID, patientReferral.getReferralUUID());
-		parameters.put(PatientReferral.COL_FACILITY_ID, patientReferral.getFacilityId());
-		parameters.put(PatientReferral.COL_SERVICE_PROVIDER_UIID, patientReferral.getServiceProviderUIID());
-		parameters.put(PatientReferral.COL_FROM_FACILITY_ID, patientReferral.getFromFacilityId());
-		parameters.put(PatientReferral.COL_OTHER_CLINICAL_INFORMATION, patientReferral.getOtherClinicalInformation());
-		parameters.put(PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT, patientReferral.getServiceGivenToPatient());
-		parameters.put(PatientReferral.COL_OTHER_NOTES, patientReferral.getOtherNotes());
-		parameters.put(PatientReferral.COL_REFERRAL_SOURCE, patientReferral.getReferralSource());
-		parameters.put(PatientReferral.COL_REFERRAL_DATE, patientReferral.getReferralDate());
-		parameters.put(PatientReferral.COL_APPOINTMENT_DATE, patientReferral.getAppointmentDate());
-		parameters.put(PatientReferral.COL_REFERRAL_STATUS, patientReferral.getReferralStatus());
-		parameters.put(PatientReferral.COL_INSTANCE_ID, patientReferral.getInstanceId());
-		parameters.put(PatientReferral.COL_REFERRAL_TYPE, patientReferral.getReferralType());
-		parameters.put(PatientReferral.COL_LAB_TEST, patientReferral.getLabTest());
-		parameters.put(PatientReferral.COL_TEST_RESULTS, patientReferral.isTestResults());
-		parameters.put(PatientReferral.COL_IS_EMERGENCY, patientReferral.isEmergency());
-		parameters.put(PatientReferral.COL_REFERRAL_FEEDBACK, patientReferral.getReferralFeedback().getId());
-		parameters.put(PatientReferral.COL_CREATED_AT, patientReferral.getCreatedAt());
-		parameters.put(PatientReferral.COL_UPDATED_AT, patientReferral.getCreatedAt());
+		parameters.put(ClientReferrals.COL_CLIENT_ID, clientReferrals.getPatient().getClientId());
+		parameters.put(ClientReferrals.COL_REFERRAL_REASON, clientReferrals.getReferralReason());
+		parameters.put(ClientReferrals.COL_SERVICE_ID, clientReferrals.getServiceId());
+		parameters.put(ClientReferrals.COL_REFERRAL_UUID, clientReferrals.getReferralUUID());
+		parameters.put(ClientReferrals.COL_FACILITY_ID, clientReferrals.getFacilityId());
+		parameters.put(ClientReferrals.COL_SERVICE_PROVIDER_UIID, clientReferrals.getServiceProviderUIID());
+		parameters.put(ClientReferrals.COL_FROM_FACILITY_ID, clientReferrals.getFromFacilityId());
+		parameters.put(ClientReferrals.COL_OTHER_CLINICAL_INFORMATION, clientReferrals.getOtherClinicalInformation());
+		parameters.put(ClientReferrals.COL_OTHER_NOTES, clientReferrals.getOtherNotes());
+		parameters.put(ClientReferrals.COL_REFERRAL_SOURCE, clientReferrals.getReferralSource());
+		parameters.put(ClientReferrals.COL_REFERRAL_DATE, clientReferrals.getReferralDate());
+		parameters.put(ClientReferrals.COL_APPOINTMENT_DATE, clientReferrals.getAppointmentDate());
+		parameters.put(ClientReferrals.COL_REFERRAL_STATUS, clientReferrals.getReferralStatus());
+		parameters.put(ClientReferrals.COL_INSTANCE_ID, clientReferrals.getInstanceId());
+		parameters.put(ClientReferrals.COL_REFERRAL_TYPE, clientReferrals.getReferralType());
+		parameters.put(ClientReferrals.COL_LAB_TEST, clientReferrals.getLabTest());
+		parameters.put(ClientReferrals.COL_TEST_RESULTS, clientReferrals.isTestResults());
+		parameters.put(ClientReferrals.COL_IS_EMERGENCY, clientReferrals.isEmergency());
+		parameters.put(ClientReferrals.COL_REFERRAL_FEEDBACK_ID, clientReferrals.getReferralFeedback().getId());
+		parameters.put(ClientReferrals.COL_CREATED_AT, clientReferrals.getCreatedAt());
+		parameters.put(ClientReferrals.COL_UPDATED_AT, clientReferrals.getCreatedAt());
 
 		return insert.executeAndReturnKey(parameters).longValue();
 
@@ -74,12 +73,12 @@ public class PatientReferralRepository {
 	}
 
 	public void clearTable() throws Exception {
-		String query = "DELETE FROM " + PatientReferral.tbName;
+		String query = "DELETE FROM " + ClientReferrals.tbName;
 		executeQuery(query);
 	}
 
 
-	public List<PatientReferral> getReferrals(String sql, Object[] args) throws Exception {
+	public List<ClientReferrals> getReferrals(String sql, Object[] args) throws Exception {
 		return this.jdbcTemplate.query(sql, args, new HealthFacilityRefferalRowMapper());
 	}
 
@@ -89,46 +88,45 @@ public class PatientReferralRepository {
 	}
 
 
-	public class HealthFacilityRefferalRowMapper implements RowMapper<PatientReferral> {
-		public PatientReferral mapRow(ResultSet rs, int rowNum) throws SQLException {
-			PatientReferral patientReferral = new PatientReferral();
-			patientReferral.setId(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_ID)));
+	public class HealthFacilityRefferalRowMapper implements RowMapper<ClientReferrals> {
+		public ClientReferrals mapRow(ResultSet rs, int rowNum) throws SQLException {
+			ClientReferrals clientReferrals = new ClientReferrals();
+			clientReferrals.setId(rs.getLong(rs.findColumn(ClientReferrals.COL_REFERRAL_ID)));
 
-			Patients patient = new Patients();
-			patient.setPatientId(rs.getLong(rs.findColumn(PatientReferral.COL_PATIENT_ID)));
-			patientReferral.setPatient(patient);
+			ReferralClient patient = new ReferralClient();
+			patient.setClientId(rs.getLong(rs.findColumn(ClientReferrals.COL_CLIENT_ID)));
+			clientReferrals.setPatient(patient);
 
-			patientReferral.setReferralReason(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_REASON)));
-			patientReferral.setFromFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FROM_FACILITY_ID)));
-			patientReferral.setServiceId(rs.getInt(rs.findColumn(PatientReferral.COL_SERVICE_ID)));
-			patientReferral.setReferralUUID(rs.getString(rs.findColumn(PatientReferral.COL_REFERRAL_UUID)));
-			patientReferral.setServiceProviderUIID(rs.getString(rs.findColumn(PatientReferral.COL_SERVICE_PROVIDER_UIID)));
-			patientReferral.setReferralDate(rs.getDate(rs.findColumn(PatientReferral.COL_REFERRAL_DATE)));
-			patientReferral.setAppointmentDate(rs.getDate(rs.findColumn(PatientReferral.COL_APPOINTMENT_DATE)));
-			patientReferral.setFacilityId(rs.getString(rs.findColumn(PatientReferral.COL_FACILITY_ID)));
-			patientReferral.setReferralStatus(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_STATUS)));
-			patientReferral.setInstanceId(rs.getString(rs.findColumn(PatientReferral.COL_INSTANCE_ID)));
+			clientReferrals.setReferralReason(rs.getString(rs.findColumn(ClientReferrals.COL_REFERRAL_REASON)));
+			clientReferrals.setFromFacilityId(rs.getString(rs.findColumn(ClientReferrals.COL_FROM_FACILITY_ID)));
+			clientReferrals.setServiceId(rs.getInt(rs.findColumn(ClientReferrals.COL_SERVICE_ID)));
+			clientReferrals.setReferralUUID(rs.getString(rs.findColumn(ClientReferrals.COL_REFERRAL_UUID)));
+			clientReferrals.setServiceProviderUIID(rs.getString(rs.findColumn(ClientReferrals.COL_SERVICE_PROVIDER_UIID)));
+			clientReferrals.setReferralDate(rs.getDate(rs.findColumn(ClientReferrals.COL_REFERRAL_DATE)));
+			clientReferrals.setAppointmentDate(rs.getDate(rs.findColumn(ClientReferrals.COL_APPOINTMENT_DATE)));
+			clientReferrals.setFacilityId(rs.getString(rs.findColumn(ClientReferrals.COL_FACILITY_ID)));
+			clientReferrals.setReferralStatus(rs.getInt(rs.findColumn(ClientReferrals.COL_REFERRAL_STATUS)));
+			clientReferrals.setInstanceId(rs.getString(rs.findColumn(ClientReferrals.COL_INSTANCE_ID)));
 
 			ReferralType referralType = new ReferralType();
-			referralType.setReferralTypeId(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_TYPE)));
-			patientReferral.setReferralType(referralType);
+			referralType.setReferralTypeId(rs.getLong(rs.findColumn(ClientReferrals.COL_REFERRAL_TYPE)));
+			clientReferrals.setReferralType(referralType);
 
 			ReferralFeedback referralFeedback = new ReferralFeedback();
-			referralFeedback.setId(rs.getLong(rs.findColumn(PatientReferral.COL_REFERRAL_FEEDBACK)));
-			patientReferral.setReferralFeedback(referralFeedback);
+			referralFeedback.setId(rs.getLong(rs.findColumn(ClientReferrals.COL_REFERRAL_FEEDBACK_ID)));
+			clientReferrals.setReferralFeedback(referralFeedback);
 
 
-			patientReferral.setReferralSource(rs.getInt(rs.findColumn(PatientReferral.COL_REFERRAL_SOURCE)));
+			clientReferrals.setReferralSource(rs.getInt(rs.findColumn(ClientReferrals.COL_REFERRAL_SOURCE)));
 
-			patientReferral.setServiceGivenToPatient(rs.getString(rs.findColumn(PatientReferral.COL_SERVICES_GIVEN_TO_PATIENT)));
-			patientReferral.setTestResults(rs.getInt(rs.findColumn(PatientReferral.COL_TEST_RESULTS)));
-			patientReferral.setEmergency(rs.getBoolean(rs.findColumn(PatientReferral.COL_IS_EMERGENCY)));
-			patientReferral.setLabTest(rs.getInt(rs.findColumn(PatientReferral.COL_LAB_TEST)));
-			patientReferral.setOtherClinicalInformation(rs.getString(rs.findColumn(PatientReferral.COL_OTHER_CLINICAL_INFORMATION)));
-			patientReferral.setOtherNotes(rs.getString(rs.findColumn(PatientReferral.COL_OTHER_NOTES)));
-			patientReferral.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(PatientReferral.COL_CREATED_AT)).getTime()));
-			patientReferral.setUpdatedAt(rs.getDate(rs.findColumn(PatientReferral.COL_UPDATED_AT)));
-			return patientReferral;
+			clientReferrals.setTestResults(rs.getInt(rs.findColumn(ClientReferrals.COL_TEST_RESULTS)));
+			clientReferrals.setEmergency(rs.getBoolean(rs.findColumn(ClientReferrals.COL_IS_EMERGENCY)));
+			clientReferrals.setLabTest(rs.getInt(rs.findColumn(ClientReferrals.COL_LAB_TEST)));
+			clientReferrals.setOtherClinicalInformation(rs.getString(rs.findColumn(ClientReferrals.COL_OTHER_CLINICAL_INFORMATION)));
+			clientReferrals.setOtherNotes(rs.getString(rs.findColumn(ClientReferrals.COL_OTHER_NOTES)));
+			clientReferrals.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ClientReferrals.COL_CREATED_AT)).getTime()));
+			clientReferrals.setUpdatedAt(rs.getDate(rs.findColumn(ClientReferrals.COL_UPDATED_AT)));
+			return clientReferrals;
 		}
 
 	}

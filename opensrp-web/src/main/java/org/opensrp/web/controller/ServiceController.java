@@ -36,14 +36,14 @@ public class ServiceController {
     private IndicatorRepository indicatorRepository;
     private ReferralTypeRepository referralTypeRepository;
     private ServiceIndicatorRepository serviceIndicatorRepository;
-    private TBPatientTestTypeRepository tbPatientTestTypeRepository;
+    private TBTestTypeRepository tbTestTypeRepository;
     private TaskSchedulerService scheduler;
 
     @Autowired
-    public ServiceController(ReferralServiceRepository referralServiceRepository, TaskSchedulerService scheduler, TBPatientTestTypeRepository tbPatientTestTypeRepository,
+    public ServiceController(ReferralServiceRepository referralServiceRepository, TaskSchedulerService scheduler, TBTestTypeRepository tbTestTypeRepository,
                              ServiceIndicatorRepository serviceIndicatorRepository, IndicatorRepository indicatorRepository, ReferralTypeRepository referralTypeRepository) {
         this.referralServiceRepository = referralServiceRepository;
-        this.tbPatientTestTypeRepository = tbPatientTestTypeRepository;
+        this.tbTestTypeRepository = tbTestTypeRepository;
         this.scheduler = scheduler;
         this.serviceIndicatorRepository = serviceIndicatorRepository;
         this.indicatorRepository = indicatorRepository;
@@ -469,18 +469,18 @@ public class ServiceController {
             List<TBPatientTypesDTO> tbPatientTypesDTOS1 = new Gson().fromJson(json, new TypeToken<List<TBPatientTypesDTO>>() {
             }.getType());
 
-            List<TBPatientTestType> tbPatientTestTypes =  with(tbPatientTypesDTOS1).convert(new Converter<TBPatientTypesDTO, TBPatientTestType>() {
+            List<TBTestType> tbTestTypes =  with(tbPatientTypesDTOS1).convert(new Converter<TBPatientTypesDTO, TBTestType>() {
                 @Override
-                public TBPatientTestType convert(TBPatientTypesDTO tbPatientTypesDTO) {
-                    TBPatientTestType tbPatientTestType = new TBPatientTestType();
-                    tbPatientTestType.setTestTypeName(tbPatientTypesDTO.getPatientTypeName());
-                    tbPatientTestType.setIsActive(tbPatientTypesDTO.isActive());
-                    return tbPatientTestType;
+                public TBTestType convert(TBPatientTypesDTO tbPatientTypesDTO) {
+                    TBTestType tbTestType = new TBTestType();
+                    tbTestType.setTestTypeName(tbPatientTypesDTO.getPatientTypeName());
+                    tbTestType.setIsActive(tbPatientTypesDTO.isActive());
+                    return tbTestType;
                 }
             });
 
-            for (TBPatientTestType tbPatientTestType : tbPatientTestTypes) {
-                tbPatientTestTypeRepository.save(tbPatientTestType);
+            for (TBTestType tbTestType : tbTestTypes) {
+                tbTestTypeRepository.save(tbTestType);
             }
 
             logger.debug(format("Saved TB Patient types to queue.\nSubmissions: {0}", tbPatientTypesDTOS));
@@ -495,17 +495,17 @@ public class ServiceController {
     @ResponseBody
     public List<TBPatientTypesDTO> getTBPatientTestTypes() {
 
-        List<TBPatientTestType> tbPatientTestTypes = null;
+        List<TBTestType> tbTestTypes = null;
         try {
-            tbPatientTestTypes = tbPatientTestTypeRepository.getTBPatientTypes("Select * from "+ TBPatientTestType.tbName,null);
+            tbTestTypes = tbTestTypeRepository.getTBPatientTypes("Select * from "+ TBTestType.tbName,null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return with(tbPatientTestTypes).convert(new Converter<TBPatientTestType, TBPatientTypesDTO>() {
+        return with(tbTestTypes).convert(new Converter<TBTestType, TBPatientTypesDTO>() {
             @Override
-            public TBPatientTypesDTO convert(TBPatientTestType tbPatientTestType) {
-                return new TBPatientTypesDTO(tbPatientTestType.getId(), tbPatientTestType.getTestTypeName(), tbPatientTestType.getIsActive());
+            public TBPatientTypesDTO convert(TBTestType tbTestType) {
+                return new TBPatientTypesDTO(tbTestType.getId(), tbTestType.getTestTypeName(), tbTestType.getIsActive());
             }
         });
     }

@@ -4,15 +4,13 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 @Entity
-@Table(name = "tbl_patients_appointments")
-public class PatientAppointments implements Serializable {
+@Table(name = "tbl_client_appointments")
+public class ClientAppointments implements Serializable {
 
-	public static final String tbName = "tbl_patients_appointments";
+	public static final String tbName = "tbl_client_appointments";
 
-	public static final String COL_HEALTH_FACILITY_PATIENT_ID = "health_facility_patient_id";
+	public static final String COL_HEALTH_FACILITY_CLIENT_ID = "health_facility_client_id";
 
 	public static final String COL_APPOINTMENT_ID = "appointment_id";
 
@@ -34,8 +32,8 @@ public class PatientAppointments implements Serializable {
 
 	@Id
 	@ManyToOne
-	@JoinColumn(name=COL_HEALTH_FACILITY_PATIENT_ID)
-	private HealthFacilitiesPatients healthFacilitiesPatients;
+	@JoinColumn(name= COL_HEALTH_FACILITY_CLIENT_ID)
+	private HealthFacilitiesReferralClients healthFacilitiesReferralClients;
 
 
 	@Id
@@ -74,12 +72,12 @@ public class PatientAppointments implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public HealthFacilitiesPatients getHealthFacilitiesPatients() {
-		return healthFacilitiesPatients;
+	public HealthFacilitiesReferralClients getHealthFacilitiesReferralClients() {
+		return healthFacilitiesReferralClients;
 	}
 
-	public void setHealthFacilitiesPatients(HealthFacilitiesPatients healthFacilitiesPatients) {
-		this.healthFacilitiesPatients = healthFacilitiesPatients;
+	public void setHealthFacilitiesReferralClients(HealthFacilitiesReferralClients healthFacilitiesReferralClients) {
+		this.healthFacilitiesReferralClients = healthFacilitiesReferralClients;
 	}
 
 	public Long getAppointment_id() {
