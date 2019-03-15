@@ -36,18 +36,22 @@ public class ServiceController {
     private IndicatorRepository indicatorRepository;
     private ReferralTypeRepository referralTypeRepository;
     private ServiceIndicatorRepository serviceIndicatorRepository;
+    private ClientRegistrationReasonRepository registrationReasonRepository;
+    private ReferralFeedbackRepository feedbackRepository;
     private TBTestTypeRepository tbTestTypeRepository;
     private TaskSchedulerService scheduler;
 
     @Autowired
     public ServiceController(ReferralServiceRepository referralServiceRepository, TaskSchedulerService scheduler, TBTestTypeRepository tbTestTypeRepository,
-                             ServiceIndicatorRepository serviceIndicatorRepository, IndicatorRepository indicatorRepository, ReferralTypeRepository referralTypeRepository) {
+                             ServiceIndicatorRepository serviceIndicatorRepository, IndicatorRepository indicatorRepository, ReferralTypeRepository referralTypeRepository,ReferralFeedbackRepository feedbackRepository,ClientRegistrationReasonRepository registrationReasonRepository) {
         this.referralServiceRepository = referralServiceRepository;
         this.tbTestTypeRepository = tbTestTypeRepository;
         this.scheduler = scheduler;
         this.serviceIndicatorRepository = serviceIndicatorRepository;
         this.indicatorRepository = indicatorRepository;
         this.referralTypeRepository = referralTypeRepository;
+        this.registrationReasonRepository = registrationReasonRepository;
+        this.feedbackRepository = feedbackRepository;
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-services")
@@ -508,5 +512,33 @@ public class ServiceController {
                 return new TBPatientTypesDTO(tbTestType.getId(), tbTestType.getTestTypeName(), tbTestType.getIsActive());
             }
         });
+    }
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/referral-feedback")
+    @ResponseBody
+    public List<ReferralFeedback> getReferralFeedback() {
+
+        List<ReferralFeedback> referralFeedbacks = null;
+        try {
+            referralFeedbacks = feedbackRepository.getReferralFeedback("SELECT * FROM "+ ReferralFeedback.tbName,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+       return referralFeedbacks;
+    }
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/registration-reasons")
+    @ResponseBody
+    public List<ClientRegistrationReason> getRegistrationReasons() {
+
+        List<ClientRegistrationReason> clientRegistrationReasons = null;
+        try {
+            clientRegistrationReasons = registrationReasonRepository.geRegistrationReasons("SELECT * FROM "+ ClientRegistrationReason.tbName,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+       return clientRegistrationReasons;
     }
 }

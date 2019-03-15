@@ -15,7 +15,7 @@ public class HealthFacilities {
 
 	public static final String COL_FACILITY_CTC_CODE = "facility_ctc_code";
 
-	public static final String COL_PARENT_OPENMRS_UIID= "parent_openmrs_UIID";
+	public static final String COL_PARENT_OPENMRS_UUID = "parent_openmrs_UUID";
 
 	public static final String COL_HFR_CODE = "HFR_code";
 
@@ -38,7 +38,7 @@ public class HealthFacilities {
 	@Column(name = COL_FACILITY_CTC_CODE,unique=true)
 	private String facilityCtcCode;
 
-	@Column(name = COL_PARENT_OPENMRS_UIID)
+	@Column(name = COL_PARENT_OPENMRS_UUID)
 	private String parentOpenMRSUUID;
 
 	@Column(name = COL_HFR_CODE,unique=true)

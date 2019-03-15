@@ -110,8 +110,8 @@ public class HealthFacilitiesController {
         List<HealthFacilities> healthFacilities = null;
         try {
             healthFacilities = facilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE "+
-                    HealthFacilities.COL_PARENT_OPENMRS_UIID+" IN (" +
-                        "SELECT "+HealthFacilities.COL_PARENT_OPENMRS_UIID+" FROM "+HealthFacilities.tbName+
+                    HealthFacilities.COL_PARENT_OPENMRS_UUID +" IN (" +
+                        "SELECT "+HealthFacilities.COL_PARENT_OPENMRS_UUID +" FROM "+HealthFacilities.tbName+
                         " WHERE "+HealthFacilities.COL_OPENMRS_UUID +"='"+facilityUuid+"')",null);
         } catch (Exception e) {
             e.printStackTrace();

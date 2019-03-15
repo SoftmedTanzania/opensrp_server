@@ -26,7 +26,7 @@ public class HealthFacilityRepository {
 				HealthFacilities.COL_FACILITY_NAME + "," +
 				HealthFacilities.COL_FACILITY_CTC_CODE + "," +
 				HealthFacilities.COL_HFR_CODE + "," +
-				HealthFacilities.COL_PARENT_OPENMRS_UIID + "," +
+				HealthFacilities.COL_PARENT_OPENMRS_UUID + "," +
 				HealthFacilities.COL_UPDATED_AT + "," +
 				HealthFacilities.COL_CREATED_AT + ") values (?,?,?,?,?,?,?) ";
 
@@ -79,7 +79,7 @@ public class HealthFacilityRepository {
 			healthFacilitie.setFacilityName(rs.getString(rs.findColumn(HealthFacilities.COL_FACILITY_NAME)));
 			healthFacilitie.setFacilityCtcCode(rs.getString(rs.findColumn(HealthFacilities.COL_FACILITY_CTC_CODE)));
 			healthFacilitie.setHfrCode(rs.getString(rs.findColumn(HealthFacilities.COL_HFR_CODE)));
-			healthFacilitie.setParentOpenMRSUUID(rs.getString(rs.findColumn(HealthFacilities.COL_PARENT_OPENMRS_UIID)));
+			healthFacilitie.setParentOpenMRSUUID(rs.getString(rs.findColumn(HealthFacilities.COL_PARENT_OPENMRS_UUID)));
 			healthFacilitie.setUpdatedAt(rs.getDate(rs.findColumn(HealthFacilities.COL_UPDATED_AT)));
 			healthFacilitie.setId(rs.getLong(rs.findColumn("_id")));
 			return healthFacilitie;
