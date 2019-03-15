@@ -5,12 +5,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_client_referral_indicator")
+@Table(name = "client_referral_indicator")
 public class ClientReferralIndicators implements Serializable {
 
-	public static final String tbName = "tbl_client_referral_indicator";
+	public static final String tbName = "client_referral_indicator";
 
-	public static final String COL_CLIENT_REFERRAL_INDICATOR_ID = "client_referral_indicator_id";
+	public static final String COL_ID = "id";
 
 	public static final String COL_REFERRAL_ID = "referral_id";
 
@@ -25,8 +25,8 @@ public class ClientReferralIndicators implements Serializable {
 
 	@Id
 	@GeneratedValue
-	@Column(name = COL_CLIENT_REFERRAL_INDICATOR_ID)
-	private Long clientReferralIndicatorId;
+	@Column(name = COL_ID)
+	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name=COL_REFERRAL_ID)
@@ -55,12 +55,12 @@ public class ClientReferralIndicators implements Serializable {
 	private Date updatedAt;
 
 
-	public Long getClientReferralIndicatorId() {
-		return clientReferralIndicatorId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setClientReferralIndicatorId(Long clientReferralIndicatorId) {
-		this.clientReferralIndicatorId = clientReferralIndicatorId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public ClientReferrals getClientReferrals() {

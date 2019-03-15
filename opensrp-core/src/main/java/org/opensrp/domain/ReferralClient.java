@@ -4,12 +4,12 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_clients")
+@Table(name = "clients")
 public class ReferralClient {
 
-	public static final String tbName = "tbl_clients";
+	public static final String tbName = "clients";
 
-	public static final String COL_CLIENT_ID = "client_id";
+	public static final String COL_CLIENT_ID = "id";
 
 	public static final String COL_PATIENT_FIRST_NAME = "first_name";
 
@@ -42,6 +42,8 @@ public class ReferralClient {
 	public static final String COL_CARE_TAKER_RELATIONSHIP= "care_taker_relationship";
 
 	public static final String COL_VEO= "veo";
+
+	public static final String COL_REGISTRATION_REASON= "registration_reason_id";
 
 	public static final String COL_CREATED_AT = "created_at";
 
@@ -105,6 +107,9 @@ public class ReferralClient {
 	@Column(name = COL_VEO)
 	private String veo;
 
+	@ManyToOne
+	@JoinColumn(name= COL_REGISTRATION_REASON, referencedColumnName = ClientRegistrationReason.COL_REGISTRATION__ID)
+	private ClientRegistrationReason clientRegistrationReason;
 
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
@@ -241,6 +246,14 @@ public class ReferralClient {
 
 	public void setCareTakerRelationship(String careTakerRelationship) {
 		this.careTakerRelationship = careTakerRelationship;
+	}
+
+	public ClientRegistrationReason getClientRegistrationReason() {
+		return clientRegistrationReason;
+	}
+
+	public void setClientRegistrationReason(ClientRegistrationReason clientRegistrationReason) {
+		this.clientRegistrationReason = clientRegistrationReason;
 	}
 
 	public Date getUpdatedAt() {

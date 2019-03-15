@@ -20,7 +20,6 @@ import org.opensrp.common.domain.UserDetail;
 import org.opensrp.connector.openmrs.service.OpenmrsLocationService;
 import org.opensrp.connector.openmrs.service.OpenmrsUserService;
 import org.opensrp.domain.HealthFacilities;
-import org.opensrp.dto.ReferralsDTO;
 import org.opensrp.repository.HealthFacilityRepository;
 import org.opensrp.web.security.DrishtiAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -165,7 +163,7 @@ public class UserController {
 
 		List<HealthFacilities> healthFacilities = null;
 		try {
-			String sql = "SELECT * FROM "+ HealthFacilities.tbName+" WHERE "+HealthFacilities.COL_OPENMRS_UIID+ " IN ("+facilitiesUUIDs+")";
+			String sql = "SELECT * FROM "+ HealthFacilities.tbName+" WHERE "+HealthFacilities.COL_OPENMRS_UUID + " IN ("+facilitiesUUIDs+")";
 			healthFacilities = facilityRepository.getHealthFacility(sql,null);
 
 			System.out.println("FACILITY-HFR-SQL : "+sql);
@@ -176,8 +174,8 @@ public class UserController {
 
 		List<String> healthFacilitiesOpenMRSUUIDS = new ArrayList<>();
 		for(HealthFacilities healthFacility:healthFacilities){
-			healthFacilitiesOpenMRSUUIDS.add(healthFacility.getOpenMRSUIID());
-			System.out.println("FACILITY-UUID : "+healthFacility.getOpenMRSUIID());
+			healthFacilitiesOpenMRSUUIDS.add(healthFacility.getOpenMRSUUID());
+			System.out.println("FACILITY-UUID : "+healthFacility.getOpenMRSUUID());
 		}
 
 		System.out.println("FACILITY-UUID-LIST : "+new Gson().toJson(healthFacilitiesOpenMRSUUIDS));

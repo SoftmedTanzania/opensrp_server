@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_health_facility_clients")
+@Table(name = "health_facility_clients")
 public class HealthFacilitiesReferralClients {
 
-	public static final String tbName = "tbl_health_facility_clients";
+	public static final String tbName = "health_facility_clients";
 
 	public static final String COL_HEALTH_FACILITY_CLIENT_ID = "health_facility_client_id";
 
@@ -29,7 +29,7 @@ public class HealthFacilitiesReferralClients {
 
 	@ManyToOne
 	@JoinColumn(name= COL_CLIENT_ID)
-	private ReferralClient patient;
+	private ReferralClient client;
 
 	@Column(name = COL_CTC_NUMBER)
 	private String ctcNumber;
@@ -53,12 +53,12 @@ public class HealthFacilitiesReferralClients {
 		this.healthFacilityClientId = healthFacilityClientId;
 	}
 
-	public ReferralClient getPatient() {
-		return patient;
+	public ReferralClient getClient() {
+		return client;
 	}
 
-	public void setPatient(ReferralClient patient) {
-		this.patient = patient;
+	public void setClient(ReferralClient client) {
+		this.client = client;
 	}
 
 	public String getCtcNumber() {

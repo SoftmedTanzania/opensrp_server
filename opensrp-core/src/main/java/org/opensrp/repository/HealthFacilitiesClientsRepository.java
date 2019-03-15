@@ -29,7 +29,7 @@ public class HealthFacilitiesClientsRepository {
 		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(HealthFacilitiesReferralClients.tbName).usingGeneratedKeyColumns(HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID);
 
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put(HealthFacilitiesReferralClients.COL_CLIENT_ID, healthFacilitiesReferralClients.getPatient().getClientId());
+		parameters.put(HealthFacilitiesReferralClients.COL_CLIENT_ID, healthFacilitiesReferralClients.getClient().getClientId());
 		parameters.put(HealthFacilitiesReferralClients.COL_FACILITY_ID  , healthFacilitiesReferralClients.getFacilityId());
 		parameters.put(HealthFacilitiesReferralClients.COL_CTC_NUMBER , healthFacilitiesReferralClients.getCtcNumber());
 		parameters.put(HealthFacilitiesReferralClients.COL_CREATED_AT , healthFacilitiesReferralClients.getCreatedAt());
@@ -70,7 +70,7 @@ public class HealthFacilitiesClientsRepository {
 			ReferralClient referralClient = new ReferralClient();
 			referralClient.setClientId(rs.getLong(rs.findColumn(HealthFacilitiesReferralClients.COL_CLIENT_ID)));
 
-			facilitiesPatients.setPatient(referralClient);
+			facilitiesPatients.setClient(referralClient);
 			facilitiesPatients.setCtcNumber(rs.getString(rs.findColumn(HealthFacilitiesReferralClients.COL_CTC_NUMBER)));
 			facilitiesPatients.setFacilityId(rs.getLong(rs.findColumn(HealthFacilitiesReferralClients.COL_FACILITY_ID)));
 			facilitiesPatients.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(HealthFacilitiesReferralClients.COL_CREATED_AT)).getTime()));

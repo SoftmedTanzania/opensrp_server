@@ -180,8 +180,17 @@ public class PatientsConverter {
 		            Date appointDate = new Date();
 		            appointDate.setTime(appointment.getDateOfAppointment());
 		            patientAppointment.setAppointmentDate(appointDate);
-		            patientAppointment.setStatus(appointment.getStatus());
-		            patientAppointment.setAppointmentType(1);
+
+		            Status status = new Status();
+		            status.setStatusId(appointment.getStatus());
+		            patientAppointment.setStatus(status);
+
+		            AppointmentType  appointmentType = new AppointmentType();
+
+		            //CTC appointment
+                    appointmentType.setId(1);
+
+		            patientAppointment.setAppointmentType(appointmentType);
 		            clientAppointments.add(patientAppointment);
 	            }
             }else{
@@ -497,8 +506,8 @@ public class PatientsConverter {
 			patientsAppointmentsDTO.setAppointmentDate(clientAppointments.getAppointmentDate().getTime());
 			patientsAppointmentsDTO.setIsCancelled(clientAppointments.getIsCancelled());
 			patientsAppointmentsDTO.setHealthFacilityPatientId(patientId);
-			patientsAppointmentsDTO.setStatus(clientAppointments.getStatus());
-			patientsAppointmentsDTO.setAppointmentType(clientAppointments.getAppointmentType());
+			patientsAppointmentsDTO.setStatus(clientAppointments.getStatus().getStatusId());
+			patientsAppointmentsDTO.setAppointmentType(clientAppointments.getAppointmentType().getId());
 
 			return patientsAppointmentsDTO;
 		} catch (Exception e) {

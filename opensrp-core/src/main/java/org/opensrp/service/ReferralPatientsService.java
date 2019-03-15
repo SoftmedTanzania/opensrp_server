@@ -81,7 +81,7 @@ public class ReferralPatientsService {
 
         return getPatientsReferralsDTO("SELECT * FROM " + HealthFacilitiesReferralClients.tbName +
                 " INNER JOIN "+HealthFacilities.tbName+" ON "+ HealthFacilitiesReferralClients.tbName+"."+ HealthFacilitiesReferralClients.COL_FACILITY_ID +" = "+HealthFacilities.tbName+"._id " +
-                " WHERE " + HealthFacilities.COL_OPENMRS_UIID + "=?",healthFacilityPatientArg);
+                " WHERE " + HealthFacilities.COL_OPENMRS_UUID + "=?",healthFacilityPatientArg);
     }
 
     public  List<PatientReferralsDTO> getPatientsReferralsDTO(String sql, Object[] arg){
@@ -95,7 +95,7 @@ public class ReferralPatientsService {
 
         List<PatientReferralsDTO> patientReferralsDTOS = new ArrayList<>();
         for(HealthFacilitiesReferralClients facilitiesPatients:healthFacilitiesPatients){
-            String getPatientsSQL = "SELECT * from " + ReferralClient.tbName+" WHERE "+ ReferralClient.COL_CLIENT_ID + " = "+facilitiesPatients.getPatient().getClientId();
+            String getPatientsSQL = "SELECT * from " + ReferralClient.tbName+" WHERE "+ ReferralClient.COL_CLIENT_ID + " = "+facilitiesPatients.getClient().getClientId();
             try {
                 ReferralClient patient = clientsRepository.getPatients(getPatientsSQL,null).get(0);
 
@@ -231,7 +231,7 @@ public class ReferralPatientsService {
 
         //Obtaining facilityId from tbl_facilities
         String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
-                HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UIID + " = ?";
+                HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UUID + " = ?";
         Object[] healthFacilityParams = new Object[]{
                 healthFacilityCode,healthFacilityCode};
 
@@ -251,7 +251,7 @@ public class ReferralPatientsService {
         ReferralClient referralClient = new ReferralClient();
         referralClient.setClientId(id);
 
-        healthFacilitiesReferralClients.setPatient(referralClient);
+        healthFacilitiesReferralClients.setClient(referralClient);
         healthFacilitiesReferralClients.setCtcNumber(ctcNumber);
         healthFacilitiesReferralClients.setFacilityId(healthFacilityId);
 
@@ -261,7 +261,7 @@ public class ReferralPatientsService {
                 HealthFacilitiesReferralClients.COL_FACILITY_ID + " = ?";
 
         Object[] healthFacilityPatientsparams = new Object[]{
-                healthFacilitiesReferralClients.getPatient().getClientId(),
+                healthFacilitiesReferralClients.getClient().getClientId(),
                 healthFacilitiesReferralClients.getFacilityId()};
 
         List<HealthFacilitiesReferralClients> healthFacilitiesReferralClientsResults = null;

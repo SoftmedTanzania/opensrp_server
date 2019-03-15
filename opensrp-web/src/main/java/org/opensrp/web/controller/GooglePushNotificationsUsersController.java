@@ -4,6 +4,7 @@ import ch.lambdaj.function.convert.Converter;
 import com.google.gson.Gson;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.GooglePushNotificationsUsers;
+import org.opensrp.domain.HealthFacilities;
 import org.opensrp.dto.GooglePushNotificationsUsersDTO;
 import org.opensrp.repository.GooglePushNotificationsUsersRepository;
 import org.opensrp.scheduler.SystemEvent;
@@ -57,8 +58,12 @@ public class GooglePushNotificationsUsersController {
                 public GooglePushNotificationsUsers convert(GooglePushNotificationsUsersDTO googlePushNotificationsUsersDTO) {
                     GooglePushNotificationsUsers googlePushNotificationsUsers = new GooglePushNotificationsUsers();
                     googlePushNotificationsUsers.setGooglePushNotificationToken(googlePushNotificationsUsersDTO.getGooglePushNotificationToken());
-                    googlePushNotificationsUsers.setUserUiid(googlePushNotificationsUsersDTO.getUserUiid());
-                    googlePushNotificationsUsers.setFacilityUiid(googlePushNotificationsUsersDTO.getFacilityUiid());
+                    googlePushNotificationsUsers.setUserUuid(googlePushNotificationsUsersDTO.getUserUiid());
+
+                    HealthFacilities healthFacilities = new HealthFacilities();
+                    healthFacilities.setOpenMRSUUID(googlePushNotificationsUsersDTO.getFacilityUiid());
+
+                    googlePushNotificationsUsers.setHealthFacilities(healthFacilities);
                     googlePushNotificationsUsers.setUserType(googlePushNotificationsUsersDTO.getUserType());
 
                     return googlePushNotificationsUsers;
@@ -92,7 +97,7 @@ public class GooglePushNotificationsUsersController {
         return with(googlePushNotificationsUsers).convert(new Converter<GooglePushNotificationsUsers, GooglePushNotificationsUsersDTO>() {
             @Override
             public GooglePushNotificationsUsersDTO convert(GooglePushNotificationsUsers googlePushNotificationsUsers) {
-                return new GooglePushNotificationsUsersDTO(googlePushNotificationsUsers.getId(),googlePushNotificationsUsers.getUserUiid(),googlePushNotificationsUsers.getGooglePushNotificationToken(),googlePushNotificationsUsers.getFacilityUiid(),googlePushNotificationsUsers.getUserType());
+                return new GooglePushNotificationsUsersDTO(googlePushNotificationsUsers.getId(),googlePushNotificationsUsers.getUserUuid(),googlePushNotificationsUsers.getGooglePushNotificationToken(),googlePushNotificationsUsers.getHealthFacilities().getOpenMRSUUID(),googlePushNotificationsUsers.getUserType());
             }
         });
     }

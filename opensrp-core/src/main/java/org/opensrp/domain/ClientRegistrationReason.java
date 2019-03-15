@@ -1,17 +1,20 @@
 package org.opensrp.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "referral_type")
-public class ReferralType {
+@Table(name = "registration_reasons")
+public class ClientRegistrationReason implements Serializable {
 
-	public static final String tbName = "referral_type";
+	public static final String tbName = "registration_reasons";
 
-	public static final String COL_REFERRAL_TYPE_NAME = "referral_type_name";
+	public static final String COL_REGISTRATION__ID = "registration_id";
 
-	public static final String COL_REFERRAL_TYPE_ID= "referral_type_id";
+	public static final String COL_DESC_EN = "desc_en";
+
+	public static final String COL_DESC_SW = "desc_sw";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 
@@ -19,13 +22,20 @@ public class ReferralType {
 
 	public static final String COL_UPDATED_AT = "updated_at";
 
+
 	@Id
 	@GeneratedValue
-	@Column(name = COL_REFERRAL_TYPE_ID)
-	private Long referralTypeId;
+	@Column(name = COL_REGISTRATION__ID)
+	private  int registrationId;
 
-	@Column(name = COL_REFERRAL_TYPE_NAME,unique = true)
-	private String referralTypeName;
+
+	@Column(name = COL_DESC_EN)
+	private String descEn;
+
+
+	@Column(name = COL_DESC_SW)
+	private String descSw;
+
 
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;
@@ -38,20 +48,28 @@ public class ReferralType {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getReferralTypeId() {
-		return referralTypeId;
+	public int getRegistrationId() {
+		return registrationId;
 	}
 
-	public void setReferralTypeId(Long referralTypeId) {
-		this.referralTypeId = referralTypeId;
+	public void setRegistrationId(int registrationId) {
+		this.registrationId = registrationId;
 	}
 
-	public String getReferralTypeName() {
-		return referralTypeName;
+	public String getDescEn() {
+		return descEn;
 	}
 
-	public void setReferralTypeName(String referralTypeName) {
-		this.referralTypeName = referralTypeName;
+	public void setDescEn(String descEn) {
+		this.descEn = descEn;
+	}
+
+	public String getDescSw() {
+		return descSw;
+	}
+
+	public void setDescSw(String descSw) {
+		this.descSw = descSw;
 	}
 
 	public boolean isActive() {

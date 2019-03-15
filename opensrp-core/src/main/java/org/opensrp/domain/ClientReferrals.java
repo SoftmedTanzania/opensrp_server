@@ -6,10 +6,10 @@ import java.util.Date;
 import static org.opensrp.domain.ReferralType.COL_REFERRAL_TYPE_ID;
 
 @Entity
-@Table(name = "tbl_client_referral")
+@Table(name = "referral")
 public class ClientReferrals {
 
-	public static final String tbName = "tbl_client_referral";
+	public static final String tbName = "referral";
 
 	public static final String COL_CLIENT_ID = "client_id";
 

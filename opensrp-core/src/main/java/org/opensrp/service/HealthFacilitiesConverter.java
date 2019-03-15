@@ -20,9 +20,9 @@ public class HealthFacilitiesConverter {
         try {
             HealthFacilities healthFacilities = new HealthFacilities();
 
-            healthFacilities.setOpenMRSUIID(healthFacilitiesDTO.getOpenmrsUIID());
+            healthFacilities.setOpenMRSUUID(healthFacilitiesDTO.getOpenmrsUIID());
 
-            healthFacilities.setParentOpenmrsUIID(healthFacilitiesDTO.getParentOpenmrsUIID());
+            healthFacilities.setParentOpenMRSUUID(healthFacilitiesDTO.getParentOpenmrsUIID());
 
             healthFacilities.setHfrCode(healthFacilitiesDTO.getHfrCode());
 

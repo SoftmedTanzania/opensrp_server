@@ -4,16 +4,16 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_services")
+@Table(name = "service")
 public class ReferralService {
 
-	public static final String tbName = "tbl_services";
+	public static final String tbName = "service";
 
 	public static final String COL_SERVICE_NAME = "service_name";
 
 	public static final String COL_SERVICE_NAME_SW = "service_name_sw";
 
-	public static final String COL_SERVICE_ID = "service_id";
+	public static final String COL_SERVICE_ID = "id";
 
 	public static final String COL_CATEGORY_NAME = "category_name";
 

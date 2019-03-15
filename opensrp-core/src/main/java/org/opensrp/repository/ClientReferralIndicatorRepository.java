@@ -28,7 +28,7 @@ public class ClientReferralIndicatorRepository {
 	
 	public Long save(ClientReferralIndicators patientReferralIndicator) throws Exception {
 
-		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(ClientReferralIndicators.tbName).usingGeneratedKeyColumns(ClientReferralIndicators.COL_CLIENT_REFERRAL_INDICATOR_ID);
+		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(ClientReferralIndicators.tbName).usingGeneratedKeyColumns(ClientReferralIndicators.COL_ID);
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(ClientReferralIndicators.COL_REFERRAL_ID , patientReferralIndicator.getClientReferrals().getId());
@@ -67,7 +67,7 @@ public class ClientReferralIndicatorRepository {
 		public ClientReferralIndicators mapRow(ResultSet rs, int rowNum) throws SQLException {
 			ClientReferralIndicators patientReferralIndicator = new ClientReferralIndicators();
 
-			patientReferralIndicator.setClientReferralIndicatorId(rs.getLong(rs.findColumn(ClientReferralIndicators.COL_CLIENT_REFERRAL_INDICATOR_ID)));
+			patientReferralIndicator.setId(rs.getLong(rs.findColumn(ClientReferralIndicators.COL_ID)));
 
 			ClientReferrals clientReferrals = new ClientReferrals();
 			clientReferrals.setId(rs.getLong(rs.findColumn(ClientReferralIndicators.COL_REFERRAL_ID)));

@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_referral_feedback")
+@Table(name = "referral_feedback")
 public class ReferralFeedback {
 
-	public static final String tbName = "tbl_referral_feedback";
+	public static final String tbName = "referral_feedback";
 
 	public static final String COL_DESC = "desc_en";
 

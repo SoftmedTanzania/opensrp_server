@@ -42,9 +42,9 @@ public class HealthFacilitiesService {
 
 	public Boolean checkIfFacilyExists(HealthFacilities healthFacilities) throws SQLException {
 		try {
-			String checkIfExistQuery = "SELECT count(*) from " + HealthFacilities.tbName + " WHERE " + HealthFacilities.COL_OPENMRS_UIID +" = ?";
+			String checkIfExistQuery = "SELECT count(*) from " + HealthFacilities.tbName + " WHERE " + HealthFacilities.COL_OPENMRS_UUID +" = ?";
 			String[] args = new String[1];
-			args[0] = (String) healthFacilities.getOpenMRSUIID();
+			args[0] = (String) healthFacilities.getOpenMRSUUID();
 
 			int rowCount = healthFacilityRepository.checkIfExists(checkIfExistQuery, args);
 

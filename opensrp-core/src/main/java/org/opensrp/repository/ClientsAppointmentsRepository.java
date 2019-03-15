@@ -1,7 +1,9 @@
 package org.opensrp.repository;
 
+import org.opensrp.domain.AppointmentType;
 import org.opensrp.domain.HealthFacilitiesReferralClients;
 import org.opensrp.domain.ClientAppointments;
+import org.opensrp.domain.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -89,8 +91,15 @@ public class ClientsAppointmentsRepository {
 			clientAppointments.setHealthFacilitiesReferralClients(healthFacilitiesReferralClients);
 			clientAppointments.setAppointmentDate(rs.getDate(rs.findColumn(ClientAppointments.COL_APPOINTMENT_DATE)));
 			clientAppointments.setIsCancelled(rs.getBoolean(rs.findColumn(ClientAppointments.COL_IS_CANCELLED)));
-			clientAppointments.setStatus(rs.getInt(rs.findColumn(ClientAppointments.COL_STATUS)));
-			clientAppointments.setAppointmentType(rs.getInt(rs.findColumn(ClientAppointments.COL_APPOINTMENT_TYPE)));
+
+			Status status = new Status();
+			status.setStatusId(rs.getInt(rs.findColumn(ClientAppointments.COL_STATUS)));
+			clientAppointments.setStatus(status);
+
+			AppointmentType appointmentType = new AppointmentType();
+			appointmentType.setId(rs.getInt(rs.findColumn(ClientAppointments.COL_APPOINTMENT_TYPE)));
+
+			clientAppointments.setAppointmentType(appointmentType);
 			clientAppointments.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ClientAppointments.COL_CREATED_AT)).getTime()));
 			clientAppointments.setUpdatedAt(rs.getDate(rs.findColumn(ClientAppointments.COL_UPDATED_AT)));
 			return clientAppointments;

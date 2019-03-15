@@ -1,15 +1,20 @@
 package org.opensrp.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "TB_test_type")
-public class TBTestType {
+@Table(name = "appointment_type")
+public class AppointmentType implements Serializable {
 
-	public static final String tbName = "TB_test_type";
+	public static final String tbName = "appointment_type";
 
-	public static final String COL_TEST_TYPE_NAME = "test_type_name";
+	public static final String COL_ID = "id";
+
+	public static final String COL_NAME = "name";
+
+	public static final String COL_NOTES = "notes";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 
@@ -17,13 +22,23 @@ public class TBTestType {
 
 	public static final String COL_UPDATED_AT = "updated_at";
 
-	@GeneratedValue
-	@Column(name = "_id")
-	private Long id;
+	/***
+	 * 1 = CTC
+	 * 2 = TB
+	 */
 
 	@Id
-	@Column(name = COL_TEST_TYPE_NAME)
-	private String testTypeName;
+	@GeneratedValue
+	@Column(name = COL_ID)
+	private  int id;
+
+
+	@Column(name = COL_NAME)
+	private String name;
+
+	@Column(name = COL_NOTES)
+	private String notes;
+
 
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;
@@ -36,20 +51,28 @@ public class TBTestType {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	public String getTestTypeName() {
-		return testTypeName;
+	public String getName() {
+		return name;
 	}
 
-	public void setTestTypeName(String testTypeName) {
-		this.testTypeName = testTypeName;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 	public boolean isActive() {
@@ -58,14 +81,6 @@ public class TBTestType {
 
 	public void setActive(boolean active) {
 		isActive = active;
-	}
-
-	public boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(boolean isActive) {
-		this.isActive = isActive;
 	}
 
 	public Date getCreatedAt() {

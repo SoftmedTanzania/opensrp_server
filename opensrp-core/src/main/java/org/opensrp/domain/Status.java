@@ -1,17 +1,20 @@
 package org.opensrp.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "referral_type")
-public class ReferralType {
+@Table(name = "status")
+public class Status implements Serializable {
 
-	public static final String tbName = "referral_type";
+	public static final String tbName = "status";
 
-	public static final String COL_REFERRAL_TYPE_NAME = "referral_type_name";
+	public static final String COL_STATUS_ID = "id";
 
-	public static final String COL_REFERRAL_TYPE_ID= "referral_type_id";
+	public static final String COL_NAME = "name";
+
+	public static final String COL_NOTES = "notes";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 
@@ -19,13 +22,25 @@ public class ReferralType {
 
 	public static final String COL_UPDATED_AT = "updated_at";
 
+	/***
+	 * Appointments Status
+	 * -1 = canceled
+	 * 0 = new
+	 * 1 = completed
+	 */
+
 	@Id
 	@GeneratedValue
-	@Column(name = COL_REFERRAL_TYPE_ID)
-	private Long referralTypeId;
+	@Column(name = COL_STATUS_ID)
+	private  int statusId;
 
-	@Column(name = COL_REFERRAL_TYPE_NAME,unique = true)
-	private String referralTypeName;
+
+	@Column(name = COL_NAME)
+	private String name;
+
+	@Column(name = COL_NOTES)
+	private String notes;
+
 
 	@Column(name = COL_IS_ACTIVE)
 	private boolean isActive;
@@ -38,20 +53,28 @@ public class ReferralType {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	public Long getReferralTypeId() {
-		return referralTypeId;
+	public int getStatusId() {
+		return statusId;
 	}
 
-	public void setReferralTypeId(Long referralTypeId) {
-		this.referralTypeId = referralTypeId;
+	public void setStatusId(int statusId) {
+		this.statusId = statusId;
 	}
 
-	public String getReferralTypeName() {
-		return referralTypeName;
+	public String getName() {
+		return name;
 	}
 
-	public void setReferralTypeName(String referralTypeName) {
-		this.referralTypeName = referralTypeName;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 	public boolean isActive() {

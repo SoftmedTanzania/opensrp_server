@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_TB_clients")
+@Table(name = "TB_clients")
 public class TBPatient  {
 
-	public static final String tbName = "tbl_TB_clients";
+	public static final String tbName = "TB_clients";
 
 	public static final String COL_HEALTH_FACILITY_CLIENT_ID = "health_facility_client_id";
 

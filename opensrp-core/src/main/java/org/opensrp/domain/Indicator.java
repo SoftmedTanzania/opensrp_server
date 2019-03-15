@@ -4,16 +4,16 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_indicators")
+@Table(name = "indicator")
 public class Indicator {
 
-	public static final String tbName = "tbl_indicators";
+	public static final String tbName = "indicator";
 
-	public static final String COL_INDICATOR_NAME = "indicator_name";
+	public static final String COL_INDICATOR_NAME = "name";
 
-	public static final String COL_INDICATOR_NAME_SW = "indicator_name_sw";
+	public static final String COL_INDICATOR_NAME_SW = "name_sw";
 
-	public static final String COL_INDICATOR_ID = "indicator_id";
+	public static final String COL_INDICATOR_ID = "id";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 

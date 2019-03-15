@@ -154,9 +154,9 @@ public class ReportController {
 								ClientReferrals.COL_REFERRAL_SOURCE+" as referral_source, "+
 								ClientReferrals.COL_REFERRAL_STATUS+" as referral_status " +
 								" FROM "+ ClientReferrals.tbName +
-								" INNER JOIN "+ HealthFacilities.tbName +" ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
+								" INNER JOIN "+ HealthFacilities.tbName +" ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UUID +
 								" WHERE "+ ClientReferrals.COL_REFERRAL_TYPE+"=2 AND " +
-								HealthFacilities.COL_OPENMRS_UIID+" = '"+facilityId+"' AND "+
+								HealthFacilities.COL_OPENMRS_UUID +" = '"+facilityId+"' AND "+
 								ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
 								ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
 								" GROUP BY "+ ClientReferrals.COL_REFERRAL_SOURCE+" , "+ ClientReferrals.COL_REFERRAL_STATUS,null);
@@ -227,9 +227,9 @@ public class ReportController {
 								ClientReferrals.COL_REFERRAL_STATUS+" as referral_status, " +
 								ClientReferrals.COL_SERVICE_PROVIDER_UIID+" as provider_uuid " +
 								" FROM "+ ClientReferrals.tbName +
-								" INNER JOIN "+HealthFacilities.tbName +" ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UIID+
+								" INNER JOIN "+HealthFacilities.tbName +" ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FROM_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UUID +
 								" WHERE "+ ClientReferrals.COL_REFERRAL_TYPE+"=2 AND " +
-								HealthFacilities.COL_OPENMRS_UIID+" = '"+facilityId+"' AND "+
+								HealthFacilities.COL_OPENMRS_UUID +" = '"+facilityId+"' AND "+
 								ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
 								ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
 								" GROUP BY "+ ClientReferrals.COL_REFERRAL_SOURCE+" , "+ ClientReferrals.COL_REFERRAL_STATUS+","+ ClientReferrals.COL_SERVICE_PROVIDER_UIID ,null);
@@ -299,10 +299,10 @@ public class ReportController {
 								ClientReferrals.COL_REFERRAL_STATUS+" as referral_status, " +
 								"H2."+HealthFacilities.COL_FACILITY_NAME+" as to_facility_name " +
 								" FROM "+ ClientReferrals.tbName +
-								" INNER JOIN "+HealthFacilities.tbName +" H1 ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FROM_FACILITY_ID+" = H1."+HealthFacilities.COL_OPENMRS_UIID+
-								" INNER JOIN "+HealthFacilities.tbName +" H2 ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FACILITY_ID+" = H2."+HealthFacilities.COL_OPENMRS_UIID+
+								" INNER JOIN "+HealthFacilities.tbName +" H1 ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FROM_FACILITY_ID+" = H1."+HealthFacilities.COL_OPENMRS_UUID +
+								" INNER JOIN "+HealthFacilities.tbName +" H2 ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_FACILITY_ID+" = H2."+HealthFacilities.COL_OPENMRS_UUID +
 								" WHERE "+ ClientReferrals.COL_REFERRAL_TYPE+"= 3 AND " +
-								"H1."+HealthFacilities.COL_OPENMRS_UIID+" = '"+facilityId+"' AND "+
+								"H1."+HealthFacilities.COL_OPENMRS_UUID +" = '"+facilityId+"' AND "+
 								ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
 								ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
 								" GROUP BY H2."+HealthFacilities.COL_FACILITY_NAME+" , "+ ClientReferrals.COL_REFERRAL_STATUS,null);

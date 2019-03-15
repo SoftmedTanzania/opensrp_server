@@ -5,14 +5,14 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_client_appointments")
+@Table(name = "client_appointments")
 public class ClientAppointments implements Serializable {
 
-	public static final String tbName = "tbl_client_appointments";
+	public static final String tbName = "client_appointments";
 
 	public static final String COL_HEALTH_FACILITY_CLIENT_ID = "health_facility_client_id";
 
-	public static final String COL_APPOINTMENT_ID = "appointment_id";
+	public static final String COL_APPOINTMENT_ID = "id";
 
 	public static final String COL_APPOINTMENT_DATE = "appointment_date";
 
@@ -25,7 +25,6 @@ public class ClientAppointments implements Serializable {
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
-
 
 	@Column(name = COL_APPOINTMENT_ID, unique = true, nullable = false, insertable = false, updatable = false)
 	private Long appointment_id;
@@ -43,25 +42,15 @@ public class ClientAppointments implements Serializable {
 	@Column(name = COL_IS_CANCELLED)
 	private boolean isCancelled;
 
-	//TODO implement a configuration table for storing Appointments Status
-	/***
-	 * Appointments Status
-     * -1 = canceled
-	 * 0 = new
-	 * 1 = completed
-	 */
 
-	@Column(name = COL_STATUS)
-	private int status;
+	@ManyToOne
+	@JoinColumn(name=COL_STATUS,referencedColumnName = Status.COL_STATUS_ID)
+	private Status status;
 
 
-	//TODO implement table and configurations for saving this
-	/***
-	 * 1 = CTC
-	 * 2 = TB
-	 */
-	@Column(name = COL_APPOINTMENT_TYPE)
-	private int appointmentType;
+	@ManyToOne
+	@JoinColumn(name=COL_APPOINTMENT_TYPE,referencedColumnName = AppointmentType.COL_ID)
+	private AppointmentType appointmentType;
 
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
@@ -105,19 +94,27 @@ public class ClientAppointments implements Serializable {
 		this.isCancelled = isCancelled;
 	}
 
-	public int getStatus() {
+	public boolean isCancelled() {
+		return isCancelled;
+	}
+
+	public void setCancelled(boolean cancelled) {
+		isCancelled = cancelled;
+	}
+
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 
-	public int getAppointmentType() {
+	public AppointmentType getAppointmentType() {
 		return appointmentType;
 	}
 
-	public void setAppointmentType(int appointmentType) {
+	public void setAppointmentType(AppointmentType appointmentType) {
 		this.appointmentType = appointmentType;
 	}
 

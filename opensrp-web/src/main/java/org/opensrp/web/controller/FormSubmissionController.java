@@ -267,7 +267,7 @@ public class FormSubmissionController {
 					e.printStackTrace();
 				}
 
-				patient.setClientId(healthFacilitiesPatients.get(0).getPatient().getClientId());
+				patient.setClientId(healthFacilitiesPatients.get(0).getClient().getClientId());
 
 				logger.info("saveFormToOpenSRP : saving patient. Generated Client Id = "+patient.getClientId());
 				logger.info("saveFormToOpenSRP : saving patient. Updating form submissions with client Id "+temporallyClientId+" To Client Id = "+patient.getClientId());
@@ -294,7 +294,7 @@ public class FormSubmissionController {
 
 					logger.info("saveFormToOpenSRP : sending notification. User UUID  = "+userUUIDString);
 					Object[] userUUID = new Object[]{};
-					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UIID + " = ? ", userUUID);
+					List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UUID + " = ? ", userUUID);
 					JSONArray fcmTokens = new JSONArray();
 
 					for (GooglePushNotificationsUsers users : googlePushNotificationsUsers) {
@@ -400,7 +400,7 @@ public class FormSubmissionController {
 
 			List<HealthFacilitiesReferralClients> healthFacilitiesPatients = healthFacilitiesClientsRepository.getHealthFacilityPatients("SELECT * FROM "+ HealthFacilitiesReferralClients.tbName+" WHERE "+ HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID +" = "+healthfacilityPatientId,null);
 
-			patient.setClientId(healthFacilitiesPatients.get(0).getPatient().getClientId());
+			patient.setClientId(healthFacilitiesPatients.get(0).getClient().getClientId());
 			clientReferrals.setPatient(patient);
 
 			//TODO Coze remove hardcoding of these values. This is a temporally patch to be removed later on
@@ -459,7 +459,7 @@ public class FormSubmissionController {
 
 
 			Object[] facilityParams = new Object[]{clientReferrals.getFacilityId(),1};
-			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UIID+" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
+			List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM "+GooglePushNotificationsUsers.tbName+" WHERE "+GooglePushNotificationsUsers.COL_FACILITY_UUID +" = ? AND "+GooglePushNotificationsUsers.COL_USER_TYPE+" = ?",facilityParams);
 			JSONArray tokens = new JSONArray();
 			for(GooglePushNotificationsUsers googlePushNotificationsUsers1:googlePushNotificationsUsers){
 				tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());

@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import org.opensrp.common.AllConstants;
 import org.opensrp.domain.HealthFacilities;
 import org.opensrp.dto.HealthFacilitiesDTO;
-import org.opensrp.dto.PatientReferralsDTO;
 import org.opensrp.repository.HealthFacilityRepository;
 import org.opensrp.scheduler.SystemEvent;
 import org.opensrp.scheduler.TaskSchedulerService;
@@ -113,7 +112,7 @@ public class HealthFacilitiesController {
             healthFacilities = facilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE "+
                     HealthFacilities.COL_PARENT_OPENMRS_UIID+" IN (" +
                         "SELECT "+HealthFacilities.COL_PARENT_OPENMRS_UIID+" FROM "+HealthFacilities.tbName+
-                        " WHERE "+HealthFacilities.COL_OPENMRS_UIID+"='"+facilityUuid+"')",null);
+                        " WHERE "+HealthFacilities.COL_OPENMRS_UUID +"='"+facilityUuid+"')",null);
         } catch (Exception e) {
             e.printStackTrace();
         }

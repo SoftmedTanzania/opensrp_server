@@ -4,12 +4,12 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_health_facilities")
+@Table(name = "health_facilities")
 public class HealthFacilities {
 
-	public static final String tbName = "tbl_health_facilities";
+	public static final String tbName = "health_facilities";
 
-	public static final String COL_OPENMRS_UIID = "openmrs_UIID";
+	public static final String COL_OPENMRS_UUID = "openmrs_UUID";
 
 	public static final String COL_FACILITY_NAME = "facility_name";
 
@@ -23,13 +23,14 @@ public class HealthFacilities {
 
 	public static final String COL_UPDATED_AT = "updated_at";
 
-	@Id
+
 	@GeneratedValue
 	@Column(name = "_id")
 	private Long id;
 
-	@Column(name = COL_OPENMRS_UIID,unique=true)
-	private String openMRSUIID;
+	@Id
+	@Column(name = COL_OPENMRS_UUID,unique=true)
+	private String openMRSUUID;
 
 	@Column(name = COL_FACILITY_NAME)
 	private String facilityName;
@@ -38,7 +39,7 @@ public class HealthFacilities {
 	private String facilityCtcCode;
 
 	@Column(name = COL_PARENT_OPENMRS_UIID)
-	private String parentOpenmrsUIID;
+	private String parentOpenMRSUUID;
 
 	@Column(name = COL_HFR_CODE,unique=true)
 	private String hfrCode;
@@ -60,12 +61,12 @@ public class HealthFacilities {
 		this.id = id;
 	}
 
-	public String getOpenMRSUIID() {
-		return openMRSUIID;
+	public String getOpenMRSUUID() {
+		return openMRSUUID;
 	}
 
-	public void setOpenMRSUIID(String openMRSUIID) {
-		this.openMRSUIID = openMRSUIID;
+	public void setOpenMRSUUID(String openMRSUUID) {
+		this.openMRSUUID = openMRSUUID;
 	}
 
 	public String getFacilityName() {
@@ -92,12 +93,12 @@ public class HealthFacilities {
 		this.hfrCode = hfrCode;
 	}
 
-	public String getParentOpenmrsUIID() {
-		return parentOpenmrsUIID;
+	public String getParentOpenMRSUUID() {
+		return parentOpenMRSUUID;
 	}
 
-	public void setParentOpenmrsUIID(String parentOpenmrsUIID) {
-		this.parentOpenmrsUIID = parentOpenmrsUIID;
+	public void setParentOpenMRSUUID(String parentOpenMRSUUID) {
+		this.parentOpenMRSUUID = parentOpenMRSUUID;
 	}
 
 

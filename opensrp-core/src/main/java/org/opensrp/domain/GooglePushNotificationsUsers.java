@@ -1,20 +1,19 @@
 package org.opensrp.domain;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_push_notifications_users")
+@Table(name = "push_notifications_users")
 public class GooglePushNotificationsUsers {
 
-	public static final String tbName = "tbl_push_notifications_users";
+	public static final String tbName = "push_notifications_users";
 
-	public static final String COL_USER_UIID = "user_uiid";
+	public static final String COL_USER_UUID = "user_uuid";
 
 	public static final String COL_GOOGLE_PUSH_NOTIFICATION_TOKEN = "google_push_notification_token";
 
-	public static final String COL_FACILITY_UIID = "facility_uiid";
+	public static final String COL_FACILITY_UUID = "facility_uuid";
 
 	public static final String COL_USER_TYPE= "user_type";
 
@@ -28,14 +27,15 @@ public class GooglePushNotificationsUsers {
 	@Column(name = "_id")
 	private Long id;
 
-	@Column(name = COL_USER_UIID)
-	private String userUiid;
+	@Column(name = COL_USER_UUID)
+	private String userUuid;
 
 	@Column(name = COL_GOOGLE_PUSH_NOTIFICATION_TOKEN,unique = true)
 	private String googlePushNotificationToken;
 
-	@Column(name = COL_FACILITY_UIID)
-	private String facilityUiid;
+	@ManyToOne
+	@JoinColumn(name= COL_FACILITY_UUID, referencedColumnName = HealthFacilities.COL_OPENMRS_UUID)
+	private HealthFacilities healthFacilities;
 
 	@Column(name = COL_USER_TYPE)
 	private int userType;
@@ -56,12 +56,12 @@ public class GooglePushNotificationsUsers {
 		this.id = id;
 	}
 
-	public String getUserUiid() {
-		return userUiid;
+	public String getUserUuid() {
+		return userUuid;
 	}
 
-	public void setUserUiid(String userUiid) {
-		this.userUiid = userUiid;
+	public void setUserUuid(String userUuid) {
+		this.userUuid = userUuid;
 	}
 
 	public String getGooglePushNotificationToken() {
@@ -72,12 +72,12 @@ public class GooglePushNotificationsUsers {
 		this.googlePushNotificationToken = googlePushNotificationToken;
 	}
 
-	public String getFacilityUiid() {
-		return facilityUiid;
+	public HealthFacilities getHealthFacilities() {
+		return healthFacilities;
 	}
 
-	public void setFacilityUiid(String facilityUiid) {
-		this.facilityUiid = facilityUiid;
+	public void setHealthFacilities(HealthFacilities healthFacilities) {
+		this.healthFacilities = healthFacilities;
 	}
 
 	public int getUserType() {
