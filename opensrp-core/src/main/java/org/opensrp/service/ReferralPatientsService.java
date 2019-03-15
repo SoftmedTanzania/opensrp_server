@@ -229,7 +229,7 @@ public class ReferralPatientsService {
             }
         }
 
-        //Obtaining facilityId from tbl_facilities
+        //Obtaining facilityId from facilities
         String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
                 HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UUID + " = ?";
         Object[] healthFacilityParams = new Object[]{
