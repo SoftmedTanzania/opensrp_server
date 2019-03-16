@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
@@ -36,12 +37,12 @@ public class ReportController {
 		this.clientReferralRepository = clientReferralRepository;
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/report/report-definitions")
+	@RequestMapping(method = GET, value = "/report/report-definitions")
     public ResponseEntity<String> reportDefinitions() throws JSONException {
 		return new ResponseEntity<>(reportService.getReportDefinitions().toString(),HttpStatus.OK);
     }
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/report/report-data")
+	@RequestMapping(method = GET, value = "/report/report-data")
     public ResponseEntity<String> reportData(@RequestParam("uuid") String uuid, @RequestParam Map<String, String> params) throws JSONException {
 		return new ResponseEntity<>(reportService.getReportData(uuid, params).toString(),HttpStatus.OK);
     }
@@ -109,6 +110,36 @@ public class ReportController {
 			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	//TODO clear this report, only used for testing jasper server reports
+	@RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/report/get-all-chw-referrals-summary")
+	@ResponseBody
+	public ResponseEntity<List<CHWReferralsSummaryDTO>> getAllCHWReferralsSummaryReport() {
+
+		//Default dates if the date range is not passed
+		String fromDate = "2017-01-01";
+		String toDate = "2020-01-01";
+
+		try {
+			List<CHWReferralsSummaryDTO> chwReferralsSummaryDTOS = clientReferralRepository.getCHWReferralsSummary(
+					"SELECT COUNT("+ ClientReferrals.tbName+"."+ ClientReferrals.COL_SERVICE_ID+") as count ,"+ ReferralService.COL_SERVICE_NAME +" as service_name FROM "+ ClientReferrals.tbName +
+							" INNER JOIN "+ReferralService.tbName+" ON "+ ClientReferrals.tbName+"."+ ClientReferrals.COL_SERVICE_ID+" = "+ReferralService.tbName+"."+ReferralService.COL_SERVICE_ID +
+							" WHERE "+ ClientReferrals.COL_REFERRAL_TYPE+"=1 AND " +
+//							ClientReferrals.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
+							ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+							ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+							" GROUP BY "+ReferralService.COL_SERVICE_NAME,null);
+
+
+			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(chwReferralsSummaryDTOS,HttpStatus.OK);
+		}catch (Exception e){
+			e.printStackTrace();
+			return new ResponseEntity<List<CHWReferralsSummaryDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
 
 
 	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/report/get-intra-facility-departments-referrals-summary")
