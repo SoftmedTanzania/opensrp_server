@@ -55,7 +55,11 @@ public class ClientReferralRepository {
 		parameters.put(ClientReferrals.COL_LAB_TEST, clientReferrals.getLabTest());
 		parameters.put(ClientReferrals.COL_TEST_RESULTS, clientReferrals.isTestResults());
 		parameters.put(ClientReferrals.COL_IS_EMERGENCY, clientReferrals.isEmergency());
-		parameters.put(ClientReferrals.COL_REFERRAL_FEEDBACK_ID, clientReferrals.getReferralFeedback().getId());
+		try {
+			parameters.put(ClientReferrals.COL_REFERRAL_FEEDBACK_ID, clientReferrals.getReferralFeedback().getId());
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		parameters.put(ClientReferrals.COL_CREATED_AT, clientReferrals.getCreatedAt());
 		parameters.put(ClientReferrals.COL_UPDATED_AT, clientReferrals.getCreatedAt());
 
@@ -112,9 +116,13 @@ public class ClientReferralRepository {
 			referralType.setReferralTypeId(rs.getLong(rs.findColumn(ClientReferrals.COL_REFERRAL_TYPE)));
 			clientReferrals.setReferralType(referralType);
 
-			ReferralFeedback referralFeedback = new ReferralFeedback();
-			referralFeedback.setId(rs.getLong(rs.findColumn(ClientReferrals.COL_REFERRAL_FEEDBACK_ID)));
-			clientReferrals.setReferralFeedback(referralFeedback);
+			try {
+				ReferralFeedback referralFeedback = new ReferralFeedback();
+				referralFeedback.setId(rs.getLong(rs.findColumn(ClientReferrals.COL_REFERRAL_FEEDBACK_ID)));
+				clientReferrals.setReferralFeedback(referralFeedback);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 
 
 			clientReferrals.setReferralSource(rs.getInt(rs.findColumn(ClientReferrals.COL_REFERRAL_SOURCE)));
