@@ -51,7 +51,7 @@ public class ClientReferralRepository {
 		parameters.put(ClientReferrals.COL_APPOINTMENT_DATE, clientReferrals.getAppointmentDate());
 		parameters.put(ClientReferrals.COL_REFERRAL_STATUS, clientReferrals.getReferralStatus());
 		parameters.put(ClientReferrals.COL_INSTANCE_ID, clientReferrals.getInstanceId());
-		parameters.put(ClientReferrals.COL_REFERRAL_TYPE, clientReferrals.getReferralType());
+		parameters.put(ClientReferrals.COL_REFERRAL_TYPE, clientReferrals.getReferralType().getReferralTypeId());
 		parameters.put(ClientReferrals.COL_LAB_TEST, clientReferrals.getLabTest());
 		parameters.put(ClientReferrals.COL_TEST_RESULTS, clientReferrals.isTestResults());
 		parameters.put(ClientReferrals.COL_IS_EMERGENCY, clientReferrals.isEmergency());
