@@ -251,13 +251,13 @@ public class FormSubmissionController {
 
         try{
         	if (formSubmission.formName().equalsIgnoreCase("client_registration_form")){
-				ReferralClient patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
+				ReferralClient client = formEntityConverter.getReferralClientFromFormSubmission(formSubmission);
 				String temporallyClientId = formEntityConverter.getFieldValueFromFormSubmission(formSubmission,"client_id");
 				String ctcNumber = formEntityConverter.getFieldValueFromFormSubmission(formSubmission, HealthFacilitiesReferralClients.COL_CTC_NUMBER);
 
 				//TODO reimplement this to only obtain CTC_NUMBER,CBHS_NUMBER and FACILITY_ID
 				ClientReferrals clientReferrals = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
-				long healthfacilityPatientId = referralPatientService.savePatient(patient, clientReferrals.getFacilityId(), ctcNumber);
+				long healthfacilityPatientId = referralPatientService.savePatient(client, clientReferrals.getFacilityId(), ctcNumber);
 
 
 				List<HealthFacilitiesReferralClients> healthFacilitiesPatients = null;
@@ -267,23 +267,23 @@ public class FormSubmissionController {
 					e.printStackTrace();
 				}
 
-				patient.setClientId(healthFacilitiesPatients.get(0).getClient().getClientId());
+				client.setClientId(healthFacilitiesPatients.get(0).getClient().getClientId());
 
-				logger.info("saveFormToOpenSRP : saving patient. Generated Client Id = "+patient.getClientId());
-				logger.info("saveFormToOpenSRP : saving patient. Updating form submissions with client Id "+temporallyClientId+" To Client Id = "+patient.getClientId());
+				logger.info("saveFormToOpenSRP : saving patient. Generated Client Id = "+client.getClientId());
+				logger.info("saveFormToOpenSRP : saving patient. Updating form submissions with client Id "+temporallyClientId+" To Client Id = "+client.getClientId());
 
 
 				//Retrieve the saved form in couchdb to be updated
 				FormSubmission savedSubmission = formSubmissionService.findByInstanceId(formSubmission.getInstanceId());
 
 				//Updating the formsubmission with the correct clientId;
-				formEntityConverter.updateClientIdInFormSubmission(savedSubmission,temporallyClientId,patient.getClientId());
+				formEntityConverter.updateClientIdInFormSubmission(savedSubmission,temporallyClientId,client.getClientId());
 				formSubmissionService.update(savedSubmission);
 
 				//updating any existing referrals with the correct clientId
 				List<FormSubmission> referralSubmissions= formSubmissionService.findByFormName("referral_form",4);
 				for(FormSubmission submission: referralSubmissions){
-					formEntityConverter.updateClientIdInFormSubmission(submission,temporallyClientId,patient.getClientId());
+					formEntityConverter.updateClientIdInFormSubmission(submission,temporallyClientId,client.getClientId());
 					formSubmissionService.update(submission);
 				}
 
@@ -304,7 +304,7 @@ public class FormSubmissionController {
 
 					//Sending a push notification to the tablet to force updating of the client IDs used for future referrals
 					JSONObject body = new JSONObject();
-					body.put("GENERATED_CLIENT_ID", patient.getClientId());
+					body.put("GENERATED_CLIENT_ID", client.getClientId());
 					body.put("TEMP_CLIENT_ID", temporallyClientId);
 
 					String json = new Gson().toJson(body);
@@ -350,7 +350,7 @@ public class FormSubmissionController {
         		//TODO This block of code only used for providing backward compatibility with old versions of community app
 
 				logger.info("saveFormToOpenSRP : saving patient into OpenSRP");
-				ReferralClient patient = formEntityConverter.getPatientFromFormSubmission(formSubmission);
+				ReferralClient patient = formEntityConverter.getReferralClientFromFormSubmission(formSubmission);
 				ClientReferrals clientReferrals = formEntityConverter.getPatientReferralFromFormSubmission(formSubmission);
 				saveReferralData(patient, clientReferrals,formSubmission);
 

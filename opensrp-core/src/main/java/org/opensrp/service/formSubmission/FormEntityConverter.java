@@ -340,7 +340,7 @@ public class FormEntityConverter {
 	}
 
 
-	public ReferralClient getPatientFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
+	public ReferralClient getReferralClientFromFormSubmission(FormSubmission fsubmission) throws IllegalStateException {
 		ReferralClient referralClient = new ReferralClient();
 		try {
 			FormData formData = fsubmission.instance().form();
@@ -373,6 +373,17 @@ public class FormEntityConverter {
 
 				if(formField.name().equals(ReferralClient.COL_VEO))
 					referralClient.setVeo(formField.value());
+
+				if(formField.name().equals(ReferralClient.COL_REGISTRATION_REASON)) {
+				    try {
+                        ClientRegistrationReason clientRegistrationReason = new ClientRegistrationReason();
+                        clientRegistrationReason.setRegistrationId(Integer.parseInt(formField.value()));
+
+                        referralClient.setClientRegistrationReason(clientRegistrationReason);
+                    }catch (Exception e){
+				        e.printStackTrace();
+                    }
+                }
 
 				if(formField.name().equals(ReferralClient.COL_DATE_OF_BIRTH)) {
 					Date startDate = new Date();
