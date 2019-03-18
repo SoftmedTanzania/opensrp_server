@@ -490,6 +490,16 @@ public class FormEntityConverter {
 				if(formField.name().equals(ClientReferrals.COL_REFERRAL_STATUS))
 					clientReferrals.setReferralStatus(0);
 
+				if(formField.name().equals(ClientReferrals.COL_REFERRAL_FEEDBACK_ID)) {
+					ReferralFeedback referralFeedback = new ReferralFeedback();
+					referralFeedback.setId((Long.parseLong(formField.value())));
+					clientReferrals.setReferralFeedback(referralFeedback);
+				}
+
+				if(formField.name().equals(ClientReferrals.COL_OTHER_NOTES)) {
+					clientReferrals.setOtherNotes(formField.value());
+				}
+
 			}
 
 			return clientReferrals;
