@@ -610,6 +610,7 @@ public class ReferralPatientsController {
                 ReferralFeedback referralFeedback = new ReferralFeedback();
                 referralFeedback.setId(Long.parseLong(referralsDTO.getServiceGivenToPatient()));
 
+                referral.setReferralFeedback(referralFeedback);
                 referral.setOtherNotes(referralsDTO.getOtherNotes());
                 referral.setTestResults(referralsDTO.getTestResults());
             } catch (Exception e) {
