@@ -22,6 +22,9 @@ public class ClientReferralIndicatorRepository {
 
 
 	@Autowired
+	ServiceIndicatorRepository serviceIndicatorRepository;
+
+	@Autowired
 	JdbcTemplate jdbcTemplate;
 	private SimpleJdbcInsert insert;
 
@@ -32,7 +35,8 @@ public class ClientReferralIndicatorRepository {
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(ClientReferralIndicators.COL_REFERRAL_ID , patientReferralIndicator.getClientReferrals().getId());
-		parameters.put(ClientReferralIndicators.COL_REFERRAL_SERVICE_INDICATOR_ID , patientReferralIndicator.getServiceIndicator().getServiceIndicatorId());
+		parameters.put(ClientReferralIndicators.COL_INDICATOR_ID , patientReferralIndicator.getServiceIndicator().getPkReferralServiceIndicator().getIndicatorId());
+		parameters.put(ClientReferralIndicators.COL_SERVICE_ID , patientReferralIndicator.getServiceIndicator().getPkReferralServiceIndicator().getServiceId());
 		parameters.put(ClientReferralIndicators.COL_IS_ACTIVE  , patientReferralIndicator.isActive());
 		parameters.put(ClientReferralIndicators.COL_CREATED_AT , patientReferralIndicator.getCreatedAt());
 		parameters.put(ClientReferralIndicators.COL_UPDATED_AT , patientReferralIndicator.getCreatedAt());
@@ -74,10 +78,19 @@ public class ClientReferralIndicatorRepository {
 
 			patientReferralIndicator.setClientReferrals(clientReferrals);
 
-			ServiceIndicator serviceIndicator = new ServiceIndicator();
-			serviceIndicator.setServiceIndicatorId(rs.getLong(rs.findColumn(ClientReferralIndicators.COL_REFERRAL_SERVICE_INDICATOR_ID)));
 
-			patientReferralIndicator.setServiceIndicator(serviceIndicator);
+			Object[] objects = new Object[]{
+					rs.getLong(rs.findColumn(ClientReferralIndicators.COL_SERVICE_ID)),
+					rs.getLong(rs.findColumn(ClientReferralIndicators.COL_INDICATOR_ID))
+			};
+			List<ServiceIndicator>serviceIndicators = null;
+			try {
+				serviceIndicators = serviceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM " + ServiceIndicator.tbName+" WHERE "+ ServiceIndicator.COL_SERVICE_ID +" =? AND "+ServiceIndicator.COL_INDICATOR_ID+" =? ", objects);
+				patientReferralIndicator.setServiceIndicator(serviceIndicators.get(0));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 
 			patientReferralIndicator.setActive(rs.getBoolean(rs.findColumn(ClientReferralIndicators.COL_IS_ACTIVE)));
 			patientReferralIndicator.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ClientReferralIndicators.COL_CREATED_AT)).getTime()));
