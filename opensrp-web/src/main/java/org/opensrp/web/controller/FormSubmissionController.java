@@ -75,6 +75,7 @@ public class FormSubmissionController {
     private ClientReferralIndicatorRepository clientReferralIndicatorRepository;
     private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
     private RapidProServiceImpl rapidProService;
+    private ServiceIndicatorRepository serviceIndicatorRepository;
 
     @Autowired
     public FormSubmissionController(FormSubmissionService formSubmissionService, TaskSchedulerService scheduler,
@@ -83,7 +84,7 @@ public class FormSubmissionController {
                                     ErrorTraceService errorTraceService, HealthFacilitiesClientsRepository healthFacilitiesClientsRepository, ClientReferralRepository clientReferralRepository,
                                     GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
                                     ClientReferralIndicatorRepository clientReferralIndicatorRepository,
-                                    ReferralPatientsService referralPatientService, RapidProServiceImpl rapidProService) {
+                                    ReferralPatientsService referralPatientService, RapidProServiceImpl rapidProService,ServiceIndicatorRepository serviceIndicatorRepository) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService = errorTraceService;
@@ -100,6 +101,7 @@ public class FormSubmissionController {
         this.clientReferralIndicatorRepository = clientReferralIndicatorRepository;
         this.referralPatientService = referralPatientService;
         this.rapidProService = rapidProService;
+        this.serviceIndicatorRepository = serviceIndicatorRepository;
     }
 
     @RequestMapping(method = GET, value = "/form-submissions")
@@ -454,8 +456,8 @@ public class FormSubmissionController {
 
                 referralIndicators.setClientReferrals(referral);
 
-                ServiceIndicator serviceIndicator = new ServiceIndicator();
-                serviceIndicator.setServiceIndicatorId(indicatorIds.getLong(i));
+                ServiceIndicator serviceIndicator = serviceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM "+ServiceIndicator.tbName+" WHERE "+ServiceIndicator.COL_SERVICE_INDICATOR_ID+"=?",
+                        new Object[]{indicatorIds.getLong(i)}).get(0);
 
                 referralIndicators.setServiceIndicator(serviceIndicator);
 
