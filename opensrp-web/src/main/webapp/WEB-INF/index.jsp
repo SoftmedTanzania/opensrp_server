@@ -1,4 +1,3 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!doctype html>
@@ -6,33 +5,32 @@
 
 <head>
   <title>OpenSrp WebApp</title>
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<%--<link rel="icon" type="image/png" href="/resources/images/icons/favicon.ico">--%>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%--<link rel="icon" type="image/png" href="/resources/images/icons/favicon.ico">--%>
 
-<link rel="stylesheet" type="text/css" href= "<c:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />">
-<link rel="stylesheet" type="text/css" href= "<c:url value="/resources/fonts/Linearicons-Free-v1.0.0/icon-font.min.css" />">
+  <link rel="stylesheet" type="text/css" href="<c:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />">
+  <link rel="stylesheet" href="<c:url value="/resources/Dashboard_Files/bower_components/bootstrap/dist/css/bootstrap.css" />">
 
 
-  <%--"<c:url value="/resources/fonts/Linearicons-Free-v1.0.0/icon-font.min.css" />"--%>
-<%--<link rel="stylesheet" type="text/css" href="/resources/vendor/animate/animate.css">--%>
-<%--<link rel="stylesheet" type="text/css" href="/resources/vendor/css-hamburgers/hamburgers.min.css">--%>
-<%--<link rel="stylesheet" type="text/css" href="/resources/vendor/animsition/css/animsition.min.css">--%>
-<%--<link rel="stylesheet" type="text/css" href="/resources/vendor/select2/select2.min.css">--%>
-<%--<link rel="stylesheet" type="text/css" href="/resources/vendor/daterangepicker/daterangepicker.css">--%>
-<%--<link rel="stylesheet" type="text/css" href="/resources/css/util.css">--%>
-<%--<link rel="stylesheet" type="text/css" href="/resources/css/custom.css">--%>
-<%--<link rel="stylesheet" type="text/css" href="/resources/css/main.css">--%>
-<%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">--%>
-<%--<link rel="stylesheet" href="/resources/Dashboard_Files/bower_components/font-awesome/css/font-awesome.min.css">--%>
+  <%--<link rel="stylesheet" type="text/css" href="/resources/vendor/animate/animate.css">--%>
+  <%--<link rel="stylesheet" type="text/css" href="/resources/vendor/css-hamburgers/hamburgers.min.css">--%>
+  <%--<link rel="stylesheet" type="text/css" href="/resources/vendor/animsition/css/animsition.min.css">--%>
+  <%--<link rel="stylesheet" type="text/css" href="/resources/vendor/select2/select2.min.css">--%>
+  <%--<link rel="stylesheet" type="text/css" href="/resources/vendor/daterangepicker/daterangepicker.css">--%>
+  <%--<link rel="stylesheet" type="text/css" href="/resources/css/util.css">--%>
+  <%--<link rel="stylesheet" type="text/css" href="/resources/css/custom.css">--%>
+  <%--<link rel="stylesheet" type="text/css" href="/resources/css/main.css">--%>
+  <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">--%>
+  <%--<link rel="stylesheet" href="/resources/Dashboard_Files/bower_components/font-awesome/css/font-awesome.min.css">--%>
 
-<%--<link rel="stylesheet" href="/resources/Dashboard_Files/bower_components/Ionicons/css/ionicons.min.css">--%>
-<%--<link rel="stylesheet" href="/resources/Dashboard_Files/bower_components/jvectormap/jquery-jvectormap.css">--%>
-<%--<link rel="stylesheet" href="/resources/Dashboard_Files/dist/css/AdminLTE.min.css">--%>
-<%--<link rel="stylesheet" href="/resources/Dashboard_Files/dist/css/skins/_all-skins.min.css">--%>
-<%--<link rel="stylesheet" href="/resources/Dashboard_Files/bower_components/bootstrap/dist/css/bootstrap.css">--%>
-<%--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">--%>
+  <%--<link rel="stylesheet" href="/resources/Dashboard_Files/bower_components/Ionicons/css/ionicons.min.css">--%>
+  <%--<link rel="stylesheet" href="/resources/Dashboard_Files/bower_components/jvectormap/jquery-jvectormap.css">--%>
+  <%--<link rel="stylesheet" href="/resources/Dashboard_Files/dist/css/AdminLTE.min.css">--%>
+  <%--<link rel="stylesheet" href="/resources/Dashboard_Files/dist/css/skins/_all-skins.min.css">--%>
+  <%--<link rel="stylesheet" href="/resources/Dashboard_Files/bower_components/bootstrap/dist/css/bootstrap.css">--%>
+  <%--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">--%>
 
 </head>
 
