@@ -14,7 +14,7 @@
 		<value>/WEB-INF/</value>
 	</property>
 	<property name="suffix">
-		<value>.jsp</value>
+		<value>view_error.jsp</value>
 	</property>
     </bean>
 
