@@ -342,7 +342,6 @@ public class FormSubmissionController {
                     logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
                 }
 
-
             } else if (formSubmission.formName().equalsIgnoreCase("followup_form")) {
                 try {
 
@@ -370,7 +369,7 @@ public class FormSubmissionController {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    logger.error(format("Patient Form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
+                    logger.error(format("Followup form submissions processing failed with exception {0}.\nSubmissions: {1}", e, formSubmission));
                 }
             } else {
                 //TODO This block of code only used for providing backward compatibility with old versions of community app

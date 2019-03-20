@@ -216,7 +216,11 @@ public class PatientsConverter {
             patientsDTO.setMiddleName(referralClient.getMiddleName());
             patientsDTO.setPhoneNumber(referralClient.getPhoneNumber());
 
-            patientsDTO.setDateOfBirth(referralClient.getDateOfBirth().getTime());
+            try {
+                patientsDTO.setDateOfBirth(referralClient.getDateOfBirth().getTime());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
             patientsDTO.setGender(referralClient.getGender());
             patientsDTO.setWard(referralClient.getWard());
