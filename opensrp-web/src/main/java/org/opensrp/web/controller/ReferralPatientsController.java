@@ -623,7 +623,7 @@ public class ReferralPatientsController {
             if (referral != null) {
                 String sql = "UPDATE " + ClientReferrals.tbName + " SET " +
                         ClientReferrals.COL_REFERRAL_STATUS + " = '" + referral.getReferralStatus() + "' , " +
-
+                        ClientReferrals.COL_TEST_RESULTS + " = '" + referral.getTestResults() + "' , " +
                         ClientReferrals.COL_REFERRAL_FEEDBACK_ID + " = '" + referral.getReferralFeedback().getId() + "' , " +
                         ClientReferrals.COL_OTHER_NOTES + " = '" + referral.getOtherNotes() + "' WHERE  " + ClientReferrals.COL_REFERRAL_ID + " = " + referral.getId();
                 clientReferralRepository.executeQuery(sql);
