@@ -14,14 +14,14 @@
 		<value>/WEB-INF/</value>
 	</property>
 	<property name="suffix">
-		<value>view_error.jsp</value>
+		<value>.jsp</value>
 	</property>
     </bean>
 
     <mvc:annotation-driven/>
     <!--<mvc:resources location="/" mapping="/resources/**"/>-->
-    <!--<mvc:resources mapping="/resources/**" location="/WEB-INF/" />-->
-    <mvc:resources mapping="/resources/**" location="/resources/" />
+    <mvc:resources mapping="/resources/**" location="/WEB-INF/" />
+    <!--<mvc:resources mapping="/resources/**" location="/resources/" />-->
     <mvc:default-servlet-handler/>
 
 </beans>
