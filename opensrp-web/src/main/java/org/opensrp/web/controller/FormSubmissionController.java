@@ -291,7 +291,7 @@ public class FormSubmissionController {
 
 
                     logger.info("saveFormToOpenSRP : sending notification. User UUID  = " + userUUIDString);
-                    Object[] userUUID = new Object[]{};
+                    Object[] userUUID = new Object[]{userUUIDString};
                     List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UUID + " = ? ", userUUID);
                     JSONArray fcmTokens = new JSONArray();
 
