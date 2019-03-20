@@ -13,8 +13,8 @@ public class ClientReferralIndicators implements Serializable {
 	public static final String COL_ID = "id";
 
 	public static final String COL_REFERRAL_ID = "referral_id";
-
-	public static final String COL_REFERRAL_SERVICE_INDICATOR_ID = "service_indicator_id";
+	public static final String COL_SERVICE_ID = "service_id";
+	public static final String COL_INDICATOR_ID = "indicator_id";
 
 	public static final String COL_IS_ACTIVE = "is_active";
 
@@ -35,10 +35,10 @@ public class ClientReferralIndicators implements Serializable {
 	@ManyToOne
 	@JoinColumns({
 			@JoinColumn(
-					name = "service_id",
+					name = COL_SERVICE_ID,
 					referencedColumnName = "service_id"),
 			@JoinColumn(
-					name = "indicator_id",
+					name = COL_INDICATOR_ID,
 					referencedColumnName = "indicator_id")
 	})
 	private ServiceIndicator serviceIndicator;

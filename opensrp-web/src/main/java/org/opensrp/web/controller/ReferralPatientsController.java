@@ -607,8 +607,10 @@ public class ReferralPatientsController {
                 referral = referrals.get(0);
                 referral.setReferralStatus(referralsDTO.getReferralStatus());
 
-                //TODO implement saving of referral feedback
-//                referral.setServiceGivenToPatient(referralsDTO.getServiceGivenToPatient());
+                ReferralFeedback referralFeedback = new ReferralFeedback();
+                referralFeedback.setId(Long.parseLong(referralsDTO.getServiceGivenToPatient()));
+
+                referral.setReferralFeedback(referralFeedback);
                 referral.setOtherNotes(referralsDTO.getOtherNotes());
                 referral.setTestResults(referralsDTO.getTestResults());
             } catch (Exception e) {
@@ -622,8 +624,7 @@ public class ReferralPatientsController {
                 String sql = "UPDATE " + ClientReferrals.tbName + " SET " +
                         ClientReferrals.COL_REFERRAL_STATUS + " = '" + referral.getReferralStatus() + "' , " +
 
-                        //TODO implement saving of referral feedback
-//                        ClientReferrals.COL_SERVICES_GIVEN_TO_PATIENT + " = '" + referral.getServiceGivenToPatient() + "' , " +
+                        ClientReferrals.COL_REFERRAL_FEEDBACK_ID + " = '" + referral.getReferralFeedback().getId() + "' , " +
                         ClientReferrals.COL_OTHER_NOTES + " = '" + referral.getOtherNotes() + "' WHERE  " + ClientReferrals.COL_REFERRAL_ID + " = " + referral.getId();
                 clientReferralRepository.executeQuery(sql);
                 logger.info("Coze: updated referral feedback : " + sql);
@@ -633,9 +634,7 @@ public class ReferralPatientsController {
                         FormSubmission formSubmission = formSubmissionService.findByInstanceId(referral.getInstanceId());
                         logger.info("Coze: formsubmission to be updated = " + new Gson().toJson(formSubmission));
 
-
-                        //TODO implement saving of referral feedback
-//                        formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, ClientReferrals.COL_SERVICES_GIVEN_TO_PATIENT, referral.getServiceGivenToPatient());
+                        formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, ClientReferrals.COL_REFERRAL_FEEDBACK_ID, referral.getReferralFeedback().getId().toString());
                         formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, ClientReferrals.COL_OTHER_NOTES, referral.getOtherNotes());
                         formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, ClientReferrals.COL_TEST_RESULTS, referral.isTestResults() + "");
                         formSubmission = formEntityConverter.updateFormSUbmissionField(formSubmission, ClientReferrals.COL_REFERRAL_STATUS, referral.getReferralStatus() + "");
@@ -648,31 +647,8 @@ public class ReferralPatientsController {
                     }
                 }
 
-                Object[] facilityParams = new Object[]{referralsDTO.getServiceProviderUIID()};
-                List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UUID + " = ? ", facilityParams);
+                referralPatientService.sendReferralFeedbackFCMNotification(referralsDTO.getServiceProviderUIID(),referralsDTO,referral.getReferralType().getReferralTypeId());
 
-                logger.info("User uuid for sending feedback notification = " + referralsDTO.getServiceProviderUIID());
-                JSONArray tokens = new JSONArray();
-                for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
-                    tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
-                }
-
-                String referralDTOJson = new Gson().toJson(referralsDTO);
-
-                JSONObject msg = new JSONObject(referralDTOJson);
-                msg.put("type", "ReferralFeedback");
-
-
-                //TODO implement push notification to other tablets in the same facility.
-                try {
-                    if (referral.getReferralType().getReferralTypeId() == 1)
-                        googleFCMService.SendPushNotification(msg, tokens, false);
-                    else {
-                        googleFCMService.SendPushNotification(msg, tokens, true);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             } else {
                 return new ResponseEntity<String>("Referral Not found", BAD_REQUEST);
             }

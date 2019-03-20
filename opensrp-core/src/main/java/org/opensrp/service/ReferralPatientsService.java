@@ -1,7 +1,11 @@
 package org.opensrp.service;
 
+import com.google.gson.Gson;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.opensrp.domain.*;
 import org.opensrp.dto.PatientReferralsDTO;
 import org.opensrp.dto.PatientsDTO;
@@ -40,6 +44,13 @@ public class ReferralPatientsService {
 
     @Autowired
     private HealthFacilityRepository healthFacilityRepository;
+
+    @Autowired
+    private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
+
+    @Autowired
+    private GoogleFCMService googleFCMService;;
+
 
 
     public ReferralPatientsService() {
@@ -284,5 +295,43 @@ public class ReferralPatientsService {
         }
 
         return healthfacilityPatientId;
+    }
+
+    public void sendReferralFeedbackFCMNotification(String serviceProviderUUID, Object feedbackObject,long referralType){
+        Object[] facilityParams = new Object[]{serviceProviderUUID};
+        List<GooglePushNotificationsUsers> googlePushNotificationsUsers = null;
+        try {
+            googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UUID + " = ? ", facilityParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        logger.info("User uuid for sending feedback notification = " + serviceProviderUUID);
+        JSONArray tokens = new JSONArray();
+        for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
+            tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
+        }
+
+        String referralDTOJson = new Gson().toJson(feedbackObject);
+
+        JSONObject msg = null;
+        try {
+            msg = new JSONObject(referralDTOJson);
+            msg.put("type", "ReferralFeedback");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        //TODO implement push notification to other tablets in the same facility.
+        try {
+            if (referralType == 1)
+                googleFCMService.SendPushNotification(msg, tokens, false);
+            else {
+                googleFCMService.SendPushNotification(msg, tokens, true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
