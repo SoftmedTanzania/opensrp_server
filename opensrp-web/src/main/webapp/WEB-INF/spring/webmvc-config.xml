@@ -8,8 +8,8 @@
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
     <mvc:annotation-driven/>
-     <mvc:resources location="/" mapping="/resources/**"/>
-      <mvc:resources mapping="/resources/**" location="/WEB-INF/" />
+     <!--<mvc:resources location="/" mapping="/resources/**"/>-->
+      <!--<mvc:resources mapping="/resources/**" location="/WEB-INF/" />-->
      <mvc:resources mapping="/resources/**" location="/resources/" />
     <mvc:default-servlet-handler/>
     
