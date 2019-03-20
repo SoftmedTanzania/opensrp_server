@@ -404,10 +404,7 @@ public class PatientsConverter {
             }
 
             referralsDTO.setOtherNotes(referral.getOtherNotes());
-
-
-            //TODO implement obtaining of referral feedback
-//            referralsDTO.setServiceGivenToPatient(referral.getServiceGivenToPatient());
+            referralsDTO.setServiceGivenToPatient(referral.getReferralFeedback().getId().toString());
             referralsDTO.setTestResults(referral.isTestResults());
             referralsDTO.setLabTest(referral.getLabTest());
             referralsDTO.setFromFacilityId(referral.getFromFacilityId());

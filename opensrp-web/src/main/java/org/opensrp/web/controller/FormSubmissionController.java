@@ -486,7 +486,7 @@ public class FormSubmissionController {
             Object[] facilityParams = new Object[]{clientReferrals.getFacilityId(), 1};
             List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UUID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
             JSONArray tokens = new JSONArray();
-            for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
+            for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers){
                 tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
             }
 
