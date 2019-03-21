@@ -500,6 +500,14 @@ public class FormEntityConverter {
 					clientReferrals.setOtherNotes(formField.value());
 				}
 
+				try {
+					if (formField.name().equals(ClientReferrals.COL_REFERRAL_ID)) {
+						clientReferrals.setId(Long.parseLong(formField.value()));
+					}
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+
 			}
 
 			return clientReferrals;

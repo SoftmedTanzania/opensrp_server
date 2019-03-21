@@ -350,6 +350,7 @@ public class FormSubmissionController {
                         updatedFormSubmission = formSubmission;
                     }
                     ClientReferrals clientReferrals = formEntityConverter.getPatientReferralFromFormSubmission(updatedFormSubmission);
+                    clientReferrals.setReferralStatus(1);
 
 
                     String sql = "UPDATE " + ClientReferrals.tbName + " SET " +
@@ -418,13 +419,10 @@ public class FormSubmissionController {
 
     public void saveReferralData(ReferralClient patient, ClientReferrals clientReferrals, FormSubmission formSubmission) {
         try {
-
-
             String ctcNumber = formEntityConverter.getFieldValueFromFormSubmission(formSubmission, HealthFacilitiesReferralClients.COL_CTC_NUMBER);
             long healthfacilityPatientId = referralPatientService.savePatient(patient, clientReferrals.getFacilityId(), ctcNumber);
 
             List<HealthFacilitiesReferralClients> healthFacilitiesPatients = healthFacilitiesClientsRepository.getHealthFacilityPatients("SELECT * FROM " + HealthFacilitiesReferralClients.tbName + " WHERE " + HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID + " = " + healthfacilityPatientId, null);
-
             patient.setClientId(healthFacilitiesPatients.get(0).getClient().getClientId());
             clientReferrals.setPatient(patient);
 
