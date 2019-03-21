@@ -404,7 +404,11 @@ public class PatientsConverter {
             }
 
             referralsDTO.setOtherNotes(referral.getOtherNotes());
-            referralsDTO.setServiceGivenToPatient(referral.getReferralFeedback().getId().toString());
+            try {
+                referralsDTO.setServiceGivenToPatient(referral.getReferralFeedback().getId().toString());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             referralsDTO.setTestResults(referral.isTestResults());
             referralsDTO.setLabTest(referral.getLabTest());
             referralsDTO.setFromFacilityId(referral.getFromFacilityId());
