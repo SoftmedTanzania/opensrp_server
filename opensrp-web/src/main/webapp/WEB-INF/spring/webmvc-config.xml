@@ -18,9 +18,13 @@
 	</property>
     </bean>
 
+    <!--<mvc:annotation-driven/>-->
+    <!--&lt;!&ndash;<mvc:resources location="/" mapping="/resources/**"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<mvc:resources mapping="/resources/**" location="/WEB-INF/" />&ndash;&gt;-->
+    <!--<mvc:resources mapping="/resources/**" location="/resources/" />-->
+
     <mvc:annotation-driven/>
-    <!--<mvc:resources location="/" mapping="/resources/**"/>-->
-    <!--<mvc:resources mapping="/resources/**" location="/WEB-INF/" />-->
-    <mvc:resources mapping="/resources/**" location="/resources/" />
+    <mvc:resources location="/" mapping="/resources/**"/>
+    <mvc:default-servlet-handler/>
 
 </beans>
