@@ -38,23 +38,25 @@ import ch.lambdaj.function.convert.Converter;
 public class ActionController {
 	private static org.slf4j.Logger logger = LoggerFactory.getLogger(ActionController.class.toString());
 
-    private ActionService actionService;
-    private AllClients allClients;
-    private AllAlerts allAlerts;
+	private ActionService actionService;
+	private AllClients allClients;
+	private AllAlerts allAlerts;
 
-    @Autowired
-    public ActionController(ActionService actionService, AllClients c, AllAlerts allAlerts) {
-        this.actionService = actionService;
-        this.allClients = c;
-        this.allAlerts = allAlerts;
-    }
+	@Autowired
+	public ActionController(ActionService actionService, AllClients c, AllAlerts allAlerts) {
+		this.actionService = actionService;
+		this.allClients = c;
+		this.allAlerts = allAlerts;
+	}
+
 
 	@Controller
 	public class IndexController {
 
 		private Logger log = Logger.getLogger(IndexController.class);
 
-		//Map RequestMapping to /spring
+		@Autowired
+		//Map RequestMapping to /opensrp
 		@RequestMapping(value="/opensrp", method=RequestMethod.GET)
 		public String showHome(){
 
@@ -64,37 +66,38 @@ public class ActionController {
 		}
 	}
 
-    @RequestMapping(method = RequestMethod.GET, value = "/actions")
-    @ResponseBody
-    public List<Action> getNewActionForANM(@RequestParam("anmIdentifier") String anmIdentifier, @RequestParam("timeStamp") Long timeStamp){
-        List<org.opensrp.scheduler.Action> actions = actionService.getNewAlertsForANM(anmIdentifier, timeStamp);
-        return with(actions).convert(new Converter<org.opensrp.scheduler.Action, Action>() {
-            @Override
-            public Action convert(org.opensrp.scheduler.Action action) {
-                return ActionConvertor.from(action);
-            }
-        });
-    }
-    
-    @RequestMapping(method = RequestMethod.GET, value = "/useractions")
-    @ResponseBody
-    public List<Action> getNewActionForClient(@RequestParam("baseEntityId") String baseEntityId, @RequestParam("timeStamp") Long timeStamp){
-        List<org.opensrp.scheduler.Action> actions = actionService.findByCaseIdAndTimeStamp(baseEntityId, timeStamp);
-        return with(actions).convert(new Converter<org.opensrp.scheduler.Action, Action>() {
-            @Override
-            public Action convert(org.opensrp.scheduler.Action action) {
-                return ActionConvertor.from(action);
-            }
-        });
-    }
-    
-    @RequestMapping(method = RequestMethod.GET, value = "/alert_delete")
-    @ResponseBody
-    public void deleteDuplicateAlerts(@RequestParam("key") String key){
-    	if(!key.equalsIgnoreCase("20160727KiSafaiMuhim")){
-    		throw new RuntimeException("Invalid Key");
-    	}
-        for (Client c : allClients.findAllClients()) {
+
+	@RequestMapping(method = RequestMethod.GET, value = "/actions")
+	@ResponseBody
+	public List<Action> getNewActionForANM(@RequestParam("anmIdentifier") String anmIdentifier, @RequestParam("timeStamp") Long timeStamp){
+		List<org.opensrp.scheduler.Action> actions = actionService.getNewAlertsForANM(anmIdentifier, timeStamp);
+		return with(actions).convert(new Converter<org.opensrp.scheduler.Action, Action>() {
+			@Override
+			public Action convert(org.opensrp.scheduler.Action action) {
+				return ActionConvertor.from(action);
+			}
+		});
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/useractions")
+	@ResponseBody
+	public List<Action> getNewActionForClient(@RequestParam("baseEntityId") String baseEntityId, @RequestParam("timeStamp") Long timeStamp){
+		List<org.opensrp.scheduler.Action> actions = actionService.findByCaseIdAndTimeStamp(baseEntityId, timeStamp);
+		return with(actions).convert(new Converter<org.opensrp.scheduler.Action, Action>() {
+			@Override
+			public Action convert(org.opensrp.scheduler.Action action) {
+				return ActionConvertor.from(action);
+			}
+		});
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/alert_delete")
+	@ResponseBody
+	public void deleteDuplicateAlerts(@RequestParam("key") String key){
+		if(!key.equalsIgnoreCase("20160727KiSafaiMuhim")){
+			throw new RuntimeException("Invalid Key");
+		}
+		for (Client c : allClients.findAllClients()) {
 			List<Alert> al = allAlerts.findActiveAlertByEntityId(c.getBaseEntityId());
 			Logger.getLogger(getClass()).warn(al.size()+" Alerts for "+c.getBaseEntityId());
 			Map<String, Alert> am = new HashMap<>();
@@ -104,14 +107,14 @@ public class ActionController {
 					allAlerts.safeRemove(a);
 				}
 				else {
-					am.put(a.triggerName(), a);					
+					am.put(a.triggerName(), a);
 				}
 			}
 		}
-    }
-    /**
+	}
+	/**
 	 * Fetch actions ordered by serverVersion ascending order
-	 * 
+	 *
 	 * @param request
 	 * @return a map response with actions, clients and optionally msg when an error occurs
 	 */
@@ -119,7 +122,7 @@ public class ActionController {
 	@ResponseBody
 	protected ResponseEntity<String> sync(HttpServletRequest request) {
 		Map<String, Object> response = new HashMap<String, Object>();
-		
+
 		try {
 			String providerId = getStringFilter(PROVIDER_ID, request);
 			Long lastSyncedServerVersion = Long.valueOf(getStringFilter(BaseEntity.SERVER_VERSIOIN, request)) + 1;
@@ -128,15 +131,15 @@ public class ActionController {
 			if(limit == null || limit.intValue() == 0){
 				limit = 25;
 			}
-			
+
 			List<org.opensrp.scheduler.Action> actions = new ArrayList<org.opensrp.scheduler.Action>();
 			if (team != null || providerId != null ) {
 				actions = actionService.findByCriteria(team, providerId, lastSyncedServerVersion, org.opensrp.common.AllConstants.Action.TIMESTAMP, "asc", limit);
-				
+
 			}
 			response.put("actions", actions);
 			response.put("no_of_actions", actions.size());
-			
+
 			return new ResponseEntity<>(new Gson().toJson(response), HttpStatus.OK);
 
 		}
