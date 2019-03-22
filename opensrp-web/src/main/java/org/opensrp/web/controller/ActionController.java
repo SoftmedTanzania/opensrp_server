@@ -49,6 +49,21 @@ public class ActionController {
         this.allAlerts = allAlerts;
     }
 
+	@Controller
+	public class IndexController {
+
+		private Logger log = Logger.getLogger(IndexController.class);
+
+		//Map RequestMapping to /spring
+		@RequestMapping(value="/opensrp", method=RequestMethod.GET)
+		public String showHome(){
+
+			log.info("showHome() called");
+			return "index";
+
+		}
+	}
+
     @RequestMapping(method = RequestMethod.GET, value = "/actions")
     @ResponseBody
     public List<Action> getNewActionForANM(@RequestParam("anmIdentifier") String anmIdentifier, @RequestParam("timeStamp") Long timeStamp){
