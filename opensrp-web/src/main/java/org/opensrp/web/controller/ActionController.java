@@ -50,21 +50,12 @@ public class ActionController {
 	}
 
 
-	@Controller
-	public class IndexController {
-
-		private Logger log = Logger.getLogger(IndexController.class);
-
-		@Autowired
-		//Map RequestMapping to /opensrp
 		@RequestMapping(value="/opensrp", method=RequestMethod.GET)
-		public String showHome(){
+		public String showIndex(){
 
-			log.info("showHome() called");
 			return "index";
 
 		}
-	}
 
 
 	@RequestMapping(method = RequestMethod.GET, value = "/actions")
