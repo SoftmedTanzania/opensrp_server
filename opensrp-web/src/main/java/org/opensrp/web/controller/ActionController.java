@@ -50,14 +50,6 @@ public class ActionController {
 	}
 
 
-		@RequestMapping(value="/opensrp", method=RequestMethod.GET)
-		public String showIndex(){
-
-			return "index";
-
-		}
-
-
 	@RequestMapping(method = RequestMethod.GET, value = "/actions")
 	@ResponseBody
 	public List<Action> getNewActionForANM(@RequestParam("anmIdentifier") String anmIdentifier, @RequestParam("timeStamp") Long timeStamp){
