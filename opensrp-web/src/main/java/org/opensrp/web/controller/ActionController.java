@@ -50,12 +50,11 @@ public class ActionController {
 	}
 
 
-		@RequestMapping(value="/opensrp", method=RequestMethod.GET)
-		public String showIndex(){
+	@RequestMapping(value="opensrp", method=RequestMethod.GET)
+	public String showIndex(){
 
 			return "index";
-
-		}
+	}
 
 
 	@RequestMapping(method = RequestMethod.GET, value = "/actions")
