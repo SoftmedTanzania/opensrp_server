@@ -27,7 +27,12 @@
     <!--<mvc:resources location="/resources/" mapping="/resources/**"/>-->
     <!--<mvc:default-servlet-handler/>-->
 
-    <mvc:resources mapping="/resources/**" location="/resources/" />
+    <!--<mvc:resources mapping="/resources/**" location="/" />-->
+
+
+    <mvc:resources mapping="/resources/**"
+                   location="/, classpath:/WEB-INF/public-resources/"
+                   cache-period="10000" />
 
     <mvc:annotation-driven />
 
