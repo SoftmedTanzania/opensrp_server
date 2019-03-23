@@ -25,7 +25,7 @@
 
     <!--<mvc:annotation-driven/>-->
     <!--<mvc:resources location="/resources/" mapping="/resources/**"/>-->
-    <!--<mvc:default-servlet-handler/>-->
+    <mvc:default-servlet-handler/>
 
     <mvc:resources mapping="/resources/**" location="/resources/" />
 
