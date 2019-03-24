@@ -23,10 +23,12 @@
     <!--&lt;!&ndash;<mvc:resources mapping="/resources/**" location="/WEB-INF/" />&ndash;&gt;-->
     <!--<mvc:resources mapping="/resources/**" location="/resources/" />-->
 
-    <mvc:default-servlet-handler/>
-
-    <mvc:resources mapping="/resources/**" location="/resources/" />
-
     <mvc:annotation-driven />
+
+    <mvc:resources mapping="/resources/**"
+                   location="/resources/"
+                   cache-period="10000" />
+
+    <mvc:default-servlet-handler/>
 
 </beans>
