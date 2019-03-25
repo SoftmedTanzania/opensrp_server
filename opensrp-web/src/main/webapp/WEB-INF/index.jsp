@@ -1,4 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%--<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>--%>
 
 <!doctype html>
 <html>
@@ -10,8 +10,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <%--<link rel="icon" type="image/png" href="/resources/images/icons/favicon.ico">--%>
 
-  <link rel="stylesheet" type="text/css" href="<c:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />" />">
-  <link rel="stylesheet" type="text/css" href="<c:url value="/resources/Dashboard_Files/bower_components/bootstrap/dist/css/bootstrap.css" />" />">
+  <%--<link rel="stylesheet" type="text/css" href="<c:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />" />">--%>
+  <%--<link rel="stylesheet" type="text/css" href="<c:url value="/resources/Dashboard_Files/bower_components/bootstrap/dist/css/bootstrap.css" />" />">--%>
 
 </head>
 
