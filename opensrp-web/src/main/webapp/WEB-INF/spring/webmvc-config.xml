@@ -21,9 +21,10 @@
     <mvc:annotation-driven />
 
     <mvc:resources mapping="/resources/**"
-                   location="/resources/"
+                   location="/"
                    cache-period="10000" />
 
     <mvc:default-servlet-handler/>
+
 
 </beans>
