@@ -386,48 +386,49 @@ public class ReportController {
 		//Less than a year old
 		Calendar aYearAgo = Calendar.getInstance();
 		aYearAgo.add(Calendar.YEAR,-1);
-		String ayearAgoDateString = formatter.format(aYearAgo);
+		String ayearAgoDateString = formatter.format(aYearAgo.getTime());
 		String lessThan1year = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,ayearAgoDateString,currentDate);
 
 		//1-5 Years
 		Calendar fiveYearsAgo = Calendar.getInstance();
 		fiveYearsAgo.add(Calendar.YEAR,-5);
-		String fiveYearsAgoDateString = formatter.format(fiveYearsAgo);
+		String fiveYearsAgoDateString = formatter.format(fiveYearsAgo.getTime());
 		String _1to5 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fiveYearsAgoDateString,ayearAgoDateString);
 
 		//6 to 9 years
 		Calendar nineYearsAgo = Calendar.getInstance();
 		nineYearsAgo.add(Calendar.YEAR,-9);
-		String nineYearsAgoDateString = formatter.format(nineYearsAgo);
+		String nineYearsAgoDateString = formatter.format(nineYearsAgo.getTime());
 		String _6to9 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,nineYearsAgoDateString,fiveYearsAgoDateString);
 
 		//10 to 14 years
 		Calendar fourteenYearsAgo = Calendar.getInstance();
 		fourteenYearsAgo.add(Calendar.YEAR,-14);
-		String fourteenYearsAgoAgoDateString = formatter.format(fourteenYearsAgo);
+		String fourteenYearsAgoAgoDateString = formatter.format(fourteenYearsAgo.getTime());
 		String _10To14 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fourteenYearsAgoAgoDateString,nineYearsAgoDateString);
 
 		//15 to 19 years
 		Calendar nineteenYearsAgo = Calendar.getInstance();
 		nineteenYearsAgo.add(Calendar.YEAR,-19);
-		String nineteenYearsAgoDateString = formatter.format(nineteenYearsAgo);
+		String nineteenYearsAgoDateString = formatter.format(nineteenYearsAgo.getTime());
 		String _15To19 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,nineteenYearsAgoDateString,fourteenYearsAgoAgoDateString);
 
 		//20 to 24 years
 		Calendar twentyFourYearsAgo = Calendar.getInstance();
 		twentyFourYearsAgo.add(Calendar.YEAR,-24);
-		String _20To24 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,twentyFourYearsAgo.toString(),nineteenYearsAgoDateString);
+		String twentyFourYearsAgoDateString = formatter.format(twentyFourYearsAgo.getTime());
+		String _20To24 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,twentyFourYearsAgoDateString,nineteenYearsAgoDateString);
 
 		//25 to 49 years
 		Calendar fortyNineYearsAgo = Calendar.getInstance();
 		fortyNineYearsAgo.add(Calendar.YEAR,-49);
-		String fortyNineYearsAgosAgoDateString = formatter.format(fortyNineYearsAgo);
-		String _25To49 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fortyNineYearsAgosAgoDateString,twentyFourYearsAgo.toString());
+		String fortyNineYearsAgosAgoDateString = formatter.format(fortyNineYearsAgo.getTime());
+		String _25To49 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fortyNineYearsAgosAgoDateString,twentyFourYearsAgoDateString);
 
 		//50 to 59 years
 		Calendar fiftyNineYearsAgo = Calendar.getInstance();
 		fiftyNineYearsAgo.add(Calendar.YEAR,-59);
-		String fiftyNineYearsAgoDateString = formatter.format(fiftyNineYearsAgo);
+		String fiftyNineYearsAgoDateString = formatter.format(fiftyNineYearsAgo.getTime());
 		String _50To59 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fiftyNineYearsAgoDateString,fortyNineYearsAgosAgoDateString);
 
 		String _60Above = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fiftyNineYearsAgoDateString,"");
