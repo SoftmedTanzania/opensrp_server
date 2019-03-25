@@ -446,7 +446,6 @@ public class ReportController {
 		return new ResponseEntity<List<InterFacilityReferralsSummaryReport>>(HttpStatus.OK);
 	}
 
-
 	private String generateSql(String startDate, String endDate, String startBirthDate,String endBirthDate){
 		return  "SELECT (SELECT COUNT("+ ReferralClient.COL_CLIENT_ID+") FROM "+ ReferralClient.tbName +
 				" WHERE "+ReferralClient.COL_GENDER+"='Male' AND "+
