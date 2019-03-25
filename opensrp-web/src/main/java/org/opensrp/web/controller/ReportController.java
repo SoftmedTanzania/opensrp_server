@@ -367,7 +367,6 @@ public class ReportController {
 	@ResponseBody
 	public ResponseEntity<List<InterFacilityReferralsSummaryReport>> getReferralsSummaryReport() {
 
-
 		//Obtain registrations before end of last month
 		LocalDate firstDateOfTheMonth = LocalDate.now();
 
