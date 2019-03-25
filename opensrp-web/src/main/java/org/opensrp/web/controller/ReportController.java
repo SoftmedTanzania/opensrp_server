@@ -1,9 +1,8 @@
 package org.opensrp.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,9 +10,11 @@ import org.opensrp.connector.openmrs.service.OpenmrsReportingService;
 import org.opensrp.connector.openmrs.service.OpenmrsUserService;
 import org.opensrp.domain.ClientReferrals;
 import org.opensrp.domain.HealthFacilities;
+import org.opensrp.domain.ReferralClient;
 import org.opensrp.domain.ReferralService;
 import org.opensrp.dto.*;
 import org.opensrp.repository.ClientReferralRepository;
+import org.opensrp.repository.ClientsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +29,15 @@ public class ReportController {
 
 	private OpenmrsReportingService reportService;
 	private ClientReferralRepository clientReferralRepository;
+	private ClientsRepository clientsRepository;
 	private OpenmrsUserService openmrsUserService;
 	
 	@Autowired
-	public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService) {
+	public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository,ClientsRepository clientsRepository, OpenmrsUserService openmrsUserService) {
 		this.reportService = reportService;
 		this.openmrsUserService = openmrsUserService;
 		this.clientReferralRepository = clientReferralRepository;
+		this.clientsRepository = clientsRepository;
 	}
 	
 	@RequestMapping(method = GET, value = "/report/report-definitions")
@@ -355,5 +358,98 @@ public class ReportController {
 		}
 
 		return new ResponseEntity<List<InterFacilityReferralsSummaryReport>>(referralsSummaryDTOS,HttpStatus.OK);
+	}
+
+
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/report/referrals-summary")
+	@ResponseBody
+	public ResponseEntity<List<InterFacilityReferralsSummaryReport>> getReferralsSummaryReport() {
+
+
+		//Obtain registrations before end of last month
+		LocalDate firstDateOfTheMonth = LocalDate.now();
+		firstDateOfTheMonth.withDayOfMonth(1);
+
+		System.out.println("Months first date in yyyy-mm-dd: " +firstDateOfTheMonth.withDayOfMonth(1));
+		String previousMonthRegistrations = generateSql("1970-01-01",firstDateOfTheMonth.toString(),"","");
+
+
+		LocalDate currentDate = LocalDate.now();
+		String thisMonthRegistrations = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),"","");
+
+
+		//Less than a year old
+		Calendar aYearAgo = Calendar.getInstance();
+		aYearAgo.add(Calendar.YEAR,-1);
+		String lessThan1year = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),aYearAgo.getTime().toString(),currentDate.toString());
+
+		//1-5 Years
+		Calendar fiveYearsAgo = Calendar.getInstance();
+		fiveYearsAgo.add(Calendar.YEAR,-5);
+		String _1to5 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fiveYearsAgo.toString(),aYearAgo.toString());
+
+		//6 to 9 years
+		Calendar nineYearsAgo = Calendar.getInstance();
+		nineYearsAgo.add(Calendar.YEAR,-9);
+		String _6to9 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),nineYearsAgo.toString(),fiveYearsAgo.toString());
+
+		//10 to 14 years
+		Calendar fourteenYearsAgo = Calendar.getInstance();
+		fourteenYearsAgo.add(Calendar.YEAR,-14);
+		String _10To14 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fourteenYearsAgo.toString(),nineYearsAgo.toString());
+
+		//15 to 19 years
+		Calendar nineteenYearsAgo = Calendar.getInstance();
+		nineteenYearsAgo.add(Calendar.YEAR,-19);
+		String _15To19 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),nineteenYearsAgo.toString(),fourteenYearsAgo.toString());
+
+		//20 to 24 years
+		Calendar twentyFourYearsAgo = Calendar.getInstance();
+		twentyFourYearsAgo.add(Calendar.YEAR,-24);
+		String _20To24 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),twentyFourYearsAgo.toString(),nineteenYearsAgo.toString());
+
+		//25 to 49 years
+		Calendar fortyNineYearsAgo = Calendar.getInstance();
+		fortyNineYearsAgo.add(Calendar.YEAR,-49);
+		String _25To49 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fortyNineYearsAgo.toString(),twentyFourYearsAgo.toString());
+
+		//50 to 59 years
+		Calendar fiftyNineYearsAgo = Calendar.getInstance();
+		fiftyNineYearsAgo.add(Calendar.YEAR,-59);
+		String _50To59 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fiftyNineYearsAgo.toString(),fortyNineYearsAgo.toString());
+
+		String _60Above = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fiftyNineYearsAgo.toString(),"");
+
+		System.out.println("Less than A year = "+lessThan1year);
+		System.out.println("1 to 5 = "+_1to5);
+		System.out.println("6 to 9 = "+_6to9);
+		System.out.println("10 to 14 = "+_10To14);
+		System.out.println("15 to 19 = "+_15To19);
+		System.out.println("20 to 24 = "+_20To24);
+		System.out.println("25 to 49 = "+_25To49);
+		System.out.println("50 to 59 = "+_50To59);
+		System.out.println("Above 60 = "+_60Above);
+
+
+		return new ResponseEntity<List<InterFacilityReferralsSummaryReport>>(HttpStatus.OK);
+	}
+
+
+	private String generateSql(String startDate, String endDate, String startBirthDate,String endBirthDate){
+		return  "SELECT (SELECT COUNT("+ ReferralClient.COL_CLIENT_ID+") FROM "+ ReferralClient.tbName +
+				" WHERE "+ReferralClient.COL_GENDER+"='Male' AND "+
+				ReferralClient.COL_CREATED_AT+">='"+startDate+"' AND " +
+				ReferralClient.COL_CREATED_AT+"<'"+endDate+"'"+
+				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= "+startBirthDate:"")+
+				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < "+endBirthDate:"")+
+				") as Male, " +
+				"(SELECT COUNT("+ReferralClient.COL_CLIENT_ID+") FROM "+ReferralClient.tbName+
+				" WHERE "+ReferralClient.COL_GENDER+"='Female' AND " +
+				ReferralClient.COL_CREATED_AT+">='"+startDate+"' AND " +
+				ReferralClient.COL_CREATED_AT+"<'"+endDate+"' "+
+				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= "+startBirthDate:"")+
+				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < "+endBirthDate:"")
+				+") as Female FROM "+ReferralClient.tbName+" Limit 1";
 	}
 }
