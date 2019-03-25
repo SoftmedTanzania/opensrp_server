@@ -1,5 +1,6 @@
 package org.opensrp.web.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.joda.time.LocalDate;
@@ -369,57 +370,67 @@ public class ReportController {
 
 		//Obtain registrations before end of last month
 		LocalDate firstDateOfTheMonth = LocalDate.now();
-		firstDateOfTheMonth.withDayOfMonth(1);
 
 		System.out.println("Months first date in yyyy-mm-dd: " +firstDateOfTheMonth.withDayOfMonth(1));
-		String previousMonthRegistrations = generateSql("1970-01-01",firstDateOfTheMonth.toString(),"","");
+		String previousMonthRegistrations = generateSql("1970-01-01",firstDateOfTheMonth.withDayOfMonth(1).toString(),"","");
 
 
-		LocalDate currentDate = LocalDate.now();
-		String thisMonthRegistrations = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),"","");
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DATE,1);
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+		String currentDate= formatter.format(c.getTime());
+
+		String thisMonthRegistrations = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,"","");
 
 
 		//Less than a year old
 		Calendar aYearAgo = Calendar.getInstance();
 		aYearAgo.add(Calendar.YEAR,-1);
-		String lessThan1year = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),aYearAgo.getTime().toString(),currentDate.toString());
+		String ayearAgoDateString = formatter.format(aYearAgo);
+		String lessThan1year = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,ayearAgoDateString,currentDate);
 
 		//1-5 Years
 		Calendar fiveYearsAgo = Calendar.getInstance();
 		fiveYearsAgo.add(Calendar.YEAR,-5);
-		String _1to5 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fiveYearsAgo.toString(),aYearAgo.toString());
+		String fiveYearsAgoDateString = formatter.format(fiveYearsAgo);
+		String _1to5 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fiveYearsAgoDateString,ayearAgoDateString);
 
 		//6 to 9 years
 		Calendar nineYearsAgo = Calendar.getInstance();
 		nineYearsAgo.add(Calendar.YEAR,-9);
-		String _6to9 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),nineYearsAgo.toString(),fiveYearsAgo.toString());
+		String nineYearsAgoDateString = formatter.format(nineYearsAgo);
+		String _6to9 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,nineYearsAgoDateString,fiveYearsAgoDateString);
 
 		//10 to 14 years
 		Calendar fourteenYearsAgo = Calendar.getInstance();
 		fourteenYearsAgo.add(Calendar.YEAR,-14);
-		String _10To14 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fourteenYearsAgo.toString(),nineYearsAgo.toString());
+		String fourteenYearsAgoAgoDateString = formatter.format(fourteenYearsAgo);
+		String _10To14 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fourteenYearsAgoAgoDateString,nineYearsAgoDateString);
 
 		//15 to 19 years
 		Calendar nineteenYearsAgo = Calendar.getInstance();
 		nineteenYearsAgo.add(Calendar.YEAR,-19);
-		String _15To19 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),nineteenYearsAgo.toString(),fourteenYearsAgo.toString());
+		String nineteenYearsAgoDateString = formatter.format(nineteenYearsAgo);
+		String _15To19 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,nineteenYearsAgoDateString,fourteenYearsAgoAgoDateString);
 
 		//20 to 24 years
 		Calendar twentyFourYearsAgo = Calendar.getInstance();
 		twentyFourYearsAgo.add(Calendar.YEAR,-24);
-		String _20To24 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),twentyFourYearsAgo.toString(),nineteenYearsAgo.toString());
+		String _20To24 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,twentyFourYearsAgo.toString(),nineteenYearsAgoDateString);
 
 		//25 to 49 years
 		Calendar fortyNineYearsAgo = Calendar.getInstance();
 		fortyNineYearsAgo.add(Calendar.YEAR,-49);
-		String _25To49 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fortyNineYearsAgo.toString(),twentyFourYearsAgo.toString());
+		String fortyNineYearsAgosAgoDateString = formatter.format(fortyNineYearsAgo);
+		String _25To49 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fortyNineYearsAgosAgoDateString,twentyFourYearsAgo.toString());
 
 		//50 to 59 years
 		Calendar fiftyNineYearsAgo = Calendar.getInstance();
 		fiftyNineYearsAgo.add(Calendar.YEAR,-59);
-		String _50To59 = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fiftyNineYearsAgo.toString(),fortyNineYearsAgo.toString());
+		String fiftyNineYearsAgoDateString = formatter.format(fiftyNineYearsAgo);
+		String _50To59 = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fiftyNineYearsAgoDateString,fortyNineYearsAgosAgoDateString);
 
-		String _60Above = generateSql(firstDateOfTheMonth.toString(),currentDate.toString(),fiftyNineYearsAgo.toString(),"");
+		String _60Above = generateSql(firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,fiftyNineYearsAgoDateString,"");
 
 		System.out.println("Less than A year = "+lessThan1year);
 		System.out.println("1 to 5 = "+_1to5);
@@ -441,15 +452,15 @@ public class ReportController {
 				" WHERE "+ReferralClient.COL_GENDER+"='Male' AND "+
 				ReferralClient.COL_CREATED_AT+">='"+startDate+"' AND " +
 				ReferralClient.COL_CREATED_AT+"<'"+endDate+"'"+
-				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= "+startBirthDate:"")+
-				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < "+endBirthDate:"")+
+				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= '"+startBirthDate:"'")+
+				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < '"+endBirthDate:"'")+
 				") as Male, " +
 				"(SELECT COUNT("+ReferralClient.COL_CLIENT_ID+") FROM "+ReferralClient.tbName+
 				" WHERE "+ReferralClient.COL_GENDER+"='Female' AND " +
 				ReferralClient.COL_CREATED_AT+">='"+startDate+"' AND " +
 				ReferralClient.COL_CREATED_AT+"<'"+endDate+"' "+
-				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= "+startBirthDate:"")+
-				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < "+endBirthDate:"")
+				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= '"+startBirthDate:"'")+
+				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < '"+endBirthDate:"'")
 				+") as Female FROM "+ReferralClient.tbName+" Limit 1";
 	}
 }
