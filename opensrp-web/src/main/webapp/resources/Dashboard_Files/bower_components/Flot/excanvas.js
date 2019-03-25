@@ -828,8 +828,8 @@ if (!document.createElement('canvas').getContext) {
                 ' coordorigin="0,0"' ,
                 ' style="width:', W, 'px;height:', H, 'px;position:absolute;');
 
-    // If filters are necessary (rotation exists), create them
-    // filters are bog-slow, so only create them if abbsolutely necessary
+    // If report_filters are necessary (rotation exists), create them
+    // report_filters are bog-slow, so only create them if abbsolutely necessary
     // The following check doesn't account for skews (which don't exist
     // in the canvas spec (yet) anyway.
 
@@ -846,7 +846,7 @@ if (!document.createElement('canvas').getContext) {
                   'Dy=', mr(d.y / Z), '');
 
       // Bounding box calculation (need to minimize displayed area so that
-      // filters don't waste time on unused pixels.
+      // report_filters don't waste time on unused pixels.
       var max = d;
       var c2 = getCoords(this, dx + dw, dy);
       var c3 = getCoords(this, dx, dy + dh);

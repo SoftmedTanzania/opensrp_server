@@ -9491,7 +9491,7 @@
 	
 	/**
 	 * Template object for the way in which DataTables holds information about
-	 * search information for the global filter and individual column filters.
+	 * search information for the global filter and individual column report_filters.
 	 *  @namespace
 	 */
 	DataTable.models.oSearch = {

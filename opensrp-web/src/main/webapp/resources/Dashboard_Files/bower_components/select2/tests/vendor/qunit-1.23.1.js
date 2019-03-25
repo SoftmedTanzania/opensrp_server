@@ -2628,7 +2628,7 @@ function applyUrlParams() {
 		module: ( selectedModule === "" ) ? undefined : selectedModule,
 		filter: ( filter === "" ) ? undefined : filter,
 
-		// Remove moduleId and testId filters
+		// Remove moduleId and testId report_filters
 		moduleId: undefined,
 		testId: undefined
 	} );

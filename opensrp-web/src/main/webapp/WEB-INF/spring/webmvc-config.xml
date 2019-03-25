@@ -9,13 +9,13 @@
     </context:component-scan>
 
     <bean
-	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-	<property name="prefix">
-		<value>/WEB-INF/</value>
-	</property>
-	<property name="suffix">
-		<value>.jsp</value>
-	</property>
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
     </bean>
 
     <mvc:annotation-driven />
