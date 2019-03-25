@@ -453,15 +453,15 @@ public class ReportController {
 				" WHERE "+ReferralClient.COL_GENDER+"='Male' AND "+
 				ReferralClient.COL_CREATED_AT+">='"+startDate+"' AND " +
 				ReferralClient.COL_CREATED_AT+"<'"+endDate+"'"+
-				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= '"+startBirthDate:"'")+
-				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < '"+endBirthDate:"'")+
+				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= '"+startBirthDate+"'":"")+
+				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < '"+endBirthDate+"'":"")+
 				") as Male, " +
 				"(SELECT COUNT("+ReferralClient.COL_CLIENT_ID+") FROM "+ReferralClient.tbName+
 				" WHERE "+ReferralClient.COL_GENDER+"='Female' AND " +
 				ReferralClient.COL_CREATED_AT+">='"+startDate+"' AND " +
 				ReferralClient.COL_CREATED_AT+"<'"+endDate+"' "+
-				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= '"+startBirthDate:"'")+
-				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < '"+endBirthDate:"'")
+				(!startBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" >= '"+startBirthDate+"'":"")+
+				(!endBirthDate.equals("")?" AND "+ReferralClient.COL_DATE_OF_BIRTH+" < '"+endBirthDate+"'":"")
 				+") as Female FROM "+ReferralClient.tbName+" Limit 1";
 	}
 }
