@@ -30,9 +30,30 @@
     background-color: #ffffff;
 }
 
+.spinner {
+   border: 0px solid;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 70px;
+  height: 70px;
+  margin: auto;
+}
+
+form label{
+  font-weight:bold;
+}
+
 #order_content{
     height:100%
 }
 #clear {
     clear: both;
 }
+
+.focused{
+  border: solid 1px red;
+  }

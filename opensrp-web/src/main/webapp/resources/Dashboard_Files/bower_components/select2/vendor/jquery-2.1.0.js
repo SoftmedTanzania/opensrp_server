@@ -2329,7 +2329,7 @@
                                 }
                             }
 
-                            // Track unmatched elements for set filters
+                            // Track unmatched elements for set report_filters
                             if ( bySet ) {
                                 // They will have gone through all possible matchers
                                 if ( (elem = !matcher && elem) ) {
@@ -2343,7 +2343,7 @@
                             }
                         }
 
-                        // Apply set filters to unmatched elements
+                        // Apply set report_filters to unmatched elements
                         matchedCount += i;
                         if ( bySet && i !== matchedCount ) {
                             j = 0;

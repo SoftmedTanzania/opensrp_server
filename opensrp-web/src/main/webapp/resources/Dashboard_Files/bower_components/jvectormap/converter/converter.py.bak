@@ -85,7 +85,7 @@ class Converter:
       self.emulate_longitude0 = True
 
     if args.get('viewport'):
-      self.viewport = [float(s) for s in args.get('viewport').split(' ')]
+      self.viewport = map(lambda s: float(s), args.get('viewport').split(' '))
     else:
       self.viewport = False
 
@@ -161,15 +161,15 @@ class Converter:
           codes[code] = name
           self.features[code] = {"geometry": shapelyGeometry, "name": name, "code": code}
       else:
-        raise Exception("Wrong geometry type: "+geometryType)
+        raise Exception, "Wrong geometry type: "+geometryType
 
 
   def convert(self, outputFile):
-    print('Generating '+outputFile)
+    print 'Generating '+outputFile
 
     self.loadData()
 
-    codes = list(self.features.keys())
+    codes = self.features.keys()
     main_codes = copy.copy(codes)
     self.map.insets = []
     envelope = []
@@ -284,7 +284,7 @@ class Converter:
       polygons = geometry.geoms
     else:
       polygons = [geometry]
-    polygons = [p for p in polygons if p.area > self.minimal_area]
+    polygons = filter(lambda p: p.area > self.minimal_area, polygons)
     return shapely.geometry.multipolygon.MultiPolygon(polygons)
 
 

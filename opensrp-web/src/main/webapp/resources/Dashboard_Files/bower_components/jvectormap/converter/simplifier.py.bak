@@ -90,7 +90,7 @@ for geom in geometries:
           if not (pointTo in connections):
             connections[pointTo] = {}
           connections[pointTo][pointFrom] = 1
-print(int(round(time.time() * 1000)) - start)
+print int(round(time.time() * 1000)) - start
 
 simplifiedLines = {}
 pivotPoints = {}
@@ -191,7 +191,7 @@ while in_feat is not None:
     shp_layer.CreateFeature( out_feat )
     out_feat.Destroy()
   else:
-    print('geometry is too small: '+in_feat.GetField(16))
+    print 'geometry is too small: '+in_feat.GetField(16)
 
   in_feat.Destroy()
   in_feat = in_layer.GetNextFeature()
@@ -202,4 +202,4 @@ while in_feat is not None:
 shp_ds.Destroy()
 in_ds.Destroy()
 
-print(int(round(time.time() * 1000)) - start)
+print int(round(time.time() * 1000)) - start
