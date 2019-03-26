@@ -40,47 +40,67 @@
 <body>
 
 <%--Report Filters--%>
-        <div class="row">
-            <div class="col-md-12">
+<div class="row">
+    <div class="col-md-12">
 
-                <section class="content">
-                    <div class="box box-warning">
-                        <div class="box-header with-border">
+        <section class="content">
+            <div class="box box-warning">
+                <div class="box-header with-border">
 
-                            <h4 class="mb-3" align="center">This are my filters</h4>
+                    <div class="col-md-12">
 
+                        <div class="col-md-4">
+                            <input type="text" id="dp1" class="span2 datepicker" placeholder="Date..."
+                                   name="date">
                         </div>
+
+                        <div class="col-md-4">
+                            <input type="text" id="dp2" class="span2 datepicker" placeholder="Date..."
+                                   name="date">
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <button id="btn_filter_records" class="btn btn-primary">Filter Records</button>
+                        </div>
+
 
                     </div>
 
-
-
-                </section>
+                </div>
 
             </div>
-        </div>
-
-    <%--Report content--%>
-        <div class="row">
-            <div class="col-md-12">
-
-                <section class="content">
-                    <div class="box box-success">
-                        <div class="box-header with-border">
 
 
-                            <h4 class="mb-3" align="center">Jasper report instance.</h4>
 
-                        </div>
+        </section>
+
+    </div>
+</div>
+
+<%--Report content--%>
+<div class="row">
+    <div class="col-md-12">
+
+        <section class="content">
+            <div class="box box-success">
+                <div class="box-header with-border">
+
+                    <div id="render_jasper_response">
+
 
                     </div>
 
-
-
-                </section>
+                </div>
 
             </div>
-        </div>
+
+
+
+        </section>
+
+    </div>
+</div>
 
 <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery-3.2.1.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/vendor/animsition/js/animsition.min.js"></script>
@@ -108,6 +128,28 @@
         type="text/javascript"></script>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+<script>
+    $("btn_filter_records").on("click", function (events) {
+
+
+        $("#id_spinner").modal("show");
+
+        $('#render_jasper_response').load("http://23.92.25.157:8081/jasperserver/flow.html?_flowId=viewReportFlow" +
+            "&_flowId=viewReportFlow&ParentFolderUri=%2Freports&reportUnit=%2Freports%2FChwPatientSummaryReport&standAlone=true");
+
+
+        $("#id_spinner").modal("hide");
+
+    })
+
+    $(function(){
+        $('.datepicker').datepicker({
+            format: 'mm-dd-yyyy'
+        });
+    });
+
+</script>
 
 </body>
 </html>
