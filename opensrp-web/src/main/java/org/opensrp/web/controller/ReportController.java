@@ -368,7 +368,7 @@ public class ReportController {
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/report/referrals-summary")
     @ResponseBody
-    public ResponseEntity<JSONObject> getReferralsSummaryReport() {
+    public ResponseEntity<String> getReferralsSummaryReport() {
 
         //Obtain registrations before end of last month
         LocalDate firstDateOfTheMonth = LocalDate.now();
@@ -728,7 +728,7 @@ public class ReportController {
 
 
 
-        return new ResponseEntity<JSONObject>(referralSummaryReport,HttpStatus.OK);
+        return new ResponseEntity<String>(referralSummaryReport.toString(),HttpStatus.OK);
     }
 
     private String generateRegistationReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long reasons_for_registration) {
