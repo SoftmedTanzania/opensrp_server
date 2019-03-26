@@ -722,7 +722,7 @@ public class ReportController {
         }
 
         try {
-            referralSummaryReport.put("Referral Results",notFoundList);
+            referralSummaryReport.put("Referral Results",referralResults);
         } catch (JSONException e) {
             e.printStackTrace();
         }
