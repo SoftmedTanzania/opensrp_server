@@ -615,7 +615,7 @@ public class ReportController {
         }
 
 
-        for (int i = 1; i < 15; i++) {
+        for (int i = 1; i < 5; i++) {
             List<TotalCountObject> objectList = null;
             try {
                 String sqlString = getLTFCountsReportSQL(i, firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
