@@ -157,7 +157,7 @@
     $( "#id_chw_summary" ).on( "click", function( event ) {
 
 
-        $('#report_work_space').load("/chwPatientSummary");
+        $('#report_work_space').load("chw_patient_summary.jsp");
 
     });
 
