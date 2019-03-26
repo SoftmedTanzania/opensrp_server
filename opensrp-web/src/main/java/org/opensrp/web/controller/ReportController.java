@@ -368,14 +368,15 @@ public class ReportController {
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/report/referrals-summary")
     @ResponseBody
-    public ResponseEntity<JSONObject> getReferralsSummaryReport() {
+    public ResponseEntity<String> getReferralsSummaryReport() {
 
         //Obtain registrations before end of last month
         LocalDate firstDateOfTheMonth = LocalDate.now();
         JSONObject referralSummaryReport = new JSONObject();
 
-        System.out.println("Months first date in yyyy-mm-dd: " + firstDateOfTheMonth.withDayOfMonth(1));
         String previousMonthRegistrations = generateRegistationReportSql("1970-01-01", firstDateOfTheMonth.withDayOfMonth(1).toString(), "", "",0);
+
+        System.out.println("previousMonthRegistrations SQL "+previousMonthRegistrations);
         List<MaleFemaleCountObject> accumulativeTotalPreviousMonthsRegistrations= null;
         try {
             accumulativeTotalPreviousMonthsRegistrations = clientsRepository.getMaleFemaleCountReports(previousMonthRegistrations,null);
@@ -384,7 +385,7 @@ public class ReportController {
         }
 
         try {
-            referralSummaryReport.put("cumulativeRegistrations",new JSONObject(new Gson().toJson(accumulativeTotalPreviousMonthsRegistrations)));
+            referralSummaryReport.put("cumulativeRegistrations",new JSONObject(new Gson().toJson(accumulativeTotalPreviousMonthsRegistrations.get(0))));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -596,6 +597,33 @@ public class ReportController {
                 e1.printStackTrace();
             }
         }
+        List<TotalCountObject> tb = null;
+        try {
+            String tbLTFsReferrals = getLTFCountsReportSQL(2,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+            tb = clientsAppointmentsRepository.getCount(tbLTFsReferrals,null);
+            ltfReferrals.put("TB",new JSONObject(new Gson().toJson(tb.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                ltfReferrals.put("PMTCT",0);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        List<TotalCountObject> drugClinic = null;
+        try {
+            String drugClinicLTFsReferrals = getLTFCountsReportSQL(2,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+            drugClinic = clientsAppointmentsRepository.getCount(drugClinicLTFsReferrals,null);
+            ltfReferrals.put("Drug",new JSONObject(new Gson().toJson(drugClinic.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                ltfReferrals.put("Drug",0);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+        }
 
         try {
             referralSummaryReport.put("Total LTF",ltfReferrals);
@@ -694,17 +722,14 @@ public class ReportController {
         }
 
         try {
-            referralSummaryReport.put("Referral Results",notFoundList);
+            referralSummaryReport.put("Referral Results",referralResults);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
 
-
-
-
-        return new ResponseEntity<JSONObject>(referralSummaryReport,HttpStatus.OK);
+        return new ResponseEntity<String>(referralSummaryReport.toString(),HttpStatus.OK);
     }
 
     private String generateRegistationReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long reasons_for_registration) {
@@ -727,7 +752,7 @@ public class ReportController {
     }
 
     private String getLTFCountsReportSQL(long appointmentType, String startDate, String endDate){
-        return "SELECT COUNT("+ ClientAppointments.COL_APPOINTMENT_ID +") FROM "+ClientAppointments.tbName+
+        return "SELECT COUNT("+ ClientAppointments.COL_APPOINTMENT_ID +")as count FROM "+ClientAppointments.tbName+
                 " WHERE "+
                 ClientAppointments.COL_STATUS+" = -1 AND "+
                 ClientAppointments.COL_APPOINTMENT_DATE+">'"+startDate+"' AND "+
@@ -736,14 +761,14 @@ public class ReportController {
     }
 
     private String getLTFFollowupReportSQL(long referral_feedback_id, String startDate, String endDate){
-        return "SELECT COUNT("+ ClientReferrals.COL_REFERRAL_ID +") FROM "+ClientReferrals.tbName+
+        return "SELECT COUNT("+ ClientReferrals.COL_REFERRAL_ID +")as count FROM "+ClientReferrals.tbName+
                 " WHERE "+
                 (referral_feedback_id!=0? ClientReferrals.COL_REFERRAL_FEEDBACK_ID+" ="+referral_feedback_id:ClientReferrals.COL_REFERRAL_FEEDBACK_ID+" <>8") +" AND "+
                 ClientReferrals.COL_REFERRAL_ID+" IN (SELECT "+ ClientAppointments.COL_FOLLOWUP_REFERRAL_ID +" FROM "+ClientAppointments.tbName+" WHERE "+ClientAppointments.COL_STATUS+" = -1 AND "+ClientAppointments.COL_APPOINTMENT_DATE+">'"+startDate+"' AND "+ClientAppointments.COL_APPOINTMENT_DATE+"<'"+endDate+"')";
     }
 
     private String getReferralSummaryReportSql(boolean successfulReferrals,long serviceId, String startDate, String endDate){
-        return "SELECT COUNT(*) FROM "+ClientReferrals.tbName+
+        return "SELECT COUNT(*) as count FROM "+ClientReferrals.tbName+
                 " WHERE "+
                 ClientReferrals.COL_REFERRAL_TYPE+"=1 AND "+
                 ClientReferrals.COL_SERVICE_ID+" = "+serviceId+" AND "+
