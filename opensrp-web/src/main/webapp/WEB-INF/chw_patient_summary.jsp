@@ -59,7 +59,6 @@
 
             </div>
         </div>
-    </div>
 
     <%--Report content--%>
         <div class="row">

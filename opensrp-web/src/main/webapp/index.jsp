@@ -95,29 +95,24 @@
                 <div class="col-md-12">
 
                     <section class="content">
-                    <div class="box box-warning">
-                        <div class="box-header with-border">
+                        <div class="box box-warning">
+                            <div class="box-header with-border">
 
 
 
-                            <h4 class="mb-3" align="center">Please select a report to preview.</h4>
+                                <h4 class="mb-3" align="center">Please select a report to preview.</h4>
 
                             </div>
-
                         </div>
 
 
-
                     </section>
-
                 </div>
+
             </div>
         </div>
     </div>
-
-
-    </div>
-
+</div>
 
 
 <!--Scripts -->
@@ -157,7 +152,7 @@
     $( "#id_chw_summary" ).on( "click", function( event ) {
 
 
-        $('#report_work_space').load("chw_patient_summary.jsp");
+        $('#report_work_space').load("/opensrp/chwpatientsummary");
 
     });
 
