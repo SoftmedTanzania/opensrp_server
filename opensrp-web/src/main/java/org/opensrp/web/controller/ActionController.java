@@ -74,6 +74,21 @@ public class ActionController {
 		});
 	}
 
+	@Controller
+	@RequestMapping("/chwpatientsummary")
+	public class ChwPatientSummaryController{
+
+		public ChwPatientSummaryController()
+		{
+
+		}
+
+		@RequestMapping(method = RequestMethod.GET)
+		public String chwPatientSummary() {
+			return "chw_patient_summary";
+		}
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value = "/alert_delete")
 	@ResponseBody
 	public void deleteDuplicateAlerts(@RequestParam("key") String key){
