@@ -78,7 +78,7 @@
             </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#" id="id_chw_summary"><i class="fa fa-circle-o"></i>CHW Patients Summary</a></li>
+                        <li><a href="javascript:void(0)" id="id_chw_summary"><i class="fa fa-circle-o"></i>CHW Patients Summary</a></li>
                     </ul>
                 </li>
             </ul>
@@ -97,7 +97,6 @@
                     <section class="content">
                         <div class="box box-warning">
                             <div class="box-header with-border">
-
 
 
                                 <h4 class="mb-3" align="center">Please select a report to preview.</h4>
@@ -153,6 +152,9 @@
 
 
         $('#report_work_space').load("/opensrp/chwpatientsummary");
+
+        // document.getElementById("report_work_space").innerHTML='<object type="text/html" ' +
+        //     'data="/opensrp/chwpatientsummary" width="100%"  />';
 
     });
 
