@@ -1,6 +1,7 @@
 package org.opensrp.web.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,7 +11,9 @@ import org.opensrp.connector.openmrs.service.OpenmrsUserService;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
 import org.opensrp.dto.report.MaleFemaleCountObject;
+import org.opensrp.dto.report.TotalCountObject;
 import org.opensrp.repository.ClientReferralRepository;
+import org.opensrp.repository.ClientsAppointmentsRepository;
 import org.opensrp.repository.ClientsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,14 +39,16 @@ public class ReportController {
     private OpenmrsReportingService reportService;
     private ClientReferralRepository clientReferralRepository;
     private ClientsRepository clientsRepository;
+    private ClientsAppointmentsRepository clientsAppointmentsRepository;
     private OpenmrsUserService openmrsUserService;
 
     @Autowired
-    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, ClientsRepository clientsRepository, OpenmrsUserService openmrsUserService) {
+    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, ClientsRepository clientsRepository, OpenmrsUserService openmrsUserService,ClientsAppointmentsRepository clientsAppointmentsRepository) {
         this.reportService = reportService;
         this.openmrsUserService = openmrsUserService;
         this.clientReferralRepository = clientReferralRepository;
         this.clientsRepository = clientsRepository;
+        this.clientsAppointmentsRepository = clientsAppointmentsRepository;
     }
 
     @RequestMapping(method = GET, value = "/report/report-definitions")
@@ -363,10 +368,11 @@ public class ReportController {
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/report/referrals-summary")
     @ResponseBody
-    public ResponseEntity<List<InterFacilityReferralsSummaryReport>> getReferralsSummaryReport() {
+    public ResponseEntity<JSONObject> getReferralsSummaryReport() {
 
         //Obtain registrations before end of last month
         LocalDate firstDateOfTheMonth = LocalDate.now();
+        JSONObject referralSummaryReport = new JSONObject();
 
         System.out.println("Months first date in yyyy-mm-dd: " + firstDateOfTheMonth.withDayOfMonth(1));
         String previousMonthRegistrations = generateRegistationReportSql("1970-01-01", firstDateOfTheMonth.withDayOfMonth(1).toString(), "", "",0);
@@ -377,7 +383,11 @@ public class ReportController {
             e.printStackTrace();
         }
 
-        System.out.println("reports accumulative total = "+new Gson().toJson(accumulativeTotalPreviousMonthsRegistrations));
+        try {
+            referralSummaryReport.put("cumulativeRegistrations",new JSONObject(new Gson().toJson(accumulativeTotalPreviousMonthsRegistrations)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
         Calendar c = Calendar.getInstance();
@@ -385,11 +395,15 @@ public class ReportController {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         String currentDate = formatter.format(c.getTime());
 
+
+        JSONObject thisMonthRegistrationsObject = new JSONObject();
+
         String thisMonthRegistrations = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", "",0);
 
         List<MaleFemaleCountObject> thisMonthRegistrationsList= null;
         try {
             thisMonthRegistrationsList = clientsRepository.getMaleFemaleCountReports(thisMonthRegistrations,null);
+            thisMonthRegistrationsObject.put("JUMLA",new JSONObject(new Gson().toJson(thisMonthRegistrationsList.get(0))));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -405,11 +419,10 @@ public class ReportController {
         List<MaleFemaleCountObject> lessThan1yearRegistrationsList= null;
         try {
             lessThan1yearRegistrationsList = clientsRepository.getMaleFemaleCountReports(lessThan1year,null);
+            thisMonthRegistrationsObject.put("CHINI YA MWAKA MMOJA",new JSONObject(new Gson().toJson(lessThan1yearRegistrationsList.get(0))));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("reports less than one year registrations = "+new Gson().toJson(lessThan1yearRegistrationsList));
-
 
 
         //1-5 Years
@@ -421,10 +434,10 @@ public class ReportController {
         List<MaleFemaleCountObject> _1to5RegistrationsList= null;
         try {
             _1to5RegistrationsList = clientsRepository.getMaleFemaleCountReports(_1to5,null);
+            thisMonthRegistrationsObject.put("MIAKA1-5",new JSONObject(new Gson().toJson(_1to5RegistrationsList.get(0))));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("reports 1 to 5 years registrations = "+new Gson().toJson(_1to5RegistrationsList));
 
 
         //6 to 9 years
@@ -433,11 +446,29 @@ public class ReportController {
         String nineYearsAgoDateString = formatter.format(nineYearsAgo.getTime());
         String _6to9 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, nineYearsAgoDateString, fiveYearsAgoDateString,0);
 
+        List<MaleFemaleCountObject> _6to9RegistrationsList= null;
+        try {
+            _6to9RegistrationsList = clientsRepository.getMaleFemaleCountReports(_6to9,null);
+            thisMonthRegistrationsObject.put("MIAKA 6-9",new JSONObject(new Gson().toJson(_6to9RegistrationsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //10 to 14 years
         Calendar fourteenYearsAgo = Calendar.getInstance();
         fourteenYearsAgo.add(Calendar.YEAR, -14);
         String fourteenYearsAgoAgoDateString = formatter.format(fourteenYearsAgo.getTime());
         String _10To14 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, fourteenYearsAgoAgoDateString, nineYearsAgoDateString,0);
+
+        List<MaleFemaleCountObject> _10To14RegistrationsList= null;
+        try {
+            _10To14RegistrationsList = clientsRepository.getMaleFemaleCountReports(_10To14,null);
+            thisMonthRegistrationsObject.put("MIAKA 10-14",new JSONObject(new Gson().toJson(_10To14RegistrationsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
         //15 to 19 years
         Calendar nineteenYearsAgo = Calendar.getInstance();
@@ -445,11 +476,30 @@ public class ReportController {
         String nineteenYearsAgoDateString = formatter.format(nineteenYearsAgo.getTime());
         String _15To19 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, nineteenYearsAgoDateString, fourteenYearsAgoAgoDateString,0);
 
+        List<MaleFemaleCountObject> _15To19RegistrationsList= null;
+        try {
+            _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19,null);
+            thisMonthRegistrationsObject.put("MIAKA 15-19",new JSONObject(new Gson().toJson(_15To19RegistrationsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         //20 to 24 years
         Calendar twentyFourYearsAgo = Calendar.getInstance();
         twentyFourYearsAgo.add(Calendar.YEAR, -24);
         String twentyFourYearsAgoDateString = formatter.format(twentyFourYearsAgo.getTime());
         String _20To24 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, twentyFourYearsAgoDateString, nineteenYearsAgoDateString,0);
+
+        List<MaleFemaleCountObject> _20To24RegistrationsList= null;
+        try {
+            _20To24RegistrationsList = clientsRepository.getMaleFemaleCountReports(_20To24,null);
+            thisMonthRegistrationsObject.put("MIAKA 20-24",new JSONObject(new Gson().toJson(_20To24RegistrationsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
         //25 to 49 years
         Calendar fortyNineYearsAgo = Calendar.getInstance();
@@ -457,29 +507,204 @@ public class ReportController {
         String fortyNineYearsAgosAgoDateString = formatter.format(fortyNineYearsAgo.getTime());
         String _25To49 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, fortyNineYearsAgosAgoDateString, twentyFourYearsAgoDateString,0);
 
+        List<MaleFemaleCountObject> _25To49RegistrationsList= null;
+        try {
+            _25To49RegistrationsList = clientsRepository.getMaleFemaleCountReports(_25To49,null);
+            thisMonthRegistrationsObject.put("MIAKA 25-49",new JSONObject(new Gson().toJson(_25To49RegistrationsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
         //50 to 59 years
         Calendar fiftyNineYearsAgo = Calendar.getInstance();
         fiftyNineYearsAgo.add(Calendar.YEAR, -59);
         String fiftyNineYearsAgoDateString = formatter.format(fiftyNineYearsAgo.getTime());
         String _50To59 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, fiftyNineYearsAgoDateString, fortyNineYearsAgosAgoDateString,0);
 
-        String _60Above = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, fiftyNineYearsAgoDateString, "",0);
-
-        System.out.println("Less than A year = " + lessThan1year);
-        System.out.println("1 to 5 = " + _1to5);
-        System.out.println("6 to 9 = " + _6to9);
-        System.out.println("10 to 14 = " + _10To14);
-        System.out.println("15 to 19 = " + _15To19);
-        System.out.println("20 to 24 = " + _20To24);
-        System.out.println("25 to 49 = " + _25To49);
-        System.out.println("50 to 59 = " + _50To59);
-        System.out.println("Above 60 = " + _60Above);
+        List<MaleFemaleCountObject> _50To59RegistrationsList= null;
+        try {
+            _50To59RegistrationsList = clientsRepository.getMaleFemaleCountReports(_50To59,null);
+            thisMonthRegistrationsObject.put("MIAKA 50-59",new JSONObject(new Gson().toJson(_50To59RegistrationsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
 
+        String _60Above = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", fiftyNineYearsAgoDateString,0);
+
+        List<MaleFemaleCountObject> _60AboveRegistrationsList= null;
+        try {
+            _60AboveRegistrationsList = clientsRepository.getMaleFemaleCountReports(_60Above,null);
+            thisMonthRegistrationsObject.put("MIAKA 60+",new JSONObject(new Gson().toJson(_60AboveRegistrationsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
-        return new ResponseEntity<List<InterFacilityReferralsSummaryReport>>(HttpStatus.OK);
+        try {
+            referralSummaryReport.put("thisMonthRegistrations",thisMonthRegistrationsObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        String totalLTFsReferrals = getLTFCountsReportSQL(0,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+
+        JSONObject ltfReferrals = new JSONObject();
+        List<TotalCountObject> totalObjects = null;
+        try {
+            totalObjects = clientsAppointmentsRepository.getCount(totalLTFsReferrals,null);
+            ltfReferrals.put("Jumla",new JSONObject(new Gson().toJson(totalObjects.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                ltfReferrals.put("Jumla",0);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+
+        }
+
+
+        List<TotalCountObject> ctcObjects = null;
+        try {
+            String ctcLTFsReferrals = getLTFCountsReportSQL(1,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+            ctcObjects = clientsAppointmentsRepository.getCount(ctcLTFsReferrals,null);
+            ltfReferrals.put("Kliniki ya Tiba na Matunzo (CTC)",new JSONObject(new Gson().toJson(ctcObjects.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                ltfReferrals.put("Kliniki ya Tiba na Matunzo (CTC)",0);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        List<TotalCountObject> pmtct = null;
+        try {
+            String pmtctLTFsReferrals = getLTFCountsReportSQL(2,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+            pmtct = clientsAppointmentsRepository.getCount(pmtctLTFsReferrals,null);
+            ltfReferrals.put("PMTCT",new JSONObject(new Gson().toJson(pmtct.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                ltfReferrals.put("PMTCT",0);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        try {
+            referralSummaryReport.put("Total LTF",ltfReferrals);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+        JSONObject referralResults = new JSONObject();
+
+        String totalFound = getLTFFollowupReportSQL(0,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> totalFoundList = null;
+        try {
+            totalFoundList = clientReferralRepository.getCount(totalFound,null);
+            referralResults.put("Jumla ya waliopatikana",new JSONObject(new Gson().toJson(totalFoundList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String returningBackToClinick = getLTFFollowupReportSQL(1,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+
+        List<TotalCountObject> returningBackToClinicList = null;
+        try {
+            returningBackToClinicList = clientReferralRepository.getCount(returningBackToClinick,null);
+            referralResults.put("Mteja anahudhuria kliniki",new JSONObject(new Gson().toJson(returningBackToClinicList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String foundAndReadyToResumeTreatment = getLTFFollowupReportSQL(2,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> foundAndReadyToResumeTreatmentList = null;
+        try {
+            foundAndReadyToResumeTreatmentList = clientReferralRepository.getCount(foundAndReadyToResumeTreatment,null);
+            referralResults.put("Amepatikana na yupo tayari kurudi kliniki",new JSONObject(new Gson().toJson(foundAndReadyToResumeTreatmentList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        String foundAndReturnedToTreatment = getLTFFollowupReportSQL(3,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> foundAndReturnedToTreatmentList = null;
+        try {
+            foundAndReturnedToTreatmentList = clientReferralRepository.getCount(foundAndReturnedToTreatment,null);
+            referralResults.put("Amepatikana na amerudi kliniki",new JSONObject(new Gson().toJson(foundAndReturnedToTreatmentList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String dead = getLTFFollowupReportSQL(4,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> deadList = null;
+        try {
+            deadList = clientReferralRepository.getCount(dead,null);
+            referralResults.put("Amefariki",new JSONObject(new Gson().toJson(deadList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String movedToAnotherFacilityWithoutInfo = getLTFFollowupReportSQL(5,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> movedToAnotherFacilityWithoutInfoList = null;
+        try {
+            movedToAnotherFacilityWithoutInfoList = clientReferralRepository.getCount(movedToAnotherFacilityWithoutInfo,null);
+            referralResults.put("Amehamia kituo kingine bila taarifa",new JSONObject(new Gson().toJson(movedToAnotherFacilityWithoutInfoList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String shiftedThePlaceOfDemicile = getLTFFollowupReportSQL(6,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> shiftedThePlaceOfDemicileList = null;
+        try {
+            shiftedThePlaceOfDemicileList = clientReferralRepository.getCount(shiftedThePlaceOfDemicile,null);
+            referralResults.put("Amehama makazi",new JSONObject(new Gson().toJson(shiftedThePlaceOfDemicileList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String foundAndNotReadyToReturnToTreatment = getLTFFollowupReportSQL(7,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> foundAndNotReadyToReturnToTreatmentList = null;
+        try {
+            foundAndNotReadyToReturnToTreatmentList = clientReferralRepository.getCount(foundAndNotReadyToReturnToTreatment,null);
+            referralResults.put("Amepatikana lakini hayupo tayari kurudi klinik",new JSONObject(new Gson().toJson(foundAndNotReadyToReturnToTreatmentList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String notFound = getLTFFollowupReportSQL(8,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> notFoundList = null;
+        try {
+            notFoundList = clientReferralRepository.getCount(notFound,null);
+            referralResults.put("Hajapatikana",new JSONObject(new Gson().toJson(notFoundList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            referralSummaryReport.put("Referral Results",notFoundList);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+        return new ResponseEntity<JSONObject>(referralSummaryReport,HttpStatus.OK);
     }
 
     private String generateRegistationReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long reasons_for_registration) {
@@ -506,14 +731,15 @@ public class ReportController {
                 " WHERE "+
                 ClientAppointments.COL_STATUS+" = -1 AND "+
                 ClientAppointments.COL_APPOINTMENT_DATE+">'"+startDate+"' AND "+
-                ClientAppointments.COL_APPOINTMENT_DATE+"<'"+endDate+"' AND "+
-                ClientAppointments.COL_APPOINTMENT_TYPE+" = "+appointmentType;
+                ClientAppointments.COL_APPOINTMENT_DATE+"<'"+endDate+"' " +
+                (appointmentType!=0?" AND " + ClientAppointments.COL_APPOINTMENT_TYPE+ " = "+appointmentType:"");
     }
 
-    private String getLTFFollowupReportSQL(long referral_feedback_id,long appointmentType, String startDate, String endDate){
+    private String getLTFFollowupReportSQL(long referral_feedback_id, String startDate, String endDate){
         return "SELECT COUNT("+ ClientReferrals.COL_REFERRAL_ID +") FROM "+ClientReferrals.tbName+
                 " WHERE "+
-                ClientReferrals.COL_REFERRAL_FEEDBACK_ID+" ="+referral_feedback_id+" AND "+ClientReferrals.COL_REFERRAL_ID+" IN (SELECT "+ ClientAppointments.COL_FOLLOWUP_REFERRAL_ID +" FROM "+ClientAppointments.tbName+" WHERE "+ClientAppointments.COL_STATUS+" = -1 AND "+ClientAppointments.COL_APPOINTMENT_DATE+">'"+startDate+"' AND "+ClientAppointments.COL_APPOINTMENT_DATE+"<'"+endDate+"' AND "+ClientAppointments.COL_APPOINTMENT_TYPE+" = "+appointmentType+")";
+                (referral_feedback_id!=0? ClientReferrals.COL_REFERRAL_FEEDBACK_ID+" ="+referral_feedback_id:ClientReferrals.COL_REFERRAL_FEEDBACK_ID+" <>8") +" AND "+
+                ClientReferrals.COL_REFERRAL_ID+" IN (SELECT "+ ClientAppointments.COL_FOLLOWUP_REFERRAL_ID +" FROM "+ClientAppointments.tbName+" WHERE "+ClientAppointments.COL_STATUS+" = -1 AND "+ClientAppointments.COL_APPOINTMENT_DATE+">'"+startDate+"' AND "+ClientAppointments.COL_APPOINTMENT_DATE+"<'"+endDate+"')";
     }
 
     private String getReferralSummaryReportSql(boolean successfulReferrals,long serviceId, String startDate, String endDate){

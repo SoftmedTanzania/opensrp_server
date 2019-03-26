@@ -1,6 +1,7 @@
 package org.opensrp.repository;
 
 import org.opensrp.domain.*;
+import org.opensrp.dto.report.TotalCountObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -108,6 +109,23 @@ public class ClientsAppointmentsRepository {
 			return clientAppointments;
 		}
 		
+	}
+
+
+
+	public List<TotalCountObject> getCount(String sql, Object[] args) throws Exception {
+		return this.jdbcTemplate.query(sql,args, new CountRowMapper());
+	}
+
+	public class CountRowMapper implements RowMapper<TotalCountObject> {
+		public TotalCountObject mapRow(ResultSet rs, int rowNum) throws SQLException {
+			TotalCountObject countObject = new TotalCountObject();
+
+			countObject.setCount(rs.getInt(rs.findColumn("count")));
+
+			return countObject;
+		}
+
 	}
 
 }
