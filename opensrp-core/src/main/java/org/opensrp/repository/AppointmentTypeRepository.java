@@ -50,7 +50,7 @@ public class AppointmentTypeRepository {
     }
 
 
-    public List<AppointmentType> geRegistrationReasons(String sql, Object[] args) throws Exception {
+    public List<AppointmentType> getAppointmentTypes(String sql, Object[] args) throws Exception {
         return this.jdbcTemplate.query(sql, args, new RegistrationIdsRowMapper());
     }
 
