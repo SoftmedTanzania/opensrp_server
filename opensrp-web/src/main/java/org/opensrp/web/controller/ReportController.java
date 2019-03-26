@@ -728,6 +728,296 @@ public class ReportController {
         }
 
 
+        JSONObject issuedReferrals = new JSONObject();
+
+        String cancelingReferralsSQL = getReferralSummaryReportSql(false,1,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> cancelingReferralsList = null;
+        try {
+            cancelingReferralsList = clientReferralRepository.getCount(cancelingReferralsSQL,null);
+            issuedReferrals.put("Ushauri nasaha Na upimaji",new JSONObject(new Gson().toJson(cancelingReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String ctcReferralsSQL = getReferralSummaryReportSql(false,2,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> ctcReferralsList = null;
+        try {
+            ctcReferralsList = clientReferralRepository.getCount(ctcReferralsSQL,null);
+            issuedReferrals.put("Kliniki ya Tiba na matunzo (CTC)",new JSONObject(new Gson().toJson(ctcReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String otherDeseasesReferralsSQL = getReferralSummaryReportSql(false,3,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> otherDeseasesReferralsList = null;
+        try {
+            otherDeseasesReferralsList = clientReferralRepository.getCount(otherDeseasesReferralsSQL,null);
+            issuedReferrals.put("kituo cha kutoa huduma za afya kutokana na magonjwa nyemelezi",new JSONObject(new Gson().toJson(otherDeseasesReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        String tbReferralsSQL = getReferralSummaryReportSql(false,4,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> tbReferralsList = null;
+        try {
+            tbReferralsList = clientReferralRepository.getCount(tbReferralsSQL,null);
+            issuedReferrals.put("Kliniki ya kutibu kifua kikuu",new JSONObject(new Gson().toJson(tbReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        String pregnantWomenReferralsSQL = getReferralSummaryReportSql(false,5,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> pregnantWomenList = null;
+        try {
+            pregnantWomenList = clientReferralRepository.getCount(pregnantWomenReferralsSQL,null);
+            issuedReferrals.put("Wajawazito",new JSONObject(new Gson().toJson(pregnantWomenList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String breastFeedingReferralsSQL = getReferralSummaryReportSql(false,6,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> breastFeedingList = null;
+        try {
+            breastFeedingList = clientReferralRepository.getCount(breastFeedingReferralsSQL,null);
+            issuedReferrals.put("Wanaonyonyesha",new JSONObject(new Gson().toJson(breastFeedingList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String childrenUnder18MonthsReferralsSQL = getReferralSummaryReportSql(false,7,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> childrenUnder18MonthsList = null;
+        try {
+            childrenUnder18MonthsList = clientReferralRepository.getCount(childrenUnder18MonthsReferralsSQL,null);
+            issuedReferrals.put("Watoto<miezi 18 ",new JSONObject(new Gson().toJson(childrenUnder18MonthsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String circumsicionReferralsSQL = getReferralSummaryReportSql(false,8,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> circumsicionReferralsList = null;
+        try {
+            circumsicionReferralsList = clientReferralRepository.getCount(circumsicionReferralsSQL,null);
+            issuedReferrals.put("Huduma ya tohara ",new JSONObject(new Gson().toJson(circumsicionReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String gbvReferralsSQL = getReferralSummaryReportSql(false,9,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> gbvReferralsList = null;
+        try {
+            gbvReferralsList = clientReferralRepository.getCount(gbvReferralsSQL,null);
+            issuedReferrals.put("Huduma ya kuzui ukatili wa kijinsia (dawati la jinsia) ",new JSONObject(new Gson().toJson(gbvReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String lawServicesReferralsSQL = getReferralSummaryReportSql(false,10,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> lawServicesReferralsList = null;
+        try {
+            lawServicesReferralsList = clientReferralRepository.getCount(lawServicesReferralsSQL,null);
+            issuedReferrals.put("Msaada wa kisheria ",new JSONObject(new Gson().toJson(lawServicesReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String helperGroupsReferralsSQL = getReferralSummaryReportSql(false,11,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> helperGroupsReferralsList = null;
+        try {
+            helperGroupsReferralsList = clientReferralRepository.getCount(helperGroupsReferralsSQL,null);
+            issuedReferrals.put("Vikundi vya kusaidiana ",new JSONObject(new Gson().toJson(helperGroupsReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String childrenLivingInDangerousAreasReferralsSQL = getReferralSummaryReportSql(false,12,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> childrenLivingInDangerousAreasReferralsList = null;
+        try {
+            childrenLivingInDangerousAreasReferralsList = clientReferralRepository.getCount(childrenLivingInDangerousAreasReferralsSQL,null);
+            issuedReferrals.put("Huduma za watoto wanaoishi katika mazingira hatarishi na yatima ",new JSONObject(new Gson().toJson(childrenLivingInDangerousAreasReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String otherReferralsSQL = getReferralSummaryReportSql(false,13,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> otherReferralsList = null;
+        try {
+            otherReferralsList = clientReferralRepository.getCount(otherReferralsSQL,null);
+            issuedReferrals.put("Vituo vya wazee ",new JSONObject(new Gson().toJson(otherReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            issuedReferrals.put("Jumla ",new JSONObject(new Gson().toJson(otherReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            referralSummaryReport.put("Issued Referrals ",issuedReferrals);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        //successful referrals
+        JSONObject issuedSucccessfulReferrals = new JSONObject();
+
+        String cancelingSucccessfulReferralsSQL = getReferralSummaryReportSql(false,1,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> cancelingSucccessfulReferralsList = null;
+        try {
+            cancelingSucccessfulReferralsList = clientReferralRepository.getCount(cancelingSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Ushauri nasaha Na upimaji",new JSONObject(new Gson().toJson(cancelingSucccessfulReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String ctcSucccessfulReferralsSQL = getReferralSummaryReportSql(false,2,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> ctcSucccessfulReferralsList = null;
+        try {
+            ctcSucccessfulReferralsList = clientReferralRepository.getCount(ctcSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Kliniki ya Tiba na matunzo (CTC)",new JSONObject(new Gson().toJson(ctcSucccessfulReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String otherDeseasesSucccessfulReferralsSQL = getReferralSummaryReportSql(false,3,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> otherDeseasesSucccessfulReferralsList = null;
+        try {
+            otherDeseasesSucccessfulReferralsList = clientReferralRepository.getCount(otherDeseasesSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("kituo cha kutoa huduma za afya kutokana na magonjwa nyemelezi",new JSONObject(new Gson().toJson(otherDeseasesSucccessfulReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        String tbSucccessfulReferralsSQL = getReferralSummaryReportSql(false,4,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> tbSucccessfulReferralsList = null;
+        try {
+            tbSucccessfulReferralsList = clientReferralRepository.getCount(tbSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Kliniki ya kutibu kifua kikuu",new JSONObject(new Gson().toJson(tbSucccessfulReferralsList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        String pregnantWomenSucccessfulReferralsSQL = getReferralSummaryReportSql(false,5,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> pregnantWomenSuccessfulReferralsList = null;
+        try {
+            pregnantWomenList = clientReferralRepository.getCount(pregnantWomenSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Wajawazito",new JSONObject(new Gson().toJson(pregnantWomenList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String breastFeedingSucccessfulReferralsSQL = getReferralSummaryReportSql(false,6,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> breastFeedingSuccessfulList = null;
+        try {
+            breastFeedingSuccessfulList = clientReferralRepository.getCount(breastFeedingSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Wanaonyonyesha",new JSONObject(new Gson().toJson(breastFeedingSuccessfulList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String childrenUnder18MonthsSucccessfulReferralsSQL = getReferralSummaryReportSql(false,7,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> childrenUnder18MonthsSuccessfulList = null;
+        try {
+            childrenUnder18MonthsSuccessfulList = clientReferralRepository.getCount(childrenUnder18MonthsSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Watoto<miezi 18 ",new JSONObject(new Gson().toJson(childrenUnder18MonthsSuccessfulList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String circumsicionSucccessfulReferralsSQL = getReferralSummaryReportSql(false,8,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> circumsicionSucccessfulReferralsSuccessfulList = null;
+        try {
+            circumsicionSucccessfulReferralsSuccessfulList = clientReferralRepository.getCount(circumsicionSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Huduma ya tohara ",new JSONObject(new Gson().toJson(circumsicionSucccessfulReferralsSuccessfulList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String gbvSucccessfulReferralsSQL = getReferralSummaryReportSql(false,9,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> gbvSucccessfulReferralsSuccessfulList = null;
+        try {
+            gbvSucccessfulReferralsSuccessfulList = clientReferralRepository.getCount(gbvSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Huduma ya kuzui ukatili wa kijinsia (dawati la jinsia) ",new JSONObject(new Gson().toJson(gbvSucccessfulReferralsSuccessfulList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String lawServicesSucccessfulReferralsSQL = getReferralSummaryReportSql(false,10,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> lawServicesSucccessfulReferralsSuccessfulList = null;
+        try {
+            lawServicesSucccessfulReferralsSuccessfulList = clientReferralRepository.getCount(lawServicesSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Msaada wa kisheria ",new JSONObject(new Gson().toJson(lawServicesSucccessfulReferralsSuccessfulList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String helperGroupsSucccessfulReferralsSQL = getReferralSummaryReportSql(false,11,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> helperGroupsSucccessfulReferralsSuccessfulList = null;
+        try {
+            helperGroupsSucccessfulReferralsSuccessfulList = clientReferralRepository.getCount(helperGroupsSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Vikundi vya kusaidiana ",new JSONObject(new Gson().toJson(helperGroupsSucccessfulReferralsSuccessfulList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String childrenLivingInDangerousAreasSucccessfulReferralsSQL = getReferralSummaryReportSql(false,12,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> childrenLivingInDangerousAreasSucccessfulReferralsSuccessfulList = null;
+        try {
+            childrenLivingInDangerousAreasSucccessfulReferralsSuccessfulList = clientReferralRepository.getCount(childrenLivingInDangerousAreasSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Huduma za watoto wanaoishi katika mazingira hatarishi na yatima ",new JSONObject(new Gson().toJson(childrenLivingInDangerousAreasSucccessfulReferralsSuccessfulList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String otherSucccessfulReferralsSQL = getReferralSummaryReportSql(false,13,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        List<TotalCountObject> otherSucccessfulReferralsSuccessfulList = null;
+        try {
+            otherSucccessfulReferralsSuccessfulList = clientReferralRepository.getCount(otherSucccessfulReferralsSQL,null);
+            issuedSucccessfulReferrals.put("Vituo vya wazee ",new JSONObject(new Gson().toJson(otherSucccessfulReferralsSuccessfulList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            issuedSucccessfulReferrals.put("Jumla ",new JSONObject(new Gson().toJson(otherSucccessfulReferralsSuccessfulList.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            referralSummaryReport.put("Successful Referrals ",issuedSucccessfulReferrals);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         return new ResponseEntity<String>(referralSummaryReport.toString(),HttpStatus.OK);
     }
@@ -770,6 +1060,7 @@ public class ReportController {
     private String getReferralSummaryReportSql(boolean successfulReferrals,long serviceId, String startDate, String endDate){
         return "SELECT COUNT(*) as count FROM "+ClientReferrals.tbName+
                 " WHERE "+
+                (successfulReferrals?ClientReferrals.COL_REFERRAL_STATUS+" = 1 AND ":"")+
                 ClientReferrals.COL_REFERRAL_TYPE+"=1 AND "+
                 ClientReferrals.COL_SERVICE_ID+" = "+serviceId+" AND "+
                 ClientReferrals.COL_REFERRAL_DATE+">='"+startDate+"' AND "+
