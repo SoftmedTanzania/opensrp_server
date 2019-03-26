@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class NumberOfRegisteredHIVByEndOfLastMonthDTO {
+public class MaleFemaleCountObject {
     @JsonProperty
     private int male;
     @JsonProperty

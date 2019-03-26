@@ -1,6 +1,8 @@
 package org.opensrp.repository;
 
+import org.opensrp.domain.ClientRegistrationReason;
 import org.opensrp.domain.ReferralClient;
+import org.opensrp.dto.report.MaleFemaleCountObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -44,6 +46,7 @@ public class ClientsRepository {
 		parameters.put(ReferralClient.COL_CARE_TAKER_NAME , referralClient.getCareTakerName());
 		parameters.put(ReferralClient.COL_CARE_TAKER_PHONE_NUMBER, referralClient.getCareTakerPhoneNumber());
 		parameters.put(ReferralClient.COL_CARE_TAKER_RELATIONSHIP, referralClient.getCareTakerRelationship());
+		parameters.put(ReferralClient.COL_REGISTRATION_REASON, referralClient.getClientRegistrationReason().getRegistrationId());
 		parameters.put(ReferralClient.COL_VEO, referralClient.getVeo());
 		parameters.put(ReferralClient.COL_CREATED_AT , referralClient.getCreatedAt());
 		parameters.put(ReferralClient.COL_UPDATED_AT , referralClient.getCreatedAt());
@@ -77,6 +80,12 @@ public class ClientsRepository {
 			referralClient.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ReferralClient.COL_CREATED_AT)).getTime()));
 			referralClient.setUpdatedAt(new Date(rs.getTimestamp(rs.findColumn(ReferralClient.COL_UPDATED_AT)).getTime()));
 			referralClient.setClientId(rs.getLong(rs.findColumn(ReferralClient.COL_CLIENT_ID)));
+
+			ClientRegistrationReason reason = new ClientRegistrationReason();
+			reason.setRegistrationId(rs.getInt(rs.findColumn(ReferralClient.COL_REGISTRATION_REASON)));
+
+			referralClient.setClientRegistrationReason(reason);
+
 			referralClient.setFirstName(rs.getString(rs.findColumn(ReferralClient.COL_PATIENT_FIRST_NAME)));
 			referralClient.setSurname(rs.getString(rs.findColumn(ReferralClient.COL_PATIENT_SURNAME)));
 			referralClient.setMiddleName(rs.getString(rs.findColumn(ReferralClient.COL_PATIENT_MIDDLE_NAME)));
@@ -94,6 +103,24 @@ public class ClientsRepository {
 			referralClient.setHivStatus(rs.getBoolean(rs.findColumn(ReferralClient.COL_HIV_STATUS)));
 			referralClient.setDateOfDeath(rs.getDate(rs.findColumn(ReferralClient.COL_DATE_OF_DEATH)));
 			return referralClient;
+		}
+
+	}
+
+
+	public List<MaleFemaleCountObject> getMaleFemaleCountReports(String sql, Object[] args) throws Exception {
+		return this.jdbcTemplate.query(sql, args, new ReportObjectRowMapper());
+	}
+
+
+	public class ReportObjectRowMapper implements RowMapper<MaleFemaleCountObject> {
+		public MaleFemaleCountObject mapRow(ResultSet rs, int rowNum) throws SQLException {
+			MaleFemaleCountObject maleFemaleCountObject = new MaleFemaleCountObject();
+
+			maleFemaleCountObject.setMale(rs.getInt(rs.findColumn("Male")));
+			maleFemaleCountObject.setFemale(rs.getInt(rs.findColumn("Female")));
+
+			return maleFemaleCountObject;
 		}
 
 	}

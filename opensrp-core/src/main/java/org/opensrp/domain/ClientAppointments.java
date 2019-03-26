@@ -22,6 +22,8 @@ public class ClientAppointments implements Serializable {
 
 	public static final String COL_APPOINTMENT_TYPE = "appointment_type";
 
+	public static final String COL_FOLLOWUP_REFERRAL_ID = "followup_referral_id";
+
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
@@ -51,6 +53,11 @@ public class ClientAppointments implements Serializable {
 	@ManyToOne
 	@JoinColumn(name=COL_APPOINTMENT_TYPE,referencedColumnName = AppointmentType.COL_ID)
 	private AppointmentType appointmentType;
+
+
+	@ManyToOne
+	@JoinColumn(name=COL_FOLLOWUP_REFERRAL_ID,referencedColumnName = ClientReferrals.COL_REFERRAL_ID)
+	private ClientReferrals clientReferrals;
 
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
@@ -132,5 +139,13 @@ public class ClientAppointments implements Serializable {
 
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public ClientReferrals getClientReferrals() {
+		return clientReferrals;
+	}
+
+	public void setClientReferrals(ClientReferrals clientReferrals) {
+		this.clientReferrals = clientReferrals;
 	}
 }

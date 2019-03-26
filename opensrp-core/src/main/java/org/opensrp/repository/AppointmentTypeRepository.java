@@ -1,7 +1,6 @@
 package org.opensrp.repository;
 
 import org.opensrp.domain.AppointmentType;
-import org.opensrp.domain.AppointmentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
