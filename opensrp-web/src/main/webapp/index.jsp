@@ -78,7 +78,7 @@
             </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a id="id_chw_summary"><i class="fa fa-circle-o"></i>CHW Patients Summary</a></li>
+                        <li><a href="#" id="id_chw_summary"><i class="fa fa-circle-o"></i>CHW Patients Summary</a></li>
                     </ul>
                 </li>
             </ul>
@@ -89,6 +89,8 @@
 
     <%--Content of the page--%>
     <div class="content-wrapper">
+
+        <div id="report_work_space">
             <div class="row">
                 <div class="col-md-12">
 
@@ -96,7 +98,7 @@
                     <div class="box box-warning">
                         <div class="box-header with-border">
 
-                            <div id="report_work_space">
+
 
                             <h4 class="mb-3" align="center">Please select a report to preview.</h4>
 
@@ -104,22 +106,15 @@
 
                         </div>
 
-                    </div>
+
 
                     </section>
 
                 </div>
             </div>
+        </div>
     </div>
 
-
-
-
-
-        <!-- Popup Modal -->
-        <div id="popModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
-            {#        Forms will be rendered in this spot#}
-        </div>
 
     </div>
 
@@ -161,7 +156,8 @@
     //Reporting
     $( "#id_chw_summary" ).on( "click", function( event ) {
 
-        $('#load').load("/chwPatientSummary");
+
+        $('#report_work_space').load("/chwPatientSummary");
 
     });
 

@@ -39,6 +39,53 @@
 </head>
 <body>
 
+<%--Report Filters--%>
+<div class="content-wrapper">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <section class="content">
+                    <div class="box box-warning">
+                        <div class="box-header with-border">
+
+                            <h4 class="mb-3" align="center">This are my filters</h4>
+
+                        </div>
+
+                    </div>
+
+
+
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <%--Report content--%>
+        <div class="row">
+            <div class="col-md-12">
+
+                <section class="content">
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+
+
+                            <h4 class="mb-3" align="center">Jasper report instance.</h4>
+
+                        </div>
+
+                    </div>
+
+
+
+                </section>
+
+            </div>
+        </div>
+    </div>
+
 
 <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery-3.2.1.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/vendor/animsition/js/animsition.min.js"></script>
