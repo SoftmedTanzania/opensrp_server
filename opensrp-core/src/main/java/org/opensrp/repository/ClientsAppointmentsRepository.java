@@ -1,9 +1,6 @@
 package org.opensrp.repository;
 
-import org.opensrp.domain.AppointmentType;
-import org.opensrp.domain.HealthFacilitiesReferralClients;
-import org.opensrp.domain.ClientAppointments;
-import org.opensrp.domain.Status;
+import org.opensrp.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -30,8 +27,9 @@ public class ClientsAppointmentsRepository {
 				ClientAppointments.COL_IS_CANCELLED + "," +
 				ClientAppointments.COL_STATUS + "," +
 				ClientAppointments.COL_APPOINTMENT_TYPE + "," +
+				ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + "," +
 				ClientAppointments.COL_UPDATED_AT + "," +
-				ClientAppointments.COL_CREATED_AT + ") values (?,?,?,?,?,?,?) ";
+				ClientAppointments.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?) ";
 
 		Object[] params = new Object[] {
 				clientAppointments.getHealthFacilitiesReferralClients().getHealthFacilityClientId(),
@@ -39,6 +37,7 @@ public class ClientsAppointmentsRepository {
 				clientAppointments.getIsCancelled(),
 				clientAppointments.getStatus(),
 				clientAppointments.getAppointmentType(),
+				clientAppointments.getClientReferrals().getId(),
 				clientAppointments.getUpdatedAt(),
 				clientAppointments.getCreatedAt() };
 
@@ -47,6 +46,7 @@ public class ClientsAppointmentsRepository {
 				Types.DATE,
 				Types.BOOLEAN,
 				Types.VARCHAR,
+				Types.INTEGER,
 				Types.INTEGER,
 				Types.DATE,
 				Types.TIMESTAMP };
@@ -98,6 +98,9 @@ public class ClientsAppointmentsRepository {
 
 			AppointmentType appointmentType = new AppointmentType();
 			appointmentType.setId(rs.getInt(rs.findColumn(ClientAppointments.COL_APPOINTMENT_TYPE)));
+
+			ClientReferrals clientReferrals = new ClientReferrals();
+			clientReferrals.setId(rs.getLong(rs.findColumn(ClientAppointments.COL_FOLLOWUP_REFERRAL_ID)));
 
 			clientAppointments.setAppointmentType(appointmentType);
 			clientAppointments.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ClientAppointments.COL_CREATED_AT)).getTime()));
