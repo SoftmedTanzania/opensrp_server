@@ -1,8 +1,14 @@
-<!doctype html>
-<html lang="en">
-
+<%--
+  Created by IntelliJ IDEA.
+  User: Anonymous
+  Date: 2019-03-26
+  Time: 14:36
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
 <head>
-    <title>OpenSrp WebApp</title>
+    <title>CHW Patient Summary</title>
     <base href="/opensrp">
     <meta charset="UTF-8">
 
@@ -30,103 +36,8 @@
     <link href="${pageContext.request.contextPath}/resources/Dashboard_Files/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css"/>
     <link href="${pageContext.request.contextPath}/resources/Dashboard_Files/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet"
           type="text/css"/>
-
 </head>
-
-<body class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
-
-    <header class="main-header">
-
-        <!-- Logo -->
-        <a class="logo" href="#">
-            <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>O</b>SRP</span>
-            <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>OpenSRP</b>Dashboard</span>
-        </a>
-
-        <!-- Header Navbar: style can be found in header.less -->
-        <nav class="navbar navbar-static-top">
-            <!-- Sidebar toggle button-->
-            <a class="sidebar-toggle" data-toggle="push-menu" href="#" role="button">
-                <span class="sr-only">Toggle navigation</span>
-            </a>
-        </nav>
-    </header>
-
-    <!-- Left side column. contains the logo and sidebar -->
-    <aside class="main-sidebar">
-        <!-- sidebar: style can be found in sidebar.less -->
-        <section class="sidebar">
-            <!-- Sidebar user panel -->
-            <div class="user-panel">
-                <div class="pull-left image">
-                </div>
-            </div>
-
-            <!-- sidebar menu: : style can be found in sidebar.less -->
-            <ul class="sidebar-menu" data-widget="tree">
-                <li class="header">MAIN NAVIGATION</li>
-
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-laptop"></i>
-                        <span>Reporting</span>
-                        <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a id="id_chw_summary"><i class="fa fa-circle-o"></i>CHW Patients Summary</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
-        <!-- /.sidebar -->
-    </aside>
-
-
-    <%--Content of the page--%>
-    <div class="content-wrapper">
-            <div class="row">
-                <div class="col-md-12">
-
-                    <section class="content">
-                    <div class="box box-warning">
-                        <div class="box-header with-border">
-
-                            <div id="report_work_space">
-
-                            <h4 class="mb-3" align="center">Please select a report to preview.</h4>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    </section>
-
-                </div>
-            </div>
-    </div>
-
-
-
-
-
-        <!-- Popup Modal -->
-        <div id="popModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
-            {#        Forms will be rendered in this spot#}
-        </div>
-
-    </div>
-
-
-
-<!--Scripts -->
-
+<body>
 
 
 <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -155,17 +66,6 @@
         type="text/javascript"></script>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-
-<script>
-
-    //Reporting
-    $( "#id_chw_summary" ).on( "click", function( event ) {
-
-        $('#load').load("/chwPatientSummary");
-
-    });
-
-</script>
 
 </body>
 </html>
