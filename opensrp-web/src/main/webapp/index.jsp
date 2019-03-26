@@ -12,7 +12,6 @@
 <link href="${pageContext.request.contextPath}/resources/css/util.css" rel="stylesheet" type="text/css"/>
 <link href="${pageContext.request.contextPath}/resources/css/custom.css" rel="stylesheet" type="text/css"/>
 
-
 <link href="${pageContext.request.contextPath}/resources/Dashboard_Files/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet"
       type="text/css"/>
 <link href="${pageContext.request.contextPath}/resources/Dashboard_Files/bower_components/Ionicons/css/ionicons.min.css" rel="stylesheet"
