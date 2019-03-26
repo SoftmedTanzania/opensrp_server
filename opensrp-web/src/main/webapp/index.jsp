@@ -1,6 +1,7 @@
 <!doctype html>
-<html>
+<html lang="en">
 
+<head>
 <title>OpenSrp WebApp</title>
 <base href="/opensrp">
 <meta charset="UTF-8">
@@ -19,6 +20,7 @@
 <link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="${pageContext.request.contextPath}/resources/css/util.css" rel="stylesheet" type="text/css"/>
 
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
 <link href="${pageContext.request.contextPath}/resources/Dashboard_Files/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet"
       type="text/css"/>
@@ -31,13 +33,9 @@
 <link href="${pageContext.request.contextPath}/resources/Dashboard_Files/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet"
       type="text/css"/>
 
-
+</head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-
-<a href="http://23.92.25.157:8081/jasperserver/flow.html?_flowId=viewReportFlow
-  &_flowId=viewReportFlow&ParentFolderUri=/reports&reportUnit=/reports/test&standAlone=true">CHW Patients Summary</a>
-
 <div class="wrapper">
 
     <header class="main-header">
@@ -81,14 +79,61 @@
             </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-circle-o"></i>CHW Patients Summary</a></li>
+                        <li><a href="http://23.92.25.157:8081/jasperserver/flow.html?_flowId=viewReportFlow
+                            &_flowId=viewReportFlow&ParentFolderUri=/reports&reportUnit=/reports/test&standAlone=true"><i class="fa fa-circle-o"></i>CHW Patients Summary</a></li>
                     </ul>
                 </li>
             </ul>
         </section>
         <!-- /.sidebar -->
     </aside>
+
 </div>
+
+<%--Content of the page--%>
+<div class="content-wrapper">
+
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="mb-3" align="center">CHW Patient Summary Report</h2>
+
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+
+                        <div id="id_spinner"  class="spinner modal fade" role="dialog" hidden >
+                            <div class="modal-dialog">
+
+                                <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Popup Modal -->
+    <div id="popModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+        {#        Forms will be rendered in this spot#}
+    </div>
+
+</div>
+
 
 <!--Scripts -->
 
@@ -124,5 +169,4 @@
 
 
 </body>
-
 </html>
