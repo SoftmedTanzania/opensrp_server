@@ -75,8 +75,13 @@ public class ActionController {
 	}
 
 	@Controller
-	@RequestMapping("/chwPatientSummary")
-	public class StudentAdmissionController{
+	@RequestMapping("/chwpatientsummary")
+	public class ChwPatientSummaryController{
+
+		public ChwPatientSummaryController()
+		{
+
+		}
 
 		@RequestMapping(method = RequestMethod.GET)
 		public String chwPatientSummary() {
