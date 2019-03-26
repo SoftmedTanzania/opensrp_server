@@ -589,7 +589,6 @@ public class ReportController {
         }
 
 
-        //TODO reimplement this in a more elegant and efficient way
         String totalLTFsReferrals = getLTFCountsReportSQL(0, firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
 
         JSONObject ltfReferrals = new JSONObject();
@@ -611,21 +610,21 @@ public class ReportController {
         List<AppointmentType> appointmentTypes = null;
         try {
             appointmentTypes = appointmentTypeRepository.getAppointmentTypes("Select * from " + AppointmentType.tbName, null);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        for(int i=1;i<15;i++){
+        for (int i = 1; i < 15; i++) {
             List<TotalCountObject> objectList = null;
             try {
                 String sqlString = getLTFCountsReportSQL(i, firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
                 objectList = clientsAppointmentsRepository.getCount(sqlString, null);
-                ltfReferrals.put(appointmentTypes.get(i-1).getName(), objectList.get(0).getCount());
+                ltfReferrals.put(appointmentTypes.get(i - 1).getName(), objectList.get(0).getCount());
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
-                    ltfReferrals.put(appointmentTypes.get(i-1).getName(), 0);
+                    ltfReferrals.put(appointmentTypes.get(i - 1).getName(), 0);
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                 }
@@ -653,12 +652,12 @@ public class ReportController {
 
         List<ReferralFeedback> referralFeedbacks = null;
         try {
-            referralFeedbacks = referralFeedbackRepository.getReferralFeedback("SELECT * FROM "+ ReferralFeedback.tbName,null);
+            referralFeedbacks = referralFeedbackRepository.getReferralFeedback("SELECT * FROM " + ReferralFeedback.tbName, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        for(ReferralFeedback referralFeedback:referralFeedbacks){
+        for (ReferralFeedback referralFeedback : referralFeedbacks) {
             String foundLTFSQL = getLTFFollowupReportSQL(referralFeedback.getId(), firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
 
             List<TotalCountObject> foundLTFSList = null;
@@ -684,23 +683,23 @@ public class ReportController {
         List<ReferralService> allReferralServices = null;
         try {
             allReferralServices = referralServiceRepository.getReferralServices("Select * from " + ReferralService.tbName, null);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         int totalIssuedReferrals = 0;
-       for(int i=1;i<14;i++) {
+        for (int i = 1; i < 14; i++) {
 
-           String serviceReferralsSQL = getReferralSummaryReportSql(false, allReferralServices.get(i-1).getServiceId(), firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
-           List<TotalCountObject> serviceReferralsList = null;
-           try {
-               serviceReferralsList = clientReferralRepository.getCount(serviceReferralsSQL, null);
-               issuedReferrals.put(allReferralServices.get(i-1).getServiceNameSw(), serviceReferralsList.get(0).getCount());
-               totalIssuedReferrals+=serviceReferralsList.get(0).getCount();
-           } catch (Exception e) {
-               e.printStackTrace();
-           }
-       }
+            String serviceReferralsSQL = getReferralSummaryReportSql(false, allReferralServices.get(i - 1).getServiceId(), firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+            List<TotalCountObject> serviceReferralsList = null;
+            try {
+                serviceReferralsList = clientReferralRepository.getCount(serviceReferralsSQL, null);
+                issuedReferrals.put(allReferralServices.get(i - 1).getServiceNameSw(), serviceReferralsList.get(0).getCount());
+                totalIssuedReferrals += serviceReferralsList.get(0).getCount();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
 
         try {
@@ -719,14 +718,14 @@ public class ReportController {
         //successful referrals
         JSONObject succcessfulReferrals = new JSONObject();
 
-        int totalSuccessfulReferrals=0;
-        for(int i=1;i<14;i++) {
-            String successfulReferralsSQL = getReferralSummaryReportSql(false, allReferralServices.get(i-1).getServiceId(), firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        int totalSuccessfulReferrals = 0;
+        for (int i = 1; i < 14; i++) {
+            String successfulReferralsSQL = getReferralSummaryReportSql(false, allReferralServices.get(i - 1).getServiceId(), firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
             List<TotalCountObject> successfulReferralsList = null;
             try {
                 successfulReferralsList = clientReferralRepository.getCount(successfulReferralsSQL, null);
-                succcessfulReferrals.put(allReferralServices.get(i-1).getServiceNameSw(), successfulReferralsList.get(0).getCount());
-                totalSuccessfulReferrals+=successfulReferralsList.get(0).getCount();
+                succcessfulReferrals.put(allReferralServices.get(i - 1).getServiceNameSw(), successfulReferralsList.get(0).getCount());
+                totalSuccessfulReferrals += successfulReferralsList.get(0).getCount();
             } catch (Exception e) {
                 e.printStackTrace();
             }
