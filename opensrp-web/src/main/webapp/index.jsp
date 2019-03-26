@@ -99,7 +99,6 @@
                             <div class="box-header with-border">
 
 
-
                                 <h4 class="mb-3" align="center">Please select a report to preview.</h4>
 
                             </div>
@@ -152,7 +151,10 @@
     $( "#id_chw_summary" ).on( "click", function( event ) {
 
 
-        $('#report_work_space').load("/opensrp/chwpatientsummary");
+        // $('#report_work_space').load("/opensrp/chwpatientsummary");
+
+        document.getElementById("report_work_space").innerHTML='<object type="text/html" ' +
+            'data="/opensrp/chwpatientsummary" width="100%"  />';
 
     });
 
