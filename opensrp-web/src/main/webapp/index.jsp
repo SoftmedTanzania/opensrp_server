@@ -78,7 +78,7 @@
             </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#" id="id_chw_summary"><i class="fa fa-circle-o"></i>CHW Patients Summary</a></li>
+                        <li><a href="javascript:void(0)" id="id_chw_summary"><i class="fa fa-circle-o"></i>CHW Patients Summary</a></li>
                     </ul>
                 </li>
             </ul>
@@ -151,10 +151,10 @@
     $( "#id_chw_summary" ).on( "click", function( event ) {
 
 
-        // $('#report_work_space').load("/opensrp/chwpatientsummary");
+        $('#report_work_space').load("/opensrp/chwpatientsummary");
 
-        document.getElementById("report_work_space").innerHTML='<object type="text/html" ' +
-            'data="/opensrp/chwpatientsummary" width="100%"  />';
+        // document.getElementById("report_work_space").innerHTML='<object type="text/html" ' +
+        //     'data="/opensrp/chwpatientsummary" width="100%"  />';
 
     });
 
