@@ -596,6 +596,33 @@ public class ReportController {
                 e1.printStackTrace();
             }
         }
+        List<TotalCountObject> tb = null;
+        try {
+            String tbLTFsReferrals = getLTFCountsReportSQL(2,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+            tb = clientsAppointmentsRepository.getCount(tbLTFsReferrals,null);
+            ltfReferrals.put("TB",new JSONObject(new Gson().toJson(tb.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                ltfReferrals.put("PMTCT",0);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        List<TotalCountObject> drugClinic = null;
+        try {
+            String drugClinicLTFsReferrals = getLTFCountsReportSQL(2,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+            drugClinic = clientsAppointmentsRepository.getCount(drugClinicLTFsReferrals,null);
+            ltfReferrals.put("Drug",new JSONObject(new Gson().toJson(drugClinic.get(0))));
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                ltfReferrals.put("Drug",0);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+        }
 
         try {
             referralSummaryReport.put("Total LTF",ltfReferrals);
@@ -698,9 +725,6 @@ public class ReportController {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
 
 
 
