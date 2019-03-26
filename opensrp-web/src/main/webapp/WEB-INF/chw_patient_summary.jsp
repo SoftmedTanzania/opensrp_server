@@ -40,8 +40,6 @@
 <body>
 
 <%--Report Filters--%>
-<div class="content-wrapper">
-
         <div class="row">
             <div class="col-md-12">
 
@@ -84,8 +82,6 @@
 
             </div>
         </div>
-    </div>
-
 
 <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery-3.2.1.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/vendor/animsition/js/animsition.min.js"></script>
