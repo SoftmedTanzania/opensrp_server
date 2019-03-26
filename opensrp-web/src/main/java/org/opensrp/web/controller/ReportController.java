@@ -370,7 +370,12 @@ public class ReportController {
 
         System.out.println("Months first date in yyyy-mm-dd: " + firstDateOfTheMonth.withDayOfMonth(1));
         String previousMonthRegistrations = generateRegistationReportSql("1970-01-01", firstDateOfTheMonth.withDayOfMonth(1).toString(), "", "",0);
-        List<MaleFemaleCountObject> accumulativeTotalPreviousMonthsRegistrations= clientsRepository.getMaleFemaleCountReports(previousMonthRegistrations,null);
+        List<MaleFemaleCountObject> accumulativeTotalPreviousMonthsRegistrations= null;
+        try {
+            accumulativeTotalPreviousMonthsRegistrations = clientsRepository.getMaleFemaleCountReports(previousMonthRegistrations,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         System.out.println("reports accumulative total = "+new Gson().toJson(accumulativeTotalPreviousMonthsRegistrations));
 
