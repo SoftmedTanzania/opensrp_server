@@ -151,9 +151,11 @@
     $( "#id_chw_summary" ).on( "click", function( event ) {
 
 
+        $("#id_spinner").modal("show");
+
         $('#report_work_space').load("/opensrp/chwpatientsummary");
 
-
+        $("#id_spinner").modal("hide");
 
     });
 

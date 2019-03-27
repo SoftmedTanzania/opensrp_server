@@ -138,7 +138,9 @@
 
         $("#id_spinner").modal("show");
 
-        $('#render_jasper_response').load("/chwsummaryjasperreport");
+        $('#render_jasper_response').load("/opensrp/chwsummaryjasperreport");
+
+        window.open("/opensrp/chwsummaryjasperreport");
 
 
         $("#id_spinner").modal("hide");
