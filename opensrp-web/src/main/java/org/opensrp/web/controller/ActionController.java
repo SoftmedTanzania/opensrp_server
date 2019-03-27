@@ -38,7 +38,7 @@ import com.google.gson.Gson;
 import ch.lambdaj.function.convert.Converter;
 
 @Controller
-public class ActionController extends CorsCommon{
+public class ActionController {
 	private static org.slf4j.Logger logger = LoggerFactory.getLogger(ActionController.class.toString());
 
 	private ActionService actionService;
@@ -85,7 +85,8 @@ public class ActionController extends CorsCommon{
 
 	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
 	public ResponseEntity<Object> redirectToExternalUrl() throws URISyntaxException {
-		URI uri = new URI("http://23.92.25.157:8081/jasperserver/");
+		URI uri = new URI("http://23.92.25.157:8081/jasperserver/flow.html?_flowId=viewReportFlow\" +\n" +
+				"            \"&_flowId=viewReportFlow&ParentFolderUri=%2Freports&reportUnit=%2Freports%2FChwPatientSummaryReport&standAlone=true");
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setLocation(uri);
 		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
