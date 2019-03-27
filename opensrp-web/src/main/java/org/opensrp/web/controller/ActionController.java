@@ -5,6 +5,8 @@ import static org.opensrp.common.AllConstants.Event.PROVIDER_ID;
 import static org.opensrp.web.rest.RestUtils.getIntegerFilter;
 import static org.opensrp.web.rest.RestUtils.getStringFilter;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.opensrp.scheduler.repository.AllAlerts;
 import org.opensrp.scheduler.service.ActionService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -35,7 +38,7 @@ import com.google.gson.Gson;
 import ch.lambdaj.function.convert.Converter;
 
 @Controller
-public class ActionController {
+public class ActionController extends CorsCommon{
 	private static org.slf4j.Logger logger = LoggerFactory.getLogger(ActionController.class.toString());
 
 	private ActionService actionService;
@@ -78,6 +81,17 @@ public class ActionController {
 	String chwPatientSummary() {
 		return("chw_patient_summary");
 	}
+
+
+	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
+	public ResponseEntity<Object> redirectToExternalUrl() throws URISyntaxException {
+		URI uri = new URI("http://23.92.25.157:8081/jasperserver/");
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setLocation(uri);
+		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+	}
+
+
 
 	@RequestMapping(method = RequestMethod.GET, value = "/alert_delete")
 	@ResponseBody
