@@ -55,14 +55,6 @@
         </nav>
     </header>
 
-    <div id="id_spinner"  class="spinner modal fade" role="dialog" hidden >
-        <div class="modal-dialog">
-
-            <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
@@ -158,12 +150,10 @@
     //Reporting
     $( "#id_chw_summary" ).on( "click", function( event ) {
 
-        $("#id_spinner").modal("show");
 
         $('#report_work_space').load("/opensrp/chwpatientsummary");
 
 
-        $("#id_spinner").modal("hide");
 
     });
 

@@ -40,27 +40,27 @@
 <body>
 
 <%--Report Filters--%>
+<section class="content">
 <div class="row">
     <div class="col-md-12">
-
-        <section class="content">
             <div class="box box-warning">
                 <div class="box-header with-border">
+                    <h5 class="box-title">Filters</h5><br /><br />
 
                     <div class="col-md-12">
 
-                        <div class="col-md-4">
-                            <input type="text" id="dp1" class="span2 datepicker" placeholder="Date..."
+                        <div class="col-md-2">
+                            <input type="text" id="dp1" class="span2 datepicker" placeholder="Date From"
                                    name="date">
                         </div>
 
-                        <div class="col-md-4">
-                            <input type="text" id="dp2" class="span2 datepicker" placeholder="Date..."
+                        <div class="col-md-2">
+                            <input type="text" id="dp2" class="span2 datepicker" placeholder="Date To"
                                    name="date">
                         </div>
 
 
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <button id="btn_filter_records" class="btn btn-primary">Filter Records</button>
                         </div>
 
@@ -72,19 +72,15 @@
             </div>
 
 
-
-        </section>
-
     </div>
 </div>
 
 <%--Report content--%>
 <div class="row">
     <div class="col-md-12">
-
-        <section class="content">
             <div class="box box-success">
                 <div class="box-header with-border">
+
 
                     <div id="render_jasper_response">
 
@@ -94,13 +90,11 @@
                 </div>
 
             </div>
-
-
-
-        </section>
-
     </div>
+
 </div>
+
+</section>
 
 <script src="${pageContext.request.contextPath}/resources/vendor/jquery/jquery-3.2.1.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/vendor/animsition/js/animsition.min.js"></script>
@@ -130,24 +124,27 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 
 <script>
-    $("btn_filter_records").on("click", function (events) {
 
+    $(function(){
+        $('.datepicker').datepicker({
+            format: 'mm-dd-yyyy',
+            showOn: "button",
+            buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+            buttonImageOnly: true
+        });
+    });
+
+    $("#btn_filter_records").on("click", function (events) {
 
         $("#id_spinner").modal("show");
 
-        $('#render_jasper_response').load("http://23.92.25.157:8081/jasperserver/flow.html?_flowId=viewReportFlow" +
-            "&_flowId=viewReportFlow&ParentFolderUri=%2Freports&reportUnit=%2Freports%2FChwPatientSummaryReport&standAlone=true");
+        $('#render_jasper_response').load("/chwsummaryjasperreport");
 
 
         $("#id_spinner").modal("hide");
 
     })
 
-    $(function(){
-        $('.datepicker').datepicker({
-            format: 'mm-dd-yyyy'
-        });
-    });
 
 </script>
 
