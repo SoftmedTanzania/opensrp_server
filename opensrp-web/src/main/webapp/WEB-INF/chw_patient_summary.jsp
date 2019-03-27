@@ -140,7 +140,6 @@
 
         $('#render_jasper_response').load("/opensrp/chwsummaryjasperreport");
 
-
         $("#id_spinner").modal("hide");
 
     })
