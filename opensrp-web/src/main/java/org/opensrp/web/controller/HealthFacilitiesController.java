@@ -73,9 +73,7 @@ public class HealthFacilitiesController {
     public ResponseEntity<HttpStatus> saveHealthFacility(@RequestBody String json) {
         try {
             System.out.println("Coze:save health facility");
-             HealthFacilitiesDTO healthFacilitiesDTOS = new Gson().fromJson(json, new TypeToken<List<HealthFacilitiesDTO>>() {}.getType());
-
-
+            HealthFacilitiesDTO healthFacilitiesDTOS = new Gson().fromJson(json, new TypeToken<List<HealthFacilitiesDTO>>() {}.getType());
             scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, healthFacilitiesDTOS));
 
             HealthFacilities healthFacility =  HealthFacilitiesConverter.toHealthFacilities(healthFacilitiesDTOS);
