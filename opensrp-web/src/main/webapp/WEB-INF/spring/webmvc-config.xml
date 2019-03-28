@@ -25,12 +25,12 @@
                    cache-period="10000" />
 
 
-    <!--<mvc:interceptors>-->
-        <!--<mvc:interceptor>-->
-            <!--<mvc:mapping path="/report" />-->
-            <!--<bean class="org.opensrp.web.cros.Spring3CorsFilterHandlerInterceptor"></bean>-->
-        <!--</mvc:interceptor>-->
-    <!--</mvc:interceptors>-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/report" />
+            <bean class="org.opensrp.web.cros.Spring3CorsFilterHandlerInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 
     <mvc:default-servlet-handler/>

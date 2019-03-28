@@ -16,6 +16,8 @@ public class Spring3CorsFilterHandlerInterceptor extends HandlerInterceptorAdapt
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
             Exception {
 
+
+        System.out.println("COR : handler called");
         if (handler instanceof HandlerMethod) {
             System.out.println("COR : Spring3CorsFilterHandlerInterceptor");
             HandlerMethod handlerMethod = (HandlerMethod) handler;
