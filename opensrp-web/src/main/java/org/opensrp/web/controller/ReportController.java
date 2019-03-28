@@ -385,6 +385,17 @@ public class ReportController {
         LocalDate firstDateOfTheMonth = LocalDate.now();
         JSONObject referralSummaryReport = new JSONObject();
 
+        try {
+            referralSummaryReport.put("organisation",new JSONObject("{\n" +
+                    "      \"organisation_name\": \"HOSPITALI YA MANISPAA YA MOROGORO\",\n" +
+                    "      \"organisation_email\": \"dsh@gmail.com\",\n" +
+                    "      \"organisation_tel\": \"0789-121 321\",\n" +
+                    "      \"organisation_address\": \"Morogoro\"\n" +
+                    "    }"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         String previousMonthRegistrations = generateRegistationReportSql("1970-01-01", firstDateOfTheMonth.withDayOfMonth(1).toString(), "", "", 0);
 
         System.out.println("previousMonthRegistrations SQL " + previousMonthRegistrations);
