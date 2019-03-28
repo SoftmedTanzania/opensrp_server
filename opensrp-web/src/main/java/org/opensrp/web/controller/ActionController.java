@@ -79,10 +79,7 @@ public class ActionController {
 		});
 	}
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 9f93c29597bdd7bbbe1a86867ffb42e9d921c7ef
 	@RequestMapping("/chwpatientsummary")
 	String chwPatientSummary() {
 		return("chw_patient_summary");
@@ -90,26 +87,20 @@ public class ActionController {
 
 
 	@Spring3CorsFilter
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 950c950993ab03c202da5992d28b876b2cc625bb
 	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
 	public ResponseEntity<Object> redirectToExternalUrl() throws URISyntaxException {
 		URI uri = new URI("http://23.92.25.157:8081/jasperserver/");
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setLocation(uri);
 		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
-<<<<<<< HEAD
-=======
-	@RequestMapping(value = "/chwsummaryjasperreport", method = RequestMethod.GET)
-	public void method(HttpServletResponse httpServletResponse) {
-		httpServletResponse.addHeader("Location", "http://23.92.25.157:8081/jasperserver/");
-		httpServletResponse.setStatus(302);
->>>>>>> 9f93c29597bdd7bbbe1a86867ffb42e9d921c7ef
-=======
->>>>>>> 950c950993ab03c202da5992d28b876b2cc625bb
 	}
+
+
+//	@RequestMapping(value = "/chwsummaryjasperreport", method = RequestMethod.GET)
+//	public void method(HttpServletResponse httpServletResponse) {
+//		httpServletResponse.addHeader("Location", "http://23.92.25.157:8081/jasperserver/");
+//		httpServletResponse.setStatus(302);
+//	}
 
 
 
