@@ -1,5 +1,6 @@
 package org.opensrp.web.cros;
 
+import com.google.gson.Gson;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -26,10 +27,14 @@ public class Spring3CorsFilterHandlerInterceptor extends HandlerInterceptorAdapt
             if (filter != null ) {
                 System.out.println("COR : filtering headers");
                 // ... do the filtering
-                response.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
-                response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-                response.setHeader("Access-Control-Max-Age", "3600");
-                response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+                response.addHeader("Access-Control-Allow-Origin", "*");
+                response.addHeader("Access-Control-Allow-Methods", "POST, GET, HEAD,PUT, OPTIONS, DELETE");
+                response.addHeader("Access-Control-Max-Age", "3600");
+                response.addHeader("Access-Control-Allow-Headers", "x-requested-with");
+                response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+
+                System.out.println("COR : response = "+new Gson().toJson(response));
+
             }
         }
         return true;
