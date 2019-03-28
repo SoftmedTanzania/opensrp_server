@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.opensrp.web.cros.Spring3CorsFilter;
+import org.opensrp.web.cors.Spring3CorsFilter;
 
 import com.google.gson.Gson;
 
@@ -78,7 +78,6 @@ public class ActionController {
 		});
 	}
 
-	@Spring3CorsFilter
 	@RequestMapping("/chwpatientsummary")
 	String chwPatientSummary() {
 		return("chw_patient_summary");
@@ -86,6 +85,7 @@ public class ActionController {
 
 
 
+	@Spring3CorsFilter
 	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
 	public ResponseEntity<Object> redirectToExternalUrl() throws URISyntaxException {
 		URI uri = new URI("http://23.92.25.157:8081/jasperserver/");

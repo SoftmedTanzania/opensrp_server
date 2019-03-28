@@ -25,7 +25,7 @@
                    cache-period="10000" />
 
     <mvc:interceptors>
-        <bean class="org.opensrp.web.cros.Spring3CorsFilterHandlerInterceptor" />
+        <bean class="org.opensrp.web.cors.Spring3CorsFilterHandlerInterceptor" />
     </mvc:interceptors>
 
     <mvc:default-servlet-handler/>

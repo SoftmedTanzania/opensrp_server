@@ -1,4 +1,4 @@
-package org.opensrp.web.cros;
+package org.opensrp.web.cors;
 
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
