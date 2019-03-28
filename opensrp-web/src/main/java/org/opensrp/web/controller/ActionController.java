@@ -38,7 +38,7 @@ import com.google.gson.Gson;
 import ch.lambdaj.function.convert.Converter;
 
 @Controller
-public class ActionController extends CorsCommon {
+public class ActionController {
 	private static org.slf4j.Logger logger = LoggerFactory.getLogger(ActionController.class.toString());
 
 	private ActionService actionService;
