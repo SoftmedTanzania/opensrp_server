@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.opensrp.common.AllConstants.BaseEntity;
@@ -95,10 +96,10 @@ public class ActionController {
 //	}
 
 	@Spring3CorsFilter
-	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
-	public String redirectToExternalUrl(HttpServletRequest request) throws URISyntaxException {
-		String redirectUrl = request.getScheme() + "://23.92.25.157:8081/jasperserver/";
-		return "redirect:" + redirectUrl;
+	@RequestMapping(value = "/chwsummaryjasperreport", method = RequestMethod.GET)
+	public void method(HttpServletResponse httpServletResponse) {
+		httpServletResponse.addHeader("Location", "http://23.92.25.157:8081/jasperserver/");
+		httpServletResponse.setStatus(302);
 	}
 
 
