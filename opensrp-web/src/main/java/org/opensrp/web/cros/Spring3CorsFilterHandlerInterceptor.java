@@ -21,6 +21,7 @@ public class Spring3CorsFilterHandlerInterceptor extends HandlerInterceptorAdapt
             // Test if the controller-method is annotated with @Spring3CORSFilter
             Spring3CorsFilter filter = handlerMethod.getMethod().getAnnotation(Spring3CorsFilter.class);
             if (filter != null ) {
+                System.out.println("COR : filtering headers");
                 // ... do the filtering
                 response.setHeader("Access-Control-Allow-Origin", "*");
                 response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
