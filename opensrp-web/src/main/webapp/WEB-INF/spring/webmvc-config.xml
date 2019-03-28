@@ -27,7 +27,7 @@
 
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/" />
+            <mvc:mapping path="/report" />
             <bean class="org.opensrp.web.cros.Spring3CorsFilterHandlerInterceptor"></bean>
         </mvc:interceptor>
     </mvc:interceptors>
