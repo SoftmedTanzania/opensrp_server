@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.opensrp.common.AllConstants.BaseEntity;
@@ -79,11 +78,11 @@ public class ActionController {
 		});
 	}
 
-
 	@RequestMapping("/chwpatientsummary")
 	String chwPatientSummary() {
 		return("chw_patient_summary");
 	}
+
 
 
 	@Spring3CorsFilter
@@ -94,13 +93,6 @@ public class ActionController {
 		httpHeaders.setLocation(uri);
 		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
 	}
-
-
-//	@RequestMapping(value = "/chwsummaryjasperreport", method = RequestMethod.GET)
-//	public void method(HttpServletResponse httpServletResponse) {
-//		httpServletResponse.addHeader("Location", "http://23.92.25.157:8081/jasperserver/");
-//		httpServletResponse.setStatus(302);
-//	}
 
 
 
