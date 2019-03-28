@@ -97,7 +97,7 @@ public class ActionController {
 	@Spring3CorsFilter
 	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
 	public String redirectToExternalUrl(HttpServletRequest request) throws URISyntaxException {
-		String redirectUrl = request.getScheme() + "://www.google.com";
+		String redirectUrl = request.getScheme() + "://23.92.25.157:8081/jasperserver/";
 		return "redirect:" + redirectUrl;
 	}
 
