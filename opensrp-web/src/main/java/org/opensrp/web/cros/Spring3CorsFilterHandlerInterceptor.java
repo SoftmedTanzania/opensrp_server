@@ -33,8 +33,6 @@ public class Spring3CorsFilterHandlerInterceptor extends HandlerInterceptorAdapt
                 response.addHeader("Access-Control-Allow-Headers", "x-requested-with");
                 response.addHeader("Access-Control-Allow-Headers", "Content-Type");
 
-                System.out.println("COR : response = "+new Gson().toJson(response));
-
             }
         }
         return true;
