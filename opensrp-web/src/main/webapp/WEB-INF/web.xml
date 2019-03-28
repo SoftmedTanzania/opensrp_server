@@ -87,7 +87,7 @@
 
     <servlet-mapping>
         <servlet-name>opensrp</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
     <session-config>
