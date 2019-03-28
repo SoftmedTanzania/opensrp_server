@@ -1,6 +1,5 @@
 package org.opensrp.web.controller;
 
-
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
