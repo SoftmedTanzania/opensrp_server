@@ -86,20 +86,13 @@ public class ActionController {
 	}
 
 
-//	@Spring3CorsFilter
-//	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
-//	public ResponseEntity<Object> redirectToExternalUrl() throws URISyntaxException {
-//		URI uri = new URI("http://23.92.25.157:8081/jasperserver/");
-//		HttpHeaders httpHeaders = new HttpHeaders();
-//		httpHeaders.setLocation(uri);
-//		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
-//	}
-
 	@Spring3CorsFilter
-	@RequestMapping(value = "/chwsummaryjasperreport", method = RequestMethod.GET)
-	public void method(HttpServletResponse httpServletResponse) {
-		httpServletResponse.addHeader("Location", "http://23.92.25.157:8081/jasperserver/");
-		httpServletResponse.setStatus(302);
+	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
+	public ResponseEntity<Object> redirectToExternalUrl() throws URISyntaxException {
+		URI uri = new URI("http://23.92.25.157:8081/jasperserver/");
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setLocation(uri);
+		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
 	}
 
 
