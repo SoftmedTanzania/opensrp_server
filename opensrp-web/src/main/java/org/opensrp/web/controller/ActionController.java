@@ -78,14 +78,14 @@ public class ActionController {
 		});
 	}
 
-	@Spring3CorsFilter
+
 	@RequestMapping("/chwpatientsummary")
 	String chwPatientSummary() {
 		return("chw_patient_summary");
 	}
 
 
-
+	@Spring3CorsFilter
 	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
 	public ResponseEntity<Object> redirectToExternalUrl() throws URISyntaxException {
 		URI uri = new URI("http://23.92.25.157:8081/jasperserver/");
