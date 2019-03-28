@@ -26,7 +26,7 @@ public class Spring3CorsFilterHandlerInterceptor extends HandlerInterceptorAdapt
             if (filter != null ) {
                 System.out.println("COR : filtering headers");
                 // ... do the filtering
-                response.setHeader("Access-Control-Allow-Origin", "*");
+                response.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
                 response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
                 response.setHeader("Access-Control-Max-Age", "3600");
                 response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
