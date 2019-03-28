@@ -17,6 +17,7 @@ public class Spring3CorsFilterHandlerInterceptor extends HandlerInterceptorAdapt
             Exception {
 
         if (handler instanceof HandlerMethod) {
+            System.out.println("COR : Spring3CorsFilterHandlerInterceptor");
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             // Test if the controller-method is annotated with @Spring3CORSFilter
             Spring3CorsFilter filter = handlerMethod.getMethod().getAnnotation(Spring3CorsFilter.class);
