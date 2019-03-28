@@ -20,7 +20,7 @@ public class OpenmrsReportingTest extends TestResourceLoader{
 	
 	@Before
 	public void setup(){
-		reportController = new ReportController(new OpenmrsReportingService(openmrsOpenmrsUrl, openmrsUsername, openmrsPassword),null,null);
+		reportController = new ReportController(new OpenmrsReportingService(openmrsOpenmrsUrl, openmrsUsername, openmrsPassword),null,null,null,null,null,null,null,null);
 	}
 	
 	@Test

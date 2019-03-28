@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.opensrp.web.cros.Spring3CorsFilter;
 
 import com.google.gson.Gson;
 
@@ -77,10 +78,12 @@ public class ActionController {
 		});
 	}
 
+	@Spring3CorsFilter
 	@RequestMapping("/chwpatientsummary")
 	String chwPatientSummary() {
 		return("chw_patient_summary");
 	}
+
 
 
 	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
