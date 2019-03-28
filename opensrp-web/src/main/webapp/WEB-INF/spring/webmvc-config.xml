@@ -24,14 +24,9 @@
                    location="/resources/"
                    cache-period="10000" />
 
-
     <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/" />
-            <bean class="org.opensrp.web.cros.Spring3CorsFilterHandlerInterceptor"></bean>
-        </mvc:interceptor>
+        <bean class="org.opensrp.web.cros.Spring3CorsFilterHandlerInterceptor" />
     </mvc:interceptors>
-
 
     <mvc:default-servlet-handler/>
 
