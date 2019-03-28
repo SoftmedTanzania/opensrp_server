@@ -361,6 +361,9 @@ public class FormEntityConverter {
 				if(formField.name().equals(ReferralClient.COL_VILLAGE))
 					referralClient.setVillage(formField.value());
 
+				if(formField.name().equals(ReferralClient.COL_COMMUNITY_BASED_HIV_SERVICE))
+					referralClient.setCommunityBasedHivService(formField.value());
+
 
 				if(formField.name().equals(ReferralClient.COL_WARD))
 					referralClient.setWard(formField.value());
