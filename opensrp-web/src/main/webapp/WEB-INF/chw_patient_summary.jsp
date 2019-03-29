@@ -138,7 +138,7 @@
 
         $("#id_spinner").modal("show");
 
-        $('#render_jasper_response').load("/opensrp/download");
+        // $('#render_jasper_response').load("/opensrp/download");
 
         $("#id_spinner").modal("hide");
 
