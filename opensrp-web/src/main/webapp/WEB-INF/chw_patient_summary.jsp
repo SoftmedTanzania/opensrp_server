@@ -138,10 +138,7 @@
 
         $("#id_spinner").modal("show");
 
-        $('#render_jasper_response').load("/opensrp/chwsummaryjasperreport");
-
-        window.open("http://23.92.25.157:8081/jasperserver/flow.html?_flowId=viewReportFlow&_flowId=viewReportFlow&" +
-            "ParentFolderUri=/reports&reportUnit=/reports/ChwPatientSummaryReport&standAlone=true&j_username=jasperadmin&j_password=jasperadmin");
+        $('#render_jasper_response').load("/opensrp/download");
 
         $("#id_spinner").modal("hide");
 
