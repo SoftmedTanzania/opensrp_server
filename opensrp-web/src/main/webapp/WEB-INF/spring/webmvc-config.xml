@@ -23,8 +23,8 @@
         <!--</property>-->
     <!--</bean>-->
 
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
-          p:prefix="/WEB-INF/" p:suffix=".jsp" p:order="1" />
+    <!--<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"-->
+          <!--p:prefix="/WEB-INF/" p:suffix=".jsp" p:order="1" />-->
 
     <!--
     Resolves view names based on the names declared on the declared xml location
