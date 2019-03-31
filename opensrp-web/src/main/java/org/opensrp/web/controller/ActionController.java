@@ -5,12 +5,20 @@ import static org.opensrp.common.AllConstants.Event.PROVIDER_ID;
 import static org.opensrp.web.rest.RestUtils.getIntegerFilter;
 import static org.opensrp.web.rest.RestUtils.getStringFilter;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import org.opensrp.web.dao.SalesDAO;
+
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +41,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.opensrp.web.cros.Spring3CorsFilter;
+import org.opensrp.web.cors.Spring3CorsFilter;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 
@@ -79,21 +88,29 @@ public class ActionController {
 		});
 	}
 
-
 	@RequestMapping("/chwpatientsummary")
 	String chwPatientSummary() {
 		return("chw_patient_summary");
 	}
 
 
-	@Spring3CorsFilter
-	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
-	public ResponseEntity<Object> redirectToExternalUrl() throws URISyntaxException {
-		URI uri = new URI("http://23.92.25.157:8081/jasperserver/");
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setLocation(uri);
-		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
-	}
+
+//	@Spring3CorsFilter
+//	@RequestMapping(value = "/chwsummaryjasperreport", method = RequestMethod.GET)
+//	public void method(HttpServletResponse httpServletResponse) {
+//		httpServletResponse.addHeader("Location", "http://23.92.25.157:8081/jasperserver/");
+//		httpServletResponse.setStatus(302);
+//	}
+
+
+//	@Spring3CorsFilter
+//	@RequestMapping (value = "/chwsummaryjasperreport", method = RequestMethod.GET)
+//	public ResponseEntity<Object> redirectToExternalUrl() throws URISyntaxException {
+//		URI uri = new URI("http://23.92.25.157:8081/jasperserver/");
+//		HttpHeaders httpHeaders = new HttpHeaders();
+//		httpHeaders.setLocation(uri);
+//		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+//	}
 
 
 
@@ -155,5 +172,86 @@ public class ActionController {
 			return new ResponseEntity<>(new Gson().toJson(response), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+//	Jasper report request handlers
+	@RequestMapping(value = "/download", method = RequestMethod.GET)
+	public String getDownloadPage() {
+		logger.debug("Received request to show download page");
+
+// Do your work here. Whatever you like
+// i.e call a custom service to do your business
+// Prepare a model to be used by the JSP page
+
+// This will resolve to /WEB-INF/jsp/downloadpage.jsp
+		return "downloadpage";
+	}
+
+	/**
+	 * Retrieves the download file in XLS format
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/download/xls", method = RequestMethod.GET)
+	public ModelAndView doSalesReportXLS(ModelAndView modelAndView)
+	{
+		logger.debug("Received request to download Excel report");
+
+// Retrieve our data from a custom data provider
+// Our data comes from a DAO layer
+		SalesDAO dataprovider = new SalesDAO();
+
+// Assign the datasource to an instance of JRDataSource
+// JRDataSource is the datasource that Jasper understands
+// This is basically a wrapper to Java's collection classes
+		JRDataSource datasource  = dataprovider.getDataSource();
+
+// In order to use Spring's built-in Jasper support,
+// We are required to pass our datasource as a map parameter
+// parameterMap is the Model of our application
+		Map<String,Object> parameterMap = new HashMap<String,Object>();
+		parameterMap.put("datasource", datasource);
+
+// xlsReport is the View of our application
+// This is declared inside the /WEB-INF/jasper-views.xml
+		modelAndView = new ModelAndView("xlsReport", parameterMap);
+
+// Return the View and the Model combined
+		return modelAndView;
+	}
+
+	/**
+	 * Retrieves the download file in XLS format
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/download/pdf", method = RequestMethod.GET)
+	public ModelAndView doSalesReportPDF(ModelAndView modelAndView)
+	{
+		logger.debug("Received request to download PDF report");
+
+// Retrieve our data from a custom data provider
+// Our data comes from a DAO layer
+		SalesDAO dataprovider = new SalesDAO();
+
+// Assign the datasource to an instance of JRDataSource
+// JRDataSource is the datasource that Jasper understands
+// This is basically a wrapper to Java's collection classes
+		JRDataSource datasource  = dataprovider.getDataSource();
+
+// In order to use Spring's built-in Jasper support,
+// We are required to pass our datasource as a map parameter
+// parameterMap is the Model of our application
+		Map<String,Object> parameterMap = new HashMap<String,Object>();
+		parameterMap.put("datasource", datasource);
+
+// pdfReport is the View of our application
+// This is declared inside the /WEB-INF/jasper-views.xml
+		modelAndView = new ModelAndView("pdfReport", parameterMap);
+
+// Return the View and the Model combined
+		return modelAndView;
+	}
 }
+
 

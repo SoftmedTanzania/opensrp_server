@@ -1,4 +1,4 @@
-package org.opensrp.web.cros;
+package org.opensrp.web.cors;
 
 import com.google.gson.Gson;
 import org.springframework.web.method.HandlerMethod;
