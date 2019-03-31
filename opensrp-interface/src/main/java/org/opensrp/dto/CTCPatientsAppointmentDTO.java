@@ -11,7 +11,7 @@ import java.util.Map;
 public class CTCPatientsAppointmentDTO {
 
     @JsonProperty
-    private Long rowVersion;
+    private int appointmentType;
 
     @JsonProperty
     private int status;
@@ -20,12 +20,12 @@ public class CTCPatientsAppointmentDTO {
     @JsonProperty
     private Long dateOfAppointment;
 
-    public Long getRowVersion() {
-        return rowVersion;
+    public int getAppointmentType() {
+        return appointmentType;
     }
 
-    public void setRowVersion(Long rowVersion) {
-        this.rowVersion = rowVersion;
+    public void setAppointmentType(int appointmentType) {
+        this.appointmentType = appointmentType;
     }
 
     public int getStatus() {

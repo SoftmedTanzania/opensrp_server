@@ -167,14 +167,32 @@ public class ReferralPatientsController {
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-ctc-patients")
     public ResponseEntity<HttpStatus> saveCtcPatients(@RequestBody String json) {
         try {
-
+            System.out.println("saving ctc patients");
             CTCPayloadDTO ctcPayloadDTO = new Gson().fromJson(json, CTCPayloadDTO.class);
             List<CTCPatientsDTO> patientsDTOS = ctcPayloadDTO.getCtcPatientsDTOS();
+
+
+            Map<String,List<CTCPatientsDTO>> wardsCTCPatients =  new HashMap<>();
+            //Sorting the ctc patients by their wards and villages
+            for(CTCPatientsDTO dto:patientsDTOS){
+                if(wardsCTCPatients.get(dto.getWard())!=null){
+                    wardsCTCPatients.get(dto.getWard()).add(dto);
+
+                }else{
+                    List<CTCPatientsDTO> ctcPatientsDTOs = new ArrayList<>();
+                    ctcPatientsDTOs.add(dto);
+                    wardsCTCPatients.put(dto.getWard(),ctcPatientsDTOs);
+                }
+            }
+
+            System.out.println("Sorted CTCPatients by wards = "+new Gson().toJson(wardsCTCPatients));
+
 
             if (patientsDTOS.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
 
+            //updating health facility with its correct facililty CTC2 code
             List<HealthFacilities> healthFacilities = facilityRepository.getHealthFacility("SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
                     HealthFacilities.COL_FACILITY_CTC_CODE + " = '" + ctcPayloadDTO.getFacilityCTC2Code() + "'", null);
             if (healthFacilities.size() == 0) {
@@ -189,11 +207,11 @@ public class ReferralPatientsController {
             }
 
 
-            try {
-                scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.REFERRED_PATIENTS_SUBMISSION, patientsDTOS));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             for (CTCPatientsDTO dto : patientsDTOS) {
                 try {
@@ -206,11 +224,6 @@ public class ReferralPatientsController {
                     for (ClientAppointments patientAppointment : appointments) {
                         System.out.println("saving appointment");
 
-                        AppointmentType appointmentType = new AppointmentType();
-                        //CTC appointment
-                        appointmentType.setId(1);
-
-                        patientAppointment.setAppointmentType(appointmentType);
                         HealthFacilitiesReferralClients healthFacilitiesReferralClients = new HealthFacilitiesReferralClients();
                         healthFacilitiesReferralClients.setHealthFacilityClientId(healthfacilityPatientId);
 

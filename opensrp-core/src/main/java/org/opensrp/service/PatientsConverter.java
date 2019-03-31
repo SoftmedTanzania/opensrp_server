@@ -176,22 +176,20 @@ public class PatientsConverter {
 
             if (appointments!=null) {
 	            for (CTCPatientsAppointmentDTO appointment : appointments) {
-		            ClientAppointments patientAppointment = new ClientAppointments();
+		            ClientAppointments clientAppointment = new ClientAppointments();
 		            Date appointDate = new Date();
 		            appointDate.setTime(appointment.getDateOfAppointment());
-		            patientAppointment.setAppointmentDate(appointDate);
+		            clientAppointment.setAppointmentDate(appointDate);
 
 		            Status status = new Status();
 		            status.setStatusId(appointment.getStatus());
-		            patientAppointment.setStatus(status);
+		            clientAppointment.setStatus(status);
 
 		            AppointmentType  appointmentType = new AppointmentType();
+                    appointmentType.setId(appointment.getAppointmentType());
 
-		            //CTC appointment
-                    appointmentType.setId(1);
-
-		            patientAppointment.setAppointmentType(appointmentType);
-		            clientAppointments.add(patientAppointment);
+		            clientAppointment.setAppointmentType(appointmentType);
+		            clientAppointments.add(clientAppointment);
 	            }
             }else{
                 System.out.println("coze patients appointment is empty");
