@@ -100,12 +100,18 @@ public class OpenmrsUserService extends OpenmrsService{
 		return new JSONObject(op.body());
 	}
 
+
+	public JSONArray getTeamMembers() throws JSONException{
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=full&limit=500", OPENMRS_USER, OPENMRS_PWD);
+		JSONObject object =  new JSONObject(op.body());
+		return object.getJSONArray("results");
+	}
+
 	public JSONArray getTeamMembersByFacilityId(List<String> openMRSTeamLocationsUUIDs) throws JSONException{
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=full&limit=200", OPENMRS_USER, OPENMRS_PWD);
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=full&limit=500", OPENMRS_USER, OPENMRS_PWD);
 		JSONObject object =  new JSONObject(op.body());
 
 		JSONArray teamMembers = new JSONArray();
-
 		JSONArray results = object.getJSONArray("results");
 
 		int size = results.length();
