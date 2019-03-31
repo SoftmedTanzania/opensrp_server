@@ -2,7 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
     <context:component-scan base-package="org.opensrp.web" use-default-filters="false">
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
@@ -26,8 +31,8 @@
     All our Jasper views are declared inside the specified xml location.
     Take note of the ordering of this ViewResolver.
      -->
-    <!--<bean class="org.springframework.web.servlet.view.XmlViewResolver"-->
-          <!--p:location="/WEB-INF/jasper-views.xml"  p:order="0" />-->
+    <bean class="org.springframework.web.servlet.view.XmlViewResolver"
+          p:location="/WEB-INF/jasper-views.xml"  p:order="0" />
 
     <mvc:annotation-driven />
 

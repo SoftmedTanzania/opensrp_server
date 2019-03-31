@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
+
 import org.opensrp.web.dao.SalesDAO;
 
 

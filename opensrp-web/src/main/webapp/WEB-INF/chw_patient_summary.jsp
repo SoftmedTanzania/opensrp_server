@@ -42,8 +42,8 @@
 
 <%--Report Filters--%>
 <section class="content">
-<div class="row">
-    <div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
             <div class="box box-warning">
                 <div class="box-header with-border">
                     <h5 class="box-title">Filters</h5><br /><br />
@@ -73,12 +73,12 @@
             </div>
 
 
+        </div>
     </div>
-</div>
 
-<%--Report content--%>
-<div class="row">
-    <div class="col-md-12">
+    <%--Report content--%>
+    <div class="row">
+        <div class="col-md-12">
             <div class="box box-success">
                 <div class="box-header with-border">
 
@@ -91,9 +91,9 @@
                 </div>
 
             </div>
-    </div>
+        </div>
 
-</div>
+    </div>
 
 </section>
 

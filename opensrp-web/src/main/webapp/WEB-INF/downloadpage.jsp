@@ -16,7 +16,8 @@
 <br/>
 <%--<c:url value="/download/pdf" var="downloadPdf"/>--%>
 <%--<a href="${downloadPdf}">Download PDF</a>--%>
-<a href="/opensrp/download/pdf">Download PDF</a>
+<%--<a href="/opensrp/download/pdf">Download PDF</a>--%>
+<a href="">Download PDF</a>
 
 </body>
 </html>
