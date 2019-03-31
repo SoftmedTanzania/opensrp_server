@@ -26,8 +26,8 @@
     All our Jasper views are declared inside the specified xml location.
     Take note of the ordering of this ViewResolver.
      -->
-    <bean class="org.springframework.web.servlet.view.XmlViewResolver"
-          p:location="/WEB-INF/jasper-views.xml"  p:order="0" />
+    <!--<bean class="org.springframework.web.servlet.view.XmlViewResolver"-->
+          <!--p:location="/WEB-INF/jasper-views.xml"  p:order="0" />-->
 
     <mvc:annotation-driven />
 

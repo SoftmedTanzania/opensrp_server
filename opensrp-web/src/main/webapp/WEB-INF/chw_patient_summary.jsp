@@ -25,6 +25,7 @@
     <link href="${pageContext.request.contextPath}/resources/css/custom.css" rel="stylesheet" type="text/css"/>
     <link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css"/>
     <link href="${pageContext.request.contextPath}/resources/css/util.css" rel="stylesheet" type="text/css"/>
+    <link href="${pageContext.request.contextPath}/resources/css/dropdowntree.css" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
@@ -64,8 +65,8 @@
                             <button id="btn_filter_records" class="btn btn-primary">Filter Records</button>
                         </div>
 
-
                     </div>
+
 
                 </div>
 
@@ -104,6 +105,7 @@
 <script src="${pageContext.request.contextPath}/resources/vendor/daterangepicker/daterangepicker.js"></script>
 <script src="${pageContext.request.contextPath}/resources/vendor/countdowntime/countdowntime.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/dropdowntree.js"></script>
 
 <script src="${pageContext.request.contextPath}/resources/Dashboard_Files/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/Dashboard_Files/bower_components/fastclick/lib/fastclick.js"></script>
@@ -142,7 +144,7 @@
 
         $("#id_spinner").modal("hide");
 
-    })
+    });
 
 
 </script>
