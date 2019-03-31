@@ -5,13 +5,16 @@ import org.opensrp.dto.report.TotalCountObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Repository
@@ -20,40 +23,24 @@ public class ClientsAppointmentsRepository {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+	private SimpleJdbcInsert insert;
 	
-	public int save(ClientAppointments clientAppointments) throws Exception {
-		String insertQuery = "insert into " + ClientAppointments.tbName + " (" +
-				ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID + "," +
-				ClientAppointments.COL_APPOINTMENT_DATE + "," +
-				ClientAppointments.COL_IS_CANCELLED + "," +
-				ClientAppointments.COL_STATUS + "," +
-				ClientAppointments.COL_APPOINTMENT_TYPE + "," +
-				ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + "," +
-				ClientAppointments.COL_UPDATED_AT + "," +
-				ClientAppointments.COL_CREATED_AT + ") values (?,?,?,?,?,?,?,?) ";
+	public long save(ClientAppointments clientAppointments) throws Exception {
 
-		Object[] params = new Object[] {
-				clientAppointments.getHealthFacilitiesReferralClients().getHealthFacilityClientId(),
-				clientAppointments.getAppointmentDate(),
-				clientAppointments.getIsCancelled(),
-				clientAppointments.getStatus(),
-				clientAppointments.getAppointmentType(),
-				clientAppointments.getClientReferrals().getId(),
-				clientAppointments.getUpdatedAt(),
-				clientAppointments.getCreatedAt() };
 
-		int[] types = new int[] {
-				Types.BIGINT,
-				Types.DATE,
-				Types.BOOLEAN,
-				Types.VARCHAR,
-				Types.INTEGER,
-				Types.INTEGER,
-				Types.DATE,
-				Types.TIMESTAMP };
-		
-		return jdbcTemplate.update(insertQuery, params, types);
-		
+		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(ClientAppointments.tbName).usingGeneratedKeyColumns(ClientAppointments.COL_APPOINTMENT_ID);
+
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put(ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID, clientAppointments.getHealthFacilitiesReferralClients().getHealthFacilityClientId());
+		parameters.put(ClientAppointments.COL_APPOINTMENT_DATE, clientAppointments.getAppointmentDate());
+		parameters.put(ClientAppointments.COL_IS_CANCELLED, clientAppointments.getIsCancelled());
+		parameters.put(ClientAppointments.COL_STATUS, clientAppointments.getStatus());
+		parameters.put(ClientAppointments.COL_APPOINTMENT_TYPE, clientAppointments.getAppointmentType());
+		parameters.put(ClientAppointments.COL_FOLLOWUP_REFERRAL_ID, clientAppointments.getClientReferrals().getId());
+		parameters.put(ClientAppointments.COL_CREATED_AT, clientAppointments.getUpdatedAt());
+		parameters.put(ClientAppointments.COL_UPDATED_AT, clientAppointments.getCreatedAt());
+
+		return insert.executeAndReturnKey(parameters).longValue();
 	}
 
 
