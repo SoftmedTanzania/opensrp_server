@@ -13,18 +13,9 @@
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
 
-    <!--<bean-->
-            <!--class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
-        <!--<property name="prefix">-->
-            <!--<value>/WEB-INF/</value>-->
-        <!--</property>-->
-        <!--<property name="suffix">-->
-            <!--<value>.jsp</value>-->
-        <!--</property>-->
-    <!--</bean>-->
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
-          p:prefix="/WEB-INF/" p:suffix=".jsp" p:order="1" />
+          p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" p:order="1" />
 
     <!--
     Resolves view names based on the names declared on the declared xml location
@@ -34,6 +25,14 @@
     <bean class="org.springframework.web.servlet.view.XmlViewResolver"
           p:location="/WEB-INF/jasper-views.xml"  p:order="0" />
 
+
+
+    <!-- Activates various annotations to be detected in bean classes -->
+    <context:annotation-config />
+
+    <!-- Scans the classpath for annotated components that will be auto-registered as Spring beans.
+     For example @Controller and @Service. Make sure to set the correct base-package-->
+    <context:component-scan base-package="org.opensrp.web" />
 
     <mvc:annotation-driven />
 
@@ -46,5 +45,8 @@
     </mvc:interceptors>
 
     <mvc:default-servlet-handler/>
+
+
+    <import resource="../jasper-views.xml" />
 
 </beans>
