@@ -62,4 +62,6 @@
         <property name="dataSource" ref="jpaDataSource"/>
     </bean>
 
+    <import resource="classpath:jasper-views.xml" />
+
 </beans>

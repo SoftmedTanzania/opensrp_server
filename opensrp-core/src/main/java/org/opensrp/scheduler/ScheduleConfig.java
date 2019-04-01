@@ -40,15 +40,16 @@ public class ScheduleConfig {
     	scheduleConfigPath = loader.getResource(scheduleConfigPath).getURI().getPath();
 
     	logger.info("Loading automated schedules from "+scheduleConfigPath);
-    	
-		JSONArray jarr = Utils.getXlsToJson(scheduleConfigPath);
-		
-		logger.info("Found "+jarr.length()+" automated schedules");
-		for (int i = 0; i < jarr.length(); i++) {
-			JSONObject jo = jarr.getJSONObject(i);
-			//logger.debug(jo.toString());
-			schedules.add(new Schedule(jo));
-		}
+
+    	//TODO fix this bug
+//		JSONArray jarr = Utils.getXlsToJson(scheduleConfigPath);
+//
+//		logger.info("Found "+jarr.length()+" automated schedules");
+//		for (int i = 0; i < jarr.length(); i++) {
+//			JSONObject jo = jarr.getJSONObject(i);
+//			//logger.debug(jo.toString());
+//			schedules.add(new Schedule(jo));
+//		}
 	}
 	
 	public void addSchedule(Schedule sch) {
