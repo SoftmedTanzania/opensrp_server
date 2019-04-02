@@ -305,35 +305,12 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.6</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>xml-apis</groupId>-->
-            <!--<artifactId>xml-apis</artifactId>-->
-            <!--<version>1.3.02</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.poi</groupId>-->
-            <!--<artifactId>poi</artifactId>-->
-            <!--<version>3.6</version>-->
-            <!--<type>jar</type>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-        <!--Jasper end-->
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.3.02</version>
+        </dependency>
 
         <dependency>
             <groupId>com.googlecode.libphonenumber</groupId>

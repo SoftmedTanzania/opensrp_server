@@ -14,7 +14,6 @@
     </context:component-scan>
 
 
-
     <!-- Activates various annotations to be detected in bean classes -->
     <context:annotation-config />
 
