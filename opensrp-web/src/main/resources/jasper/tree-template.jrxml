@@ -44,7 +44,7 @@
 		<band height="132" splitType="Stretch">
 			<image>
 				<reportElement x="2" y="0" width="118" height="132"/>
-				<imageExpression class="java.lang.String"><![CDATA["tree1.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA["/jasper/tree1.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement style="Title" x="120" y="10" width="435" height="93"/>
@@ -72,7 +72,7 @@
 		<band height="91" splitType="Stretch">
 			<image>
 				<reportElement x="2" y="0" width="56" height="80"/>
-				<imageExpression class="java.lang.String"><![CDATA["tree2.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA["/jasper/tree2.png"]]></imageExpression>
 			</image>
 			<line>
 				<reportElement positionType="FixRelativeToBottom" x="2" y="90" width="551" height="1"/>
