@@ -121,8 +121,8 @@ public class ClientsRepository {
 		public MaleFemaleCountObject mapRow(ResultSet rs, int rowNum) throws SQLException {
 			MaleFemaleCountObject maleFemaleCountObject = new MaleFemaleCountObject();
 
-			maleFemaleCountObject.setMale(rs.getInt(rs.findColumn("Male")));
-			maleFemaleCountObject.setFemale(rs.getInt(rs.findColumn("Female")));
+			maleFemaleCountObject.setMale(rs.getLong(rs.findColumn("Male")));
+			maleFemaleCountObject.setFemale(rs.getLong(rs.findColumn("Female")));
 
 			return maleFemaleCountObject;
 		}

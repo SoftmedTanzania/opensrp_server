@@ -2,16 +2,16 @@ package org.opensrp.dto;
 
 public class RegistrationReasonsReportDTO {
     private String registrationReason;
-    private long lessThan1Male,lessThan1Female;
-    private long oneTofiveMale,oneTofiveFemale;
-    private long sixToNineMale,sixToNineFemale;
-    private long tenToFourteenMale,tenToFourteenFemale;
-    private long fifteenToNineteenMale,fifteenToNineteenFemale;
-    private long twentyToTwentyFourMale,twentyToTwentyFourFemale;
-    private long twentyFiveToFourtyNineMale,twentyFiveToFourtyNineFemale;
-    private long fiftyToFiftyNineMale,fiftyToFiftyNineFemale;
-    private long aboveSixtyMale, aboveSixtyFemale;
-    private long totalMale,totalFemale;
+    private Long lessThan1Male,lessThan1Female;
+    private Long oneTofiveMale,oneTofiveFemale;
+    private Long sixToNineMale,sixToNineFemale;
+    private Long tenToFourteenMale,tenToFourteenFemale;
+    private Long fifteenToNineteenMale,fifteenToNineteenFemale;
+    private Long twentyToTwentyFourMale,twentyToTwentyFourFemale;
+    private Long twentyFiveToFourtyNineMale,twentyFiveToFourtyNineFemale;
+    private Long fiftyToFiftyNineMale,fiftyToFiftyNineFemale;
+    private Long aboveSixtyMale, aboveSixtyFemale;
+    private Long totalMale,totalFemale;
 
     public String getRegistrationReason() {
         return registrationReason;
@@ -21,163 +21,163 @@ public class RegistrationReasonsReportDTO {
         this.registrationReason = registrationReason;
     }
 
-    public long getLessThan1Male() {
+    public Long getLessThan1Male() {
         return lessThan1Male;
     }
 
-    public void setLessThan1Male(long lessThan1Male) {
+    public void setLessThan1Male(Long lessThan1Male) {
         this.lessThan1Male = lessThan1Male;
     }
 
-    public long getLessThan1Female() {
+    public Long getLessThan1Female() {
         return lessThan1Female;
     }
 
-    public void setLessThan1Female(long lessThan1Female) {
+    public void setLessThan1Female(Long lessThan1Female) {
         this.lessThan1Female = lessThan1Female;
     }
 
-    public long getOneTofiveMale() {
+    public Long getOneTofiveMale() {
         return oneTofiveMale;
     }
 
-    public void setOneTofiveMale(long oneTofiveMale) {
+    public void setOneTofiveMale(Long oneTofiveMale) {
         this.oneTofiveMale = oneTofiveMale;
     }
 
-    public long getOneTofiveFemale() {
+    public Long getOneTofiveFemale() {
         return oneTofiveFemale;
     }
 
-    public void setOneTofiveFemale(long oneTofiveFemale) {
+    public void setOneTofiveFemale(Long oneTofiveFemale) {
         this.oneTofiveFemale = oneTofiveFemale;
     }
 
-    public long getSixToNineMale() {
+    public Long getSixToNineMale() {
         return sixToNineMale;
     }
 
-    public void setSixToNineMale(long sixToNineMale) {
+    public void setSixToNineMale(Long sixToNineMale) {
         this.sixToNineMale = sixToNineMale;
     }
 
-    public long getSixToNineFemale() {
+    public Long getSixToNineFemale() {
         return sixToNineFemale;
     }
 
-    public void setSixToNineFemale(long sixToNineFemale) {
+    public void setSixToNineFemale(Long sixToNineFemale) {
         this.sixToNineFemale = sixToNineFemale;
     }
 
-    public long getTenToFourteenMale() {
+    public Long getTenToFourteenMale() {
         return tenToFourteenMale;
     }
 
-    public void setTenToFourteenMale(long tenToFourteenMale) {
+    public void setTenToFourteenMale(Long tenToFourteenMale) {
         this.tenToFourteenMale = tenToFourteenMale;
     }
 
-    public long getTenToFourteenFemale() {
+    public Long getTenToFourteenFemale() {
         return tenToFourteenFemale;
     }
 
-    public void setTenToFourteenFemale(long tenToFourteenFemale) {
+    public void setTenToFourteenFemale(Long tenToFourteenFemale) {
         this.tenToFourteenFemale = tenToFourteenFemale;
     }
 
-    public long getFifteenToNineteenMale() {
+    public Long getFifteenToNineteenMale() {
         return fifteenToNineteenMale;
     }
 
-    public void setFifteenToNineteenMale(long fifteenToNineteenMale) {
+    public void setFifteenToNineteenMale(Long fifteenToNineteenMale) {
         this.fifteenToNineteenMale = fifteenToNineteenMale;
     }
 
-    public long getFifteenToNineteenFemale() {
+    public Long getFifteenToNineteenFemale() {
         return fifteenToNineteenFemale;
     }
 
-    public void setFifteenToNineteenFemale(long fifteenToNineteenFemale) {
+    public void setFifteenToNineteenFemale(Long fifteenToNineteenFemale) {
         this.fifteenToNineteenFemale = fifteenToNineteenFemale;
     }
 
-    public long getTwentyToTwentyFourMale() {
+    public Long getTwentyToTwentyFourMale() {
         return twentyToTwentyFourMale;
     }
 
-    public void setTwentyToTwentyFourMale(long twentyToTwentyFourMale) {
+    public void setTwentyToTwentyFourMale(Long twentyToTwentyFourMale) {
         this.twentyToTwentyFourMale = twentyToTwentyFourMale;
     }
 
-    public long getTwentyToTwentyFourFemale() {
+    public Long getTwentyToTwentyFourFemale() {
         return twentyToTwentyFourFemale;
     }
 
-    public void setTwentyToTwentyFourFemale(long twentyToTwentyFourFemale) {
+    public void setTwentyToTwentyFourFemale(Long twentyToTwentyFourFemale) {
         this.twentyToTwentyFourFemale = twentyToTwentyFourFemale;
     }
 
-    public long getTwentyFiveToFourtyNineMale() {
+    public Long getTwentyFiveToFourtyNineMale() {
         return twentyFiveToFourtyNineMale;
     }
 
-    public void setTwentyFiveToFourtyNineMale(long twentyFiveToFourtyNineMale) {
+    public void setTwentyFiveToFourtyNineMale(Long twentyFiveToFourtyNineMale) {
         this.twentyFiveToFourtyNineMale = twentyFiveToFourtyNineMale;
     }
 
-    public long getTwentyFiveToFourtyNineFemale() {
+    public Long getTwentyFiveToFourtyNineFemale() {
         return twentyFiveToFourtyNineFemale;
     }
 
-    public void setTwentyFiveToFourtyNineFemale(long twentyFiveToFourtyNineFemale) {
+    public void setTwentyFiveToFourtyNineFemale(Long twentyFiveToFourtyNineFemale) {
         this.twentyFiveToFourtyNineFemale = twentyFiveToFourtyNineFemale;
     }
 
-    public long getFiftyToFiftyNineMale() {
+    public Long getFiftyToFiftyNineMale() {
         return fiftyToFiftyNineMale;
     }
 
-    public void setFiftyToFiftyNineMale(long fiftyToFiftyNineMale) {
+    public void setFiftyToFiftyNineMale(Long fiftyToFiftyNineMale) {
         this.fiftyToFiftyNineMale = fiftyToFiftyNineMale;
     }
 
-    public long getFiftyToFiftyNineFemale() {
+    public Long getFiftyToFiftyNineFemale() {
         return fiftyToFiftyNineFemale;
     }
 
-    public void setFiftyToFiftyNineFemale(long fiftyToFiftyNineFemale) {
+    public void setFiftyToFiftyNineFemale(Long fiftyToFiftyNineFemale) {
         this.fiftyToFiftyNineFemale = fiftyToFiftyNineFemale;
     }
 
-    public long getAboveSixtyMale() {
+    public Long getAboveSixtyMale() {
         return aboveSixtyMale;
     }
 
-    public void setAboveSixtyMale(long aboveSixtyMale) {
+    public void setAboveSixtyMale(Long aboveSixtyMale) {
         this.aboveSixtyMale = aboveSixtyMale;
     }
 
-    public long getAboveSixtyFemale() {
+    public Long getAboveSixtyFemale() {
         return aboveSixtyFemale;
     }
 
-    public void setAboveSixtyFemale(long aboveSixtyFemale) {
+    public void setAboveSixtyFemale(Long aboveSixtyFemale) {
         this.aboveSixtyFemale = aboveSixtyFemale;
     }
 
-    public long getTotalMale() {
+    public Long getTotalMale() {
         return totalMale;
     }
 
-    public void setTotalMale(long totalMale) {
+    public void setTotalMale(Long totalMale) {
         this.totalMale = totalMale;
     }
 
-    public long getTotalFemale() {
+    public Long getTotalFemale() {
         return totalFemale;
     }
 
-    public void setTotalFemale(long totalFemale) {
+    public void setTotalFemale(Long totalFemale) {
         this.totalFemale = totalFemale;
     }
 
