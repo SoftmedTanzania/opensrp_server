@@ -263,6 +263,8 @@ public class ReferralsReportService {
                 ClientReferrals.COL_REFERRAL_DATE + "<='" + endDate + "'";
     }
 
+
+
 }
 
 
