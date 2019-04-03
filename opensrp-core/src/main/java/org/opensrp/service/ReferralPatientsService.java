@@ -163,6 +163,24 @@ public class ReferralPatientsService {
         }
     }
 
+
+    public ReferralClient getPatientsByHealthFacilityPatientId(long healthfacilityPatientId){
+        try {
+
+            String getSavedHealthFacilityClientSQL = "SELECT * from " + HealthFacilitiesReferralClients.tbName+" WHERE "+ HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID + " = "+healthfacilityPatientId;
+            HealthFacilitiesReferralClients  healthFacilitiesReferralClient = healthFacilitiesClientsRepository.getHealthFacilityPatients(getSavedHealthFacilityClientSQL,null).get(0);
+
+            String getPatientsSQL = "SELECT * from " + ReferralClient.tbName+" WHERE "+ ReferralClient.COL_CLIENT_ID + " = "+healthFacilitiesReferralClient.getClient().getClientId();
+            ReferralClient patient = clientsRepository.getPatients(getPatientsSQL,null).get(0);
+
+            return patient;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public Boolean checkIfClientExists(ReferralClient patient) throws SQLException {
         try {
             String checkIfExistQuery = "SELECT count(*) from " + ReferralClient.tbName + " WHERE " + ReferralClient.COL_CLIENT_ID + " = ?";
