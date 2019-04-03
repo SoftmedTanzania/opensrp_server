@@ -112,7 +112,7 @@ public class ReferralsReportService {
             try {
                 _10To14RegistrationsList = clientsRepository.getMaleFemaleCountReports(_10To14, null);
                 registrationReasonsReportDTO.setTenToFourteenMale(_10To14RegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setSixToNineFemale(_10To14RegistrationsList.get(0).getFemale());
+                registrationReasonsReportDTO.setTenToFourteenFemale(_10To14RegistrationsList.get(0).getFemale());
 
                 totalMale += Integer.parseInt(_10To14RegistrationsList.get(0).getMale());
                 totalFemale += Integer.parseInt(_10To14RegistrationsList.get(0).getFemale());
@@ -156,6 +156,7 @@ public class ReferralsReportService {
 
             List<MaleFemaleCountObject> _25To49RegistrationsList = null;
             try {
+                System.out.println("report Test : "+_25To49);
                 _25To49RegistrationsList = clientsRepository.getMaleFemaleCountReports(_25To49, null);
                 registrationReasonsReportDTO.setTwentyFiveToFourtyNineMale(_25To49RegistrationsList.get(0).getMale());
                 registrationReasonsReportDTO.setTwentyFiveToFourtyNineFemale(_25To49RegistrationsList.get(0).getFemale());
