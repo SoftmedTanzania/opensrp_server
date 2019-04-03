@@ -14,26 +14,26 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="oneTofiveMale" class="java.lang.Long"/>
-	<field name="oneTofiveFemale" class="java.lang.Long"/>
-	<field name="sixToNineMale" class="java.lang.Long"/>
-	<field name="sixToNineFemale" class="java.lang.Long"/>
-	<field name="tenToFourteenMale" class="java.lang.Long"/>
-	<field name="tenToFourteenFemale" class="java.lang.Long"/>
-	<field name="fifteenToNineteenMale" class="java.lang.Long"/>
-	<field name="fifteenToNineteenFemale" class="java.lang.Long"/>
-	<field name="twentyToTwentyFourMale" class="java.lang.Long"/>
-	<field name="twentyToTwentyFourFemale" class="java.lang.Long"/>
-	<field name="twentyFiveToFourtyNineMale" class="java.lang.Long"/>
-	<field name="twentyFiveToFourtyNineFemale" class="java.lang.Long"/>
-	<field name="fiftyToFiftyNineMale" class="java.lang.Long"/>
-	<field name="fiftyToFiftyNineFemale" class="java.lang.Long"/>
-	<field name="aboveSixtyMale" class="java.lang.Long"/>
-	<field name="aboveSixtyFemale" class="java.lang.Long"/>
-	<field name="totalMale" class="java.lang.Long"/>
-	<field name="totalFemale" class="java.lang.Long"/>
-	<field name="lessThan1Male" class="java.lang.Long"/>
-	<field name="lessThan1Female" class="java.lang.Long"/>
+	<field name="oneTofiveMale" class="java.lang.String"/>
+	<field name="oneTofiveFemale" class="java.lang.String"/>
+	<field name="sixToNineMale" class="java.lang.String"/>
+	<field name="sixToNineFemale" class="java.lang.String"/>
+	<field name="tenToFourteenMale" class="java.lang.String"/>
+	<field name="tenToFourteenFemale" class="java.lang.String"/>
+	<field name="fifteenToNineteenMale" class="java.lang.String"/>
+	<field name="fifteenToNineteenFemale" class="java.lang.String"/>
+	<field name="twentyToTwentyFourMale" class="java.lang.String"/>
+	<field name="twentyToTwentyFourFemale" class="java.lang.String"/>
+	<field name="twentyFiveToFourtyNineMale" class="java.lang.String"/>
+	<field name="twentyFiveToFourtyNineFemale" class="java.lang.String"/>
+	<field name="fiftyToFiftyNineMale" class="java.lang.String"/>
+	<field name="fiftyToFiftyNineFemale" class="java.lang.String"/>
+	<field name="aboveSixtyMale" class="java.lang.String"/>
+	<field name="aboveSixtyFemale" class="java.lang.String"/>
+	<field name="totalMale" class="java.lang.String"/>
+	<field name="totalFemale" class="java.lang.String"/>
+	<field name="lessThan1Male" class="java.lang.String"/>
+	<field name="lessThan1Female" class="java.lang.String"/>
 	<field name="registrationReason" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -376,7 +376,7 @@
 				<text><![CDATA[KE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToBandHeight" x="595" y="15" width="40" height="30">
+				<reportElement stretchType="RelativeToBandHeight" x="595" y="20" width="40" height="30">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1707243a-0c3f-44d3-8fbd-6c2fdefd5c17"/>
 				</reportElement>
 				<box>
@@ -458,7 +458,9 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[KE]]></text>
 			</staticText>
 		</band>
