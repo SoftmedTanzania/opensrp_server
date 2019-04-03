@@ -46,7 +46,11 @@ public class ClientsRepository {
 		parameters.put(ReferralClient.COL_CARE_TAKER_NAME , referralClient.getCareTakerName());
 		parameters.put(ReferralClient.COL_CARE_TAKER_PHONE_NUMBER, referralClient.getCareTakerPhoneNumber());
 		parameters.put(ReferralClient.COL_CARE_TAKER_RELATIONSHIP, referralClient.getCareTakerRelationship());
-		parameters.put(ReferralClient.COL_REGISTRATION_REASON, referralClient.getClientRegistrationReason().getRegistrationId());
+		try {
+			parameters.put(ReferralClient.COL_REGISTRATION_REASON, referralClient.getClientRegistrationReason().getRegistrationId());
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		parameters.put(ReferralClient.COL_VEO, referralClient.getVeo());
 		parameters.put(ReferralClient.COL_CREATED_AT , referralClient.getCreatedAt());
 		parameters.put(ReferralClient.COL_UPDATED_AT , referralClient.getCreatedAt());
