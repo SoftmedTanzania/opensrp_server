@@ -52,6 +52,7 @@ public class ReferralPatientsController {
     private TBEncounterRepository tbEncounterRepository;
     private ClientsAppointmentsRepository clientsAppointmentsRepository;
     private ClientReferralRepository clientReferralRepository;
+    private ClientsRepository clientsRepository;
     private ClientReferralIndicatorRepository clientReferralIndicatorRepository;
     private GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository;
     private TBPatientsRepository tbPatientsRepository;
@@ -74,7 +75,7 @@ public class ReferralPatientsController {
                                       TBEncounterRepository tbEncounterRepository, ClientReferralRepository clientReferralRepository, TBPatientsRepository tbPatientsRepository, FormSubmissionService formSubmissionService,
                                       FormEntityConverter formEntityConverter, GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
                                       ClientReferralIndicatorRepository clientReferralIndicatorRepository, ReferralPatientsService referralPatientService, RapidProServiceImpl rapidProService, ReferralServiceRepository referralServiceRepository, HealthFacilityRepository facilityRepository,
-                                      TBTestTypeRepository tbTestTypeRepository, TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository, OpenmrsUserService openmrsUserService, ServiceIndicatorRepository serviceIndicatorRepository) {
+                                      TBTestTypeRepository tbTestTypeRepository, TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository, OpenmrsUserService openmrsUserService, ServiceIndicatorRepository serviceIndicatorRepository,ClientsRepository clientsRepository) {
         this.patientsService = patientsService;
         this.scheduler = scheduler;
         this.healthFacilityRepository = healthFacilityRepository;
@@ -96,6 +97,7 @@ public class ReferralPatientsController {
         this.facilityRepository = facilityRepository;
         this.serviceIndicatorRepository = serviceIndicatorRepository;
         this.openmrsUserService = openmrsUserService;
+        this.clientsRepository = clientsRepository;
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-patients")
@@ -203,9 +205,13 @@ public class ReferralPatientsController {
             for (CTCPatientsDTO dto : patientsDTOS) {
                 try {
                     System.out.println("saving patient");
-                    ReferralClient patient = PatientsConverter.toPatients(dto);
+                    ReferralClient p = PatientsConverter.toPatients(dto);
 
-                    long healthfacilityPatientId = referralPatientService.savePatient(patient, dto.getHealthFacilityCode(), dto.getCtcNumber());
+                    long healthFacilityPatientId = referralPatientService.savePatient(p, dto.getHealthFacilityCode(), dto.getCtcNumber());
+
+
+                    ReferralClient patient = referralPatientService.getPatientsByHealthFacilityPatientId(healthFacilityPatientId);
+
 
                     List<ClientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
                     int savedAppointmentsCount = 0;
@@ -216,7 +222,7 @@ public class ReferralPatientsController {
                         System.out.println("saving appointment");
 
                         HealthFacilitiesReferralClients healthFacilitiesReferralClients = new HealthFacilitiesReferralClients();
-                        healthFacilitiesReferralClients.setHealthFacilityClientId(healthfacilityPatientId);
+                        healthFacilitiesReferralClients.setHealthFacilityClientId(healthFacilityPatientId);
 
                         patientAppointment.setHealthFacilitiesReferralClients(healthFacilitiesReferralClients);
 
