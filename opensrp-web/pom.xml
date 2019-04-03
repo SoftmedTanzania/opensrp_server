@@ -296,8 +296,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-        <!--Jasper start-->
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
@@ -312,6 +310,15 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.6</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--End of Jasper dep.-->
 
         <dependency>
             <groupId>com.googlecode.libphonenumber</groupId>
