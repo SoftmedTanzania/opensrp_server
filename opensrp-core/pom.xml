@@ -283,15 +283,8 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>3.6</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
 		<!--end of jasper dependacy-->
-		
-		
+
+
 	</dependencies>
 </project>
