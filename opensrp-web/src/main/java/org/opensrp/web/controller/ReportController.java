@@ -10,6 +10,7 @@ import org.opensrp.domain.HealthFacilities;
 import org.opensrp.domain.ReferralService;
 import org.opensrp.dto.*;
 import org.opensrp.repository.ClientReferralRepository;
+import org.opensrp.service.ReferralsReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +33,14 @@ public class ReportController {
     private OpenmrsReportingService reportService;
     private ClientReferralRepository clientReferralRepository;
     private OpenmrsUserService openmrsUserService;
+    private ReferralsReportService referralsReportService;
 
     @Autowired
-    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService) {
+    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService,ReferralsReportService referralsReportService) {
         this.reportService = reportService;
         this.openmrsUserService = openmrsUserService;
         this.clientReferralRepository = clientReferralRepository;
+        this.referralsReportService = referralsReportService;
     }
 
     @RequestMapping(method = GET, value = "/report/report-definitions")
