@@ -2,16 +2,8 @@ package org.opensrp.dto;
 
 public class RegistrationReasonsReportDTO {
     private String registrationReason;
-    private Long lessThan1Male,lessThan1Female;
-    private Long oneTofiveMale,oneTofiveFemale;
-    private Long sixToNineMale,sixToNineFemale;
-    private Long tenToFourteenMale,tenToFourteenFemale;
-    private Long fifteenToNineteenMale,fifteenToNineteenFemale;
-    private Long twentyToTwentyFourMale,twentyToTwentyFourFemale;
-    private Long twentyFiveToFourtyNineMale,twentyFiveToFourtyNineFemale;
-    private Long fiftyToFiftyNineMale,fiftyToFiftyNineFemale;
-    private Long aboveSixtyMale, aboveSixtyFemale;
-    private Long totalMale,totalFemale;
+    private String lessThan1Male,lessThan1Female,oneTofiveMale,oneTofiveFemale,sixToNineMale,sixToNineFemale,tenToFourteenMale,tenToFourteenFemale,
+            fifteenToNineteenMale,fifteenToNineteenFemale,twentyToTwentyFourMale,twentyToTwentyFourFemale,twentyFiveToFourtyNineMale,twentyFiveToFourtyNineFemale,fiftyToFiftyNineMale,fiftyToFiftyNineFemale,aboveSixtyMale, aboveSixtyFemale,totalMale,totalFemale;
 
     public String getRegistrationReason() {
         return registrationReason;
@@ -21,165 +13,163 @@ public class RegistrationReasonsReportDTO {
         this.registrationReason = registrationReason;
     }
 
-    public Long getLessThan1Male() {
+    public String getLessThan1Male() {
         return lessThan1Male;
     }
 
-    public void setLessThan1Male(Long lessThan1Male) {
+    public void setLessThan1Male(String lessThan1Male) {
         this.lessThan1Male = lessThan1Male;
     }
 
-    public Long getLessThan1Female() {
+    public String getLessThan1Female() {
         return lessThan1Female;
     }
 
-    public void setLessThan1Female(Long lessThan1Female) {
+    public void setLessThan1Female(String lessThan1Female) {
         this.lessThan1Female = lessThan1Female;
     }
 
-    public Long getOneTofiveMale() {
+    public String getOneTofiveMale() {
         return oneTofiveMale;
     }
 
-    public void setOneTofiveMale(Long oneTofiveMale) {
+    public void setOneTofiveMale(String oneTofiveMale) {
         this.oneTofiveMale = oneTofiveMale;
     }
 
-    public Long getOneTofiveFemale() {
+    public String getOneTofiveFemale() {
         return oneTofiveFemale;
     }
 
-    public void setOneTofiveFemale(Long oneTofiveFemale) {
+    public void setOneTofiveFemale(String oneTofiveFemale) {
         this.oneTofiveFemale = oneTofiveFemale;
     }
 
-    public Long getSixToNineMale() {
+    public String getSixToNineMale() {
         return sixToNineMale;
     }
 
-    public void setSixToNineMale(Long sixToNineMale) {
+    public void setSixToNineMale(String sixToNineMale) {
         this.sixToNineMale = sixToNineMale;
     }
 
-    public Long getSixToNineFemale() {
+    public String getSixToNineFemale() {
         return sixToNineFemale;
     }
 
-    public void setSixToNineFemale(Long sixToNineFemale) {
+    public void setSixToNineFemale(String sixToNineFemale) {
         this.sixToNineFemale = sixToNineFemale;
     }
 
-    public Long getTenToFourteenMale() {
+    public String getTenToFourteenMale() {
         return tenToFourteenMale;
     }
 
-    public void setTenToFourteenMale(Long tenToFourteenMale) {
+    public void setTenToFourteenMale(String tenToFourteenMale) {
         this.tenToFourteenMale = tenToFourteenMale;
     }
 
-    public Long getTenToFourteenFemale() {
+    public String getTenToFourteenFemale() {
         return tenToFourteenFemale;
     }
 
-    public void setTenToFourteenFemale(Long tenToFourteenFemale) {
+    public void setTenToFourteenFemale(String tenToFourteenFemale) {
         this.tenToFourteenFemale = tenToFourteenFemale;
     }
 
-    public Long getFifteenToNineteenMale() {
+    public String getFifteenToNineteenMale() {
         return fifteenToNineteenMale;
     }
 
-    public void setFifteenToNineteenMale(Long fifteenToNineteenMale) {
+    public void setFifteenToNineteenMale(String fifteenToNineteenMale) {
         this.fifteenToNineteenMale = fifteenToNineteenMale;
     }
 
-    public Long getFifteenToNineteenFemale() {
+    public String getFifteenToNineteenFemale() {
         return fifteenToNineteenFemale;
     }
 
-    public void setFifteenToNineteenFemale(Long fifteenToNineteenFemale) {
+    public void setFifteenToNineteenFemale(String fifteenToNineteenFemale) {
         this.fifteenToNineteenFemale = fifteenToNineteenFemale;
     }
 
-    public Long getTwentyToTwentyFourMale() {
+    public String getTwentyToTwentyFourMale() {
         return twentyToTwentyFourMale;
     }
 
-    public void setTwentyToTwentyFourMale(Long twentyToTwentyFourMale) {
+    public void setTwentyToTwentyFourMale(String twentyToTwentyFourMale) {
         this.twentyToTwentyFourMale = twentyToTwentyFourMale;
     }
 
-    public Long getTwentyToTwentyFourFemale() {
+    public String getTwentyToTwentyFourFemale() {
         return twentyToTwentyFourFemale;
     }
 
-    public void setTwentyToTwentyFourFemale(Long twentyToTwentyFourFemale) {
+    public void setTwentyToTwentyFourFemale(String twentyToTwentyFourFemale) {
         this.twentyToTwentyFourFemale = twentyToTwentyFourFemale;
     }
 
-    public Long getTwentyFiveToFourtyNineMale() {
+    public String getTwentyFiveToFourtyNineMale() {
         return twentyFiveToFourtyNineMale;
     }
 
-    public void setTwentyFiveToFourtyNineMale(Long twentyFiveToFourtyNineMale) {
+    public void setTwentyFiveToFourtyNineMale(String twentyFiveToFourtyNineMale) {
         this.twentyFiveToFourtyNineMale = twentyFiveToFourtyNineMale;
     }
 
-    public Long getTwentyFiveToFourtyNineFemale() {
+    public String getTwentyFiveToFourtyNineFemale() {
         return twentyFiveToFourtyNineFemale;
     }
 
-    public void setTwentyFiveToFourtyNineFemale(Long twentyFiveToFourtyNineFemale) {
+    public void setTwentyFiveToFourtyNineFemale(String twentyFiveToFourtyNineFemale) {
         this.twentyFiveToFourtyNineFemale = twentyFiveToFourtyNineFemale;
     }
 
-    public Long getFiftyToFiftyNineMale() {
+    public String getFiftyToFiftyNineMale() {
         return fiftyToFiftyNineMale;
     }
 
-    public void setFiftyToFiftyNineMale(Long fiftyToFiftyNineMale) {
+    public void setFiftyToFiftyNineMale(String fiftyToFiftyNineMale) {
         this.fiftyToFiftyNineMale = fiftyToFiftyNineMale;
     }
 
-    public Long getFiftyToFiftyNineFemale() {
+    public String getFiftyToFiftyNineFemale() {
         return fiftyToFiftyNineFemale;
     }
 
-    public void setFiftyToFiftyNineFemale(Long fiftyToFiftyNineFemale) {
+    public void setFiftyToFiftyNineFemale(String fiftyToFiftyNineFemale) {
         this.fiftyToFiftyNineFemale = fiftyToFiftyNineFemale;
     }
 
-    public Long getAboveSixtyMale() {
+    public String getAboveSixtyMale() {
         return aboveSixtyMale;
     }
 
-    public void setAboveSixtyMale(Long aboveSixtyMale) {
+    public void setAboveSixtyMale(String aboveSixtyMale) {
         this.aboveSixtyMale = aboveSixtyMale;
     }
 
-    public Long getAboveSixtyFemale() {
+    public String getAboveSixtyFemale() {
         return aboveSixtyFemale;
     }
 
-    public void setAboveSixtyFemale(Long aboveSixtyFemale) {
+    public void setAboveSixtyFemale(String aboveSixtyFemale) {
         this.aboveSixtyFemale = aboveSixtyFemale;
     }
 
-    public Long getTotalMale() {
+    public String getTotalMale() {
         return totalMale;
     }
 
-    public void setTotalMale(Long totalMale) {
+    public void setTotalMale(String totalMale) {
         this.totalMale = totalMale;
     }
 
-    public Long getTotalFemale() {
+    public String getTotalFemale() {
         return totalFemale;
     }
 
-    public void setTotalFemale(Long totalFemale) {
+    public void setTotalFemale(String totalFemale) {
         this.totalFemale = totalFemale;
     }
-
-
 }

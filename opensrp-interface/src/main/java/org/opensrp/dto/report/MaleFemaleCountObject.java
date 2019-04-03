@@ -7,23 +7,23 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class MaleFemaleCountObject {
     @JsonProperty
-    private Long male;
+    private String male;
     @JsonProperty
-    private Long female;
+    private String female;
 
-    public Long getMale() {
+    public String getMale() {
         return male;
     }
 
-    public void setMale(Long male) {
+    public void setMale(String male) {
         this.male = male;
     }
 
-    public Long getFemale() {
+    public String getFemale() {
         return female;
     }
 
-    public void setFemale(Long female) {
+    public void setFemale(String female) {
         this.female = female;
     }
 

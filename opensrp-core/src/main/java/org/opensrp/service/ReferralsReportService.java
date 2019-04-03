@@ -69,8 +69,8 @@ public class ReferralsReportService {
                 registrationReasonsReportDTO.setLessThan1Male(lessThan1yearRegistrationsList.get(0).getMale());
                 registrationReasonsReportDTO.setLessThan1Female(lessThan1yearRegistrationsList.get(0).getFemale());
 
-                totalMale += lessThan1yearRegistrationsList.get(0).getMale();
-                totalFemale += lessThan1yearRegistrationsList.get(0).getFemale();
+                totalMale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -84,8 +84,8 @@ public class ReferralsReportService {
                 registrationReasonsReportDTO.setOneTofiveMale(_1to5RegistrationsList.get(0).getMale());
                 registrationReasonsReportDTO.setOneTofiveFemale(_1to5RegistrationsList.get(0).getFemale());
 
-                totalMale += _1to5RegistrationsList.get(0).getMale();
-                totalFemale += _1to5RegistrationsList.get(0).getFemale();
+                totalMale += Integer.parseInt(_1to5RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_1to5RegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -99,8 +99,8 @@ public class ReferralsReportService {
                 registrationReasonsReportDTO.setSixToNineMale(_6to9RegistrationsList.get(0).getMale());
                 registrationReasonsReportDTO.setSixToNineFemale(_6to9RegistrationsList.get(0).getFemale());
 
-                totalMale += _6to9RegistrationsList.get(0).getMale();
-                totalFemale += _6to9RegistrationsList.get(0).getFemale();
+                totalMale += Integer.parseInt(_6to9RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_6to9RegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -114,8 +114,8 @@ public class ReferralsReportService {
                 registrationReasonsReportDTO.setTenToFourteenMale(_10To14RegistrationsList.get(0).getMale());
                 registrationReasonsReportDTO.setSixToNineFemale(_10To14RegistrationsList.get(0).getFemale());
 
-                totalMale += _10To14RegistrationsList.get(0).getMale();
-                totalFemale += _10To14RegistrationsList.get(0).getFemale();
+                totalMale += Integer.parseInt(_10To14RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_10To14RegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -129,8 +129,8 @@ public class ReferralsReportService {
                 registrationReasonsReportDTO.setFifteenToNineteenMale(_15To19RegistrationsList.get(0).getMale());
                 registrationReasonsReportDTO.setFifteenToNineteenFemale(_15To19RegistrationsList.get(0).getFemale());
 
-                totalMale += _15To19RegistrationsList.get(0).getMale();
-                totalFemale += _15To19RegistrationsList.get(0).getFemale();
+                totalMale += Integer.parseInt(_15To19RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_15To19RegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -145,8 +145,8 @@ public class ReferralsReportService {
                 registrationReasonsReportDTO.setTwentyToTwentyFourFemale(_20To24RegistrationsList.get(0).getFemale());
 
 
-                totalMale += _20To24RegistrationsList.get(0).getMale();
-                totalFemale += _20To24RegistrationsList.get(0).getFemale();
+                totalMale += Integer.parseInt(_20To24RegistrationsList.get(0).getMale());
+                totalFemale +=Integer.parseInt(_20To24RegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -161,8 +161,8 @@ public class ReferralsReportService {
                 registrationReasonsReportDTO.setTwentyFiveToFourtyNineFemale(_25To49RegistrationsList.get(0).getFemale());
 
 
-                totalMale += _25To49RegistrationsList.get(0).getMale();
-                totalFemale += _25To49RegistrationsList.get(0).getFemale();
+                totalMale += Integer.parseInt(_25To49RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_25To49RegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -176,8 +176,8 @@ public class ReferralsReportService {
                 registrationReasonsReportDTO.setFiftyToFiftyNineMale(_50To59RegistrationsList.get(0).getMale());
                 registrationReasonsReportDTO.setFiftyToFiftyNineFemale(_50To59RegistrationsList.get(0).getFemale());
 
-                totalMale += _50To59RegistrationsList.get(0).getMale();
-                totalFemale += _50To59RegistrationsList.get(0).getFemale();
+                totalMale += Integer.parseInt(_50To59RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_50To59RegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -192,14 +192,14 @@ public class ReferralsReportService {
                 registrationReasonsReportDTO.setAboveSixtyFemale(_60AboveRegistrationsList.get(0).getFemale());
 
 
-                totalMale += _60AboveRegistrationsList.get(0).getMale();
-                totalFemale += _60AboveRegistrationsList.get(0).getFemale();
+                totalMale += Integer.parseInt(_60AboveRegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_60AboveRegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            registrationReasonsReportDTO.setTotalMale(totalMale);
-            registrationReasonsReportDTO.setTotalFemale(totalFemale);
+            registrationReasonsReportDTO.setTotalMale(totalMale+"");
+            registrationReasonsReportDTO.setTotalFemale(totalFemale+"");
 
             registrationReasonsReportDTOS.add(registrationReasonsReportDTO);
         }
