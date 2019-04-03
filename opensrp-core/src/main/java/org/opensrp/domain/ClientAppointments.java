@@ -28,6 +28,7 @@ public class ClientAppointments implements Serializable {
 
 	public static final String COL_UPDATED_AT = "updated_at";
 
+	@GeneratedValue
 	@Column(name = COL_APPOINTMENT_ID, unique = true, nullable = false, insertable = false, updatable = false)
 	private Long appointment_id;
 

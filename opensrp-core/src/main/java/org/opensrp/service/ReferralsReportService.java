@@ -58,7 +58,7 @@ public class ReferralsReportService {
         List<RegistrationReasonsReportDTO> registrationReasonsReportDTOS = new ArrayList<>();
         for (ClientRegistrationReason clientRegistrationReason : clientRegistrationReasons) {
             RegistrationReasonsReportDTO registrationReasonsReportDTO = new RegistrationReasonsReportDTO();
-            registrationReasonsReportDTO.setRegistrationReason(clientRegistrationReason.getDescEn());
+            registrationReasonsReportDTO.setRegistrationReason(clientRegistrationReason.getDescSw());
             long totalMale = 0, totalFemale = 0;
 
             String lessThan1year = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-1), currentDate, clientRegistrationReason.getRegistrationId());
