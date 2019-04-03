@@ -36,7 +36,11 @@ public class ClientsAppointmentsRepository {
 		parameters.put(ClientAppointments.COL_IS_CANCELLED, clientAppointments.getIsCancelled());
 		parameters.put(ClientAppointments.COL_STATUS, clientAppointments.getStatus());
 		parameters.put(ClientAppointments.COL_APPOINTMENT_TYPE, clientAppointments.getAppointmentType());
-		parameters.put(ClientAppointments.COL_FOLLOWUP_REFERRAL_ID, clientAppointments.getClientReferrals().getId());
+		try {
+			parameters.put(ClientAppointments.COL_FOLLOWUP_REFERRAL_ID, clientAppointments.getClientReferrals().getId());
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		parameters.put(ClientAppointments.COL_CREATED_AT, clientAppointments.getUpdatedAt());
 		parameters.put(ClientAppointments.COL_UPDATED_AT, clientAppointments.getCreatedAt());
 
