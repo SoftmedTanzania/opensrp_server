@@ -2,6 +2,7 @@ package org.opensrp.service;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
 import org.joda.time.LocalDate;
 import org.opensrp.domain.ClientAppointments;
 import org.opensrp.domain.ClientReferrals;
