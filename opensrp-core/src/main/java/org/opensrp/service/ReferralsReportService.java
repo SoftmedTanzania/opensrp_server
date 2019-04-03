@@ -1,5 +1,6 @@
 package org.opensrp.service;
 
+import com.google.gson.Gson;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
@@ -202,6 +203,8 @@ public class ReferralsReportService {
 
             registrationReasonsReportDTOS.add(registrationReasonsReportDTO);
         }
+
+        logger.info("Report data source = "+new Gson().toJson(registrationReasonsReportDTOS));
 
         JRDataSource ds = new JRBeanCollectionDataSource(registrationReasonsReportDTOS);
         return ds;
