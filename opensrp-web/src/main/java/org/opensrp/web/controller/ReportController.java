@@ -1,13 +1,10 @@
 package org.opensrp.web.controller;
 
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.export.HtmlExporter;
-import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import net.sf.jasperreports.engine.export.*;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleHtmlExporterConfiguration;
-import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
-import net.sf.jasperreports.export.SimpleHtmlReportConfiguration;
+import net.sf.jasperreports.export.*;
 import net.sf.jasperreports.j2ee.servlets.ImageServlet;
 import net.sf.jasperreports.web.util.WebHtmlResourceHandler;
 import org.json.JSONArray;
@@ -413,40 +410,14 @@ public class ReportController {
         return modelAndView;
     }
 
-//    /**
-//     * Retrieves Report in HTML format
-//     *
-//     * @return
-//     */
-//    @RequestMapping(value = "/reports/total_registered_clients_html", method = RequestMethod.GET)
-//    public ModelAndView totalRegisteredClientsHtml(ModelAndView modelAndView) {
-//
-//
-//        // Assign the datasource to an instance of JRDataSource
-//        // JRDataSource is the datasource that Jasper understands
-//        // This is basically a wrapper to Java's collection classes
-//        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
-//
-//        // In order to use Spring's built-in Jasper support,
-//        // We are required to pass our datasource as a map parameter
-//        // parameterMap is the Model of our application
-//        Map<String, Object> parameterMap = new HashMap<String, Object>();
-//        parameterMap.put("datasource", datasource);
-//
-//        // xlsReport is the View of our application
-//        // This is declared inside the /WEB-INF/jasper-views.xml
-//        modelAndView = new ModelAndView("totalRegisteredClientsHtmlReport", parameterMap);
-//        // Return the View and the Model combined
-//        return modelAndView;
-//    }
 
     /**
      * Retrieves Report in HTML format
      *
      * @return
      */
-    @RequestMapping(value = "/reports/total_registered_clients_html", method = RequestMethod.GET)
-    public void html(HttpServletRequest request,
+    @RequestMapping(value = "/reports/total_registered_clients_html/{reportType}", method = RequestMethod.GET)
+    public void html(@PathVariable("reportType") String reportType, HttpServletRequest request,
                      HttpServletResponse response) {
 
         response.setContentType("text/html");
@@ -467,24 +438,19 @@ public class ReportController {
             parameters.put("ReportTitle", "Address Report");
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
 
-            HtmlExporter exporter = new HtmlExporter();
 
             request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
 
-            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-            SimpleHtmlExporterOutput output = new SimpleHtmlExporterOutput(out);
-            output.setImageHandler(new WebHtmlResourceHandler("image?image={0}"));
+            Exporter exporter =null;
+            if(reportType.equalsIgnoreCase("html")){
+                exporter = export(jasperPrint,1,out);
+            }else if(reportType.equalsIgnoreCase("pdf")){
+                exporter = export(jasperPrint,5,out);
+            }
 
-            SimpleHtmlExporterConfiguration exporterConfig = new SimpleHtmlExporterConfiguration();
-            exporterConfig.setBetweenPagesHtml("");
-            exporter.setConfiguration(exporterConfig);
 
-            SimpleHtmlReportConfiguration reportConfig = new SimpleHtmlReportConfiguration();
-            reportConfig.setRemoveEmptySpaceBetweenRows(true);
-            exporter.setConfiguration(reportConfig);
-
-            exporter.setExporterOutput(output);
             exporter.exportReport();
+
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -508,6 +474,65 @@ public class ReportController {
 
         }
     }
+
+
+    public Exporter export(final JasperPrint print,int PrintType,PrintWriter out) throws JRException {
+        final Exporter exporter;
+        boolean html = false;
+
+        switch (PrintType) {
+            case 1:
+                exporter = new HtmlExporter();
+                exporter.setExporterOutput(new SimpleHtmlExporterOutput(out));
+
+
+                SimpleHtmlExporterConfiguration exporterConfig = new SimpleHtmlExporterConfiguration();
+                exporterConfig.setBetweenPagesHtml("");
+                exporter.setConfiguration(exporterConfig);
+
+                SimpleHtmlReportConfiguration reportConfig = new SimpleHtmlReportConfiguration();
+                reportConfig.setRemoveEmptySpaceBetweenRows(true);
+                exporter.setConfiguration(reportConfig);
+
+                html = true;
+                break;
+
+            case 2:
+                exporter = new JRCsvExporter();
+                break;
+
+            case 3:
+                exporter = new JRXmlExporter();
+                break;
+
+            case 4:
+                exporter = new JRXlsxExporter();
+                break;
+
+            case 5:
+                exporter = new JRPdfExporter();
+                break;
+            default:
+                exporter = new HtmlExporter();
+                exporter.setExporterOutput(new SimpleHtmlExporterOutput(out));
+                html = true;
+                break;
+        }
+
+        if (!html) {
+            final ByteArrayOutputStream out1 = new ByteArrayOutputStream();
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out1));
+        }
+
+        exporter.setExporterInput(new SimpleExporterInput(print));
+        SimpleHtmlExporterOutput output = new SimpleHtmlExporterOutput(out);
+        output.setImageHandler(new WebHtmlResourceHandler("image?image={0}"));
+        exporter.setExporterOutput(output);
+
+        return exporter;
+    }
+
+
 
 
     /**
