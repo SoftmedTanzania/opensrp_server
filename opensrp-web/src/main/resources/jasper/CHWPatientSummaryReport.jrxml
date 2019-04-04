@@ -543,7 +543,7 @@
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+					<textElement textAlignment="Left" verticalAlignment="Middle" lineSpacing="Single">
 						<font size="8"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{registrationReason}]]></textFieldExpression>
@@ -851,7 +851,7 @@
 					</box>
 				</frame>
 				<staticText>
-					<reportElement x="20" y="1" width="70" height="19"/>
+					<reportElement x="0" y="1" width="90" height="19"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
