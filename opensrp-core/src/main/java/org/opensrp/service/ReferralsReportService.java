@@ -65,6 +65,7 @@ public class ReferralsReportService {
 
             List<MaleFemaleCountObject> lessThan1yearRegistrationsList = null;
             try {
+                logger.info("Less than one year SQL = "+lessThan1year);
                 lessThan1yearRegistrationsList = clientsRepository.getMaleFemaleCountReports(lessThan1year, null);
                 registrationReasonsReportDTO.setLessThan1Male(lessThan1yearRegistrationsList.get(0).getMale());
                 registrationReasonsReportDTO.setLessThan1Female(lessThan1yearRegistrationsList.get(0).getFemale());
@@ -80,6 +81,7 @@ public class ReferralsReportService {
 
             List<MaleFemaleCountObject> _1to5RegistrationsList = null;
             try {
+                logger.info("One to Five years SQL = "+_1to5);
                 _1to5RegistrationsList = clientsRepository.getMaleFemaleCountReports(_1to5, null);
                 registrationReasonsReportDTO.setOneTofiveMale(_1to5RegistrationsList.get(0).getMale());
                 registrationReasonsReportDTO.setOneTofiveFemale(_1to5RegistrationsList.get(0).getFemale());
