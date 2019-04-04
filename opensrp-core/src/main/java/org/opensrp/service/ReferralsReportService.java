@@ -55,9 +55,13 @@ public class ReferralsReportService {
             e.printStackTrace();
         }
 
+        int sn = 0;
         List<RegistrationReasonsReportDTO> registrationReasonsReportDTOS = new ArrayList<>();
         for (ClientRegistrationReason clientRegistrationReason : clientRegistrationReasons) {
+            sn++;
             RegistrationReasonsReportDTO registrationReasonsReportDTO = new RegistrationReasonsReportDTO();
+
+            registrationReasonsReportDTO.setSn(String.valueOf(sn));
             registrationReasonsReportDTO.setRegistrationReason(clientRegistrationReason.getDescSw());
             long totalMale = 0, totalFemale = 0;
 
