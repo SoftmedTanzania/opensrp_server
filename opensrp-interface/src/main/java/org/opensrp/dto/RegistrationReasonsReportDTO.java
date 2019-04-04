@@ -1,7 +1,7 @@
 package org.opensrp.dto;
 
 public class RegistrationReasonsReportDTO {
-    private String registrationReason;
+    private String registrationReason,sn;
     private String lessThan1Male,lessThan1Female,oneTofiveMale,oneTofiveFemale,sixToNineMale,sixToNineFemale,tenToFourteenMale,tenToFourteenFemale,
             fifteenToNineteenMale,fifteenToNineteenFemale,twentyToTwentyFourMale,twentyToTwentyFourFemale,twentyFiveToFourtyNineMale,twentyFiveToFourtyNineFemale,fiftyToFiftyNineMale,fiftyToFiftyNineFemale,aboveSixtyMale, aboveSixtyFemale,totalMale,totalFemale;
 
@@ -171,5 +171,13 @@ public class RegistrationReasonsReportDTO {
 
     public void setTotalFemale(String totalFemale) {
         this.totalFemale = totalFemale;
+    }
+
+    public String getSn() {
+        return sn;
+    }
+
+    public void setSn(String sn) {
+        this.sn = sn;
     }
 }
