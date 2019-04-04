@@ -1,16 +1,16 @@
 package org.opensrp.dto;
 
-public class RegistrationReasonsReportDTO {
-    private String registrationReason,sn;
+public class AgeGroupReportsReportDTO {
+    private String itemName,sn;
     private String lessThan1Male,lessThan1Female,oneTofiveMale,oneTofiveFemale,sixToNineMale,sixToNineFemale,tenToFourteenMale,tenToFourteenFemale,
             fifteenToNineteenMale,fifteenToNineteenFemale,twentyToTwentyFourMale,twentyToTwentyFourFemale,twentyFiveToFourtyNineMale,twentyFiveToFourtyNineFemale,fiftyToFiftyNineMale,fiftyToFiftyNineFemale,aboveSixtyMale, aboveSixtyFemale,totalMale,totalFemale;
 
-    public String getRegistrationReason() {
-        return registrationReason;
+    public String getItemName() {
+        return itemName;
     }
 
-    public void setRegistrationReason(String registrationReason) {
-        this.registrationReason = registrationReason;
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     public String getLessThan1Male() {
