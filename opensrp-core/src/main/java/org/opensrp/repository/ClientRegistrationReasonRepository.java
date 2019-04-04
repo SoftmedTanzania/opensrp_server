@@ -33,6 +33,8 @@ public class ClientRegistrationReasonRepository {
         parameters.put(ClientRegistrationReason.COL_DESC_EN, clientRegistrationReason.getDescEn());
         parameters.put(ClientRegistrationReason.COL_DESC_SW, clientRegistrationReason.getDescSw());
         parameters.put(ClientRegistrationReason.COL_IS_ACTIVE, clientRegistrationReason.isActive());
+        parameters.put(ClientRegistrationReason.COL_APPLICABLE_TO_MEN, clientRegistrationReason.isApplicableToMen());
+        parameters.put(ClientRegistrationReason.COL_APPLICABLE_TO_WOMEN, clientRegistrationReason.isApplicableToWomen());
         parameters.put(ClientRegistrationReason.COL_CREATED_AT, clientRegistrationReason.getCreatedAt());
         parameters.put(ClientRegistrationReason.COL_UPDATED_AT, clientRegistrationReason.getCreatedAt());
 
@@ -63,6 +65,8 @@ public class ClientRegistrationReasonRepository {
             clientRegistrationReason.setDescEn(rs.getString(rs.findColumn(ClientRegistrationReason.COL_DESC_EN)));
             clientRegistrationReason.setDescSw(rs.getString(rs.findColumn(ClientRegistrationReason.COL_DESC_SW)));
             clientRegistrationReason.setActive(rs.getBoolean(rs.findColumn(ClientRegistrationReason.COL_IS_ACTIVE)));
+            clientRegistrationReason.setApplicableToMen(rs.getBoolean(rs.findColumn(ClientRegistrationReason.COL_APPLICABLE_TO_MEN)));
+            clientRegistrationReason.setApplicableToWomen(rs.getBoolean(rs.findColumn(ClientRegistrationReason.COL_APPLICABLE_TO_WOMEN)));
             clientRegistrationReason.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ClientRegistrationReason.COL_CREATED_AT)).getTime()));
             clientRegistrationReason.setUpdatedAt(rs.getDate(rs.findColumn(ClientRegistrationReason.COL_UPDATED_AT)));
             return clientRegistrationReason;

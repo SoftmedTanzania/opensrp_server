@@ -69,11 +69,17 @@ public class ReferralsReportService {
             try {
                 logger.info("Less than one year SQL = "+lessThan1year);
                 lessThan1yearRegistrationsList = clientsRepository.getMaleFemaleCountReports(lessThan1year, null);
-                ageGroupReportsReportDTO.setLessThan1Male(lessThan1yearRegistrationsList.get(0).getMale());
-                ageGroupReportsReportDTO.setLessThan1Female(lessThan1yearRegistrationsList.get(0).getFemale());
 
-                totalMale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getMale());
-                totalFemale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setLessThan1Male(lessThan1yearRegistrationsList.get(0).getMale());
+                    totalMale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getMale());
+                }
+
+                if(clientRegistrationReason.isApplicableToWomen()) {
+                    ageGroupReportsReportDTO.setLessThan1Female(lessThan1yearRegistrationsList.get(0).getFemale());
+                    totalFemale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getFemale());
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -85,11 +91,18 @@ public class ReferralsReportService {
             try {
                 logger.info("One to Five years SQL = "+_1to5);
                 _1to5RegistrationsList = clientsRepository.getMaleFemaleCountReports(_1to5, null);
-                ageGroupReportsReportDTO.setOneTofiveMale(_1to5RegistrationsList.get(0).getMale());
-                ageGroupReportsReportDTO.setOneTofiveFemale(_1to5RegistrationsList.get(0).getFemale());
 
-                totalMale += Integer.parseInt(_1to5RegistrationsList.get(0).getMale());
-                totalFemale += Integer.parseInt(_1to5RegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setOneTofiveMale(_1to5RegistrationsList.get(0).getMale());
+                    totalMale += Integer.parseInt(_1to5RegistrationsList.get(0).getMale());
+                }
+
+                if(clientRegistrationReason.isApplicableToWomen()) {
+                    ageGroupReportsReportDTO.setOneTofiveFemale(_1to5RegistrationsList.get(0).getFemale());
+                    totalFemale += Integer.parseInt(_1to5RegistrationsList.get(0).getFemale());
+                }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -100,11 +113,17 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _6to9RegistrationsList = null;
             try {
                 _6to9RegistrationsList = clientsRepository.getMaleFemaleCountReports(_6to9, null);
-                ageGroupReportsReportDTO.setSixToNineMale(_6to9RegistrationsList.get(0).getMale());
-                ageGroupReportsReportDTO.setSixToNineFemale(_6to9RegistrationsList.get(0).getFemale());
 
-                totalMale += Integer.parseInt(_6to9RegistrationsList.get(0).getMale());
-                totalFemale += Integer.parseInt(_6to9RegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setSixToNineMale(_6to9RegistrationsList.get(0).getMale());
+                    totalMale += Integer.parseInt(_6to9RegistrationsList.get(0).getMale());
+                }
+
+                if(clientRegistrationReason.isApplicableToWomen()) {
+                    ageGroupReportsReportDTO.setSixToNineFemale(_6to9RegistrationsList.get(0).getFemale());
+                    totalFemale += Integer.parseInt(_6to9RegistrationsList.get(0).getFemale());
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -115,26 +134,38 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _10To14RegistrationsList = null;
             try {
                 _10To14RegistrationsList = clientsRepository.getMaleFemaleCountReports(_10To14, null);
-                ageGroupReportsReportDTO.setTenToFourteenMale(_10To14RegistrationsList.get(0).getMale());
-                ageGroupReportsReportDTO.setTenToFourteenFemale(_10To14RegistrationsList.get(0).getFemale());
 
-                totalMale += Integer.parseInt(_10To14RegistrationsList.get(0).getMale());
-                totalFemale += Integer.parseInt(_10To14RegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setTenToFourteenMale(_10To14RegistrationsList.get(0).getMale());
+                    totalMale += Integer.parseInt(_10To14RegistrationsList.get(0).getMale());
+                }
+
+                if(clientRegistrationReason.isApplicableToWomen()) {
+                    ageGroupReportsReportDTO.setTenToFourteenFemale(_10To14RegistrationsList.get(0).getFemale());
+                    totalFemale += Integer.parseInt(_10To14RegistrationsList.get(0).getFemale());
+                }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
 
             String _15To19 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-19), getDateByYearString(-14), clientRegistrationReason.getRegistrationId());
-
             List<MaleFemaleCountObject> _15To19RegistrationsList = null;
             try {
                 _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19, null);
-                ageGroupReportsReportDTO.setFifteenToNineteenMale(_15To19RegistrationsList.get(0).getMale());
-                ageGroupReportsReportDTO.setFifteenToNineteenFemale(_15To19RegistrationsList.get(0).getFemale());
 
-                totalMale += Integer.parseInt(_15To19RegistrationsList.get(0).getMale());
-                totalFemale += Integer.parseInt(_15To19RegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setFifteenToNineteenMale(_15To19RegistrationsList.get(0).getMale());
+                    totalMale += Integer.parseInt(_15To19RegistrationsList.get(0).getMale());
+                }
+
+                if(clientRegistrationReason.isApplicableToWomen()) {
+                    ageGroupReportsReportDTO.setFifteenToNineteenFemale(_15To19RegistrationsList.get(0).getFemale());
+                    totalFemale += Integer.parseInt(_15To19RegistrationsList.get(0).getFemale());
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -145,12 +176,16 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _20To24RegistrationsList = null;
             try {
                 _20To24RegistrationsList = clientsRepository.getMaleFemaleCountReports(_20To24, null);
-                ageGroupReportsReportDTO.setTwentyToTwentyFourMale(_20To24RegistrationsList.get(0).getMale());
-                ageGroupReportsReportDTO.setTwentyToTwentyFourFemale(_20To24RegistrationsList.get(0).getFemale());
 
+                if(clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setTwentyToTwentyFourMale(_20To24RegistrationsList.get(0).getMale());totalMale += Integer.parseInt(_20To24RegistrationsList.get(0).getMale());
+                }
 
-                totalMale += Integer.parseInt(_20To24RegistrationsList.get(0).getMale());
-                totalFemale +=Integer.parseInt(_20To24RegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToWomen()) {
+                    ageGroupReportsReportDTO.setTwentyToTwentyFourFemale(_20To24RegistrationsList.get(0).getFemale());
+                    totalFemale +=Integer.parseInt(_20To24RegistrationsList.get(0).getFemale());
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -162,12 +197,17 @@ public class ReferralsReportService {
             try {
                 System.out.println("report Test : "+_25To49);
                 _25To49RegistrationsList = clientsRepository.getMaleFemaleCountReports(_25To49, null);
-                ageGroupReportsReportDTO.setTwentyFiveToFourtyNineMale(_25To49RegistrationsList.get(0).getMale());
-                ageGroupReportsReportDTO.setTwentyFiveToFourtyNineFemale(_25To49RegistrationsList.get(0).getFemale());
 
+                if(clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setTwentyFiveToFourtyNineMale(_25To49RegistrationsList.get(0).getMale());
+                    totalMale += Integer.parseInt(_25To49RegistrationsList.get(0).getMale());
+                                   }
 
-                totalMale += Integer.parseInt(_25To49RegistrationsList.get(0).getMale());
-                totalFemale += Integer.parseInt(_25To49RegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToWomen()) {
+                    ageGroupReportsReportDTO.setTwentyFiveToFourtyNineFemale(_25To49RegistrationsList.get(0).getFemale());
+                    totalFemale += Integer.parseInt(_25To49RegistrationsList.get(0).getFemale());
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -178,27 +218,36 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _50To59RegistrationsList = null;
             try {
                 _50To59RegistrationsList = clientsRepository.getMaleFemaleCountReports(_50To59, null);
-                ageGroupReportsReportDTO.setFiftyToFiftyNineMale(_50To59RegistrationsList.get(0).getMale());
-                ageGroupReportsReportDTO.setFiftyToFiftyNineFemale(_50To59RegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setFiftyToFiftyNineMale(_50To59RegistrationsList.get(0).getMale());
+                    totalMale += Integer.parseInt(_50To59RegistrationsList.get(0).getMale());
+                }
 
-                totalMale += Integer.parseInt(_50To59RegistrationsList.get(0).getMale());
-                totalFemale += Integer.parseInt(_50To59RegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToWomen()) {
+                    ageGroupReportsReportDTO.setFiftyToFiftyNineFemale(_50To59RegistrationsList.get(0).getFemale());
+                    totalFemale += Integer.parseInt(_50To59RegistrationsList.get(0).getFemale());
+                }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
 
             String _60Above = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", getDateByYearString(-59), clientRegistrationReason.getRegistrationId());
-
             List<MaleFemaleCountObject> _60AboveRegistrationsList = null;
             try {
                 _60AboveRegistrationsList = clientsRepository.getMaleFemaleCountReports(_60Above, null);
-                ageGroupReportsReportDTO.setAboveSixtyMale(_60AboveRegistrationsList.get(0).getMale());
-                ageGroupReportsReportDTO.setAboveSixtyFemale(_60AboveRegistrationsList.get(0).getFemale());
 
+                if(clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setAboveSixtyMale(_60AboveRegistrationsList.get(0).getMale());
+                    totalMale += Integer.parseInt(_60AboveRegistrationsList.get(0).getMale());
+                }
 
-                totalMale += Integer.parseInt(_60AboveRegistrationsList.get(0).getMale());
-                totalFemale += Integer.parseInt(_60AboveRegistrationsList.get(0).getFemale());
+                if(clientRegistrationReason.isApplicableToWomen()) {
+                    ageGroupReportsReportDTO.setAboveSixtyFemale(_60AboveRegistrationsList.get(0).getFemale());
+                    totalFemale += Integer.parseInt(_60AboveRegistrationsList.get(0).getFemale());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
