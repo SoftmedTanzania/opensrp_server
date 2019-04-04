@@ -413,39 +413,39 @@ public class ReportController {
         return modelAndView;
     }
 
+//    /**
+//     * Retrieves Report in HTML format
+//     *
+//     * @return
+//     */
+//    @RequestMapping(value = "/reports/total_registered_clients_html", method = RequestMethod.GET)
+//    public ModelAndView totalRegisteredClientsHtml(ModelAndView modelAndView) {
+//
+//
+//        // Assign the datasource to an instance of JRDataSource
+//        // JRDataSource is the datasource that Jasper understands
+//        // This is basically a wrapper to Java's collection classes
+//        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+//
+//        // In order to use Spring's built-in Jasper support,
+//        // We are required to pass our datasource as a map parameter
+//        // parameterMap is the Model of our application
+//        Map<String, Object> parameterMap = new HashMap<String, Object>();
+//        parameterMap.put("datasource", datasource);
+//
+//        // xlsReport is the View of our application
+//        // This is declared inside the /WEB-INF/jasper-views.xml
+//        modelAndView = new ModelAndView("totalRegisteredClientsHtmlReport", parameterMap);
+//        // Return the View and the Model combined
+//        return modelAndView;
+//    }
+
     /**
      * Retrieves Report in HTML format
      *
      * @return
      */
     @RequestMapping(value = "/reports/total_registered_clients_html", method = RequestMethod.GET)
-    public ModelAndView totalRegisteredClientsHtml(ModelAndView modelAndView) {
-
-
-        // Assign the datasource to an instance of JRDataSource
-        // JRDataSource is the datasource that Jasper understands
-        // This is basically a wrapper to Java's collection classes
-        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
-
-        // In order to use Spring's built-in Jasper support,
-        // We are required to pass our datasource as a map parameter
-        // parameterMap is the Model of our application
-        Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put("datasource", datasource);
-
-        // xlsReport is the View of our application
-        // This is declared inside the /WEB-INF/jasper-views.xml
-        modelAndView = new ModelAndView("totalRegisteredClientsHtmlReport", parameterMap);
-        // Return the View and the Model combined
-        return modelAndView;
-    }
-
-    /**
-     * Retrieves Report in HTML format
-     *
-     * @return
-     */
-    @RequestMapping(value = "/reports/htmlTest", method = RequestMethod.GET)
     public void html(HttpServletRequest request,
                      HttpServletResponse response) {
 

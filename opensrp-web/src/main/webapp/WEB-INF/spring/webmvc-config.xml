@@ -8,7 +8,7 @@
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
 
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="1">
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
         <property name="prefix">
             <value>/WEB-INF/</value>
         </property>
@@ -17,8 +17,6 @@
         </property>
     </bean>
 
-    <bean class="org.springframework.web.servlet.view.XmlViewResolver"
-          p:location="classpath:/jasper-views.xml"  p:order="0" />
 
     <mvc:annotation-driven/>
 
@@ -27,9 +25,6 @@
                    location="/resources/"
                    cache-period="10000"/>
 
-    <mvc:interceptors>
-        <bean class="org.opensrp.web.cors.Spring3CorsFilterHandlerInterceptor"/>
-    </mvc:interceptors>
 
     <mvc:default-servlet-handler/>
 
