@@ -484,6 +484,7 @@ public class ReportController {
             exporter.setConfiguration(reportConfig);
 
             exporter.setExporterOutput(output);
+            exporter.exportReport();
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -508,49 +509,6 @@ public class ReportController {
         }
     }
 
-    @RequestMapping(value = "/reports/htmlTest1", method = RequestMethod.GET)
-    public void getReport(HttpServletRequest request,
-                          HttpServletResponse response) {
-
-        response.setContentType("text/html");
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        File sourceFile = null;
-        try {
-            sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
-
-            JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
-
-
-            JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
-
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("ReportTitle", "Address Report");
-
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
-
-
-            ServletOutputStream servletOutputStream = response.getOutputStream();
-            response.setContentType("text/html");
-            response.setHeader("Content-disposition", "inline");
-
-
-            byte[] aux = exportReportToHtmlStream(jasperPrint);
-
-            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
-            Enumeration temp = request.getSession().getAttributeNames();
-            servletOutputStream.write(aux);
-            servletOutputStream.flush();
-            servletOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Retrieves Report in PDF format
