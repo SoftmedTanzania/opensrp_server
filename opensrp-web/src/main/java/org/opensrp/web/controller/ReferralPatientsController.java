@@ -1,7 +1,6 @@
 package org.opensrp.web.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -75,7 +74,7 @@ public class ReferralPatientsController {
                                       TBEncounterRepository tbEncounterRepository, ClientReferralRepository clientReferralRepository, TBPatientsRepository tbPatientsRepository, FormSubmissionService formSubmissionService,
                                       FormEntityConverter formEntityConverter, GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
                                       ClientReferralIndicatorRepository clientReferralIndicatorRepository, ReferralPatientsService referralPatientService, RapidProServiceImpl rapidProService, ReferralServiceRepository referralServiceRepository, HealthFacilityRepository facilityRepository,
-                                      TBTestTypeRepository tbTestTypeRepository, TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository, OpenmrsUserService openmrsUserService, ServiceIndicatorRepository serviceIndicatorRepository,ClientsRepository clientsRepository) {
+                                      TBTestTypeRepository tbTestTypeRepository, TBMedicatinRegimesRepository tbSputumMedicationRegimesRepository, OpenmrsUserService openmrsUserService, ServiceIndicatorRepository serviceIndicatorRepository, ClientsRepository clientsRepository) {
         this.patientsService = patientsService;
         this.scheduler = scheduler;
         this.healthFacilityRepository = healthFacilityRepository;
@@ -244,16 +243,16 @@ public class ReferralPatientsController {
                             referral.setInstanceId(UUID.randomUUID().toString());
                             referral.setPatient(patient);
                             ReferralType referralType = new ReferralType();
-                            referralType.setReferralTypeId((long)4);
+                            referralType.setReferralTypeId((long) 4);
                             referral.setReferralType(referralType);
 
-                            long referralId =  clientReferralRepository.save(referral);
+                            long referralId = clientReferralRepository.save(referral);
                             referral.setId(referralId);
 
                             ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(referral);
                             referralsDTOS.add(referralsDTO);
 
-                            clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = '"+referralId+"' WHERE " + ClientAppointments.COL_APPOINTMENT_ID + " = " + appointmentId);
+                            clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = '" + referralId + "' WHERE " + ClientAppointments.COL_APPOINTMENT_ID + " = " + appointmentId);
                             savedAppointmentsCount++;
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -261,7 +260,7 @@ public class ReferralPatientsController {
 
 
                     }
-                    if(savedAppointmentsCount>0){
+                    if (savedAppointmentsCount > 0) {
 
                         PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
                         PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
@@ -276,35 +275,34 @@ public class ReferralPatientsController {
             }
 
 
-
-            Map<String,List<PatientReferralsDTO>> wardsCTCPatients =  new HashMap<>();
+            Map<String, List<PatientReferralsDTO>> wardsCTCPatients = new HashMap<>();
             //Sorting the ctc patients by their wards and villages
-            for(PatientReferralsDTO dto:successfullySavedLTFs){
-                if(wardsCTCPatients.get(dto.getPatientsDTO().getWard())!=null){
+            for (PatientReferralsDTO dto : successfullySavedLTFs) {
+                if (wardsCTCPatients.get(dto.getPatientsDTO().getWard()) != null) {
                     wardsCTCPatients.get(dto.getPatientsDTO().getWard()).add(dto);
 
-                }else{
+                } else {
                     List<PatientReferralsDTO> ctcPatientsDTOs = new ArrayList<>();
                     ctcPatientsDTOs.add(dto);
-                    wardsCTCPatients.put(dto.getPatientsDTO().getWard(),ctcPatientsDTOs);
+                    wardsCTCPatients.put(dto.getPatientsDTO().getWard(), ctcPatientsDTOs);
                 }
             }
 
-            JSONArray teamMembersArray =  openmrsUserService.getTeamMembers();
-            Map<String,List<String>> chwsInAWard =  new HashMap<>();
+            JSONArray teamMembersArray = openmrsUserService.getTeamMembers();
+            Map<String, List<String>> chwsInAWard = new HashMap<>();
 
             //Looping through the LTFs wards and for each ward, identify the CHWs involved.
-            for (Map.Entry<String,List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
-                System.out.println("ward = "+entry.getKey());
+            for (Map.Entry<String, List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
+                System.out.println("ward = " + entry.getKey());
                 //for each ward loop through the CHWs obtain and categories them into their respective wards
-                for(int i=0; i<teamMembersArray.length();i++){
+                for (int i = 0; i < teamMembersArray.length(); i++) {
                     try {
                         JSONObject object = teamMembersArray.getJSONObject(i);
                         JSONObject person = object.getJSONObject("person");
                         String teamRole = object.getJSONObject("teamRole").getString("display");
                         if (teamRole.equals("CHW")) { //Checking if the team member is a CHW
                             JSONArray location = object.getJSONArray("locations");
-                            for(int j=0;j<location.length();j++){
+                            for (int j = 0; j < location.length(); j++) {
 
                                 try {
                                     //checking if the chw location or parent location is equal to the ctc client's ward
@@ -319,25 +317,29 @@ public class ReferralPatientsController {
 
                                         try {
                                             if (chwsInAWard.get(entry.getKey()) != null) {
-                                                chwsInAWard.get(entry.getKey()).add(googlePushNotificationsUsers.get(0).getGooglePushNotificationToken());
+                                                for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
+                                                    chwsInAWard.get(entry.getKey()).add(pushNotificationsUsers.getGooglePushNotificationToken());
+                                                }
                                             } else {
                                                 List<String> chwFCMTokensUUIDs = new ArrayList<>();
-                                                chwFCMTokensUUIDs.add(googlePushNotificationsUsers.get(0).getGooglePushNotificationToken());
+                                                for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
+                                                    chwFCMTokensUUIDs.add(pushNotificationsUsers.getGooglePushNotificationToken());
+                                                }
                                                 chwsInAWard.put(entry.getKey(), chwFCMTokensUUIDs);
                                             }
-                                        }catch (Exception e){
+                                        } catch (Exception e) {
                                             e.printStackTrace();
                                         }
 
                                         break;
                                     }
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
                             }
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -345,32 +347,35 @@ public class ReferralPatientsController {
             }
 
 
-            System.out.println("Sorted CTCPatients by wards = "+new Gson().toJson(wardsCTCPatients));
-            System.out.println("Sorted CHWs by wards = "+new Gson().toJson(chwsInAWard));
+            System.out.println("Sorted CTCPatients by wards = " + new Gson().toJson(wardsCTCPatients));
+            System.out.println("Sorted CHWs by wards = " + new Gson().toJson(chwsInAWard));
 
 
-           for (Map.Entry<String,List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
-               List<PatientReferralsDTO> ltfsReferralsDTOs = entry.getValue();
-               List<String> chwsFCMIds = chwsInAWard.get(entry.getKey());
-               int size = chwsFCMIds.size();
+            for (Map.Entry<String, List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
+                try {
+                    List<PatientReferralsDTO> ltfsReferralsDTOs = entry.getValue();
+                    List<String> chwsFCMIds = chwsInAWard.get(entry.getKey());
+                    int size = chwsFCMIds.size();
 
-               for(int i=0;i<ltfsReferralsDTOs.size();i++){
-                   PatientReferralsDTO patientReferralsDTO = ltfsReferralsDTOs.get(i);
+                    for (int i = 0; i < ltfsReferralsDTOs.size(); i++) {
+                        PatientReferralsDTO patientReferralsDTO = ltfsReferralsDTOs.get(i);
 
-                   String jsonString = new Gson().toJson(patientReferralsDTO);
-                   JSONObject msg = new JSONObject(jsonString);
-                   msg.put("type", "PatientReferral");
-                   try {
-
-                       //Issuing referrals to specific CHWs
-                       JSONArray tokens = new JSONArray();
-                       tokens.put(chwsFCMIds.get(i%size));
-                       googleFCMService.SendPushNotification(msg, tokens, false);
-                   } catch (Exception e) {
-                       e.printStackTrace();
-                   }
-               }
-           }
+                        String jsonString = new Gson().toJson(patientReferralsDTO);
+                        JSONObject msg = new JSONObject(jsonString);
+                        msg.put("type", "PatientReferral");
+                        try {
+                            //Issuing referrals to specific CHWs
+                            JSONArray tokens = new JSONArray();
+                            tokens.put(chwsFCMIds.get(i % size));
+                            googleFCMService.SendPushNotification(msg, tokens, false);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
             //TODO send push notifications to facility apps
             logger.debug(format("Added  ReferralClient and their appointments from CTC to queue.\nSubmissions: {0}", patientsDTOS));
@@ -608,7 +613,7 @@ public class ReferralPatientsController {
                     clientReferralIndicators.setClientReferrals(referral);
 
 
-                    ServiceIndicator serviceIndicator = serviceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM "+ServiceIndicator.tbName+" WHERE "+ServiceIndicator.COL_SERVICE_INDICATOR_ID+"=?",
+                    ServiceIndicator serviceIndicator = serviceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM " + ServiceIndicator.tbName + " WHERE " + ServiceIndicator.COL_SERVICE_INDICATOR_ID + "=?",
                             new Object[]{serviceIndicatorId}).get(0);
 
                     clientReferralIndicators.setServiceIndicator(serviceIndicator);
@@ -793,7 +798,7 @@ public class ReferralPatientsController {
                     }
                 }
 
-                referralPatientService.sendReferralFeedbackFCMNotification(referralsDTO.getServiceProviderUIID(),referralsDTO,referral.getReferralType().getReferralTypeId());
+                referralPatientService.sendReferralFeedbackFCMNotification(referralsDTO.getServiceProviderUIID(), referralsDTO, referral.getReferralType().getReferralTypeId());
 
             } else {
                 return new ResponseEntity<String>("Referral Not found", BAD_REQUEST);
