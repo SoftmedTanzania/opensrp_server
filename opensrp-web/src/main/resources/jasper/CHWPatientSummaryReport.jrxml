@@ -35,7 +35,7 @@
 	<field name="lessThan1Male" class="java.lang.String"/>
 	<field name="lessThan1Female" class="java.lang.String"/>
 	<field name="registrationReason" class="java.lang.String"/>
-	<field name="REPORT_COUNT" class="java.lang.Integer"/>
+	<field name="sn" class="java.lang.String"/>
 	<title>
 		<band height="100">
 			<frame>
@@ -822,7 +822,7 @@
 				<textField>
 					<reportElement x="0" y="0" width="20" height="20"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-					<textFieldExpression><![CDATA[$F{REPORT_COUNT}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{sn}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
