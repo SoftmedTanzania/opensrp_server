@@ -5,11 +5,8 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.joda.time.LocalDate;
-import org.opensrp.domain.ClientAppointments;
-import org.opensrp.domain.ClientReferrals;
-import org.opensrp.domain.ClientRegistrationReason;
-import org.opensrp.domain.ReferralClient;
-import org.opensrp.dto.RegistrationReasonsReportDTO;
+import org.opensrp.domain.*;
+import org.opensrp.dto.AgeGroupReportsReportDTO;
 import org.opensrp.dto.report.MaleFemaleCountObject;
 import org.opensrp.repository.*;
 import org.slf4j.Logger;
@@ -31,13 +28,14 @@ public class ReferralsReportService {
 
     @Autowired
     private ClientsRepository clientsRepository;
+
     @Autowired
     private AppointmentTypeRepository appointmentTypeRepository;
 
     @Autowired
     private ReferralFeedbackRepository referralFeedbackRepository;
 
-
+    @Autowired
     private ReferralServiceRepository referralServiceRepository;
 
 
@@ -56,13 +54,13 @@ public class ReferralsReportService {
         }
 
         int sn = 0;
-        List<RegistrationReasonsReportDTO> registrationReasonsReportDTOS = new ArrayList<>();
+        List<AgeGroupReportsReportDTO> ageGroupReportsReportDTOS = new ArrayList<>();
         for (ClientRegistrationReason clientRegistrationReason : clientRegistrationReasons) {
             sn++;
-            RegistrationReasonsReportDTO registrationReasonsReportDTO = new RegistrationReasonsReportDTO();
+            AgeGroupReportsReportDTO ageGroupReportsReportDTO = new AgeGroupReportsReportDTO();
 
-            registrationReasonsReportDTO.setSn(String.valueOf(sn));
-            registrationReasonsReportDTO.setRegistrationReason(clientRegistrationReason.getDescSw());
+            ageGroupReportsReportDTO.setSn(String.valueOf(sn));
+            ageGroupReportsReportDTO.setItemName(clientRegistrationReason.getDescSw());
             long totalMale = 0, totalFemale = 0;
 
             String lessThan1year = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-1), currentDate, clientRegistrationReason.getRegistrationId());
@@ -71,8 +69,8 @@ public class ReferralsReportService {
             try {
                 logger.info("Less than one year SQL = "+lessThan1year);
                 lessThan1yearRegistrationsList = clientsRepository.getMaleFemaleCountReports(lessThan1year, null);
-                registrationReasonsReportDTO.setLessThan1Male(lessThan1yearRegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setLessThan1Female(lessThan1yearRegistrationsList.get(0).getFemale());
+                ageGroupReportsReportDTO.setLessThan1Male(lessThan1yearRegistrationsList.get(0).getMale());
+                ageGroupReportsReportDTO.setLessThan1Female(lessThan1yearRegistrationsList.get(0).getFemale());
 
                 totalMale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getMale());
                 totalFemale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getFemale());
@@ -87,8 +85,8 @@ public class ReferralsReportService {
             try {
                 logger.info("One to Five years SQL = "+_1to5);
                 _1to5RegistrationsList = clientsRepository.getMaleFemaleCountReports(_1to5, null);
-                registrationReasonsReportDTO.setOneTofiveMale(_1to5RegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setOneTofiveFemale(_1to5RegistrationsList.get(0).getFemale());
+                ageGroupReportsReportDTO.setOneTofiveMale(_1to5RegistrationsList.get(0).getMale());
+                ageGroupReportsReportDTO.setOneTofiveFemale(_1to5RegistrationsList.get(0).getFemale());
 
                 totalMale += Integer.parseInt(_1to5RegistrationsList.get(0).getMale());
                 totalFemale += Integer.parseInt(_1to5RegistrationsList.get(0).getFemale());
@@ -102,8 +100,8 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _6to9RegistrationsList = null;
             try {
                 _6to9RegistrationsList = clientsRepository.getMaleFemaleCountReports(_6to9, null);
-                registrationReasonsReportDTO.setSixToNineMale(_6to9RegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setSixToNineFemale(_6to9RegistrationsList.get(0).getFemale());
+                ageGroupReportsReportDTO.setSixToNineMale(_6to9RegistrationsList.get(0).getMale());
+                ageGroupReportsReportDTO.setSixToNineFemale(_6to9RegistrationsList.get(0).getFemale());
 
                 totalMale += Integer.parseInt(_6to9RegistrationsList.get(0).getMale());
                 totalFemale += Integer.parseInt(_6to9RegistrationsList.get(0).getFemale());
@@ -117,8 +115,8 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _10To14RegistrationsList = null;
             try {
                 _10To14RegistrationsList = clientsRepository.getMaleFemaleCountReports(_10To14, null);
-                registrationReasonsReportDTO.setTenToFourteenMale(_10To14RegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setTenToFourteenFemale(_10To14RegistrationsList.get(0).getFemale());
+                ageGroupReportsReportDTO.setTenToFourteenMale(_10To14RegistrationsList.get(0).getMale());
+                ageGroupReportsReportDTO.setTenToFourteenFemale(_10To14RegistrationsList.get(0).getFemale());
 
                 totalMale += Integer.parseInt(_10To14RegistrationsList.get(0).getMale());
                 totalFemale += Integer.parseInt(_10To14RegistrationsList.get(0).getFemale());
@@ -132,8 +130,8 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _15To19RegistrationsList = null;
             try {
                 _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19, null);
-                registrationReasonsReportDTO.setFifteenToNineteenMale(_15To19RegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setFifteenToNineteenFemale(_15To19RegistrationsList.get(0).getFemale());
+                ageGroupReportsReportDTO.setFifteenToNineteenMale(_15To19RegistrationsList.get(0).getMale());
+                ageGroupReportsReportDTO.setFifteenToNineteenFemale(_15To19RegistrationsList.get(0).getFemale());
 
                 totalMale += Integer.parseInt(_15To19RegistrationsList.get(0).getMale());
                 totalFemale += Integer.parseInt(_15To19RegistrationsList.get(0).getFemale());
@@ -147,8 +145,8 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _20To24RegistrationsList = null;
             try {
                 _20To24RegistrationsList = clientsRepository.getMaleFemaleCountReports(_20To24, null);
-                registrationReasonsReportDTO.setTwentyToTwentyFourMale(_20To24RegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setTwentyToTwentyFourFemale(_20To24RegistrationsList.get(0).getFemale());
+                ageGroupReportsReportDTO.setTwentyToTwentyFourMale(_20To24RegistrationsList.get(0).getMale());
+                ageGroupReportsReportDTO.setTwentyToTwentyFourFemale(_20To24RegistrationsList.get(0).getFemale());
 
 
                 totalMale += Integer.parseInt(_20To24RegistrationsList.get(0).getMale());
@@ -164,8 +162,8 @@ public class ReferralsReportService {
             try {
                 System.out.println("report Test : "+_25To49);
                 _25To49RegistrationsList = clientsRepository.getMaleFemaleCountReports(_25To49, null);
-                registrationReasonsReportDTO.setTwentyFiveToFourtyNineMale(_25To49RegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setTwentyFiveToFourtyNineFemale(_25To49RegistrationsList.get(0).getFemale());
+                ageGroupReportsReportDTO.setTwentyFiveToFourtyNineMale(_25To49RegistrationsList.get(0).getMale());
+                ageGroupReportsReportDTO.setTwentyFiveToFourtyNineFemale(_25To49RegistrationsList.get(0).getFemale());
 
 
                 totalMale += Integer.parseInt(_25To49RegistrationsList.get(0).getMale());
@@ -180,8 +178,8 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _50To59RegistrationsList = null;
             try {
                 _50To59RegistrationsList = clientsRepository.getMaleFemaleCountReports(_50To59, null);
-                registrationReasonsReportDTO.setFiftyToFiftyNineMale(_50To59RegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setFiftyToFiftyNineFemale(_50To59RegistrationsList.get(0).getFemale());
+                ageGroupReportsReportDTO.setFiftyToFiftyNineMale(_50To59RegistrationsList.get(0).getMale());
+                ageGroupReportsReportDTO.setFiftyToFiftyNineFemale(_50To59RegistrationsList.get(0).getFemale());
 
                 totalMale += Integer.parseInt(_50To59RegistrationsList.get(0).getMale());
                 totalFemale += Integer.parseInt(_50To59RegistrationsList.get(0).getFemale());
@@ -195,8 +193,8 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _60AboveRegistrationsList = null;
             try {
                 _60AboveRegistrationsList = clientsRepository.getMaleFemaleCountReports(_60Above, null);
-                registrationReasonsReportDTO.setAboveSixtyMale(_60AboveRegistrationsList.get(0).getMale());
-                registrationReasonsReportDTO.setAboveSixtyFemale(_60AboveRegistrationsList.get(0).getFemale());
+                ageGroupReportsReportDTO.setAboveSixtyMale(_60AboveRegistrationsList.get(0).getMale());
+                ageGroupReportsReportDTO.setAboveSixtyFemale(_60AboveRegistrationsList.get(0).getFemale());
 
 
                 totalMale += Integer.parseInt(_60AboveRegistrationsList.get(0).getMale());
@@ -205,20 +203,193 @@ public class ReferralsReportService {
                 e.printStackTrace();
             }
 
-            registrationReasonsReportDTO.setTotalMale(totalMale+"");
-            registrationReasonsReportDTO.setTotalFemale(totalFemale+"");
+            ageGroupReportsReportDTO.setTotalMale(totalMale+"");
+            ageGroupReportsReportDTO.setTotalFemale(totalFemale+"");
 
-            registrationReasonsReportDTOS.add(registrationReasonsReportDTO);
+            ageGroupReportsReportDTOS.add(ageGroupReportsReportDTO);
         }
 
-        logger.info("Report data source = "+new Gson().toJson(registrationReasonsReportDTOS));
+        logger.info("Report data source = "+new Gson().toJson(ageGroupReportsReportDTOS));
 
-        JRDataSource ds = new JRBeanCollectionDataSource(registrationReasonsReportDTOS);
+        JRDataSource ds = new JRBeanCollectionDataSource(ageGroupReportsReportDTOS);
+        return ds;
+    }
+
+    public JRDataSource referralsSummaryReport(boolean successful) {
+        LocalDate firstDateOfTheMonth = LocalDate.now();
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, 1);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        String currentDate = formatter.format(c.getTime());
+
+        List<ReferralService> referralServices = null;
+        try {
+            referralServices = referralServiceRepository.getReferralServices("SELECT * FROM " + ReferralService.tbName, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int sn = 0;
+        List<AgeGroupReportsReportDTO> ageGroupReportsReportDTOS = new ArrayList<>();
+        for (ReferralService referralService : referralServices) {
+            sn++;
+            AgeGroupReportsReportDTO referralReportDTO = new AgeGroupReportsReportDTO();
+
+            referralReportDTO.setSn(String.valueOf(sn));
+            referralReportDTO.setItemName(referralService.getServiceNameSw());
+            long totalMale = 0, totalFemale = 0;
+
+            String lessThan1year = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-1), currentDate, referralService.getServiceId(),successful);
+
+            List<MaleFemaleCountObject> lessThan1yearReferralsList = null;
+            try {
+                logger.info("Less than one year SQL = "+lessThan1year);
+                lessThan1yearReferralsList = clientsRepository.getMaleFemaleCountReports(lessThan1year, null);
+                referralReportDTO.setLessThan1Male(lessThan1yearReferralsList.get(0).getMale());
+                referralReportDTO.setLessThan1Female(lessThan1yearReferralsList.get(0).getFemale());
+
+                totalMale += Integer.parseInt(lessThan1yearReferralsList.get(0).getMale());
+                totalFemale += Integer.parseInt(lessThan1yearReferralsList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            String _1to5 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-5), getDateByYearString(-1), referralService.getServiceId(),successful);
+
+            List<MaleFemaleCountObject> _1to5RegistrationsList = null;
+            try {
+                logger.info("One to Five years SQL = "+_1to5);
+                _1to5RegistrationsList = clientsRepository.getMaleFemaleCountReports(_1to5, null);
+                referralReportDTO.setOneTofiveMale(_1to5RegistrationsList.get(0).getMale());
+                referralReportDTO.setOneTofiveFemale(_1to5RegistrationsList.get(0).getFemale());
+
+                totalMale += Integer.parseInt(_1to5RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_1to5RegistrationsList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            String _6to9 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-9), getDateByYearString(-5), referralService.getServiceId(),successful);
+
+            List<MaleFemaleCountObject> _6to9RegistrationsList = null;
+            try {
+                _6to9RegistrationsList = clientsRepository.getMaleFemaleCountReports(_6to9, null);
+                referralReportDTO.setSixToNineMale(_6to9RegistrationsList.get(0).getMale());
+                referralReportDTO.setSixToNineFemale(_6to9RegistrationsList.get(0).getFemale());
+
+                totalMale += Integer.parseInt(_6to9RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_6to9RegistrationsList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            String _10To14 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-14), getDateByYearString(-9), referralService.getServiceId(),successful);
+
+            List<MaleFemaleCountObject> _10To14RegistrationsList = null;
+            try {
+                _10To14RegistrationsList = clientsRepository.getMaleFemaleCountReports(_10To14, null);
+                referralReportDTO.setTenToFourteenMale(_10To14RegistrationsList.get(0).getMale());
+                referralReportDTO.setTenToFourteenFemale(_10To14RegistrationsList.get(0).getFemale());
+
+                totalMale += Integer.parseInt(_10To14RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_10To14RegistrationsList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            String _15To19 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-19), getDateByYearString(-14), referralService.getServiceId(),successful);
+            List<MaleFemaleCountObject> _15To19RegistrationsList = null;
+            try {
+                _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19, null);
+                referralReportDTO.setFifteenToNineteenMale(_15To19RegistrationsList.get(0).getMale());
+                referralReportDTO.setFifteenToNineteenFemale(_15To19RegistrationsList.get(0).getFemale());
+
+                totalMale += Integer.parseInt(_15To19RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_15To19RegistrationsList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            String _20To24 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-24), getDateByYearString(-19), referralService.getServiceId(),successful);
+            List<MaleFemaleCountObject> _20To24RegistrationsList = null;
+            try {
+                _20To24RegistrationsList = clientsRepository.getMaleFemaleCountReports(_20To24, null);
+                referralReportDTO.setTwentyToTwentyFourMale(_20To24RegistrationsList.get(0).getMale());
+                referralReportDTO.setTwentyToTwentyFourFemale(_20To24RegistrationsList.get(0).getFemale());
+
+
+                totalMale += Integer.parseInt(_20To24RegistrationsList.get(0).getMale());
+                totalFemale +=Integer.parseInt(_20To24RegistrationsList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            String _25To49 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-49), getDateByYearString(-24), referralService.getServiceId(),successful);
+
+            List<MaleFemaleCountObject> _25To49RegistrationsList = null;
+            try {
+                System.out.println("report Test : "+_25To49);
+                _25To49RegistrationsList = clientsRepository.getMaleFemaleCountReports(_25To49, null);
+                referralReportDTO.setTwentyFiveToFourtyNineMale(_25To49RegistrationsList.get(0).getMale());
+                referralReportDTO.setTwentyFiveToFourtyNineFemale(_25To49RegistrationsList.get(0).getFemale());
+
+                totalMale += Integer.parseInt(_25To49RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_25To49RegistrationsList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            String _50To59 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-59), getDateByYearString(-49), referralService.getServiceId(),successful);
+
+            List<MaleFemaleCountObject> _50To59RegistrationsList = null;
+            try {
+                _50To59RegistrationsList = clientsRepository.getMaleFemaleCountReports(_50To59, null);
+                referralReportDTO.setFiftyToFiftyNineMale(_50To59RegistrationsList.get(0).getMale());
+                referralReportDTO.setFiftyToFiftyNineFemale(_50To59RegistrationsList.get(0).getFemale());
+
+                totalMale += Integer.parseInt(_50To59RegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_50To59RegistrationsList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            String _60Above = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", getDateByYearString(-59), referralService.getServiceId(),successful);
+
+            List<MaleFemaleCountObject> _60AboveRegistrationsList = null;
+            try {
+                _60AboveRegistrationsList = clientsRepository.getMaleFemaleCountReports(_60Above, null);
+                referralReportDTO.setAboveSixtyMale(_60AboveRegistrationsList.get(0).getMale());
+                referralReportDTO.setAboveSixtyFemale(_60AboveRegistrationsList.get(0).getFemale());
+
+
+                totalMale += Integer.parseInt(_60AboveRegistrationsList.get(0).getMale());
+                totalFemale += Integer.parseInt(_60AboveRegistrationsList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            referralReportDTO.setTotalMale(totalMale+"");
+            referralReportDTO.setTotalFemale(totalFemale+"");
+
+            ageGroupReportsReportDTOS.add(referralReportDTO);
+        }
+
+        logger.info("Report data source = "+new Gson().toJson(ageGroupReportsReportDTOS));
+
+        JRDataSource ds = new JRBeanCollectionDataSource(ageGroupReportsReportDTOS);
         return ds;
     }
 
 
-    private String getDateByYearString(int year) {
+    public String getDateByYearString(int year) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 
         //Less than a year old
@@ -244,6 +415,29 @@ public class ReferralsReportService {
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (reasons_for_registration != 0 ? " AND " + ReferralClient.COL_REGISTRATION_REASON + " = " + reasons_for_registration : "")
+                + ") as Female FROM " + ReferralClient.tbName + " Limit 1";
+    }
+
+    public String generateReferralsReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long referral_service,boolean referralStatus) {
+        return "SELECT (SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
+                " INNER JOIN "+ClientReferrals.tbName+" ON "+ClientReferrals.tbName+"."+ClientReferrals.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
+                " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
+                ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
+                ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "'" +
+                (referralStatus ? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = 1 ": "") +
+                (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
+                (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
+                (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "") +
+                ") as Male, " +
+                "(SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
+                " INNER JOIN "+ClientReferrals.tbName+" ON "+ClientReferrals.tbName+"."+ClientReferrals.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
+                " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
+                ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
+                ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "' " +
+                (referralStatus ? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = 1 ": "") +
+                (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
+                (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
+                (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "")
                 + ") as Female FROM " + ReferralClient.tbName + " Limit 1";
     }
 
