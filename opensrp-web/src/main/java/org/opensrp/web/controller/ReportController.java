@@ -724,7 +724,7 @@ public class ReportController {
      *
      * @return
      */
-    @RequestMapping(value = "/reports/total_issued_ltfs_to_cbhs_html", method = RequestMethod.GET)
+    @RequestMapping(value = "/reports/ltf_feedback_html", method = RequestMethod.GET)
     public ModelAndView ltfFeedbackHTML(ModelAndView modelAndView) {
 
 
@@ -751,7 +751,7 @@ public class ReportController {
      *
      * @return
      */
-    @RequestMapping(value = "/reports/total_issued_ltfs_to_cbhs_pdf", method = RequestMethod.GET)
+    @RequestMapping(value = "/reports/ltf_feedback_pdf", method = RequestMethod.GET)
     public ModelAndView ltfFeedbackPDF(ModelAndView modelAndView) {
 
 
