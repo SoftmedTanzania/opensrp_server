@@ -231,8 +231,12 @@ public class ReferralPatientsController {
                             long appointmentId = clientsAppointmentsRepository.save(patientAppointment);
 
                             ClientReferrals referral = new ClientReferrals();
+
+                            referral.setReferralUUID(UUID.randomUUID().toString());
                             referral.setReferralStatus(0);
                             referral.setOtherNotes("");
+                            referral.setServiceProviderUIID("CTC2 Extractor");
+                            referral.setFromFacilityId(healthFacilitiesCheck.get(0).getOpenMRSUUID());
                             referral.setAppointmentDate(Calendar.getInstance().getTime());
                             referral.setReferralDate(Calendar.getInstance().getTime());
                             referral.setReferralReason("Lost follow up");
