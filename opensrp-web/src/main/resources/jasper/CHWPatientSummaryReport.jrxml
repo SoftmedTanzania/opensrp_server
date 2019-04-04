@@ -54,7 +54,7 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
@@ -67,7 +67,7 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
@@ -80,7 +80,7 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
@@ -93,7 +93,7 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
@@ -106,7 +106,7 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
@@ -119,7 +119,7 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
@@ -132,7 +132,7 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
@@ -145,7 +145,7 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
@@ -158,7 +158,7 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
@@ -171,8 +171,8 @@
 						<box>
 							<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-							<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 							<font isBold="true"/>
@@ -449,8 +449,10 @@
 							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
-						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-						<text><![CDATA[ME]]></text>
+						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+							<font isBold="true"/>
+						</textElement>
+						<text><![CDATA[KE]]></text>
 					</staticText>
 					<staticText>
 						<reportElement stretchType="RelativeToBandHeight" x="602" y="0" width="37" height="30">
@@ -465,7 +467,7 @@
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 							<font isBold="true"/>
 						</textElement>
-						<text><![CDATA[KE]]></text>
+						<text><![CDATA[ME]]></text>
 					</staticText>
 					<staticText>
 						<reportElement stretchType="RelativeToBandHeight" x="639" y="0" width="37" height="30">
@@ -505,7 +507,7 @@
 							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-							<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 							<font isBold="true"/>
@@ -567,7 +569,7 @@
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-						<textFieldExpression><![CDATA[$F{totalMale}]]></textFieldExpression>
+						<textFieldExpression class="java.lang.String"><![CDATA[$F{totalMale}]]></textFieldExpression>
 					</textField>
 					<textField>
 						<reportElement x="47" y="0" width="37" height="20">
@@ -580,7 +582,7 @@
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-						<textFieldExpression><![CDATA[$F{totalFemale}]]></textFieldExpression>
+						<textFieldExpression class="java.lang.String"><![CDATA[$F{totalFemale}]]></textFieldExpression>
 					</textField>
 					<textField>
 						<reportElement x="84" y="0" width="37" height="20">
@@ -593,7 +595,7 @@
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-						<textFieldExpression><![CDATA[$F{lessThan1Male}]]></textFieldExpression>
+						<textFieldExpression class="java.lang.String"><![CDATA[$F{lessThan1Male}]]></textFieldExpression>
 					</textField>
 					<textField>
 						<reportElement x="121" y="0" width="37" height="20">
@@ -606,7 +608,7 @@
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-						<textFieldExpression><![CDATA[$F{lessThan1Female}]]></textFieldExpression>
+						<textFieldExpression class="java.lang.String"><![CDATA[$F{lessThan1Female}]]></textFieldExpression>
 					</textField>
 					<textField>
 						<reportElement x="158" y="0" width="37" height="20">
@@ -822,7 +824,7 @@
 				<textField>
 					<reportElement x="0" y="0" width="20" height="20"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-					<textFieldExpression><![CDATA[$F{sn}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{sn}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
@@ -846,16 +848,27 @@
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
+					<frame>
+						<reportElement x="0" y="0" width="750" height="20">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						</reportElement>
+						<box>
+							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</frame>
 				</frame>
 				<staticText>
 					<reportElement x="0" y="1" width="90" height="19"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
