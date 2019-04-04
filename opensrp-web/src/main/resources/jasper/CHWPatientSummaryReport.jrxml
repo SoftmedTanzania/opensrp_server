@@ -449,8 +449,10 @@
 							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
-						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-						<text><![CDATA[ME]]></text>
+						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+							<font isBold="true"/>
+						</textElement>
+						<text><![CDATA[KE]]></text>
 					</staticText>
 					<staticText>
 						<reportElement stretchType="RelativeToBandHeight" x="602" y="0" width="37" height="30">
@@ -465,7 +467,7 @@
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 							<font isBold="true"/>
 						</textElement>
-						<text><![CDATA[KE]]></text>
+						<text><![CDATA[ME]]></text>
 					</staticText>
 					<staticText>
 						<reportElement stretchType="RelativeToBandHeight" x="639" y="0" width="37" height="30">
@@ -764,7 +766,7 @@
 							<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						</box>
 						<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-						<textFieldExpression><![CDATA[$F{twentyFiveToFourtyNineFemale}]]></textFieldExpression>
+						<textFieldExpression class=""><![CDATA[$F{twentyFiveToFourtyNineFemale}]]></textFieldExpression>
 					</textField>
 					<textField>
 						<reportElement x="602" y="0" width="37" height="20">
@@ -868,7 +870,7 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{totalMale})]]></textFieldExpression>
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{totalMale})))]]></textFieldExpression>
 						</textField>
 						<textField>
 							<reportElement x="47" y="0" width="37" height="20">
@@ -881,7 +883,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{totalFemale})]]></textFieldExpression>
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{totalFemale})))
+]]></textFieldExpression>
 						</textField>
 						<textField>
 							<reportElement x="84" y="0" width="37" height="20">
@@ -894,7 +897,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{lessThan1Male})]]></textFieldExpression>
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{lessThan1Male})))
+]]></textFieldExpression>
 						</textField>
 						<textField>
 							<reportElement x="121" y="0" width="37" height="20">
@@ -907,7 +911,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{lessThan1Female})]]></textFieldExpression>
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{lessThan1Female})))
+]]></textFieldExpression>
 						</textField>
 						<textField>
 							<reportElement x="158" y="0" width="37" height="20">
@@ -920,7 +925,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{oneTofiveMale})]]></textFieldExpression>
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{oneTofiveMale})))
+]]></textFieldExpression>
 						</textField>
 						<textField>
 							<reportElement x="195" y="0" width="37" height="20">
@@ -933,7 +939,9 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{oneTofiveFemale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{oneTofiveFemale})))
+
+
 ]]></textFieldExpression>
 						</textField>
 						<textField>
@@ -947,7 +955,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{sixToNineMale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{sixToNineMale})))
+
 ]]></textFieldExpression>
 						</textField>
 						<textField>
@@ -961,7 +970,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{sixToNineFemale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{sixToNineFemale})))
+
 ]]></textFieldExpression>
 						</textField>
 						<textField>
@@ -977,7 +987,8 @@
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
 								<font isBold="false"/>
 							</textElement>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{tenToFourteenMale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{tenToFourteenMale})))
+
 ]]></textFieldExpression>
 						</textField>
 						<textField>
@@ -991,7 +1002,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{tenToFourteenFemale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{tenToFourteenFemale})))
+
 ]]></textFieldExpression>
 						</textField>
 						<textField>
@@ -1005,7 +1017,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{fifteenToNineteenMale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{fifteenToNineteenMale})))
+
 ]]></textFieldExpression>
 						</textField>
 						<textField>
@@ -1019,7 +1032,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{fifteenToNineteenFemale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{fifteenToNineteenFemale})))
+
 ]]></textFieldExpression>
 						</textField>
 						<textField>
@@ -1033,7 +1047,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{twentyToTwentyFourMale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{twentyToTwentyFourMale})))
+
 
 ]]></textFieldExpression>
 						</textField>
@@ -1048,7 +1063,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{twentyToTwentyFourFemale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{twentyToTwentyFourFemale})))
+
 ]]></textFieldExpression>
 						</textField>
 						<textField>
@@ -1062,7 +1078,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{twentyFiveToFourtyNineMale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{twentyFiveToFourtyNineMale})))
+
 
 ]]></textFieldExpression>
 						</textField>
@@ -1077,7 +1094,9 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{twentyToTwentyFourFemale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{twentyFiveToFourtyNineFemale})))
+
+
 ]]></textFieldExpression>
 						</textField>
 						<textField>
@@ -1091,7 +1110,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{fiftyToFiftyNineMale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{fiftyToFiftyNineMale})))
+
 
 ]]></textFieldExpression>
 						</textField>
@@ -1106,7 +1126,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{fiftyToFiftyNineFemale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{fiftyToFiftyNineFemale})))
+
 
 ]]></textFieldExpression>
 						</textField>
@@ -1121,7 +1142,8 @@
 								<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{aboveSixtyMale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{aboveSixtyMale})))
+
 
 ]]></textFieldExpression>
 						</textField>
@@ -1136,7 +1158,8 @@
 								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 							</box>
 							<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single"/>
-							<textFieldExpression><![CDATA[Integer.valueOf($F{aboveSixtyFemale})
+							<textFieldExpression class=""><![CDATA[String.valueOf(SUM(Integer.valueOf($F{aboveSixtyFemale})))
+
 ]]></textFieldExpression>
 						</textField>
 					</frame>
