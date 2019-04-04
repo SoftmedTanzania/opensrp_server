@@ -359,24 +359,16 @@ public class ReportController {
     }
 
     //	Jasper report request handlers
-    @RequestMapping(value = "/download", method = RequestMethod.GET)
-    public String getDownloadPage() {
 
-        // Do your work here. Whatever you like
-        // i.e call a custom service to do your business
-        // Prepare a model to be used by the JSP page
 
-        // This will resolve to /WEB-INF/jsp/downloadpage.jsp
-        return "jsp/downloadpage";
-    }
-
+    //    Total Registered Clients
     /**
-     * Retrieves the download file in XLS format
+     * Retrieves Report in XLS format
      *
      * @return
      */
-    @RequestMapping(value = "/download/xls", method = RequestMethod.GET)
-    public ModelAndView doSalesReportXLS(ModelAndView modelAndView) {
+    @RequestMapping(value = "/reports/total_registered_clients_xls", method = RequestMethod.GET)
+    public ModelAndView totalRegisteredClientsXLS(ModelAndView modelAndView) {
 
 
         JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
@@ -389,18 +381,19 @@ public class ReportController {
 
         // xlsReport is the View of our application
         // This is declared inside the /WEB-INF/jasper-views.xml
-        modelAndView = new ModelAndView("xlsReport", parameterMap);
+        modelAndView = new ModelAndView("totalRegisteredClientsXlsReport", parameterMap);
         // Return the View and the Model combined
         return modelAndView;
     }
 
+
     /**
-     * Retrieves the download file in XLS format
+     * Retrieves Report in HTML format
      *
      * @return
      */
-    @RequestMapping(value = "/download/html", method = RequestMethod.GET)
-    public ModelAndView doSalesReporHTML(ModelAndView modelAndView) {
+    @RequestMapping(value = "/reports/total_registered_clients_html", method = RequestMethod.GET)
+    public ModelAndView totalRegisteredClientsHtml(ModelAndView modelAndView) {
 
 
         // Assign the datasource to an instance of JRDataSource
@@ -416,18 +409,18 @@ public class ReportController {
 
         // xlsReport is the View of our application
         // This is declared inside the /WEB-INF/jasper-views.xml
-        modelAndView = new ModelAndView("htmlReport", parameterMap);
+        modelAndView = new ModelAndView("totalRegisteredClientsHtmlReport", parameterMap);
         // Return the View and the Model combined
         return modelAndView;
     }
 
     /**
-     * Retrieves the download file in XLS format
+     * Retrieves Report in PDF format
      *
      * @return
      */
-    @RequestMapping(value = "/download/pdf", method = RequestMethod.GET)
-    public ModelAndView doSalesReportPDF(ModelAndView modelAndView) {
+    @RequestMapping(value = "/reports/total_registered_clients_pdf", method = RequestMethod.GET)
+    public ModelAndView totalRegisteredClientsPDF(ModelAndView modelAndView) {
 
 
         // Assign the datasource to an instance of JRDataSource
@@ -443,11 +436,342 @@ public class ReportController {
 
         // pdfReport is the View of our application
         // This is declared inside the /WEB-INF/jasper-views.xml
-        modelAndView = new ModelAndView("pdfReport", parameterMap);
+        modelAndView = new ModelAndView("totalRegisteredClientsPdfReport", parameterMap);
 
         // Return the View and the Model combined
         return modelAndView;
     }
 
+
+
+    //    Total Referrals Issued
+
+    /**
+     * Retrieves Report in XLS format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_referrals_issued_xls", method = RequestMethod.GET)
+    public ModelAndView totalReferralsIssuedXLS(ModelAndView modelAndView) {
+
+
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // xlsReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("totalReferralsIssuedXlsReport", parameterMap);
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+    /**
+     * Retrieves Report in HTML format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_referrals_issued_html", method = RequestMethod.GET)
+    public ModelAndView totalReferralsIssuedHTML(ModelAndView modelAndView) {
+
+
+        // Assign the datasource to an instance of JRDataSource
+        // JRDataSource is the datasource that Jasper understands
+        // This is basically a wrapper to Java's collection classes
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // xlsReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("totalReferralsIssuedHtmlReport", parameterMap);
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+    /**
+     * Retrieves Report in PDF format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_referrals_issued_pdf", method = RequestMethod.GET)
+    public ModelAndView totalReferralsIssuedPDF(ModelAndView modelAndView) {
+
+
+        // Assign the datasource to an instance of JRDataSource
+        // JRDataSource is the datasource that Jasper understands
+        // This is basically a wrapper to Java's collection classes
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // pdfReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("totalReferralsIssuedPdfReport", parameterMap);
+
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+
+    //    Total Successful Referrals
+
+    /**
+     * Retrieves Report in XLS format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_successful_referrals_xls", method = RequestMethod.GET)
+    public ModelAndView totalSuccessfulReferralsXLS(ModelAndView modelAndView) {
+
+
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // xlsReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("totalSuccessfulReferralsXlsReport", parameterMap);
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+    /**
+     * Retrieves Report in HTML format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_successful_referrals_html", method = RequestMethod.GET)
+    public ModelAndView totalSuccessfulReferralsHTML(ModelAndView modelAndView) {
+
+
+        // Assign the datasource to an instance of JRDataSource
+        // JRDataSource is the datasource that Jasper understands
+        // This is basically a wrapper to Java's collection classes
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // xlsReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("totalSuccessfulReferralsHtmlReport", parameterMap);
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+    /**
+     * Retrieves Report in PDF format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_successful_referrals_pdf", method = RequestMethod.GET)
+    public ModelAndView totalSuccessfulReferralsPDF(ModelAndView modelAndView) {
+
+
+        // Assign the datasource to an instance of JRDataSource
+        // JRDataSource is the datasource that Jasper understands
+        // This is basically a wrapper to Java's collection classes
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // pdfReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("totalSuccessfulReferralsPdfReport", parameterMap);
+
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+
+
+
+    //    Total issued LTFS to CBHS
+
+    /**
+     * Retrieves Report in XLS format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_issued_ltfs_to_cbhs_xls", method = RequestMethod.GET)
+    public ModelAndView totalIssuedLTFSToCBHSXLS(ModelAndView modelAndView) {
+
+
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // xlsReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("totalIssuedLTFSToCBHSXlsReport", parameterMap);
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+    /**
+     * Retrieves Report in HTML format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_issued_ltfs_to_cbhs_html", method = RequestMethod.GET)
+    public ModelAndView totalIssuedLTFSToCBHSHTML(ModelAndView modelAndView) {
+
+
+        // Assign the datasource to an instance of JRDataSource
+        // JRDataSource is the datasource that Jasper understands
+        // This is basically a wrapper to Java's collection classes
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // xlsReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("totalIssuedLTFSToCBHSHtmlReport", parameterMap);
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+    /**
+     * Retrieves Report in PDF format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_issued_ltfs_to_cbhs_pdf", method = RequestMethod.GET)
+    public ModelAndView totalIssuedLTFSToCBHSPDF(ModelAndView modelAndView) {
+
+
+        // Assign the datasource to an instance of JRDataSource
+        // JRDataSource is the datasource that Jasper understands
+        // This is basically a wrapper to Java's collection classes
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // pdfReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("totalIssuedLTFSToCBHSPdfReport", parameterMap);
+
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+
+
+    //    LTF Feeback
+
+    /**
+     * Retrieves Report in XLS format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/ltf_feedback_xls", method = RequestMethod.GET)
+    public ModelAndView ltfFeedbackXLS(ModelAndView modelAndView) {
+
+
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // xlsReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("ltfFeedbackXlsReport", parameterMap);
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+    /**
+     * Retrieves Report in HTML format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_issued_ltfs_to_cbhs_html", method = RequestMethod.GET)
+    public ModelAndView ltfFeedbackHTML(ModelAndView modelAndView) {
+
+
+        // Assign the datasource to an instance of JRDataSource
+        // JRDataSource is the datasource that Jasper understands
+        // This is basically a wrapper to Java's collection classes
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // xlsReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("ltfFeedbackHtmlReport", parameterMap);
+        // Return the View and the Model combined
+        return modelAndView;
+    }
+
+    /**
+     * Retrieves Report in PDF format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/total_issued_ltfs_to_cbhs_pdf", method = RequestMethod.GET)
+    public ModelAndView ltfFeedbackPDF(ModelAndView modelAndView) {
+
+
+        // Assign the datasource to an instance of JRDataSource
+        // JRDataSource is the datasource that Jasper understands
+        // This is basically a wrapper to Java's collection classes
+        JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+        // In order to use Spring's built-in Jasper support,
+        // We are required to pass our datasource as a map parameter
+        // parameterMap is the Model of our application
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("datasource", datasource);
+
+        // pdfReport is the View of our application
+        // This is declared inside the /WEB-INF/jasper-views.xml
+        modelAndView = new ModelAndView("ltfFeedbackPdfReport", parameterMap);
+
+        // Return the View and the Model combined
+        return modelAndView;
+    }
 
 }

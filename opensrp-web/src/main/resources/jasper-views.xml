@@ -20,24 +20,121 @@
 		url: the path where the Jasper JRXML file is located
 		reportDateKey: the name of the datasource. This is passed by the controller
 	-->
-	<bean id="pdfReport"
+
+	<!--Total Registered Clients Beans-->
+	<bean id="totalRegisteredClientsPdfReport"
 	   class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
-		p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		p:url="classpath:jasper/TotalRegisteredClients.jrxml"
 		p:reportDataKey="datasource" />
 
-	<bean id="xlsReport"
+	<bean id="totalRegisteredClientsXlsReport"
 	   class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"
-		p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		p:url="classpath:jasper/TotalRegisteredClients.jrxml"
 		p:reportDataKey="datasource" />
 	
-	<bean id="htmlReport"
+	<bean id="totalRegisteredClientsHtmlReport"
 	   class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
-		p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		p:url="classpath:jasper/TotalRegisteredClients.jrxml"
 		p:reportDataKey="datasource" />
 	
-	<bean id="csvReport"
+	<bean id="totalRegisteredClientsCsvReport"
 	   class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"
-		p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		p:url="classpath:jasper/TotalRegisteredClients.jrxml"
 		p:reportDataKey="datasource" />
+
+
+
+	<!--Total Referrals Issued Beans-->
+	<bean id="totalReferralsIssuedPdfReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="totalReferralsIssuedXlsReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="totalReferralsIssuedHtmlReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="totalReferralsIssuedCsvReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+
+
+	<!--Total Successful Referrals-->
+	<bean id="totalSuccessfulReferralsPdfReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="totalSuccessfulReferralsXlsReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="totalSuccessfulReferralsHtmlReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="totalSuccessfulReferralsCsvReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+
+
+	<!--Total Issued LTFS To CBHS-->
+	<bean id="totalIssuedLTFSToCBHSPdfReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="totalIssuedLTFSToCBHSXlsReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="totalIssuedLTFSToCBHSHtmlReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="totalIssuedLTFSToCBHSCsvReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+
+
+	<!--LTF Feedback-->
+	<bean id="ltfFeedbackPdfReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="ltfFeedbackXlsReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="ltfFeedbackHtmlReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+	<bean id="ltfFeedbackCsvReport"
+		  class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"
+		  p:url="classpath:jasper/CHWPatientSummaryReport.jrxml"
+		  p:reportDataKey="datasource" />
+
+
+
 		
 </beans>
