@@ -1,6 +1,15 @@
 package org.opensrp.web.controller;
 
-import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleHtmlExporterConfiguration;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+import net.sf.jasperreports.export.SimpleHtmlReportConfiguration;
+import net.sf.jasperreports.j2ee.servlets.ImageServlet;
+import net.sf.jasperreports.web.util.WebHtmlResourceHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,18 +21,22 @@ import org.opensrp.domain.ReferralService;
 import org.opensrp.dto.*;
 import org.opensrp.repository.ClientReferralRepository;
 import org.opensrp.service.ReferralsReportService;
-import org.opensrp.web.dao.SalesDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -37,11 +50,27 @@ public class ReportController {
     private ReferralsReportService referralsReportService;
 
     @Autowired
-    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService,ReferralsReportService referralsReportService) {
+    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService, ReferralsReportService referralsReportService) {
         this.reportService = reportService;
         this.openmrsUserService = openmrsUserService;
         this.clientReferralRepository = clientReferralRepository;
         this.referralsReportService = referralsReportService;
+    }
+
+    public static byte[] exportReportToHtmlStream(JasperPrint jasperPrint) throws JRException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        HtmlExporter exporter = new HtmlExporter();
+
+        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
+        exporter.setParameter(JRHtmlExporterParameter.CHARACTER_ENCODING, "ISO-8859-1");
+        exporter.setParameter(JRHtmlExporterParameter.IMAGES_MAP, new HashMap());
+        exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image?image=");
+
+        exporter.exportReport();
+
+        return baos.toByteArray();
     }
 
     @RequestMapping(method = GET, value = "/report/report-definitions")
@@ -145,7 +174,6 @@ public class ReportController {
         }
     }
 
-
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/report/get-intra-facility-departments-referrals-summary")
     @ResponseBody
     public ResponseEntity<List<FacilityReferralsSummaryDTO>> getIntraFacilityDepartmentsReferralsSummaryReport(@RequestBody String json) {
@@ -218,7 +246,6 @@ public class ReportController {
 
     }
 
-
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/report/get-intra-facility-providers-referrals-summary")
     @ResponseBody
     public ResponseEntity<List<IntraFacilityReferralsProvidersSummaryReport>> getIntraFacilityProvidersReferralsSummaryReport(@RequestBody String json) {
@@ -290,6 +317,10 @@ public class ReportController {
         return new ResponseEntity<List<IntraFacilityReferralsProvidersSummaryReport>>(referralsSummaryDTOS, HttpStatus.OK);
     }
 
+    //	Jasper report request handlers
+
+
+    //    Total Registered Clients
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/report/get-inter-facility-referrals-summary")
     @ResponseBody
@@ -358,10 +389,6 @@ public class ReportController {
         return new ResponseEntity<List<InterFacilityReferralsSummaryReport>>(referralsSummaryDTOS, HttpStatus.OK);
     }
 
-    //	Jasper report request handlers
-
-
-    //    Total Registered Clients
     /**
      * Retrieves Report in XLS format
      *
@@ -385,7 +412,6 @@ public class ReportController {
         // Return the View and the Model combined
         return modelAndView;
     }
-
 
     /**
      * Retrieves Report in HTML format
@@ -415,6 +441,118 @@ public class ReportController {
     }
 
     /**
+     * Retrieves Report in HTML format
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reports/htmlTest", method = RequestMethod.GET)
+    public void html(HttpServletRequest request,
+                     HttpServletResponse response) {
+
+        response.setContentType("text/html");
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File sourceFile = null;
+        try {
+            sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
+
+            JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("ReportTitle", "Address Report");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
+
+            HtmlExporter exporter = new HtmlExporter();
+
+            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+
+            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+            SimpleHtmlExporterOutput output = new SimpleHtmlExporterOutput(out);
+            output.setImageHandler(new WebHtmlResourceHandler("image?image={0}"));
+
+            SimpleHtmlExporterConfiguration exporterConfig = new SimpleHtmlExporterConfiguration();
+            exporterConfig.setBetweenPagesHtml("");
+            exporter.setConfiguration(exporterConfig);
+
+            SimpleHtmlReportConfiguration reportConfig = new SimpleHtmlReportConfiguration();
+            reportConfig.setRemoveEmptySpaceBetweenRows(true);
+            exporter.setConfiguration(reportConfig);
+
+            exporter.setExporterOutput(output);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>JasperReports - Web Application Sample</title>");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesheet.css\" title=\"Style\">");
+            out.println("</head>");
+
+            out.println("<body bgcolor=\"white\">");
+
+            out.println("<span class=\"bnew\">JasperReports encountered this error :</span>");
+            out.println("<pre>");
+
+            e.printStackTrace(out);
+
+            out.println("</pre>");
+
+            out.println("</body>");
+            out.println("</html>");
+
+        }
+    }
+
+    @RequestMapping(value = "/reports/htmlTest1", method = RequestMethod.GET)
+    public void getReport(HttpServletRequest request,
+                          HttpServletResponse response) {
+
+        response.setContentType("text/html");
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File sourceFile = null;
+        try {
+            sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
+
+            JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
+
+
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("ReportTitle", "Address Report");
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
+
+
+            ServletOutputStream servletOutputStream = response.getOutputStream();
+            response.setContentType("text/html");
+            response.setHeader("Content-disposition", "inline");
+
+
+            byte[] aux = exportReportToHtmlStream(jasperPrint);
+
+            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+            Enumeration temp = request.getSession().getAttributeNames();
+            servletOutputStream.write(aux);
+            servletOutputStream.flush();
+            servletOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Retrieves Report in PDF format
      *
      * @return
@@ -441,7 +579,6 @@ public class ReportController {
         // Return the View and the Model combined
         return modelAndView;
     }
-
 
 
     //    Total Referrals Issued
@@ -608,8 +745,6 @@ public class ReportController {
     }
 
 
-
-
     //    Total issued LTFS to CBHS
 
     /**
@@ -690,7 +825,6 @@ public class ReportController {
         // Return the View and the Model combined
         return modelAndView;
     }
-
 
 
     //    LTF Feeback
