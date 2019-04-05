@@ -5,10 +5,6 @@ public class AgeGroupReportsReportDTO {
     private String lessThan1Male,lessThan1Female,oneTofiveMale,oneTofiveFemale,sixToNineMale,sixToNineFemale,tenToFourteenMale,tenToFourteenFemale,
     fifteenToNineteenMale,fifteenToNineteenFemale,twentyToTwentyFourMale,twentyToTwentyFourFemale,twentyFiveToFourtyNineMale,twentyFiveToFourtyNineFemale,fiftyToFiftyNineMale,fiftyToFiftyNineFemale,aboveSixtyMale, aboveSixtyFemale,totalMale,totalFemale;
 
-    public AgeGroupReportsReportDTO() {
-        lessThan1Male=lessThan1Female=oneTofiveMale=oneTofiveFemale=sixToNineMale=sixToNineFemale=tenToFourteenMale=tenToFourteenFemale=
-                fifteenToNineteenMale=fifteenToNineteenFemale=twentyToTwentyFourMale=twentyToTwentyFourFemale=twentyFiveToFourtyNineMale=twentyFiveToFourtyNineFemale=fiftyToFiftyNineMale=fiftyToFiftyNineFemale=aboveSixtyMale= aboveSixtyFemale=totalMale=totalFemale="-";
-    }
 
     public String getItemName() {
         return itemName;

@@ -448,7 +448,7 @@ public class ReferralsReportService {
         List<AppointmentType> appointmentTypes = null;
 
         try {
-            appointmentTypes = appointmentTypeRepository.getAppointmentTypes("SELECT * FROM " + ClientAppointments.tbName, null);
+            appointmentTypes = appointmentTypeRepository.getAppointmentTypes("SELECT * FROM " + AppointmentType.tbName, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
