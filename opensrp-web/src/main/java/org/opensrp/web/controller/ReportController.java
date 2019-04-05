@@ -435,7 +435,7 @@ public class ReportController {
                     break;
 
                 case "ltfs_feedback":
-                    sourceFile = ResourceUtils.getFile("classpath:/LTFFeedbackReport.jasper");
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/LTFFeedbackReport.jasper");
 
                     datasource = referralsReportService.lTFsFeedbacksReport();
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
@@ -443,8 +443,8 @@ public class ReportController {
 
                     break;
 
-                case "total_issued_lts":
-                    sourceFile = ResourceUtils.getFile("classpath:/TotalNumberOfLTFSToCBHSReport.jasper");
+                case "total_issued_ltfs":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalNumberOfLTFSToCBHSReport.jasper");
 
                     datasource = referralsReportService.totalIssuedLTFsSummaryReport();
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
@@ -487,7 +487,7 @@ public class ReportController {
                 e1.printStackTrace();
             }
 
-             errorPage(out, "Error in generating a Report");
+             errorPage(out, "Error generating report");
         }
     }
 
