@@ -7,6 +7,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.joda.time.LocalDate;
 import org.opensrp.domain.*;
 import org.opensrp.dto.AgeGroupReportsReportDTO;
+import org.opensrp.dto.GenderReportsDTO;
 import org.opensrp.dto.report.MaleFemaleCountObject;
 import org.opensrp.repository.*;
 import org.slf4j.Logger;
@@ -438,6 +439,90 @@ public class ReferralsReportService {
     }
 
 
+    public JRDataSource ltfsIssuesSummaryReport() {
+        LocalDate firstDateOfTheMonth = LocalDate.now();
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, 1);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        String currentDate = formatter.format(c.getTime());
+        List<AppointmentType> appointmentTypes = null;
+
+        try {
+            appointmentTypes = appointmentTypeRepository.getAppointmentTypes("SELECT * FROM "+ClientAppointments.tbName,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int sn = 0;
+        List<GenderReportsDTO> genderReportsDTOS = new ArrayList<>();
+
+        for (AppointmentType appointmentType : appointmentTypes) {
+            sn++;
+            GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
+            genderReportsDTO.setItemName(appointmentType.getName());
+            String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(),currentDate,firstDateOfTheMonth.withDayOfMonth(1).toString());
+
+            List<MaleFemaleCountObject> lftIssuedList = null;
+            try {
+                lftIssuedList = appointmentTypeRepository.getMaleFemaleCountReports(lftIssuedSql, null);
+                genderReportsDTO.setMale(lftIssuedList.get(0).getMale());
+                genderReportsDTO.setFemale(lftIssuedList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+                genderReportsDTO.setMale("0");
+                genderReportsDTO.setFemale("0");
+            }
+            genderReportsDTOS.add(genderReportsDTO);
+        }
+
+        logger.info("Report data source = "+new Gson().toJson(genderReportsDTOS));
+
+        JRDataSource ds = new JRBeanCollectionDataSource(genderReportsDTOS);
+        return ds;
+    }
+
+    public JRDataSource ltfsFoundSummaryReport() {
+        LocalDate firstDateOfTheMonth = LocalDate.now();
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, 1);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        String currentDate = formatter.format(c.getTime());
+        List<ReferralFeedback> referralFeedbacks = null;
+
+        try {
+            referralFeedbacks = referralFeedbackRepository.getReferralFeedback("SELECT * FROM "+ReferralFeedback.tbName+" WHERE "+ReferralFeedback.COL_REFERRAL_TYPE_ID+" = 1",null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int sn = 0;
+        List<GenderReportsDTO> genderReportsDTOS = new ArrayList<>();
+
+        for (ReferralFeedback referralFeedback : referralFeedbacks) {
+            sn++;
+            GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
+            genderReportsDTO.setItemName(referralFeedback.getDescSw());
+            String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(),currentDate,firstDateOfTheMonth.withDayOfMonth(1).toString());
+
+            List<MaleFemaleCountObject> lftFoundList = null;
+            try {
+                lftFoundList = appointmentTypeRepository.getMaleFemaleCountReports(lftFoundSql, null);
+                genderReportsDTO.setMale(lftFoundList.get(0).getMale());
+                genderReportsDTO.setFemale(lftFoundList.get(0).getFemale());
+            } catch (Exception e) {
+                e.printStackTrace();
+                genderReportsDTO.setMale("0");
+                genderReportsDTO.setFemale("0");
+            }
+            genderReportsDTOS.add(genderReportsDTO);
+        }
+
+        logger.info("Report data source = "+new Gson().toJson(genderReportsDTOS));
+
+        JRDataSource ds = new JRBeanCollectionDataSource(genderReportsDTOS);
+        return ds;
+    }
+
     public String getDateByYearString(int year) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 
@@ -490,13 +575,44 @@ public class ReferralsReportService {
                 + ") as Female FROM " + ReferralClient.tbName + " Limit 1";
     }
 
-    private String getLTFCountsReportSQL(long appointmentType, String startDate, String endDate) {
-        return "SELECT COUNT(" + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
-                " WHERE " +
-                ClientAppointments.COL_STATUS + " = -1 AND " +
-                ClientAppointments.COL_APPOINTMENT_DATE + ">'" + startDate + "' AND " +
-                ClientAppointments.COL_APPOINTMENT_DATE + "<'" + endDate + "' " +
-                (appointmentType != 0 ? " AND " + ClientAppointments.COL_APPOINTMENT_TYPE + " = " + appointmentType : "");
+    public String getLTFCountsReportSQL(long appointmentType, String startDate, String endDate) {
+        return "SELECT (" +
+                "    SELECT COUNT("+ClientAppointments.tbName+"."+ClientAppointments.COL_APPOINTMENT_ID+")as count FROM "+ClientAppointments.tbName+
+                " INNER JOIN "+HealthFacilitiesReferralClients.tbName+" USING ("+HealthFacilitiesReferralClients.COL_CLIENT_ID+")\n" +
+                " INNER JOIN "+ReferralClient.tbName+" ON "+HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID +
+                " WHERE status = -1 AND "+ClientAppointments.tbName+".created_at>'"+startDate+"' AND "+ClientAppointments.tbName+".created_at<'"+endDate+"'  AND "+ClientAppointments.COL_APPOINTMENT_TYPE+" = "+appointmentType+" AND "+ReferralClient.COL_GENDER+" = 'male'" +
+                ") as Male, (" +
+                "    SELECT COUNT("+ClientAppointments.tbName+"."+ClientAppointments.COL_APPOINTMENT_ID+")as count FROM "+ClientAppointments.tbName+
+                " INNER JOIN "+HealthFacilitiesReferralClients.tbName+" USING ("+HealthFacilitiesReferralClients.COL_CLIENT_ID+")\n" +
+                " INNER JOIN "+ReferralClient.tbName+" ON "+HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID +
+                " WHERE status = -1 AND "+ClientAppointments.tbName+".created_at>'"+startDate+"' AND "+ClientAppointments.tbName+".created_at<'"+endDate+"'  AND "+ClientAppointments.COL_APPOINTMENT_TYPE+" = "+appointmentType+" AND "+ReferralClient.COL_GENDER+" = 'female'" +
+                ") as female FROM "+ClientAppointments.tbName+" Limit 1";
+    }
+
+    public String getFoundLTFCountsReportSQL(long referralFeedbackId, String startDate, String endDate) {
+        return "SELECT (" +
+                "    SELECT COUNT("+ClientAppointments.tbName+"."+ClientAppointments.COL_APPOINTMENT_ID+")as count FROM "+ClientAppointments.tbName+
+                " INNER JOIN "+HealthFacilitiesReferralClients.tbName+" USING ("+HealthFacilitiesReferralClients.COL_CLIENT_ID+")\n" +
+                " INNER JOIN "+ReferralClient.tbName+" ON "+HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID +
+                " INNER JOIN "+ClientReferrals.tbName+" ON "+ClientAppointments.tbName+"."+ClientAppointments.COL_FOLLOWUP_REFERRAL_ID+" = "+ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_ID +
+                " WHERE status = -1 AND "+
+                ClientAppointments.tbName+".created_at>'"+startDate+"' AND "+
+                ClientAppointments.tbName+".created_at<'"+endDate+"'  AND "+
+                ClientReferrals.COL_REFERRAL_FEEDBACK_ID+" = "+referralFeedbackId+" AND "+
+                ClientReferrals.COL_REFERRAL_STATUS+" = 1 AND "+
+                ReferralClient.COL_GENDER+" = 'male'" +
+                ") as Male, (" +
+                "    SELECT COUNT("+ClientAppointments.tbName+"."+ClientAppointments.COL_APPOINTMENT_ID+")as count FROM "+ClientAppointments.tbName+
+                " INNER JOIN "+HealthFacilitiesReferralClients.tbName+" USING ("+HealthFacilitiesReferralClients.COL_CLIENT_ID+")\n" +
+                " INNER JOIN "+ReferralClient.tbName+" ON "+HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID +
+                " INNER JOIN "+ClientReferrals.tbName+" ON "+ClientAppointments.tbName+"."+ClientAppointments.COL_FOLLOWUP_REFERRAL_ID+" = "+ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_ID +
+                " WHERE status = -1 AND "+
+                ClientAppointments.tbName+".created_at>'"+startDate+"' AND "+
+                ClientAppointments.tbName+".created_at<'"+endDate+"'  AND "+
+                ClientReferrals.COL_REFERRAL_FEEDBACK_ID+" = "+referralFeedbackId+" AND "+
+                ClientReferrals.COL_REFERRAL_STATUS+" = 1 AND "+
+                ReferralClient.COL_GENDER+" = 'female'" +
+                ") as female FROM "+ClientAppointments.tbName+" Limit 1";
     }
 
     private String getLTFFollowupReportSQL(long referral_feedback_id, String startDate, String endDate) {
@@ -519,254 +635,3 @@ public class ReferralsReportService {
 
 
 }
-
-
-//	//Obtain registrations before end of last month
-//	LocalDate firstDateOfTheMonth = LocalDate.now();
-//	JSONObject referralSummaryReport = new JSONObject();
-//
-//        try {
-//				referralSummaryReport.put("organisation",new JSONObject("{\n" +
-//				"      \"organisation_name\": \"HOSPITALI YA MANISPAA YA MOROGORO\",\n" +
-//				"      \"organisation_email\": \"dsh@gmail.com\",\n" +
-//				"      \"organisation_tel\": \"0789-121 321\",\n" +
-//				"      \"organisation_address\": \"Morogoro\"\n" +
-//				"    }"));
-//				} catch (JSONException e) {
-//				e.printStackTrace();
-//				}
-//
-//				String previousMonthRegistrations = generateRegistationReportSql("1970-01-01", firstDateOfTheMonth.withDayOfMonth(1).toString(), "", "", 0);
-//
-//				System.out.println("previousMonthRegistrations SQL " + previousMonthRegistrations);
-//				List<MaleFemaleCountObject> accumulativeTotalPreviousMonthsRegistrations = null;
-//		try {
-//		accumulativeTotalPreviousMonthsRegistrations = clientsRepository.getMaleFemaleCountReports(previousMonthRegistrations, null);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//		try {
-//		referralSummaryReport.put("cumulativeRegistrations", new JSONObject(new Gson().toJson(accumulativeTotalPreviousMonthsRegistrations.get(0))));
-//		} catch (JSONException e) {
-//		e.printStackTrace();
-//		}
-//
-//
-//		Calendar c = Calendar.getInstance();
-//		c.add(Calendar.DATE, 1);
-//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-//		String currentDate = formatter.format(c.getTime());
-//
-//
-//		JSONObject thisMonthRegistrationsObject = new JSONObject();
-//
-//		String thisMonthRegistrations = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", "", 0);
-//
-//		List<MaleFemaleCountObject> thisMonthRegistrationsList = null;
-//		try {
-//		thisMonthRegistrationsList = clientsRepository.getMaleFemaleCountReports(thisMonthRegistrations, null);
-//		thisMonthRegistrationsObject.put("JUMLA", new JSONObject(new Gson().toJson(thisMonthRegistrationsList.get(0))));
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//		System.out.println("reports this month registrations total = " + new Gson().toJson(thisMonthRegistrationsList));
-//
-//
-//
-//
-//
-//
-//		try {
-//		referralSummaryReport.put("thisMonthRegistrations", thisMonthRegistrationsObject);
-//		} catch (JSONException e) {
-//		e.printStackTrace();
-//		}
-//
-//
-//		JSONArray registationReasonsObject = new JSONArray();
-//
-//		List<ClientRegistrationReason> clientRegistrationReasons = null;
-//		try {
-//		clientRegistrationReasons = clientRegistrationReasonRepository.geRegistrationReasons("SELECT * FROM " + ClientRegistrationReason.tbName, null);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//		for (ClientRegistrationReason clientRegistrationReason : clientRegistrationReasons) {
-//		String sqlString = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", "", clientRegistrationReason.getRegistrationId());
-//		List<MaleFemaleCountObject> objects = null;
-//		try {
-//		objects = clientsRepository.getMaleFemaleCountReports(sqlString, null);
-//		JSONObject o = new JSONObject();
-//		o.put(clientRegistrationReason.getDescSw(), new JSONObject(new Gson().toJson(objects.get(0))));
-//
-//		registationReasonsObject.put(o);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//		}
-//
-//		try {
-//		referralSummaryReport.put("Registered Clients By Registration Reasons", registationReasonsObject);
-//		} catch (JSONException e) {
-//		e.printStackTrace();
-//		}
-//
-//
-//		String totalLTFsReferrals = getLTFCountsReportSQL(0, firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
-//
-//		JSONObject ltfReferrals = new JSONObject();
-//		List<TotalCountObject> totalObjects = null;
-//		try {
-//		totalObjects = clientsAppointmentsRepository.getCount(totalLTFsReferrals, null);
-//		ltfReferrals.put("Jumla", totalObjects.get(0).getCount());
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		try {
-//		ltfReferrals.put("Jumla", 0);
-//		} catch (JSONException e1) {
-//		e1.printStackTrace();
-//		}
-//
-//		}
-//
-//
-//		List<AppointmentType> appointmentTypes = null;
-//		try {
-//		appointmentTypes = appointmentTypeRepository.getAppointmentTypes("Select * from " + AppointmentType.tbName, null);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//
-//		for (int i = 1; i < 5; i++) {
-//		List<TotalCountObject> objectList = null;
-//		try {
-//		String sqlString = getLTFCountsReportSQL(i, firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
-//		objectList = clientsAppointmentsRepository.getCount(sqlString, null);
-//		ltfReferrals.put(appointmentTypes.get(i - 1).getName(), objectList.get(0).getCount());
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		try {
-//		ltfReferrals.put(appointmentTypes.get(i - 1).getName(), 0);
-//		} catch (JSONException e1) {
-//		e1.printStackTrace();
-//		}
-//		}
-//		}
-//
-//		try {
-//		referralSummaryReport.put("All Issued Lost Followup Referrals", ltfReferrals);
-//		} catch (JSONException e) {
-//		e.printStackTrace();
-//		}
-//
-//
-//		JSONObject ltfReferralResults = new JSONObject();
-//
-//		String totalFound = getLTFFollowupReportSQL(0, firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
-//		List<TotalCountObject> totalFoundList = null;
-//		try {
-//		totalFoundList = clientReferralRepository.getCount(totalFound, null);
-//		ltfReferralResults.put("Jumla ya waliopatikana", totalFoundList.get(0).getCount());
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//
-//		List<ReferralFeedback> referralFeedbacks = null;
-//		try {
-//		referralFeedbacks = referralFeedbackRepository.getReferralFeedback("SELECT * FROM " + ReferralFeedback.tbName, null);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//		for (ReferralFeedback referralFeedback : referralFeedbacks) {
-//		String foundLTFSQL = getLTFFollowupReportSQL(referralFeedback.getId(), firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
-//
-//		List<TotalCountObject> foundLTFSList = null;
-//		try {
-//		foundLTFSList = clientReferralRepository.getCount(foundLTFSQL, null);
-//		ltfReferralResults.put(referralFeedback.getDescSw(), foundLTFSList.get(0).getCount());
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//		}
-//
-//
-//		try {
-//		referralSummaryReport.put("Found LTF Referrals Results", ltfReferralResults);
-//		} catch (JSONException e) {
-//		e.printStackTrace();
-//		}
-//
-//
-//		//issued referrals
-//		JSONObject issuedReferrals = new JSONObject();
-//		List<ReferralService> allReferralServices = null;
-//		try {
-//		allReferralServices = referralServiceRepository.getReferralServices("Select * from " + ReferralService.tbName, null);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//		int totalIssuedReferrals = 0;
-//		for (int i = 1; i < 14; i++) {
-//
-//		String serviceReferralsSQL = getReferralSummaryReportSql(false, allReferralServices.get(i - 1).getServiceId(), firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
-//		List<TotalCountObject> serviceReferralsList = null;
-//		try {
-//		serviceReferralsList = clientReferralRepository.getCount(serviceReferralsSQL, null);
-//		issuedReferrals.put(allReferralServices.get(i - 1).getServiceNameSw(), serviceReferralsList.get(0).getCount());
-//		totalIssuedReferrals += serviceReferralsList.get(0).getCount();
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//		}
-//
-//
-//		try {
-//		issuedReferrals.put("Jumla ", totalIssuedReferrals);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//		try {
-//		referralSummaryReport.put("Issued Referrals ", issuedReferrals);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//
-//		//successful referrals
-//		JSONObject succcessfulReferrals = new JSONObject();
-//
-//		int totalSuccessfulReferrals = 0;
-//		for (int i = 1; i < 14; i++) {
-//		String successfulReferralsSQL = getReferralSummaryReportSql(false, allReferralServices.get(i - 1).getServiceId(), firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
-//		List<TotalCountObject> successfulReferralsList = null;
-//		try {
-//		successfulReferralsList = clientReferralRepository.getCount(successfulReferralsSQL, null);
-//		succcessfulReferrals.put(allReferralServices.get(i - 1).getServiceNameSw(), successfulReferralsList.get(0).getCount());
-//		totalSuccessfulReferrals += successfulReferralsList.get(0).getCount();
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//		}
-//
-//		try {
-//		succcessfulReferrals.put("Jumla ", totalSuccessfulReferrals);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//		try {
-//		referralSummaryReport.put("Successful Referrals ", succcessfulReferrals);
-//		} catch (Exception e) {
-//		e.printStackTrace();
-//		}
-//
-//
-//		return new ResponseEntity<String>(referralSummaryReport.toString(), HttpStatus.OK);

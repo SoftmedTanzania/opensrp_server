@@ -1,6 +1,7 @@
 package org.opensrp.repository;
 
 import org.opensrp.domain.AppointmentType;
+import org.opensrp.dto.report.MaleFemaleCountObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -66,6 +67,26 @@ public class AppointmentTypeRepository {
             appointmentType.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(AppointmentType.COL_CREATED_AT)).getTime()));
             appointmentType.setUpdatedAt(rs.getDate(rs.findColumn(AppointmentType.COL_UPDATED_AT)));
             return appointmentType;
+        }
+
+    }
+
+
+
+
+    public List<MaleFemaleCountObject> getMaleFemaleCountReports(String sql, Object[] args) throws Exception {
+        return this.jdbcTemplate.query(sql, args, new ReportObjectRowMapper());
+    }
+
+
+    public class ReportObjectRowMapper implements RowMapper<MaleFemaleCountObject> {
+        public MaleFemaleCountObject mapRow(ResultSet rs, int rowNum) throws SQLException {
+            MaleFemaleCountObject maleFemaleCountObject = new MaleFemaleCountObject();
+
+            maleFemaleCountObject.setMale(rs.getString(rs.findColumn("Male")));
+            maleFemaleCountObject.setFemale(rs.getString(rs.findColumn("Female")));
+
+            return maleFemaleCountObject;
         }
 
     }

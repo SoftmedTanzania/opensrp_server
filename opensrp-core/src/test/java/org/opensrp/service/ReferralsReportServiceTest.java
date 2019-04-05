@@ -9,7 +9,16 @@ import java.util.Calendar;
 import static org.junit.Assert.*;
 
 public class ReferralsReportServiceTest {
+    LocalDate firstDateOfTheMonth = LocalDate.now();
+    String currentDate ="";
+    ReferralsReportService referralsReportService = new ReferralsReportService();
 
+    public ReferralsReportServiceTest() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, 1);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        currentDate = formatter.format(c.getTime());
+    }
 
     @Test
     public void newRegistrationByReasonsReport() {
@@ -17,15 +26,14 @@ public class ReferralsReportServiceTest {
 
     @Test
     public void  generateReferralsReportSql() {
-        ReferralsReportService referralsReportService = new ReferralsReportService();
-
-        LocalDate firstDateOfTheMonth = LocalDate.now();
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, 1);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-        String currentDate = formatter.format(c.getTime());
-
         String sql = referralsReportService.generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, referralsReportService.getDateByYearString(-1), currentDate, 1,true);
+
+        System.out.println("SQL : "+sql);
+    }
+
+    @Test
+    public void getLTFCountsReportSQL() {
+        String sql = referralsReportService.getLTFCountsReportSQL(1,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
 
         System.out.println("SQL : "+sql);
     }
