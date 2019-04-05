@@ -2,7 +2,7 @@ package org.opensrp.dto;
 
 public class GenderReportsDTO {
     private String itemName,sn;
-    private String male,female;
+    private String male,female,total;
 
     public String getItemName() {
         return itemName;
@@ -34,5 +34,13 @@ public class GenderReportsDTO {
 
     public void setFemale(String female) {
         this.female = female;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
     }
 }

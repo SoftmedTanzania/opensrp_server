@@ -456,6 +456,7 @@ public class ReferralsReportService {
         int sn = 0;
         List<GenderReportsDTO> genderReportsDTOS = new ArrayList<>();
 
+
         for (AppointmentType appointmentType : appointmentTypes) {
             sn++;
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
@@ -467,10 +468,13 @@ public class ReferralsReportService {
                 lftIssuedList = appointmentTypeRepository.getMaleFemaleCountReports(lftIssuedSql, null);
                 genderReportsDTO.setMale(lftIssuedList.get(0).getMale());
                 genderReportsDTO.setFemale(lftIssuedList.get(0).getFemale());
+                genderReportsDTO.setTotal((Integer.parseInt(lftIssuedList.get(0).getMale())+Integer.parseInt(lftIssuedList.get(0).getFemale()))+"");
+
             } catch (Exception e) {
                 e.printStackTrace();
                 genderReportsDTO.setMale("0");
                 genderReportsDTO.setFemale("0");
+                genderReportsDTO.setTotal("0");
             }
             genderReportsDTOS.add(genderReportsDTO);
         }
@@ -509,10 +513,12 @@ public class ReferralsReportService {
                 lftFoundList = appointmentTypeRepository.getMaleFemaleCountReports(lftFoundSql, null);
                 genderReportsDTO.setMale(lftFoundList.get(0).getMale());
                 genderReportsDTO.setFemale(lftFoundList.get(0).getFemale());
+                genderReportsDTO.setTotal((Integer.parseInt(lftFoundList.get(0).getMale())+Integer.parseInt(lftFoundList.get(0).getFemale()))+"");
             } catch (Exception e) {
                 e.printStackTrace();
                 genderReportsDTO.setMale("0");
                 genderReportsDTO.setFemale("0");
+                genderReportsDTO.setTotal("0");
             }
             genderReportsDTOS.add(genderReportsDTO);
         }
