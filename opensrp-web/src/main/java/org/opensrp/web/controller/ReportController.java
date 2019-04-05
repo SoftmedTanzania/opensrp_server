@@ -587,14 +587,16 @@ public class ReportController {
         }
     }
 
-    public Exporter export(final JasperPrint print,int PrintType,PrintWriter out) throws JRException {
+    public Exporter export(final JasperPrint print,int printType,PrintWriter out) throws JRException {
         final Exporter exporter;
         boolean html = false;
 
-        switch (PrintType) {
+        switch (printType) {
             case 1:
                 exporter = new HtmlExporter();
-                exporter.setExporterOutput(new SimpleHtmlExporterOutput(out));
+                SimpleHtmlExporterOutput output = new SimpleHtmlExporterOutput(out);
+                output.setImageHandler(new WebHtmlResourceHandler("image?image={0}"));
+                exporter.setExporterOutput(output);
 
 
                 SimpleHtmlExporterConfiguration exporterConfig = new SimpleHtmlExporterConfiguration();
@@ -630,15 +632,13 @@ public class ReportController {
                 break;
         }
 
-        if (!html) {
+        if (printType != 1) {
             final ByteArrayOutputStream out1 = new ByteArrayOutputStream();
             exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out1));
         }
 
         exporter.setExporterInput(new SimpleExporterInput(print));
-        SimpleHtmlExporterOutput output = new SimpleHtmlExporterOutput(out);
-        output.setImageHandler(new WebHtmlResourceHandler("image?image={0}"));
-        exporter.setExporterOutput(output);
+
 
         return exporter;
     }
