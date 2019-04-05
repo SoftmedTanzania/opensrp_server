@@ -388,139 +388,6 @@ public class ReportController {
 
 
 
-////    Total Registered Patients Reports
-//
-//    /**
-//     * Retrieves Report in HTML format
-//     *
-//     * @return
-//     */
-//    @RequestMapping(value = "/reports/total_registered_clients/{reportType}", method = RequestMethod.GET)
-//    public void totalRegisteredPatients(@PathVariable("reportType") String reportType, HttpServletRequest request,
-//                     HttpServletResponse response) {
-//
-//        response.setContentType("text/html");
-//        File sourceFile = null;
-//        try {
-//            sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
-//
-//            JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
-//            JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
-//            Map<String, Object> parameters = new HashMap<String, Object>();
-//            parameters.put("ReportTitle", "Address Report");
-//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
-//
-//
-//            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
-//
-//            Exporter exporter =null;
-//            if(reportType.equalsIgnoreCase("html")){
-//                exporter = export(jasperPrint,1,response);
-//            }else if(reportType.equalsIgnoreCase("pdf")){
-//                exporter = export(jasperPrint,5,response);
-//            }
-//            exporter.exportReport();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//
-//            PrintWriter out = null;
-//            try {
-//                out = response.getWriter();
-//            } catch (IOException e1) {
-//                e1.printStackTrace();
-//            }
-//
-//            out.println("<html>");
-//            out.println("<head>");
-//            out.println("<title>JasperReports - Web Application Sample</title>");
-//            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesheet.css\" title=\"Style\">");
-//            out.println("</head>");
-//
-//            out.println("<body bgcolor=\"white\">");
-//
-//            out.println("<span class=\"bnew\">JasperReports encountered this error :</span>");
-//            out.println("<pre>");
-//
-//            e.printStackTrace(out);
-//
-//            out.println("</pre>");
-//
-//            out.println("</body>");
-//            out.println("</html>");
-//
-//        }
-//    }
-//
-//
-//    //    Total Number of Referrals Issued
-//
-//    /**
-//     * Retrieves Report in HTML & PDF format
-//     *
-//     * @return
-//     */
-//    @RequestMapping(value = "/reports/total_referrals_issued/{reportType}", method = RequestMethod.GET)
-//    public void totalReferralsIssued(@PathVariable("reportType") String reportType, HttpServletRequest request,
-//                     HttpServletResponse response) {
-//
-//        response.setContentType("text/html");
-//
-//
-//        File sourceFile = null;
-//        try {
-//            sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssued.jasper");
-//
-//            JRDataSource datasource = referralsReportService.referralsSummaryReport(false);
-//            JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
-//            Map<String, Object> parameters = new HashMap<String, Object>();
-//            parameters.put("ReportTitle", "Address Report");
-//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
-//
-//
-//            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
-//
-//            Exporter exporter =null;
-//            if(reportType.equalsIgnoreCase("html")){
-//                exporter = export(jasperPrint,1,response);
-//            }else if(reportType.equalsIgnoreCase("pdf")){
-//                exporter = export(jasperPrint,5,response);
-//            }
-//
-//
-//            exporter.exportReport();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//
-//            PrintWriter out = null;
-//            try {
-//                out = response.getWriter();
-//            } catch (IOException e1) {
-//                e1.printStackTrace();
-//            }
-//            out.println("<html>");
-//            out.println("<head>");
-//            out.println("<title>JasperReports - Web Application Sample</title>");
-//            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesheet.css\" title=\"Style\">");
-//            out.println("</head>");
-//
-//            out.println("<body bgcolor=\"white\">");
-//
-//            out.println("<span class=\"bnew\">JasperReports encountered this error :</span>");
-//            out.println("<pre>");
-//
-//            e.printStackTrace(out);
-//
-//            out.println("</pre>");
-//
-//            out.println("</body>");
-//            out.println("</html>");
-//
-//        }
-//    }
-
-
 //    Total Successful Referrals
     /**
      * Retrieves Report in HTML & PDF format
@@ -534,77 +401,82 @@ public class ReportController {
         response.setContentType("text/html");
 
         File sourceFile = null;
+
         try {
 
-            if (reportName.equals("total_registered_clients")) {
-                sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            JasperReport jasperReport=null;
+            JRDataSource datasource =null;
 
-                JRDataSource datasource = referralsReportService.newRegistrationByReasonsReport();
-                JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
-                Map<String, Object> parameters = new HashMap<String, Object>();
-                parameters.put("ReportTitle", "Address Report");
-                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
+            switch (reportName) {
+                case "total_registered_clients":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
 
+                    datasource = referralsReportService.newRegistrationByReasonsReport();
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Registered Clients", "Address Report");
 
-                request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+                    break;
+                case "total_successful_referrals":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalSuccessfulReferrals.jasper");
 
-                Exporter exporter = null;
-                if (reportType.equalsIgnoreCase("html")) {
-                    exporter = export(jasperPrint, 1, response);
-                } else if (reportType.equalsIgnoreCase("pdf")) {
-                    exporter = export(jasperPrint, 5, response);
-                }
+                    datasource = referralsReportService.referralsSummaryReport(true);
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Successful Referrals", "Address Report");
 
-                exporter.exportReport();
+                    break;
+                case "total_referrals_issued":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssued.jasper");
 
-            }
+                    datasource = referralsReportService.referralsSummaryReport(false);
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Referrals Issued", "Address Report");
 
-            if (reportName.equals("total_successful_referrals")) {
-                sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalSuccessfulReferrals.jasper");
+                    break;
 
-                JRDataSource datasource = referralsReportService.referralsSummaryReport(true);
-                JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
-                Map<String, Object> parameters = new HashMap<String, Object>();
-                parameters.put("ReportTitle", "Address Report");
-                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
+                case "ltfs_feedback":
+                    sourceFile = ResourceUtils.getFile("classpath:/LTFFeedbackReport.jasper");
 
+                    datasource = referralsReportService.lTFsFeedbacksReport();
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("LTFs Feedback", "Address Report");
 
-                request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+                    break;
 
-                Exporter exporter = null;
-                if (reportType.equalsIgnoreCase("html")) {
-                    exporter = export(jasperPrint, 1, response);
-                } else if (reportType.equalsIgnoreCase("pdf")) {
-                    exporter = export(jasperPrint, 5, response);
-                }
+                case "total_issued_lts":
+                    sourceFile = ResourceUtils.getFile("classpath:/TotalNumberOfLTFSToCBHSReport.jasper");
 
-                exporter.exportReport();
+                    datasource = referralsReportService.totalIssuedLTFsSummaryReport();
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Issued LTFs", "Address Report");
 
-            }
+                    break;
 
+                default:
+                    PrintWriter out = null;
+                    try {
+                        out = response.getWriter();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
 
-            if (reportName.equals("total_referrals_issued")) {
-                sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssued.jasper");
+                    errorPage(out, "Report not found.");
+                    break;
 
-                JRDataSource datasource = referralsReportService.referralsSummaryReport(false);
-                JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
-                Map<String, Object> parameters = new HashMap<String, Object>();
-                parameters.put("ReportTitle", "Address Report");
-                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
-
-
-                request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
-
-                Exporter exporter = null;
-                if (reportType.equalsIgnoreCase("html")) {
-                    exporter = export(jasperPrint, 1, response);
-                } else if (reportType.equalsIgnoreCase("pdf")) {
-                    exporter = export(jasperPrint, 5, response);
-                }
-
-                exporter.exportReport();
 
             }
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
+            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+
+            Exporter exporter = null;
+            if (reportType.equalsIgnoreCase("html")) {
+                exporter = export(jasperPrint, 1, response);
+            } else if (reportType.equalsIgnoreCase("pdf")) {
+                exporter = export(jasperPrint, 5, response);
+            }
+
+            exporter.exportReport();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -614,29 +486,32 @@ public class ReportController {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>JasperReports - Web Application Sample</title>");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesheet.css\" title=\"Style\">");
-            out.println("</head>");
 
-            out.println("<body bgcolor=\"white\">");
-
-            out.println("<span class=\"bnew\">JasperReports encountered this error :</span>");
-            out.println("<pre>");
-
-            e.printStackTrace(out);
-
-            out.println("</pre>");
-
-            out.println("</body>");
-            out.println("</html>");
-
+             errorPage(out, "Error in generating a Report");
         }
     }
 
+    private void errorPage(PrintWriter out, String message){
 
-    public Exporter export(final JasperPrint print,int printType,HttpServletResponse response) throws JRException {
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>JasperReports - Web Application Sample</title>");
+        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesheet.css\" title=\"Style\">");
+        out.println("</head>");
+
+        out.println("<body bgcolor=\"white\">");
+
+        out.println("<span class=\"bnew\"> "+message+" :</span>");
+        out.println("<pre>");
+
+        out.println("</pre>");
+
+        out.println("</body>");
+        out.println("</html>");
+
+    }
+
+    private Exporter export(final JasperPrint print,int printType,HttpServletResponse response) throws JRException {
         final Exporter exporter;
         boolean html = false;
 

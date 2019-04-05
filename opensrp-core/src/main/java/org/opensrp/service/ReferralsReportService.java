@@ -3,7 +3,6 @@ package org.opensrp.service;
 import com.google.gson.Gson;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.joda.time.LocalDate;
 import org.opensrp.domain.*;
 import org.opensrp.dto.AgeGroupReportsReportDTO;
@@ -68,15 +67,15 @@ public class ReferralsReportService {
 
             List<MaleFemaleCountObject> lessThan1yearRegistrationsList = null;
             try {
-                logger.info("Less than one year SQL = "+lessThan1year);
+                logger.info("Less than one year SQL = " + lessThan1year);
                 lessThan1yearRegistrationsList = clientsRepository.getMaleFemaleCountReports(lessThan1year, null);
 
-                if(clientRegistrationReason.isApplicableToMen()) {
+                if (clientRegistrationReason.isApplicableToMen()) {
                     ageGroupReportsReportDTO.setLessThan1Male(lessThan1yearRegistrationsList.get(0).getMale());
                     totalMale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getMale());
                 }
 
-                if(clientRegistrationReason.isApplicableToWomen()) {
+                if (clientRegistrationReason.isApplicableToWomen()) {
                     ageGroupReportsReportDTO.setLessThan1Female(lessThan1yearRegistrationsList.get(0).getFemale());
                     totalFemale += Integer.parseInt(lessThan1yearRegistrationsList.get(0).getFemale());
                 }
@@ -90,15 +89,15 @@ public class ReferralsReportService {
 
             List<MaleFemaleCountObject> _1to5RegistrationsList = null;
             try {
-                logger.info("One to Five years SQL = "+_1to5);
+                logger.info("One to Five years SQL = " + _1to5);
                 _1to5RegistrationsList = clientsRepository.getMaleFemaleCountReports(_1to5, null);
 
-                if(clientRegistrationReason.isApplicableToMen()) {
+                if (clientRegistrationReason.isApplicableToMen()) {
                     ageGroupReportsReportDTO.setOneTofiveMale(_1to5RegistrationsList.get(0).getMale());
                     totalMale += Integer.parseInt(_1to5RegistrationsList.get(0).getMale());
                 }
 
-                if(clientRegistrationReason.isApplicableToWomen()) {
+                if (clientRegistrationReason.isApplicableToWomen()) {
                     ageGroupReportsReportDTO.setOneTofiveFemale(_1to5RegistrationsList.get(0).getFemale());
                     totalFemale += Integer.parseInt(_1to5RegistrationsList.get(0).getFemale());
                 }
@@ -115,12 +114,12 @@ public class ReferralsReportService {
             try {
                 _6to9RegistrationsList = clientsRepository.getMaleFemaleCountReports(_6to9, null);
 
-                if(clientRegistrationReason.isApplicableToMen()) {
+                if (clientRegistrationReason.isApplicableToMen()) {
                     ageGroupReportsReportDTO.setSixToNineMale(_6to9RegistrationsList.get(0).getMale());
                     totalMale += Integer.parseInt(_6to9RegistrationsList.get(0).getMale());
                 }
 
-                if(clientRegistrationReason.isApplicableToWomen()) {
+                if (clientRegistrationReason.isApplicableToWomen()) {
                     ageGroupReportsReportDTO.setSixToNineFemale(_6to9RegistrationsList.get(0).getFemale());
                     totalFemale += Integer.parseInt(_6to9RegistrationsList.get(0).getFemale());
                 }
@@ -136,12 +135,12 @@ public class ReferralsReportService {
             try {
                 _10To14RegistrationsList = clientsRepository.getMaleFemaleCountReports(_10To14, null);
 
-                if(clientRegistrationReason.isApplicableToMen()) {
+                if (clientRegistrationReason.isApplicableToMen()) {
                     ageGroupReportsReportDTO.setTenToFourteenMale(_10To14RegistrationsList.get(0).getMale());
                     totalMale += Integer.parseInt(_10To14RegistrationsList.get(0).getMale());
                 }
 
-                if(clientRegistrationReason.isApplicableToWomen()) {
+                if (clientRegistrationReason.isApplicableToWomen()) {
                     ageGroupReportsReportDTO.setTenToFourteenFemale(_10To14RegistrationsList.get(0).getFemale());
                     totalFemale += Integer.parseInt(_10To14RegistrationsList.get(0).getFemale());
                 }
@@ -157,12 +156,12 @@ public class ReferralsReportService {
             try {
                 _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19, null);
 
-                if(clientRegistrationReason.isApplicableToMen()) {
+                if (clientRegistrationReason.isApplicableToMen()) {
                     ageGroupReportsReportDTO.setFifteenToNineteenMale(_15To19RegistrationsList.get(0).getMale());
                     totalMale += Integer.parseInt(_15To19RegistrationsList.get(0).getMale());
                 }
 
-                if(clientRegistrationReason.isApplicableToWomen()) {
+                if (clientRegistrationReason.isApplicableToWomen()) {
                     ageGroupReportsReportDTO.setFifteenToNineteenFemale(_15To19RegistrationsList.get(0).getFemale());
                     totalFemale += Integer.parseInt(_15To19RegistrationsList.get(0).getFemale());
                 }
@@ -178,13 +177,14 @@ public class ReferralsReportService {
             try {
                 _20To24RegistrationsList = clientsRepository.getMaleFemaleCountReports(_20To24, null);
 
-                if(clientRegistrationReason.isApplicableToMen()) {
-                    ageGroupReportsReportDTO.setTwentyToTwentyFourMale(_20To24RegistrationsList.get(0).getMale());totalMale += Integer.parseInt(_20To24RegistrationsList.get(0).getMale());
+                if (clientRegistrationReason.isApplicableToMen()) {
+                    ageGroupReportsReportDTO.setTwentyToTwentyFourMale(_20To24RegistrationsList.get(0).getMale());
+                    totalMale += Integer.parseInt(_20To24RegistrationsList.get(0).getMale());
                 }
 
-                if(clientRegistrationReason.isApplicableToWomen()) {
+                if (clientRegistrationReason.isApplicableToWomen()) {
                     ageGroupReportsReportDTO.setTwentyToTwentyFourFemale(_20To24RegistrationsList.get(0).getFemale());
-                    totalFemale +=Integer.parseInt(_20To24RegistrationsList.get(0).getFemale());
+                    totalFemale += Integer.parseInt(_20To24RegistrationsList.get(0).getFemale());
                 }
 
             } catch (Exception e) {
@@ -196,15 +196,15 @@ public class ReferralsReportService {
 
             List<MaleFemaleCountObject> _25To49RegistrationsList = null;
             try {
-                System.out.println("report Test : "+_25To49);
+                System.out.println("report Test : " + _25To49);
                 _25To49RegistrationsList = clientsRepository.getMaleFemaleCountReports(_25To49, null);
 
-                if(clientRegistrationReason.isApplicableToMen()) {
+                if (clientRegistrationReason.isApplicableToMen()) {
                     ageGroupReportsReportDTO.setTwentyFiveToFourtyNineMale(_25To49RegistrationsList.get(0).getMale());
                     totalMale += Integer.parseInt(_25To49RegistrationsList.get(0).getMale());
-                                   }
+                }
 
-                if(clientRegistrationReason.isApplicableToWomen()) {
+                if (clientRegistrationReason.isApplicableToWomen()) {
                     ageGroupReportsReportDTO.setTwentyFiveToFourtyNineFemale(_25To49RegistrationsList.get(0).getFemale());
                     totalFemale += Integer.parseInt(_25To49RegistrationsList.get(0).getFemale());
                 }
@@ -219,12 +219,12 @@ public class ReferralsReportService {
             List<MaleFemaleCountObject> _50To59RegistrationsList = null;
             try {
                 _50To59RegistrationsList = clientsRepository.getMaleFemaleCountReports(_50To59, null);
-                if(clientRegistrationReason.isApplicableToMen()) {
+                if (clientRegistrationReason.isApplicableToMen()) {
                     ageGroupReportsReportDTO.setFiftyToFiftyNineMale(_50To59RegistrationsList.get(0).getMale());
                     totalMale += Integer.parseInt(_50To59RegistrationsList.get(0).getMale());
                 }
 
-                if(clientRegistrationReason.isApplicableToWomen()) {
+                if (clientRegistrationReason.isApplicableToWomen()) {
                     ageGroupReportsReportDTO.setFiftyToFiftyNineFemale(_50To59RegistrationsList.get(0).getFemale());
                     totalFemale += Integer.parseInt(_50To59RegistrationsList.get(0).getFemale());
                 }
@@ -240,12 +240,12 @@ public class ReferralsReportService {
             try {
                 _60AboveRegistrationsList = clientsRepository.getMaleFemaleCountReports(_60Above, null);
 
-                if(clientRegistrationReason.isApplicableToMen()) {
+                if (clientRegistrationReason.isApplicableToMen()) {
                     ageGroupReportsReportDTO.setAboveSixtyMale(_60AboveRegistrationsList.get(0).getMale());
                     totalMale += Integer.parseInt(_60AboveRegistrationsList.get(0).getMale());
                 }
 
-                if(clientRegistrationReason.isApplicableToWomen()) {
+                if (clientRegistrationReason.isApplicableToWomen()) {
                     ageGroupReportsReportDTO.setAboveSixtyFemale(_60AboveRegistrationsList.get(0).getFemale());
                     totalFemale += Integer.parseInt(_60AboveRegistrationsList.get(0).getFemale());
                 }
@@ -253,13 +253,13 @@ public class ReferralsReportService {
                 e.printStackTrace();
             }
 
-            ageGroupReportsReportDTO.setTotalMale(totalMale+"");
-            ageGroupReportsReportDTO.setTotalFemale(totalFemale+"");
+            ageGroupReportsReportDTO.setTotalMale(totalMale + "");
+            ageGroupReportsReportDTO.setTotalFemale(totalFemale + "");
 
             ageGroupReportsReportDTOS.add(ageGroupReportsReportDTO);
         }
 
-        logger.info("Report data source = "+new Gson().toJson(ageGroupReportsReportDTOS));
+        logger.info("Report data source = " + new Gson().toJson(ageGroupReportsReportDTOS));
 
         JRDataSource ds = new JRBeanCollectionDataSource(ageGroupReportsReportDTOS);
         return ds;
@@ -289,11 +289,11 @@ public class ReferralsReportService {
             referralReportDTO.setItemName(referralService.getServiceNameSw());
             long totalMale = 0, totalFemale = 0;
 
-            String lessThan1year = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-1), currentDate, referralService.getServiceId(),successful);
+            String lessThan1year = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-1), currentDate, referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> lessThan1yearReferralsList = null;
             try {
-                logger.info("Less than one year SQL = "+lessThan1year);
+                logger.info("Less than one year SQL = " + lessThan1year);
                 lessThan1yearReferralsList = clientsRepository.getMaleFemaleCountReports(lessThan1year, null);
                 referralReportDTO.setLessThan1Male(lessThan1yearReferralsList.get(0).getMale());
                 referralReportDTO.setLessThan1Female(lessThan1yearReferralsList.get(0).getFemale());
@@ -305,11 +305,11 @@ public class ReferralsReportService {
             }
 
 
-            String _1to5 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-5), getDateByYearString(-1), referralService.getServiceId(),successful);
+            String _1to5 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-5), getDateByYearString(-1), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _1to5RegistrationsList = null;
             try {
-                logger.info("One to Five years SQL = "+_1to5);
+                logger.info("One to Five years SQL = " + _1to5);
                 _1to5RegistrationsList = clientsRepository.getMaleFemaleCountReports(_1to5, null);
                 referralReportDTO.setOneTofiveMale(_1to5RegistrationsList.get(0).getMale());
                 referralReportDTO.setOneTofiveFemale(_1to5RegistrationsList.get(0).getFemale());
@@ -321,7 +321,7 @@ public class ReferralsReportService {
             }
 
 
-            String _6to9 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-9), getDateByYearString(-5), referralService.getServiceId(),successful);
+            String _6to9 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-9), getDateByYearString(-5), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _6to9RegistrationsList = null;
             try {
@@ -336,7 +336,7 @@ public class ReferralsReportService {
             }
 
 
-            String _10To14 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-14), getDateByYearString(-9), referralService.getServiceId(),successful);
+            String _10To14 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-14), getDateByYearString(-9), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _10To14RegistrationsList = null;
             try {
@@ -351,7 +351,7 @@ public class ReferralsReportService {
             }
 
 
-            String _15To19 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-19), getDateByYearString(-14), referralService.getServiceId(),successful);
+            String _15To19 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-19), getDateByYearString(-14), referralService.getServiceId(), successful);
             List<MaleFemaleCountObject> _15To19RegistrationsList = null;
             try {
                 _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19, null);
@@ -365,7 +365,7 @@ public class ReferralsReportService {
             }
 
 
-            String _20To24 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-24), getDateByYearString(-19), referralService.getServiceId(),successful);
+            String _20To24 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-24), getDateByYearString(-19), referralService.getServiceId(), successful);
             List<MaleFemaleCountObject> _20To24RegistrationsList = null;
             try {
                 _20To24RegistrationsList = clientsRepository.getMaleFemaleCountReports(_20To24, null);
@@ -374,17 +374,17 @@ public class ReferralsReportService {
 
 
                 totalMale += Integer.parseInt(_20To24RegistrationsList.get(0).getMale());
-                totalFemale +=Integer.parseInt(_20To24RegistrationsList.get(0).getFemale());
+                totalFemale += Integer.parseInt(_20To24RegistrationsList.get(0).getFemale());
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
 
-            String _25To49 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-49), getDateByYearString(-24), referralService.getServiceId(),successful);
+            String _25To49 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-49), getDateByYearString(-24), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _25To49RegistrationsList = null;
             try {
-                System.out.println("report Test : "+_25To49);
+                System.out.println("report Test : " + _25To49);
                 _25To49RegistrationsList = clientsRepository.getMaleFemaleCountReports(_25To49, null);
                 referralReportDTO.setTwentyFiveToFourtyNineMale(_25To49RegistrationsList.get(0).getMale());
                 referralReportDTO.setTwentyFiveToFourtyNineFemale(_25To49RegistrationsList.get(0).getFemale());
@@ -396,7 +396,7 @@ public class ReferralsReportService {
             }
 
 
-            String _50To59 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-59), getDateByYearString(-49), referralService.getServiceId(),successful);
+            String _50To59 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-59), getDateByYearString(-49), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _50To59RegistrationsList = null;
             try {
@@ -411,7 +411,7 @@ public class ReferralsReportService {
             }
 
 
-            String _60Above = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", getDateByYearString(-59), referralService.getServiceId(),successful);
+            String _60Above = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", getDateByYearString(-59), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _60AboveRegistrationsList = null;
             try {
@@ -426,20 +426,20 @@ public class ReferralsReportService {
                 e.printStackTrace();
             }
 
-            referralReportDTO.setTotalMale(totalMale+"");
-            referralReportDTO.setTotalFemale(totalFemale+"");
+            referralReportDTO.setTotalMale(totalMale + "");
+            referralReportDTO.setTotalFemale(totalFemale + "");
 
             ageGroupReportsReportDTOS.add(referralReportDTO);
         }
 
-        logger.info("Report data source = "+new Gson().toJson(ageGroupReportsReportDTOS));
+        logger.info("Report data source = " + new Gson().toJson(ageGroupReportsReportDTOS));
 
         JRDataSource ds = new JRBeanCollectionDataSource(ageGroupReportsReportDTOS);
         return ds;
     }
 
 
-    public JRDataSource ltfsIssuesSummaryReport() {
+    public JRDataSource totalIssuedLTFsSummaryReport() {
         LocalDate firstDateOfTheMonth = LocalDate.now();
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, 1);
@@ -448,7 +448,7 @@ public class ReferralsReportService {
         List<AppointmentType> appointmentTypes = null;
 
         try {
-            appointmentTypes = appointmentTypeRepository.getAppointmentTypes("SELECT * FROM "+ClientAppointments.tbName,null);
+            appointmentTypes = appointmentTypeRepository.getAppointmentTypes("SELECT * FROM " + ClientAppointments.tbName, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -460,7 +460,7 @@ public class ReferralsReportService {
             sn++;
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
             genderReportsDTO.setItemName(appointmentType.getName());
-            String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(),currentDate,firstDateOfTheMonth.withDayOfMonth(1).toString());
+            String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(), currentDate, firstDateOfTheMonth.withDayOfMonth(1).toString());
 
             List<MaleFemaleCountObject> lftIssuedList = null;
             try {
@@ -475,13 +475,13 @@ public class ReferralsReportService {
             genderReportsDTOS.add(genderReportsDTO);
         }
 
-        logger.info("Report data source = "+new Gson().toJson(genderReportsDTOS));
+        logger.info("Report data source = " + new Gson().toJson(genderReportsDTOS));
 
         JRDataSource ds = new JRBeanCollectionDataSource(genderReportsDTOS);
         return ds;
     }
 
-    public JRDataSource ltfsFoundSummaryReport() {
+    public JRDataSource lTFsFeedbacksReport() {
         LocalDate firstDateOfTheMonth = LocalDate.now();
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, 1);
@@ -490,7 +490,7 @@ public class ReferralsReportService {
         List<ReferralFeedback> referralFeedbacks = null;
 
         try {
-            referralFeedbacks = referralFeedbackRepository.getReferralFeedback("SELECT * FROM "+ReferralFeedback.tbName+" WHERE "+ReferralFeedback.COL_REFERRAL_TYPE_ID+" = 1",null);
+            referralFeedbacks = referralFeedbackRepository.getReferralFeedback("SELECT * FROM " + ReferralFeedback.tbName + " WHERE " + ReferralFeedback.COL_REFERRAL_TYPE_ID + " = 1", null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -502,7 +502,7 @@ public class ReferralsReportService {
             sn++;
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
             genderReportsDTO.setItemName(referralFeedback.getDescSw());
-            String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(),currentDate,firstDateOfTheMonth.withDayOfMonth(1).toString());
+            String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(), currentDate, firstDateOfTheMonth.withDayOfMonth(1).toString());
 
             List<MaleFemaleCountObject> lftFoundList = null;
             try {
@@ -517,7 +517,7 @@ public class ReferralsReportService {
             genderReportsDTOS.add(genderReportsDTO);
         }
 
-        logger.info("Report data source = "+new Gson().toJson(genderReportsDTOS));
+        logger.info("Report data source = " + new Gson().toJson(genderReportsDTOS));
 
         JRDataSource ds = new JRBeanCollectionDataSource(genderReportsDTOS);
         return ds;
@@ -552,23 +552,23 @@ public class ReferralsReportService {
                 + ") as Female FROM " + ReferralClient.tbName + " Limit 1";
     }
 
-    public String generateReferralsReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long referral_service,boolean referralStatus) {
+    public String generateReferralsReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long referral_service, boolean referralStatus) {
         return "SELECT (SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
-                " INNER JOIN "+ClientReferrals.tbName+" ON "+ClientReferrals.tbName+"."+ClientReferrals.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
+                " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientReferrals.tbName + "." + ClientReferrals.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "'" +
-                (referralStatus ? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = 1 ": "") +
+                (referralStatus ? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = 1 " : "") +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "") +
                 ") as Male, " +
                 "(SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
-                " INNER JOIN "+ClientReferrals.tbName+" ON "+ClientReferrals.tbName+"."+ClientReferrals.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
+                " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientReferrals.tbName + "." + ClientReferrals.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "' " +
-                (referralStatus ? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = 1 ": "") +
+                (referralStatus ? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = 1 " : "") +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "")
@@ -577,42 +577,42 @@ public class ReferralsReportService {
 
     public String getLTFCountsReportSQL(long appointmentType, String startDate, String endDate) {
         return "SELECT (" +
-                "    SELECT COUNT("+ClientAppointments.tbName+"."+ClientAppointments.COL_APPOINTMENT_ID+")as count FROM "+ClientAppointments.tbName+
-                " INNER JOIN "+HealthFacilitiesReferralClients.tbName+" USING ("+HealthFacilitiesReferralClients.COL_CLIENT_ID+")\n" +
-                " INNER JOIN "+ReferralClient.tbName+" ON "+HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID +
-                " WHERE status = -1 AND "+ClientAppointments.tbName+".created_at>'"+startDate+"' AND "+ClientAppointments.tbName+".created_at<'"+endDate+"'  AND "+ClientAppointments.COL_APPOINTMENT_TYPE+" = "+appointmentType+" AND "+ReferralClient.COL_GENDER+" = 'male'" +
+                "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
+                " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
+                " WHERE status = -1 AND " + ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " + ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " + ClientAppointments.COL_APPOINTMENT_TYPE + " = " + appointmentType + " AND " + ReferralClient.COL_GENDER + " = 'male'" +
                 ") as Male, (" +
-                "    SELECT COUNT("+ClientAppointments.tbName+"."+ClientAppointments.COL_APPOINTMENT_ID+")as count FROM "+ClientAppointments.tbName+
-                " INNER JOIN "+HealthFacilitiesReferralClients.tbName+" USING ("+HealthFacilitiesReferralClients.COL_CLIENT_ID+")\n" +
-                " INNER JOIN "+ReferralClient.tbName+" ON "+HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID +
-                " WHERE status = -1 AND "+ClientAppointments.tbName+".created_at>'"+startDate+"' AND "+ClientAppointments.tbName+".created_at<'"+endDate+"'  AND "+ClientAppointments.COL_APPOINTMENT_TYPE+" = "+appointmentType+" AND "+ReferralClient.COL_GENDER+" = 'female'" +
-                ") as female FROM "+ClientAppointments.tbName+" Limit 1";
+                "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
+                " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
+                " WHERE status = -1 AND " + ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " + ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " + ClientAppointments.COL_APPOINTMENT_TYPE + " = " + appointmentType + " AND " + ReferralClient.COL_GENDER + " = 'female'" +
+                ") as female FROM " + ClientAppointments.tbName + " Limit 1";
     }
 
     public String getFoundLTFCountsReportSQL(long referralFeedbackId, String startDate, String endDate) {
         return "SELECT (" +
-                "    SELECT COUNT("+ClientAppointments.tbName+"."+ClientAppointments.COL_APPOINTMENT_ID+")as count FROM "+ClientAppointments.tbName+
-                " INNER JOIN "+HealthFacilitiesReferralClients.tbName+" USING ("+HealthFacilitiesReferralClients.COL_CLIENT_ID+")\n" +
-                " INNER JOIN "+ReferralClient.tbName+" ON "+HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID +
-                " INNER JOIN "+ClientReferrals.tbName+" ON "+ClientAppointments.tbName+"."+ClientAppointments.COL_FOLLOWUP_REFERRAL_ID+" = "+ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_ID +
-                " WHERE status = -1 AND "+
-                ClientAppointments.tbName+".created_at>'"+startDate+"' AND "+
-                ClientAppointments.tbName+".created_at<'"+endDate+"'  AND "+
-                ClientReferrals.COL_REFERRAL_FEEDBACK_ID+" = "+referralFeedbackId+" AND "+
-                ClientReferrals.COL_REFERRAL_STATUS+" = 1 AND "+
-                ReferralClient.COL_GENDER+" = 'male'" +
+                "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
+                " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
+                " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientAppointments.tbName + "." + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = " + ClientReferrals.tbName + "." + ClientReferrals.COL_REFERRAL_ID +
+                " WHERE status = -1 AND " +
+                ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
+                ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
+                ClientReferrals.COL_REFERRAL_FEEDBACK_ID + " = " + referralFeedbackId + " AND " +
+                ClientReferrals.COL_REFERRAL_STATUS + " = 1 AND " +
+                ReferralClient.COL_GENDER + " = 'male'" +
                 ") as Male, (" +
-                "    SELECT COUNT("+ClientAppointments.tbName+"."+ClientAppointments.COL_APPOINTMENT_ID+")as count FROM "+ClientAppointments.tbName+
-                " INNER JOIN "+HealthFacilitiesReferralClients.tbName+" USING ("+HealthFacilitiesReferralClients.COL_CLIENT_ID+")\n" +
-                " INNER JOIN "+ReferralClient.tbName+" ON "+HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID +
-                " INNER JOIN "+ClientReferrals.tbName+" ON "+ClientAppointments.tbName+"."+ClientAppointments.COL_FOLLOWUP_REFERRAL_ID+" = "+ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_ID +
-                " WHERE status = -1 AND "+
-                ClientAppointments.tbName+".created_at>'"+startDate+"' AND "+
-                ClientAppointments.tbName+".created_at<'"+endDate+"'  AND "+
-                ClientReferrals.COL_REFERRAL_FEEDBACK_ID+" = "+referralFeedbackId+" AND "+
-                ClientReferrals.COL_REFERRAL_STATUS+" = 1 AND "+
-                ReferralClient.COL_GENDER+" = 'female'" +
-                ") as female FROM "+ClientAppointments.tbName+" Limit 1";
+                "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
+                " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
+                " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientAppointments.tbName + "." + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = " + ClientReferrals.tbName + "." + ClientReferrals.COL_REFERRAL_ID +
+                " WHERE status = -1 AND " +
+                ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
+                ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
+                ClientReferrals.COL_REFERRAL_FEEDBACK_ID + " = " + referralFeedbackId + " AND " +
+                ClientReferrals.COL_REFERRAL_STATUS + " = 1 AND " +
+                ReferralClient.COL_GENDER + " = 'female'" +
+                ") as female FROM " + ClientAppointments.tbName + " Limit 1";
     }
 
     private String getLTFFollowupReportSQL(long referral_feedback_id, String startDate, String endDate) {
@@ -631,7 +631,6 @@ public class ReferralsReportService {
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<='" + endDate + "'";
     }
-
 
 
 }
