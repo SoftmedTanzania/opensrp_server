@@ -460,6 +460,7 @@ public class ReferralsReportService {
         for (AppointmentType appointmentType : appointmentTypes) {
             sn++;
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
+            genderReportsDTO.setSn(sn+"");
             genderReportsDTO.setItemName(appointmentType.getName());
             String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(), currentDate, firstDateOfTheMonth.withDayOfMonth(1).toString());
 
@@ -505,6 +506,7 @@ public class ReferralsReportService {
         for (ReferralFeedback referralFeedback : referralFeedbacks) {
             sn++;
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
+            genderReportsDTO.setSn(sn+"");
             genderReportsDTO.setItemName(referralFeedback.getDescSw());
             String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(), currentDate, firstDateOfTheMonth.withDayOfMonth(1).toString());
 

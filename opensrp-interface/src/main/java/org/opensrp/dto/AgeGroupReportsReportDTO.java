@@ -3,7 +3,12 @@ package org.opensrp.dto;
 public class AgeGroupReportsReportDTO {
     private String itemName,sn;
     private String lessThan1Male,lessThan1Female,oneTofiveMale,oneTofiveFemale,sixToNineMale,sixToNineFemale,tenToFourteenMale,tenToFourteenFemale,
-            fifteenToNineteenMale,fifteenToNineteenFemale,twentyToTwentyFourMale,twentyToTwentyFourFemale,twentyFiveToFourtyNineMale,twentyFiveToFourtyNineFemale,fiftyToFiftyNineMale,fiftyToFiftyNineFemale,aboveSixtyMale, aboveSixtyFemale,totalMale,totalFemale;
+    fifteenToNineteenMale,fifteenToNineteenFemale,twentyToTwentyFourMale,twentyToTwentyFourFemale,twentyFiveToFourtyNineMale,twentyFiveToFourtyNineFemale,fiftyToFiftyNineMale,fiftyToFiftyNineFemale,aboveSixtyMale, aboveSixtyFemale,totalMale,totalFemale;
+
+    public AgeGroupReportsReportDTO() {
+        lessThan1Male=lessThan1Female=oneTofiveMale=oneTofiveFemale=sixToNineMale=sixToNineFemale=tenToFourteenMale=tenToFourteenFemale=
+                fifteenToNineteenMale=fifteenToNineteenFemale=twentyToTwentyFourMale=twentyToTwentyFourFemale=twentyFiveToFourtyNineMale=twentyFiveToFourtyNineFemale=fiftyToFiftyNineMale=fiftyToFiftyNineFemale=aboveSixtyMale= aboveSixtyFemale=totalMale=totalFemale="-";
+    }
 
     public String getItemName() {
         return itemName;
