@@ -7,6 +7,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.*;
 import net.sf.jasperreports.j2ee.servlets.ImageServlet;
 import net.sf.jasperreports.web.util.WebHtmlResourceHandler;
+import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -387,8 +389,47 @@ public class ReportController {
     }
 
 
+    @RequestMapping(value = "/reports/{reportName}/{reportType}", method = RequestMethod.POST)
+    public void totalSuccessfulReferrals(@PathVariable("reportName") String reportName,@PathVariable("reportType") String reportType, @RequestBody String json, HttpServletRequest request,
+                                         HttpServletResponse response) {
+        JSONObject object = null;
+        try {
+            object = new JSONObject(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-//    Total Successful Referrals
+        String toDate = "2020-01-01";
+        String fromDate = "2017-01-01";
+        try {
+            fromDate = object.getString("from_date");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            Date d = new Date(object.getString("to_date"));
+            Calendar c = Calendar.getInstance();
+            c.setTime(d);
+            c.add(Calendar.DATE,1);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+            toDate = formatter.format(c.getTime());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JSONArray facilitiesArray = null;
+        try {
+            facilitiesArray = object.getJSONArray("facilities");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        response.setContentType("text/html");
+        generateReport(reportName,reportType,fromDate,toDate,facilitiesArray,request,response);
+    }
+
+
+
+
+        //Total Successful Referrals
     /**
      * Retrieves Report in HTML & PDF format
      *
@@ -400,6 +441,18 @@ public class ReportController {
 
         response.setContentType("text/html");
 
+
+        LocalDate firstDateOfTheMonth = LocalDate.now();
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, 1);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        String currentDate = formatter.format(c.getTime());
+
+        generateReport(reportName,reportType,firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,new JSONArray(),request,response);
+    }
+
+    private void generateReport(String reportName,String reportType,String startDate, String endDate, JSONArray facilities,HttpServletRequest request,
+                                HttpServletResponse response){
         File sourceFile = null;
 
         try {
@@ -412,7 +465,7 @@ public class ReportController {
                 case "total_registered_clients":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
 
-                    datasource = referralsReportService.newRegistrationByReasonsReport();
+                    datasource = referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Registered Clients", "Address Report");
 
@@ -420,7 +473,7 @@ public class ReportController {
                 case "total_successful_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalSuccessfulReferrals.jasper");
 
-                    datasource = referralsReportService.referralsSummaryReport(true);
+                    datasource = referralsReportService.referralsSummaryReport(true,startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Successful Referrals", "Address Report");
 
@@ -428,7 +481,7 @@ public class ReportController {
                 case "total_referrals_issued":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssued.jasper");
 
-                    datasource = referralsReportService.referralsSummaryReport(false);
+                    datasource = referralsReportService.referralsSummaryReport(false,startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Referrals Issued", "Address Report");
 
@@ -437,7 +490,7 @@ public class ReportController {
                 case "ltfs_feedback":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/LTFFeedbackReport.jasper");
 
-                    datasource = referralsReportService.lTFsFeedbacksReport();
+                    datasource = referralsReportService.lTFsFeedbacksReport(startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("LTFs Feedback", "Address Report");
 
@@ -446,7 +499,7 @@ public class ReportController {
                 case "total_issued_ltfs":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalNumberOfLTFSToCBHSReport.jasper");
 
-                    datasource = referralsReportService.totalIssuedLTFsSummaryReport();
+                    datasource = referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Issued LTFs", "Address Report");
 
@@ -487,7 +540,7 @@ public class ReportController {
                 e1.printStackTrace();
             }
 
-             errorPage(out, "Error generating report");
+            errorPage(out, "Error generating report");
         }
     }
 

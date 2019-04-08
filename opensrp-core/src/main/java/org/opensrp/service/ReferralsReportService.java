@@ -3,7 +3,7 @@ package org.opensrp.service;
 import com.google.gson.Gson;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.joda.time.LocalDate;
+import org.json.JSONArray;
 import org.opensrp.domain.*;
 import org.opensrp.dto.AgeGroupReportsReportDTO;
 import org.opensrp.dto.GenderReportsDTO;
@@ -39,12 +39,8 @@ public class ReferralsReportService {
     private ReferralServiceRepository referralServiceRepository;
 
 
-    public JRDataSource newRegistrationByReasonsReport() {
-        LocalDate firstDateOfTheMonth = LocalDate.now();
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, 1);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-        String currentDate = formatter.format(c.getTime());
+    public JRDataSource newRegistrationByReasonsReport(String startDate, String endDate, JSONArray facilities) {
+
 
         List<ClientRegistrationReason> clientRegistrationReasons = null;
         try {
@@ -63,7 +59,7 @@ public class ReferralsReportService {
             ageGroupReportsReportDTO.setItemName(clientRegistrationReason.getDescSw());
             long totalMale = 0, totalFemale = 0;
 
-            String lessThan1year = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-1), currentDate, clientRegistrationReason.getRegistrationId());
+            String lessThan1year = generateRegistationReportSql(startDate, endDate, getDateByYearString(-1), endDate, clientRegistrationReason.getRegistrationId());
 
             List<MaleFemaleCountObject> lessThan1yearRegistrationsList = null;
             try {
@@ -85,7 +81,7 @@ public class ReferralsReportService {
             }
 
 
-            String _1to5 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-5), getDateByYearString(-1), clientRegistrationReason.getRegistrationId());
+            String _1to5 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-5), getDateByYearString(-1), clientRegistrationReason.getRegistrationId());
 
             List<MaleFemaleCountObject> _1to5RegistrationsList = null;
             try {
@@ -108,7 +104,7 @@ public class ReferralsReportService {
             }
 
 
-            String _6to9 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-9), getDateByYearString(-5), clientRegistrationReason.getRegistrationId());
+            String _6to9 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-9), getDateByYearString(-5), clientRegistrationReason.getRegistrationId());
 
             List<MaleFemaleCountObject> _6to9RegistrationsList = null;
             try {
@@ -129,7 +125,7 @@ public class ReferralsReportService {
             }
 
 
-            String _10To14 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-14), getDateByYearString(-9), clientRegistrationReason.getRegistrationId());
+            String _10To14 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-14), getDateByYearString(-9), clientRegistrationReason.getRegistrationId());
 
             List<MaleFemaleCountObject> _10To14RegistrationsList = null;
             try {
@@ -151,7 +147,7 @@ public class ReferralsReportService {
             }
 
 
-            String _15To19 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-19), getDateByYearString(-14), clientRegistrationReason.getRegistrationId());
+            String _15To19 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-19), getDateByYearString(-14), clientRegistrationReason.getRegistrationId());
             List<MaleFemaleCountObject> _15To19RegistrationsList = null;
             try {
                 _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19, null);
@@ -171,7 +167,7 @@ public class ReferralsReportService {
             }
 
 
-            String _20To24 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-24), getDateByYearString(-19), clientRegistrationReason.getRegistrationId());
+            String _20To24 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-24), getDateByYearString(-19), clientRegistrationReason.getRegistrationId());
 
             List<MaleFemaleCountObject> _20To24RegistrationsList = null;
             try {
@@ -192,7 +188,7 @@ public class ReferralsReportService {
             }
 
 
-            String _25To49 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-49), getDateByYearString(-24), clientRegistrationReason.getRegistrationId());
+            String _25To49 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-49), getDateByYearString(-24), clientRegistrationReason.getRegistrationId());
 
             List<MaleFemaleCountObject> _25To49RegistrationsList = null;
             try {
@@ -214,7 +210,7 @@ public class ReferralsReportService {
             }
 
 
-            String _50To59 = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-59), getDateByYearString(-49), clientRegistrationReason.getRegistrationId());
+            String _50To59 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-59), getDateByYearString(-49), clientRegistrationReason.getRegistrationId());
 
             List<MaleFemaleCountObject> _50To59RegistrationsList = null;
             try {
@@ -235,7 +231,7 @@ public class ReferralsReportService {
             }
 
 
-            String _60Above = generateRegistationReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", getDateByYearString(-59), clientRegistrationReason.getRegistrationId());
+            String _60Above = generateRegistationReportSql(startDate, endDate, "", getDateByYearString(-59), clientRegistrationReason.getRegistrationId());
             List<MaleFemaleCountObject> _60AboveRegistrationsList = null;
             try {
                 _60AboveRegistrationsList = clientsRepository.getMaleFemaleCountReports(_60Above, null);
@@ -265,13 +261,7 @@ public class ReferralsReportService {
         return ds;
     }
 
-    public JRDataSource referralsSummaryReport(boolean successful) {
-        LocalDate firstDateOfTheMonth = LocalDate.now();
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, 1);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-        String currentDate = formatter.format(c.getTime());
-
+    public JRDataSource referralsSummaryReport(boolean successful, String startDate, String endDate, JSONArray facilities) {
         List<ReferralService> referralServices = null;
         try {
             referralServices = referralServiceRepository.getReferralServices("SELECT * FROM " + ReferralService.tbName, null);
@@ -289,7 +279,7 @@ public class ReferralsReportService {
             referralReportDTO.setItemName(referralService.getServiceNameSw());
             long totalMale = 0, totalFemale = 0;
 
-            String lessThan1year = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-1), currentDate, referralService.getServiceId(), successful);
+            String lessThan1year = generateReferralsReportSql(startDate, endDate, getDateByYearString(-1), endDate, referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> lessThan1yearReferralsList = null;
             try {
@@ -305,7 +295,7 @@ public class ReferralsReportService {
             }
 
 
-            String _1to5 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-5), getDateByYearString(-1), referralService.getServiceId(), successful);
+            String _1to5 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-5), getDateByYearString(-1), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _1to5RegistrationsList = null;
             try {
@@ -321,7 +311,7 @@ public class ReferralsReportService {
             }
 
 
-            String _6to9 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-9), getDateByYearString(-5), referralService.getServiceId(), successful);
+            String _6to9 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-9), getDateByYearString(-5), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _6to9RegistrationsList = null;
             try {
@@ -336,7 +326,7 @@ public class ReferralsReportService {
             }
 
 
-            String _10To14 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-14), getDateByYearString(-9), referralService.getServiceId(), successful);
+            String _10To14 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-14), getDateByYearString(-9), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _10To14RegistrationsList = null;
             try {
@@ -351,7 +341,7 @@ public class ReferralsReportService {
             }
 
 
-            String _15To19 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-19), getDateByYearString(-14), referralService.getServiceId(), successful);
+            String _15To19 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-19), getDateByYearString(-14), referralService.getServiceId(), successful);
             List<MaleFemaleCountObject> _15To19RegistrationsList = null;
             try {
                 _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19, null);
@@ -365,7 +355,7 @@ public class ReferralsReportService {
             }
 
 
-            String _20To24 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-24), getDateByYearString(-19), referralService.getServiceId(), successful);
+            String _20To24 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-24), getDateByYearString(-19), referralService.getServiceId(), successful);
             List<MaleFemaleCountObject> _20To24RegistrationsList = null;
             try {
                 _20To24RegistrationsList = clientsRepository.getMaleFemaleCountReports(_20To24, null);
@@ -380,7 +370,7 @@ public class ReferralsReportService {
             }
 
 
-            String _25To49 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-49), getDateByYearString(-24), referralService.getServiceId(), successful);
+            String _25To49 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-49), getDateByYearString(-24), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _25To49RegistrationsList = null;
             try {
@@ -396,7 +386,7 @@ public class ReferralsReportService {
             }
 
 
-            String _50To59 = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, getDateByYearString(-59), getDateByYearString(-49), referralService.getServiceId(), successful);
+            String _50To59 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-59), getDateByYearString(-49), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _50To59RegistrationsList = null;
             try {
@@ -411,7 +401,7 @@ public class ReferralsReportService {
             }
 
 
-            String _60Above = generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, "", getDateByYearString(-59), referralService.getServiceId(), successful);
+            String _60Above = generateReferralsReportSql(startDate, endDate, "", getDateByYearString(-59), referralService.getServiceId(), successful);
 
             List<MaleFemaleCountObject> _60AboveRegistrationsList = null;
             try {
@@ -439,12 +429,7 @@ public class ReferralsReportService {
     }
 
 
-    public JRDataSource totalIssuedLTFsSummaryReport() {
-        LocalDate firstDateOfTheMonth = LocalDate.now();
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, 1);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-        String currentDate = formatter.format(c.getTime());
+    public JRDataSource totalIssuedLTFsSummaryReport(String startDate, String endDate, JSONArray facilities) {
         List<AppointmentType> appointmentTypes = null;
 
         try {
@@ -460,16 +445,16 @@ public class ReferralsReportService {
         for (AppointmentType appointmentType : appointmentTypes) {
             sn++;
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
-            genderReportsDTO.setSn(sn+"");
+            genderReportsDTO.setSn(sn + "");
             genderReportsDTO.setItemName(appointmentType.getName());
-            String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(), currentDate, firstDateOfTheMonth.withDayOfMonth(1).toString());
+            String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(), endDate, startDate);
 
             List<MaleFemaleCountObject> lftIssuedList = null;
             try {
                 lftIssuedList = appointmentTypeRepository.getMaleFemaleCountReports(lftIssuedSql, null);
                 genderReportsDTO.setMale(lftIssuedList.get(0).getMale());
                 genderReportsDTO.setFemale(lftIssuedList.get(0).getFemale());
-                genderReportsDTO.setTotal((Integer.parseInt(lftIssuedList.get(0).getMale())+Integer.parseInt(lftIssuedList.get(0).getFemale()))+"");
+                genderReportsDTO.setTotal((Integer.parseInt(lftIssuedList.get(0).getMale()) + Integer.parseInt(lftIssuedList.get(0).getFemale())) + "");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -486,14 +471,8 @@ public class ReferralsReportService {
         return ds;
     }
 
-    public JRDataSource lTFsFeedbacksReport() {
-        LocalDate firstDateOfTheMonth = LocalDate.now();
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, 1);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-        String currentDate = formatter.format(c.getTime());
+    public JRDataSource lTFsFeedbacksReport(String startDate, String endDate, JSONArray facilities) {
         List<ReferralFeedback> referralFeedbacks = null;
-
         try {
             referralFeedbacks = referralFeedbackRepository.getReferralFeedback("SELECT * FROM " + ReferralFeedback.tbName + " WHERE " + ReferralFeedback.COL_REFERRAL_TYPE_ID + " = 1", null);
         } catch (Exception e) {
@@ -506,16 +485,16 @@ public class ReferralsReportService {
         for (ReferralFeedback referralFeedback : referralFeedbacks) {
             sn++;
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
-            genderReportsDTO.setSn(sn+"");
+            genderReportsDTO.setSn(sn + "");
             genderReportsDTO.setItemName(referralFeedback.getDescSw());
-            String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(), currentDate, firstDateOfTheMonth.withDayOfMonth(1).toString());
+            String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(), endDate, startDate);
 
             List<MaleFemaleCountObject> lftFoundList = null;
             try {
                 lftFoundList = appointmentTypeRepository.getMaleFemaleCountReports(lftFoundSql, null);
                 genderReportsDTO.setMale(lftFoundList.get(0).getMale());
                 genderReportsDTO.setFemale(lftFoundList.get(0).getFemale());
-                genderReportsDTO.setTotal((Integer.parseInt(lftFoundList.get(0).getMale())+Integer.parseInt(lftFoundList.get(0).getFemale()))+"");
+                genderReportsDTO.setTotal((Integer.parseInt(lftFoundList.get(0).getMale()) + Integer.parseInt(lftFoundList.get(0).getFemale())) + "");
             } catch (Exception e) {
                 e.printStackTrace();
                 genderReportsDTO.setMale("0");
