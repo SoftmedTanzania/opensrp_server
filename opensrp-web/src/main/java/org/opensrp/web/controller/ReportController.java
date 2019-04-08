@@ -414,7 +414,7 @@ public class ReportController {
             Calendar c = Calendar.getInstance();
             c.setTime(d);
             c.add(Calendar.DATE,1);
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             toDate = formatter.format(c.getTime());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -457,7 +457,7 @@ public class ReportController {
         LocalDate firstDateOfTheMonth = LocalDate.now();
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, 1);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String currentDate = formatter.format(c.getTime());
 
         generateReport(reportName,reportType,firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,new JSONArray(),request,response);
