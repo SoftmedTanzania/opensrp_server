@@ -15,9 +15,11 @@ import org.opensrp.connector.openmrs.service.OpenmrsReportingService;
 import org.opensrp.connector.openmrs.service.OpenmrsUserService;
 import org.opensrp.domain.ClientReferrals;
 import org.opensrp.domain.HealthFacilities;
+import org.opensrp.domain.ReferralReport;
 import org.opensrp.domain.ReferralService;
 import org.opensrp.dto.*;
 import org.opensrp.repository.ClientReferralRepository;
+import org.opensrp.repository.ReferralReportRepository;
 import org.opensrp.service.ReferralsReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -47,13 +48,15 @@ public class ReportController {
     private ClientReferralRepository clientReferralRepository;
     private OpenmrsUserService openmrsUserService;
     private ReferralsReportService referralsReportService;
+    private ReferralReportRepository referralReportRepository;
 
     @Autowired
-    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService, ReferralsReportService referralsReportService) {
+    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService, ReferralsReportService referralsReportService,ReferralReportRepository referralReportRepository) {
         this.reportService = reportService;
         this.openmrsUserService = openmrsUserService;
         this.clientReferralRepository = clientReferralRepository;
         this.referralsReportService = referralsReportService;
+        this.referralReportRepository = referralReportRepository;
     }
 
     public static byte[] exportReportToHtmlStream(JasperPrint jasperPrint) throws JRException {
@@ -426,6 +429,18 @@ public class ReportController {
         generateReport(reportName,reportType,fromDate,toDate,facilitiesArray,request,response);
     }
 
+
+    @RequestMapping(value = "/reports", method = RequestMethod.GET)
+    public ResponseEntity<List<ReferralReport>> availableReports() {
+        try {
+            List<ReferralReport>referralReports=  referralReportRepository.referralReports("SELECT * FROM "+ ReferralReport.tbName,null);
+            return new ResponseEntity<List<ReferralReport>>(referralReports, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<ReferralReport>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
 
 

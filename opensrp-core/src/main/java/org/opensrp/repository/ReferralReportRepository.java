@@ -52,7 +52,7 @@ public class ReferralReportRepository {
     }
 
 
-    public List<ReferralReport> getAppointmentTypes(String sql, Object[] args) throws Exception {
+    public List<ReferralReport> referralReports(String sql, Object[] args) throws Exception {
         return this.jdbcTemplate.query(sql, args, new RegistrationIdsRowMapper());
     }
 
