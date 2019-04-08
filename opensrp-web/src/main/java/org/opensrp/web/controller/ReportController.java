@@ -430,7 +430,7 @@ public class ReportController {
     }
 
 
-    @RequestMapping(value = "/reports", method = RequestMethod.GET)
+    @RequestMapping(value = "/available_reports", method = RequestMethod.GET)
     public ResponseEntity<List<ReferralReport>> availableReports() {
         try {
             List<ReferralReport>referralReports=  referralReportRepository.referralReports("SELECT * FROM "+ ReferralReport.tbName,null);
@@ -439,7 +439,6 @@ public class ReportController {
             e.printStackTrace();
             return new ResponseEntity<List<ReferralReport>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
 
@@ -453,9 +452,7 @@ public class ReportController {
     @RequestMapping(value = "/reports/{reportName}/{reportType}", method = RequestMethod.GET)
     public void totalSuccessfulReferrals(@PathVariable("reportName") String reportName,@PathVariable("reportType") String reportType, HttpServletRequest request,
                                      HttpServletResponse response) {
-
         response.setContentType("text/html");
-
 
         LocalDate firstDateOfTheMonth = LocalDate.now();
         Calendar c = Calendar.getInstance();
