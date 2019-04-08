@@ -16,10 +16,10 @@ public class GoogleFCMService {
 			String androidFcmKey;
 			if(toFacilityUsers) {
 				//Facility client app FCM server key
-				androidFcmKey = "AAAATCjcWhU:APA91bEit29ckqT15O-xmdEwHi2B0t6aP87qC7blWbJ1PEmC0pZ1q7h6dN6EIcwY2QWKVlnZd9fnriXuFNW4z7_8alawRPDyrUWSnBG_oS5ri4PBkAbb6vRyZCt8d56crY7Az3LUiM_1";
+				androidFcmKey = "AAAAEgpJVug:APA91bGCXo-2ut2gyxSmvOmSYSV_0W_RenJO-nkvqmD8wI-39LB0PQzRCMJxqtHKv0lyK22LrEwM3S4V8YJYlC3xKfqLo8pobONQ0fV9WNRqeJhvxe5F19-ql24THsqQ2ePVmp73mlyb";
 			}else{
 				//Facility CHW app FCM server key
-				androidFcmKey = "AAAAwVxsHOQ:APA91bFFGOI2MZbKmQynkq-BPjG01_3c6GSQwPcO2DpzFUfUnZT4T3bgU7LuylfQmc2pDQeyyv0H3H9rehuM051mdc1OI7ycCt8k4IQ8_H26c00JkVmsqFjlVGvETi1bv2PEWiD4Ty0r";
+				androidFcmKey = "AAAAEgpJVug:APA91bGCXo-2ut2gyxSmvOmSYSV_0W_RenJO-nkvqmD8wI-39LB0PQzRCMJxqtHKv0lyK22LrEwM3S4V8YJYlC3xKfqLo8pobONQ0fV9WNRqeJhvxe5F19-ql24THsqQ2ePVmp73mlyb";
 			}
 			String androidFcmUrl="https://fcm.googleapis.com/fcm/send";
 
