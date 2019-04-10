@@ -393,8 +393,8 @@ public class ReportController {
 
 
     @RequestMapping(value = "/reports/{reportName}/{reportType}", method = RequestMethod.POST)
-    public void totalSuccessfulReferrals(@PathVariable("reportName") String reportName,@PathVariable("reportType") String reportType, @RequestBody String json, HttpServletRequest request,
-                                         HttpServletResponse response) {
+    public void reportLauncher(@PathVariable("reportName") String reportName, @PathVariable("reportType") String reportType, @RequestBody String json, HttpServletRequest request,
+                               HttpServletResponse response) {
         JSONObject object = null;
         try {
             object = new JSONObject(json);
@@ -450,8 +450,8 @@ public class ReportController {
      * @return
      */
     @RequestMapping(value = "/reports/{reportName}/{reportType}", method = RequestMethod.GET)
-    public void totalSuccessfulReferrals(@PathVariable("reportName") String reportName,@PathVariable("reportType") String reportType, HttpServletRequest request,
-                                     HttpServletResponse response) {
+    public void reportLauncher(@PathVariable("reportName") String reportName, @PathVariable("reportType") String reportType, HttpServletRequest request,
+                               HttpServletResponse response) {
         response.setContentType("text/html");
 
         LocalDate firstDateOfTheMonth = LocalDate.now();
