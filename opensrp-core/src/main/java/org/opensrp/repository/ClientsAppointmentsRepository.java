@@ -94,6 +94,8 @@ public class ClientsAppointmentsRepository {
 			ClientReferrals clientReferrals = new ClientReferrals();
 			clientReferrals.setId(rs.getLong(rs.findColumn(ClientAppointments.COL_FOLLOWUP_REFERRAL_ID)));
 
+			clientAppointments.setClientReferrals(clientReferrals);
+
 			clientAppointments.setAppointmentType(appointmentType);
 			clientAppointments.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(ClientAppointments.COL_CREATED_AT)).getTime()));
 			clientAppointments.setUpdatedAt(rs.getDate(rs.findColumn(ClientAppointments.COL_UPDATED_AT)));

@@ -256,6 +256,23 @@ public class ReferralPatientsController {
                             savedAppointmentsCount++;
                         } catch (Exception e) {
                             e.printStackTrace();
+
+                            try {
+                                Object[] clientAppointmentParams = new Object[]{patientAppointment.getAppointmentDate(), healthFacilityPatientId};
+                                List<ClientAppointments> clientAppointments = clientsAppointmentsRepository.getAppointments("SELECT * FROM " + ClientAppointments.tbName + " WHERE " + ClientAppointments.COL_APPOINTMENT_DATE + " =? AND " + ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID + " =?", clientAppointmentParams);
+
+                                Object[] referralParams = new Object[]{0, clientAppointments.get(0).getClientReferrals().getId()};
+                                List<ClientReferrals> clientReferrals = clientReferralRepository.getReferrals("SELECT * FROM " + ClientReferrals.tbName + " WHERE " + ClientReferrals.COL_REFERRAL_STATUS + " = ? AND " + ClientReferrals.COL_REFERRAL_ID + " = ?", referralParams);
+
+                                if (clientReferrals.size() > 0) {
+                                    ReferralsDTO referralsDTO = PatientsConverter.toPatientDTO(clientReferrals.get(0));
+                                    referralsDTOS.add(referralsDTO);
+                                    savedAppointmentsCount++;
+                                }
+                            }catch (Exception e1){
+                                e1.printStackTrace();
+                            }
+
                         }
 
 
