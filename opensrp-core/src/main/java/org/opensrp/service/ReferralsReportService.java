@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.opensrp.domain.*;
 import org.opensrp.dto.AgeGroupReportsReportDTO;
 import org.opensrp.dto.GenderReportsDTO;
+import org.opensrp.dto.MalariaReportDTO;
 import org.opensrp.dto.report.MaleFemaleCountObject;
 import org.opensrp.repository.*;
 import org.slf4j.Logger;
@@ -421,6 +422,64 @@ public class ReferralsReportService {
 
             ageGroupReportsReportDTOS.add(referralReportDTO);
         }
+
+        logger.info("Report data source = " + new Gson().toJson(ageGroupReportsReportDTOS));
+
+        JRDataSource ds = new JRBeanCollectionDataSource(ageGroupReportsReportDTOS);
+        return ds;
+    }
+
+
+    public JRDataSource successfulMalariaReferralsReport(String startDate, String endDate, JSONArray facilities) {
+        List<ReferralService> referralServices = null;
+        try {
+            referralServices = referralServiceRepository.getReferralServices("SELECT * FROM " + ReferralService.tbName+" WHERE "+ReferralService.COL_CATEGORY_NAME+" = 'malaria'", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int sn = 0;
+        List<AgeGroupReportsReportDTO> ageGroupReportsReportDTOS = new ArrayList<>();
+
+
+        int totalMale=0,totalFemale=0;
+
+        MalariaReportDTO malariaReportDTO = new MalariaReportDTO();
+
+        String lessThan5years = generateReferralsReportSql(startDate, endDate, getDateByYearString(-5), endDate, referralServices.get(0).getServiceId(), true);
+
+        List<MaleFemaleCountObject> lessThan5yearsReferralsList = null;
+        try {
+
+            logger.info("Less than 5 years SQL = " + lessThan5years);
+            lessThan5yearsReferralsList = clientsRepository.getMaleFemaleCountReports(lessThan5years, null);
+            malariaReportDTO.setLessThanFiveMale(lessThan5yearsReferralsList.get(0).getMale());
+            malariaReportDTO.setLessThanFiveFemale(lessThan5yearsReferralsList.get(0).getFemale());
+
+            totalMale += Integer.parseInt(lessThan5yearsReferralsList.get(0).getMale());
+            totalFemale += Integer.parseInt(lessThan5yearsReferralsList.get(0).getFemale());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String greaterThan5years = generateReferralsReportSql(startDate, endDate, "1900/01/01", getDateByYearString(-5), referralServices.get(0).getServiceId(), true);
+        List<MaleFemaleCountObject> greaterThan5yearsReferralsList = null;
+        try {
+            logger.info("greater than 5 years SQL = " + greaterThan5years);
+
+            greaterThan5yearsReferralsList = clientsRepository.getMaleFemaleCountReports(greaterThan5years, null);
+            malariaReportDTO.setGreaterThan5Male(greaterThan5yearsReferralsList.get(0).getMale());
+            malariaReportDTO.setGreaterThan5Female(greaterThan5yearsReferralsList.get(0).getFemale());
+
+            totalMale += Integer.parseInt(greaterThan5yearsReferralsList.get(0).getMale());
+            totalFemale += Integer.parseInt(greaterThan5yearsReferralsList.get(0).getFemale());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        malariaReportDTO.setTotalMale(totalMale+"");
+        malariaReportDTO.setTotalFemale(totalFemale+"");
 
         logger.info("Report data source = " + new Gson().toJson(ageGroupReportsReportDTOS));
 
