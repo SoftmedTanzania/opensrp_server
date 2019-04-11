@@ -581,7 +581,8 @@ public class ReferralsReportService {
 
     private String generateRegistationReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long reasons_for_registration) {
         return "SELECT (SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
-                " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." +HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
+        " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
                 ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
                 ReferralClient.COL_CREATED_AT + "<'" + endDate + "'" +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
@@ -589,6 +590,7 @@ public class ReferralsReportService {
                 (reasons_for_registration != 0 ? " AND " + ReferralClient.COL_REGISTRATION_REASON + " = " + reasons_for_registration : "") +
                 ") as Male, " +
                 "(SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." +HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
                 " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
                 ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
                 ReferralClient.COL_CREATED_AT + "<'" + endDate + "' " +
@@ -601,6 +603,7 @@ public class ReferralsReportService {
     public String generateReferralsReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long referral_service, boolean referralStatus) {
         return "SELECT (SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientReferrals.tbName + "." + ClientReferrals.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." +HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
                 " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "'" +
@@ -611,6 +614,7 @@ public class ReferralsReportService {
                 ") as Male, " +
                 "(SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientReferrals.tbName + "." + ClientReferrals.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." +HealthFacilitiesReferralClients.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
                 " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "' " +
