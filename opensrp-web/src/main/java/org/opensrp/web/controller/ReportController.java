@@ -485,7 +485,7 @@ public class ReportController {
                 case "total_successful_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalSuccessfulReferrals.jasper");
 
-                    datasource = referralsReportService.referralsSummaryReport(true,startDate,endDate,facilities);
+                    datasource = referralsReportService.referralsSummaryReport("1",startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Successful Referrals", "Address Report");
 
@@ -493,7 +493,7 @@ public class ReportController {
                 case "total_referrals_issued":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssued.jasper");
 
-                    datasource = referralsReportService.referralsSummaryReport(false,startDate,endDate,facilities);
+                    datasource = referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Referrals Issued", "Address Report");
 
