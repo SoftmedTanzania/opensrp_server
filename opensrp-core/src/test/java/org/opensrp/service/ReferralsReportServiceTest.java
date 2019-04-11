@@ -26,14 +26,14 @@ public class ReferralsReportServiceTest {
 
     @Test
     public void  generateReferralsReportSql() {
-        String sql = referralsReportService.generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, referralsReportService.getDateByYearString(-1), currentDate, 1,true);
+        String sql = referralsReportService.generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, referralsReportService.getDateByYearString(-1), currentDate, 1,true,"100");
 
         System.out.println("SQL : "+sql);
     }
 
     @Test
     public void getLTFCountsReportSQL() {
-        String sql = referralsReportService.getLTFCountsReportSQL(1,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate);
+        String sql = referralsReportService.getLTFCountsReportSQL(1,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate,null);
 
         System.out.println("SQL : "+sql);
     }
