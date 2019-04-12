@@ -55,6 +55,7 @@ public class ReferralsReportService {
                 e.printStackTrace();
             }
         }
+        openmrsUuids+="0";
         return openmrsUuids;
     }
 
@@ -606,8 +607,8 @@ public class ReferralsReportService {
         return "SELECT (SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
-                ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
-                ReferralClient.COL_CREATED_AT + "<'" + endDate + "'" +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + "<'" + endDate + "'" +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (reasons_for_registration != 0 ? " AND " + ReferralClient.COL_REGISTRATION_REASON + " = " + reasons_for_registration : "") +
@@ -616,8 +617,8 @@ public class ReferralsReportService {
                 "(SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
-                ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
-                ReferralClient.COL_CREATED_AT + "<'" + endDate + "' " +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + "<'" + endDate + "' " +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (reasons_for_registration != 0 ? " AND " + ReferralClient.COL_REGISTRATION_REASON + " = " + reasons_for_registration : "") +
