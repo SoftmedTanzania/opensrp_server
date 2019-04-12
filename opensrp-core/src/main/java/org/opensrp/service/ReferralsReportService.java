@@ -632,7 +632,7 @@ public class ReferralsReportService {
                 " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "'" +
-                (!referralStatus.equals("")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
+                (!referralStatus.equals("0")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "") +
@@ -644,7 +644,7 @@ public class ReferralsReportService {
                 " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "' " +
-                (!referralStatus.equals("")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
+                (!referralStatus.equals("0")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "") +
