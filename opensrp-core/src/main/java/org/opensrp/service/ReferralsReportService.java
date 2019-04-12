@@ -55,7 +55,7 @@ public class ReferralsReportService {
                 e.printStackTrace();
             }
         }
-        openmrsUuids+="0";
+        openmrsUuids = openmrsUuids+"0";
         return openmrsUuids;
     }
 
