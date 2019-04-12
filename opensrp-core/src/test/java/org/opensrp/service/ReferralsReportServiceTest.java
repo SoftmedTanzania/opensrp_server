@@ -26,7 +26,7 @@ public class ReferralsReportServiceTest {
 
     @Test
     public void  generateReferralsReportSql() {
-        String sql = referralsReportService.generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, referralsReportService.getDateByYearString(-1), currentDate, 1,true,"100");
+        String sql = referralsReportService.generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, referralsReportService.getDateByYearString(-1), currentDate, 1,"0","100");
 
         System.out.println("SQL : "+sql);
     }
