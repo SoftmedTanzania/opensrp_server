@@ -5,8 +5,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import java.util.Date;
-
 public class ReferralServiceDTO {
     @JsonProperty
     private Long id;
@@ -15,7 +13,7 @@ public class ReferralServiceDTO {
     private String serviceName;
 
     @JsonProperty
-    private String referralServiceNameSw;
+    private String serviceNameSw;
 
     @JsonProperty
     private String category;
@@ -50,12 +48,12 @@ public class ReferralServiceDTO {
         this.serviceName = serviceName;
     }
 
-    public String getReferralServiceNameSw() {
-        return referralServiceNameSw;
+    public String getServiceNameSw() {
+        return serviceNameSw;
     }
 
-    public void setReferralServiceNameSw(String referralServiceNameSw) {
-        this.referralServiceNameSw = referralServiceNameSw;
+    public void setServiceNameSw(String serviceNameSw) {
+        this.serviceNameSw = serviceNameSw;
     }
 
     public String getCategory() {
