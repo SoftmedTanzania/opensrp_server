@@ -408,7 +408,6 @@ public class ServiceController {
         return new ResponseEntity<ReferralService>(OK);
     }
 
-
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/get-indicators")
     @ResponseBody
     public List<Indicator> getIndicators() {
@@ -422,7 +421,6 @@ public class ServiceController {
 
         return indicators;
     }
-
 
     @RequestMapping("get-indicator/{indicatorId}")
     @ResponseBody
@@ -527,6 +525,48 @@ public class ServiceController {
        return referralFeedbacks;
     }
 
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/create-referral-feedback")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> createReferralFeedback(@RequestBody ReferralFeedback referralFeedback ) {
+        try {
+            feedbackRepository.save(referralFeedback);
+            return new ResponseEntity<>(CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
+    @RequestMapping("/delete-referral-feedback/{feedBackId}")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> deleteReferralFeedback(@PathVariable("feedBackId") String feedBackId ) {
+        try {
+            feedbackRepository.executeQuery("DELETE FROM "+ReferralFeedback.tbName+" WHERE _id = "+feedBackId);
+            return new ResponseEntity<>(CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/update-registration-reasons")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> updateReferralFeedback(@RequestBody ReferralFeedback referralFeedback ) {
+        try {
+            feedbackRepository.executeQuery("UPDATE "+ReferralFeedback.tbName+" SET  "+
+                    ReferralFeedback.COL_DESC+" = '"+referralFeedback.getDesc()+"',"+
+                    ReferralFeedback.COL_DESC_SW+" = '"+referralFeedback.getDescSw()+"',"+
+                    ReferralFeedback.COL_REFERRAL_TYPE_ID+" = "+referralFeedback.getReferralType().getReferralTypeId()+
+                    " WHERE _id = "+referralFeedback.getId()
+
+            );
+            return new ResponseEntity<>(OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/registration-reasons")
     @ResponseBody
     public List<ClientRegistrationReason> getRegistrationReasons() {
@@ -538,6 +578,49 @@ public class ServiceController {
             e.printStackTrace();
         }
 
-       return clientRegistrationReasons;
+        return clientRegistrationReasons;
+    }
+
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/create-registration-reasons")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> createRegistrationReason(@RequestBody ClientRegistrationReason clientRegistrationReason ) {
+        try {
+            registrationReasonRepository.save(clientRegistrationReason);
+            return new ResponseEntity<>(CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
+    @RequestMapping("/delete-registration-reasons/{reasonId}")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> deleteRegistrationReason(@PathVariable("reasonId") String reasonId) {
+        try {
+            registrationReasonRepository.executeQuery("DELETE FROM "+ClientRegistrationReason.tbName+" WHERE "+ClientRegistrationReason.COL_REGISTRATION__ID+" = "+reasonId);
+            return new ResponseEntity<>(CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/update-registration-reasons")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> updateRegistrationReason(@RequestBody ClientRegistrationReason clientRegistrationReason ) {
+        try {
+            registrationReasonRepository.executeQuery("UPDATE "+ClientRegistrationReason.tbName+" SET  "+
+                    ClientRegistrationReason.COL_DESC_EN+" = '"+clientRegistrationReason.getDescEn()+"',"+
+                    ClientRegistrationReason.COL_DESC_SW+" = '"+clientRegistrationReason.getDescSw()+"',"+
+                    ClientRegistrationReason.COL_APPLICABLE_TO_MEN+" = "+clientRegistrationReason.isApplicableToMen()+","+
+                    ClientRegistrationReason.COL_APPLICABLE_TO_WOMEN+" = "+clientRegistrationReason.isApplicableToWomen()+" WHERE "+ClientRegistrationReason.COL_REGISTRATION__ID+" = "+clientRegistrationReason.getRegistrationId()
+
+            );
+            return new ResponseEntity<>(OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
     }
 }
