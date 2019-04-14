@@ -517,6 +517,33 @@ public class ReportController {
 
                     break;
 
+                case "successful_malaria_referrals":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/SuccessfulMalariaReferrals.jasper");
+
+                    datasource = referralsReportService.successfulMalariaReferralsReport(startDate,endDate,facilities);
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Successful Malaria Referrals", "Address Report");
+
+                    break;
+
+                case "total_failed_referrals":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalFailedReferrals.jasper");
+
+                    datasource = referralsReportService.referralsSummaryReport("-1",startDate,endDate,facilities);
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Failed Referrals", "Address Report");
+
+                    break;
+
+                case "inter_facility_referrals":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/InterFacilityReferrals.jasper");
+
+                    datasource = referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities);
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Inter-Facility Referrals", "Address Report");
+
+                    break;
+
                 default:
                     PrintWriter out = null;
                     try {

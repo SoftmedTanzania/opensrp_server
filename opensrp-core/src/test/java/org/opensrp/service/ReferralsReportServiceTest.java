@@ -24,12 +24,12 @@ public class ReferralsReportServiceTest {
     public void newRegistrationByReasonsReport() {
     }
 
-    @Test
-    public void  generateReferralsReportSql() {
-        String sql = referralsReportService.generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, referralsReportService.getDateByYearString(-1), currentDate, 1,true,"100");
-
-        System.out.println("SQL : "+sql);
-    }
+//    @Test
+//    public void  generateReferralsReportSql() {
+//        String sql = referralsReportService.generateReferralsReportSql(firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, referralsReportService.getDateByYearString(-1), currentDate, 1,true,"100");
+//
+//        System.out.println("SQL : "+sql);
+//    }
 
     @Test
     public void getLTFCountsReportSQL() {
