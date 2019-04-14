@@ -55,6 +55,7 @@ public class ReferralsReportService {
                 e.printStackTrace();
             }
         }
+        openmrsUuids = openmrsUuids+"0";
         return openmrsUuids;
     }
 
@@ -606,8 +607,8 @@ public class ReferralsReportService {
         return "SELECT (SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
-                ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
-                ReferralClient.COL_CREATED_AT + "<'" + endDate + "'" +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + "<'" + endDate + "'" +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (reasons_for_registration != 0 ? " AND " + ReferralClient.COL_REGISTRATION_REASON + " = " + reasons_for_registration : "") +
@@ -616,8 +617,8 @@ public class ReferralsReportService {
                 "(SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
-                ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
-                ReferralClient.COL_CREATED_AT + "<'" + endDate + "' " +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + "<'" + endDate + "' " +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (reasons_for_registration != 0 ? " AND " + ReferralClient.COL_REGISTRATION_REASON + " = " + reasons_for_registration : "") +
@@ -632,7 +633,7 @@ public class ReferralsReportService {
                 " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "'" +
-                (!referralStatus.equals("")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
+                (!referralStatus.equals("0")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "") +
@@ -644,7 +645,7 @@ public class ReferralsReportService {
                 " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "' " +
-                (!referralStatus.equals("")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
+                (!referralStatus.equals("0")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "") +
