@@ -561,7 +561,7 @@ public class ReportController {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
             request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
 
-            Exporter exporter = null;git
+            Exporter exporter = null;
             if (reportType.equalsIgnoreCase("html")) {
                 exporter = export(jasperPrint, 1, response);
             } else if (reportType.equalsIgnoreCase("pdf")) {
