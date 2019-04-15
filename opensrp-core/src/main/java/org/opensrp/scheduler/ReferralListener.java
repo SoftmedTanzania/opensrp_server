@@ -75,10 +75,17 @@ public class ReferralListener {
 
             for (ClientReferrals clientReferral : clientReferrals) {
                 long diff = now.getTime() - clientReferral.getReferralDate().getTime();
-                logger.info("hours since referrals Isued: " + TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS));
+                logger.info("Days since referrals Issued: " + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
+                logger.info("Referral Issued: " + clientReferral.getId());
+                logger.info("Referral Service Id: " + clientReferral.getServiceId());
+                logger.info("Malaria Service Id: " + malariaServiceId);
+                logger.info("TB Service Id: " + tbServiceId);
+                logger.info("Referral Service Id: " + clientReferral.getServiceId());
 
                 //Failed referrals
-                if ((clientReferral.getServiceId() == malariaServiceId && TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS) > 24) || (clientReferral.getServiceId() == tbServiceId && TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) > 3)|| (clientReferral.getServiceId() != malariaServiceId && clientReferral.getServiceId() != tbServiceId && TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) > 7)) {
+                if ((clientReferral.getServiceId() == malariaServiceId && TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS) > 24) ||
+                        (clientReferral.getServiceId() == tbServiceId && TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) > 3)||
+                        (clientReferral.getServiceId() != malariaServiceId && clientReferral.getServiceId() != tbServiceId && TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) > 7)) {
 
                     logger.info("failed referral " + clientReferral.getId());
                     clientReferral.setReferralStatus(-1);
