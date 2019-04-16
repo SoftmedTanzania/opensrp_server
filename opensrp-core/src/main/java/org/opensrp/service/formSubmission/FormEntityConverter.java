@@ -392,6 +392,15 @@ public class FormEntityConverter {
 					Date startDate = new Date();
 					try{
 						startDate.setTime(Long.parseLong(formField.value()));
+
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(startDate);
+						cal.set(Calendar.HOUR_OF_DAY, 0);
+						cal.set(Calendar.MINUTE, 0);
+						cal.set(Calendar.SECOND, 0);
+						cal.set(Calendar.MILLISECOND, 0);
+						startDate = cal.getTime();
+
 						referralClient.setDateOfBirth(startDate);
 					}catch (Exception e1){
 						e1.printStackTrace();

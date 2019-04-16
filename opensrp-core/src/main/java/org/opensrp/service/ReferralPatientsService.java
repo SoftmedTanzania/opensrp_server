@@ -233,12 +233,12 @@ public class ReferralPatientsService {
                 ReferralClient.COL_PATIENT_FIRST_NAME + " = ?     AND " +
                 ReferralClient.COL_DATE_OF_BIRTH + " = ?    AND " +
                 ReferralClient.COL_PATIENT_SURNAME + " = ?        AND " +
-                ReferralClient.COL_PHONE_NUMBER + " = ?";
+                ReferralClient.COL_GENDER + " = ?";
         Object[] params = new Object[]{
                 patient.getFirstName(),
                 patient.getDateOfBirth(),
                 patient.getSurname(),
-                patient.getPhoneNumber()};
+                patient.getGender()};
         List<ReferralClient> referralClientResults = null;
         try {
             referralClientResults = clientsRepository.getPatients(query, params);
