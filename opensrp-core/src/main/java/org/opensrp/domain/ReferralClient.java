@@ -45,6 +45,8 @@ public class ReferralClient {
 
 	public static final String COL_REGISTRATION_REASON= "registration_reason_id";
 
+	public static final String COL_TEMP_ID= "temp_id";
+
 	public static final String COL_CREATED_AT = "created_at";
 
 	public static final String COL_UPDATED_AT = "updated_at";
@@ -119,6 +121,9 @@ public class ReferralClient {
 	@Column(name = COL_UPDATED_AT, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
+
+	@Column(name = COL_TEMP_ID)
+	private String tempId;
 
 	public Long getClientId() {
 		return clientId;
@@ -278,6 +283,14 @@ public class ReferralClient {
 
 	public void setVeo(String veo) {
 		this.veo = veo;
+	}
+
+	public String getTempId() {
+		return tempId;
+	}
+
+	public void setTempId(String tempId) {
+		this.tempId = tempId;
 	}
 }
 

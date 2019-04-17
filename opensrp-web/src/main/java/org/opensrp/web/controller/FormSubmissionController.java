@@ -332,10 +332,8 @@ public class FormSubmissionController {
 
                     logger.info("saveFormToOpenSRP : saving referral.  Client Id = " + clientId);
 
-                    Object[] args = new Object[1];
-                    args[0] = clientId;
-
-                    ReferralClient patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " + ReferralClient.COL_CLIENT_ID + " = ?", args).get(0);
+                    Object[] args = new Object[]{clientId,clientId};
+                    ReferralClient patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " + ReferralClient.COL_CLIENT_ID + " = ? OR "+ReferralClient.COL_TEMP_ID+" = ? ", args).get(0);
                     saveReferralData(patient, clientReferrals, updatedFormSubmission);
                 } catch (Exception e) {
                     e.printStackTrace();

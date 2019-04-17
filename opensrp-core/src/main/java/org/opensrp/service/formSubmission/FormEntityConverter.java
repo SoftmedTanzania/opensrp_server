@@ -409,6 +409,13 @@ public class FormEntityConverter {
 
 				if(formField.name().equals(ReferralClient.COL_GENDER))
 					referralClient.setGender(formField.value());
+
+				try {
+					if (formField.name().equals(ReferralClient.COL_TEMP_ID))
+						referralClient.setTempId(formField.value());
+				}catch (Exception e){
+					e.printStackTrace();
+				}
 			}
 
 			return referralClient;
