@@ -279,12 +279,7 @@ public class FormSubmissionController {
                 formSubmissionService.update(savedSubmission);
 
                 //updating any existing referrals with the correct clientId
-                List<FormSubmission> referralSubmissions = formSubmissionService.findByFormName("referral_form", 4);
-                for (FormSubmission submission : referralSubmissions) {
-                    formEntityConverter.updateClientIdInFormSubmission(submission, temporallyClientId, client.getClientId());
-                    formSubmissionService.update(submission);
-                }
-
+                updateReferralFormsWithSystemGenerateClientId(temporallyClientId,client);
 
                 try {
                     String userUUIDString = formEntityConverter.getFieldValueFromFormSubmission(formSubmission, "service_provider_uuid");
@@ -334,6 +329,16 @@ public class FormSubmissionController {
 
                     Object[] args = new Object[]{clientId,clientId};
                     ReferralClient patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " + ReferralClient.COL_CLIENT_ID + " = ? OR "+ReferralClient.COL_TEMP_ID+" = ? ", args).get(0);
+
+                    //checking if the clientId is a temporal Id
+                    try {
+                        Integer.parseInt(clientId);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        //updating any existing referrals with the correct clientId
+                        updateReferralFormsWithSystemGenerateClientId(clientId,patient);
+                    }
+
                     saveReferralData(patient, clientReferrals, updatedFormSubmission);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -400,6 +405,14 @@ public class FormSubmissionController {
         });
     }
 
+    private void updateReferralFormsWithSystemGenerateClientId(String temporallyClientId, ReferralClient client){
+        //updating any existing referrals with the correct clientId
+        List<FormSubmission> referralSubmissions = formSubmissionService.findByFormName("referral_form", 4);
+        for (FormSubmission submission : referralSubmissions) {
+            formEntityConverter.updateClientIdInFormSubmission(submission, temporallyClientId, client.getClientId());
+            formSubmissionService.update(submission);
+        }
+    }
     public String reformatPhoneNumber(String phoneNumber) {
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         try {
