@@ -296,7 +296,11 @@ public class ReferralPatientsController {
             }
 
             //sending referrals to chws with matching village names to LTF clients
-            for(PatientReferralsDTO patientReferralsDTO:successfullySavedLTFs){
+
+
+            Iterator<PatientReferralsDTO> iterator = successfullySavedLTFs.iterator();
+            while(iterator.hasNext()){
+                PatientReferralsDTO patientReferralsDTO = iterator.next();
                 for (int i = 0; i < teamMembersArray.length(); i++) {
                     try {
                         JSONObject object = teamMembersArray.getJSONObject(i);
@@ -328,7 +332,7 @@ public class ReferralPatientsController {
                                             googleFCMService.SendPushNotification(msg, tokens, false);
 
                                             //removing the successful notified LTF from list
-                                            successfullySavedLTFs.remove(patientReferralsDTO);
+                                            iterator.remove();
                                             sentReferral = true;
                                             break;
                                         } catch (Exception e) {
@@ -418,14 +422,16 @@ public class ReferralPatientsController {
             System.out.println("Sorted CHWs by wards = " + new Gson().toJson(chwsInAWard));
 
 
-            for (Map.Entry<String, List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
+            Iterator<Map.Entry<String, List<PatientReferralsDTO>>> iter = wardsCTCPatients.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, List<PatientReferralsDTO>> entry = iter.next();
                 try {
                     List<PatientReferralsDTO> ltfsReferralsDTOs = entry.getValue();
                     List<String> chwsFCMIds = chwsInAWard.get(entry.getKey());
                     int size = chwsFCMIds.size();
 
                     if(size>0){
-                        wardsCTCPatients.remove(ltfsReferralsDTOs);
+                        iter.remove();
                     }else{
                         continue;
                     }
