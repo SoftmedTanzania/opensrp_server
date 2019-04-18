@@ -260,7 +260,7 @@ public class ReferralPatientsService {
 
         //Obtaining facilityId from facilities
         String healthFacilitySql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
-                HealthFacilities.COL_FACILITY_CTC_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UUID + " = ?";
+                HealthFacilities.COL_HFR_CODE + " = ? OR " + HealthFacilities.COL_OPENMRS_UUID + " = ?";
         Object[] healthFacilityParams = new Object[]{
                 healthFacilityCode,healthFacilityCode};
 

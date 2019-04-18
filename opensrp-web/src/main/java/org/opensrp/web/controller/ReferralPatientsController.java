@@ -189,7 +189,7 @@ public class ReferralPatientsController {
             }
 
             List<HealthFacilities> healthFacilitiesCheck = facilityRepository.getHealthFacility("SELECT * FROM " + HealthFacilities.tbName + " WHERE " +
-                    HealthFacilities.COL_FACILITY_CTC_CODE + " = '" + ctcPayloadDTO.getFacilityCTC2Code() + "'", null);
+                    HealthFacilities.COL_HFR_CODE + " = '" + ctcPayloadDTO.getHfrCode() + "'", null);
 
             if (healthFacilitiesCheck.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
@@ -201,7 +201,7 @@ public class ReferralPatientsController {
                     System.out.println("saving patient");
                     ReferralClient p = PatientsConverter.toPatients(dto);
 
-                    long healthFacilityPatientId = referralPatientService.savePatient(p, dto.getHealthFacilityCode(), dto.getCtcNumber());
+                    long healthFacilityPatientId = referralPatientService.savePatient(p, healthFacilitiesCheck.get(0).getHfrCode(), dto.getCtcNumber());
 
 
                     ReferralClient patient = referralPatientService.getPatientsByHealthFacilityPatientId(healthFacilityPatientId);
