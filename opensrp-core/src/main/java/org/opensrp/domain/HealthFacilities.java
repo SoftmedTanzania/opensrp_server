@@ -24,11 +24,11 @@ public class HealthFacilities {
 	public static final String COL_UPDATED_AT = "updated_at";
 
 
+	@Id
 	@GeneratedValue
 	@Column(name = "_id")
 	private Long id;
 
-	@Id
 	@Column(name = COL_OPENMRS_UUID,unique=true)
 	private String openMRSUUID;
 
