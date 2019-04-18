@@ -34,8 +34,6 @@ public class HealthFacilitiesReferralClients {
 	@Column(name = COL_CTC_NUMBER)
 	private String ctcNumber;
 
-	@Column(name = COL_FACILITY_ID)
-
 	@ManyToOne
 	@JoinColumn(name= COL_FACILITY_ID, referencedColumnName = "_id")
 	private HealthFacilities healthFacilities;
