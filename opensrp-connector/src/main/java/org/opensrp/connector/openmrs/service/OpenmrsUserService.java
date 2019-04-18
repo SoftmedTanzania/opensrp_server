@@ -107,7 +107,31 @@ public class OpenmrsUserService extends OpenmrsService{
 		return object.getJSONArray("results");
 	}
 
-	public JSONArray getTeamMembersByFacilityId(List<String> openMRSTeamLocationsUUIDs) throws JSONException{
+	public JSONArray getCHWsByFacilityId(List<String> openMRSTeamLocationsUUIDs) throws JSONException{
+		JSONArray teamMembers = new JSONArray();
+
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=full&limit=500", OPENMRS_USER, OPENMRS_PWD);
+		JSONObject object =  new JSONObject(op.body());
+		JSONArray results = object.getJSONArray("results");
+
+		int size = results.length();
+		for(int i=0;i<size;i++){
+			try {
+				JSONObject teamMember = results.getJSONObject(i);
+				String teamMembersFacilityUUID = (teamMember.getJSONObject("team")).getJSONObject("location").getString("uuid");
+				if (openMRSTeamLocationsUUIDs.contains(teamMembersFacilityUUID)) {
+					String teamRole = teamMember.getJSONObject("teamRole").getString("display");
+					if (teamRole.equals("CHW")) { //Checking if the team member is a CHW
+						teamMembers.put(teamMember);
+					}
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+		return teamMembers;
+	}
+	public JSONArray getAllCHWs() throws JSONException{
 		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=full&limit=500", OPENMRS_USER, OPENMRS_PWD);
 		JSONObject object =  new JSONObject(op.body());
 
@@ -118,12 +142,9 @@ public class OpenmrsUserService extends OpenmrsService{
 		for(int i=0;i<size;i++){
 			try {
 				JSONObject teamMember = results.getJSONObject(i);
-				String teamMembersFacilityUiid = (teamMember.getJSONObject("team")).getJSONObject("location").getString("uuid");
-				if (openMRSTeamLocationsUUIDs.contains(teamMembersFacilityUiid)) {
-					String teamRole = teamMember.getJSONObject("teamRole").getString("display");
-					if (teamRole.equals("CHW")) { //Checking if the team member is a CHW
-						teamMembers.put(teamMember);
-					}
+				String teamRole = teamMember.getJSONObject("teamRole").getString("display");
+				if (teamRole.equals("CHW")) { //Checking if the team member is a CHW
+					teamMembers.put(teamMember);
 				}
 			}catch (Exception e){
 				e.printStackTrace();

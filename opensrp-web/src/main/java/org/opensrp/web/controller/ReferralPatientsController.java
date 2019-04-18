@@ -1,7 +1,6 @@
 package org.opensrp.web.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -288,22 +287,28 @@ public class ReferralPatientsController {
 
             List<String> facilityUuids = new ArrayList<>();
             facilityUuids.add(healthFacilitiesCheck.get(0).getOpenMRSUUID());
-            JSONArray teamMembersArray = null;
+            JSONArray facilityCHWsArray = null;
             try {
-                teamMembersArray = openmrsUserService.getTeamMembersByFacilityId(facilityUuids);
+                facilityCHWsArray = openmrsUserService.getCHWsByFacilityId(facilityUuids);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
+            JSONArray allCHWsArray = null;
+            try {
+                allCHWsArray = openmrsUserService.getAllCHWs();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
             //sending referrals to chws with matching village names to LTF clients
-
-
             Iterator<PatientReferralsDTO> iterator = successfullySavedLTFs.iterator();
             while(iterator.hasNext()){
                 PatientReferralsDTO patientReferralsDTO = iterator.next();
-                for (int i = 0; i < teamMembersArray.length(); i++) {
+                for (int i = 0; i < allCHWsArray.length(); i++) {
                     try {
-                        JSONObject object = teamMembersArray.getJSONObject(i);
+                        JSONObject object = allCHWsArray.getJSONObject(i);
                         JSONArray location = object.getJSONArray("locations");
                         JSONObject person = object.getJSONObject("person");
                         boolean sentReferral = false;
@@ -371,9 +376,9 @@ public class ReferralPatientsController {
             for (Map.Entry<String, List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
                 System.out.println("ward = " + entry.getKey());
                 //for each ward loop through the CHWs obtain wards respective chws
-                for (int i = 0; i < teamMembersArray.length(); i++) {
+                for (int i = 0; i < allCHWsArray.length(); i++) {
                     try {
-                        JSONObject object = teamMembersArray.getJSONObject(i);
+                        JSONObject object = allCHWsArray.getJSONObject(i);
                         JSONObject person = object.getJSONObject("person");
                         JSONArray location = object.getJSONArray("locations");
                         for (int j = 0; j < location.length(); j++) {
@@ -456,7 +461,7 @@ public class ReferralPatientsController {
             }
 
 
-            //Sharing remaining LTFs between all CHWs
+            //Sharing remaining LTFs between facility CHWs
             for (Map.Entry<String, List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
                 try {
                     List<PatientReferralsDTO> ltfsReferralsDTOs = entry.getValue();
@@ -469,8 +474,8 @@ public class ReferralPatientsController {
                             //Issuing referrals to specific CHWs
                             JSONArray tokens = new JSONArray();
 
-                            int size = teamMembersArray.length();
-                            JSONObject object = teamMembersArray.getJSONObject(i%size);
+                            int size = facilityCHWsArray.length();
+                            JSONObject object = facilityCHWsArray.getJSONObject(i%size);
 
                             JSONObject person = object.getJSONObject("person");
                             Object[] facilityParams = new Object[]{person.getString("uuid")};
