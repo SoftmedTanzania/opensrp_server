@@ -1,5 +1,6 @@
 package org.opensrp.repository;
 
+import org.opensrp.domain.HealthFacilities;
 import org.opensrp.domain.HealthFacilitiesReferralClients;
 import org.opensrp.domain.ReferralClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class HealthFacilitiesClientsRepository {
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(HealthFacilitiesReferralClients.COL_CLIENT_ID, healthFacilitiesReferralClients.getClient().getClientId());
-		parameters.put(HealthFacilitiesReferralClients.COL_FACILITY_ID  , healthFacilitiesReferralClients.getFacilityId());
+		parameters.put(HealthFacilitiesReferralClients.COL_FACILITY_ID  , healthFacilitiesReferralClients.getHealthFacilities().getId());
 		parameters.put(HealthFacilitiesReferralClients.COL_CTC_NUMBER , healthFacilitiesReferralClients.getCtcNumber());
 		parameters.put(HealthFacilitiesReferralClients.COL_CREATED_AT , healthFacilitiesReferralClients.getCreatedAt());
 		parameters.put(HealthFacilitiesReferralClients.COL_UPDATED_AT , healthFacilitiesReferralClients.getCreatedAt());
@@ -72,7 +73,11 @@ public class HealthFacilitiesClientsRepository {
 
 			facilitiesPatients.setClient(referralClient);
 			facilitiesPatients.setCtcNumber(rs.getString(rs.findColumn(HealthFacilitiesReferralClients.COL_CTC_NUMBER)));
-			facilitiesPatients.setFacilityId(rs.getLong(rs.findColumn(HealthFacilitiesReferralClients.COL_FACILITY_ID)));
+
+			HealthFacilities healthFacilities = new HealthFacilities();
+			healthFacilities.setId(rs.getLong(rs.findColumn(HealthFacilitiesReferralClients.COL_FACILITY_ID)));
+
+			facilitiesPatients.setHealthFacilities(healthFacilities);
 			facilitiesPatients.setCreatedAt(new Date(rs.getTimestamp(rs.findColumn(HealthFacilitiesReferralClients.COL_CREATED_AT)).getTime()));
 			facilitiesPatients.setUpdatedAt(rs.getDate(rs.findColumn(HealthFacilitiesReferralClients.COL_UPDATED_AT)));
 			return facilitiesPatients;

@@ -264,7 +264,7 @@ public class ReferralPatientsService {
         Object[] healthFacilityParams = new Object[]{
                 healthFacilityCode,healthFacilityCode};
 
-        Long healthFacilityId = (long) 0;
+        Long healthFacilityId = (long) -1;
         List<HealthFacilities> healthFacilities = null;
         try {
             healthFacilities = healthFacilityRepository.getHealthFacility(healthFacilitySql, healthFacilityParams);
@@ -282,7 +282,10 @@ public class ReferralPatientsService {
 
         healthFacilitiesReferralClients.setClient(referralClient);
         healthFacilitiesReferralClients.setCtcNumber(ctcNumber);
-        healthFacilitiesReferralClients.setFacilityId(healthFacilityId);
+
+        HealthFacilities facility = new HealthFacilities();
+        facility.setId(healthFacilityId);
+        healthFacilitiesReferralClients.setHealthFacilities(facility);
 
 
         String healthFacilityPatientsquery = "SELECT * FROM " + HealthFacilitiesReferralClients.tbName + " WHERE " +
@@ -291,7 +294,7 @@ public class ReferralPatientsService {
 
         Object[] healthFacilityPatientsparams = new Object[]{
                 healthFacilitiesReferralClients.getClient().getClientId(),
-                healthFacilitiesReferralClients.getFacilityId()};
+                healthFacilitiesReferralClients.getHealthFacilities().getId()};
 
         List<HealthFacilitiesReferralClients> healthFacilitiesReferralClientsResults = null;
         try {
