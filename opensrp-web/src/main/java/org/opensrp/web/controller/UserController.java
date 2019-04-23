@@ -179,7 +179,7 @@ public class UserController {
 		}
 
 		System.out.println("FACILITY-UUID-LIST : "+new Gson().toJson(healthFacilitiesOpenMRSUUIDS));
-		JSONArray jsonArray = null;
+		JSONArray jsonArray = new JSONArray();
 		try {
 			jsonArray = openmrsUserService.getCHWsByFacilityId(healthFacilitiesOpenMRSUUIDS);
 		} catch (JSONException e) {
