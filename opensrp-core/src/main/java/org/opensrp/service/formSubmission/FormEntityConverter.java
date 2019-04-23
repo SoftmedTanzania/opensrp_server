@@ -392,6 +392,15 @@ public class FormEntityConverter {
 					Date startDate = new Date();
 					try{
 						startDate.setTime(Long.parseLong(formField.value()));
+
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(startDate);
+						cal.set(Calendar.HOUR_OF_DAY, 0);
+						cal.set(Calendar.MINUTE, 0);
+						cal.set(Calendar.SECOND, 0);
+						cal.set(Calendar.MILLISECOND, 0);
+						startDate = cal.getTime();
+
 						referralClient.setDateOfBirth(startDate);
 					}catch (Exception e1){
 						e1.printStackTrace();
@@ -400,6 +409,13 @@ public class FormEntityConverter {
 
 				if(formField.name().equals(ReferralClient.COL_GENDER))
 					referralClient.setGender(formField.value());
+
+				try {
+					if (formField.name().equals(ReferralClient.COL_CLIENT_ID))
+						referralClient.setTempId(formField.value());
+				}catch (Exception e){
+					e.printStackTrace();
+				}
 			}
 
 			return referralClient;

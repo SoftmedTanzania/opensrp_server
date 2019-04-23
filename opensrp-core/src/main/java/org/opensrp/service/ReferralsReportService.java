@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.opensrp.domain.*;
 import org.opensrp.dto.AgeGroupReportsReportDTO;
 import org.opensrp.dto.GenderReportsDTO;
+import org.opensrp.dto.MalariaReportDTO;
 import org.opensrp.dto.report.MaleFemaleCountObject;
 import org.opensrp.repository.*;
 import org.slf4j.Logger;
@@ -38,9 +39,28 @@ public class ReferralsReportService {
     @Autowired
     private ReferralServiceRepository referralServiceRepository;
 
+    @Autowired
+    private HealthFacilityRepository healthFacilityRepository;
+
+    private String getFacilityOpenMRSUUIDs(JSONArray facilities) {
+        int size = facilities.length();
+        String openmrsUuids = "";
+        for (int i = 0; i < size; i++) {
+            try {
+                Object[] params = new Object[]{
+                        facilities.getString(i)};
+                List<HealthFacilities> healthFacilities = healthFacilityRepository.getHealthFacility("SELECT * FROM " + HealthFacilities.tbName + " WHERE " + HealthFacilities.COL_OPENMRS_UUID + "=?", params);
+                openmrsUuids += healthFacilities.get(0).getId() + ",";
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        openmrsUuids = openmrsUuids+"0";
+        return openmrsUuids;
+    }
 
     public JRDataSource newRegistrationByReasonsReport(String startDate, String endDate, JSONArray facilities) {
-
+        String ids = getFacilityOpenMRSUUIDs(facilities);
 
         List<ClientRegistrationReason> clientRegistrationReasons = null;
         try {
@@ -59,7 +79,7 @@ public class ReferralsReportService {
             ageGroupReportsReportDTO.setItemName(clientRegistrationReason.getDescSw());
             long totalMale = 0, totalFemale = 0;
 
-            String lessThan1year = generateRegistationReportSql(startDate, endDate, getDateByYearString(-1), endDate, clientRegistrationReason.getRegistrationId());
+            String lessThan1year = generateRegistationReportSql(startDate, endDate, getDateByYearString(-1), endDate, clientRegistrationReason.getRegistrationId(), ids);
 
             List<MaleFemaleCountObject> lessThan1yearRegistrationsList = null;
             try {
@@ -81,7 +101,7 @@ public class ReferralsReportService {
             }
 
 
-            String _1to5 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-5), getDateByYearString(-1), clientRegistrationReason.getRegistrationId());
+            String _1to5 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-5), getDateByYearString(-1), clientRegistrationReason.getRegistrationId(), ids);
 
             List<MaleFemaleCountObject> _1to5RegistrationsList = null;
             try {
@@ -104,7 +124,7 @@ public class ReferralsReportService {
             }
 
 
-            String _6to9 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-9), getDateByYearString(-5), clientRegistrationReason.getRegistrationId());
+            String _6to9 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-9), getDateByYearString(-5), clientRegistrationReason.getRegistrationId(), ids);
 
             List<MaleFemaleCountObject> _6to9RegistrationsList = null;
             try {
@@ -125,7 +145,7 @@ public class ReferralsReportService {
             }
 
 
-            String _10To14 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-14), getDateByYearString(-9), clientRegistrationReason.getRegistrationId());
+            String _10To14 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-14), getDateByYearString(-9), clientRegistrationReason.getRegistrationId(), ids);
 
             List<MaleFemaleCountObject> _10To14RegistrationsList = null;
             try {
@@ -147,7 +167,7 @@ public class ReferralsReportService {
             }
 
 
-            String _15To19 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-19), getDateByYearString(-14), clientRegistrationReason.getRegistrationId());
+            String _15To19 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-19), getDateByYearString(-14), clientRegistrationReason.getRegistrationId(), ids);
             List<MaleFemaleCountObject> _15To19RegistrationsList = null;
             try {
                 _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19, null);
@@ -167,7 +187,7 @@ public class ReferralsReportService {
             }
 
 
-            String _20To24 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-24), getDateByYearString(-19), clientRegistrationReason.getRegistrationId());
+            String _20To24 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-24), getDateByYearString(-19), clientRegistrationReason.getRegistrationId(), ids);
 
             List<MaleFemaleCountObject> _20To24RegistrationsList = null;
             try {
@@ -188,7 +208,7 @@ public class ReferralsReportService {
             }
 
 
-            String _25To49 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-49), getDateByYearString(-24), clientRegistrationReason.getRegistrationId());
+            String _25To49 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-49), getDateByYearString(-24), clientRegistrationReason.getRegistrationId(), ids);
 
             List<MaleFemaleCountObject> _25To49RegistrationsList = null;
             try {
@@ -210,7 +230,7 @@ public class ReferralsReportService {
             }
 
 
-            String _50To59 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-59), getDateByYearString(-49), clientRegistrationReason.getRegistrationId());
+            String _50To59 = generateRegistationReportSql(startDate, endDate, getDateByYearString(-59), getDateByYearString(-49), clientRegistrationReason.getRegistrationId(), ids);
 
             List<MaleFemaleCountObject> _50To59RegistrationsList = null;
             try {
@@ -231,7 +251,7 @@ public class ReferralsReportService {
             }
 
 
-            String _60Above = generateRegistationReportSql(startDate, endDate, "", getDateByYearString(-59), clientRegistrationReason.getRegistrationId());
+            String _60Above = generateRegistationReportSql(startDate, endDate, "", getDateByYearString(-59), clientRegistrationReason.getRegistrationId(), ids);
             List<MaleFemaleCountObject> _60AboveRegistrationsList = null;
             try {
                 _60AboveRegistrationsList = clientsRepository.getMaleFemaleCountReports(_60Above, null);
@@ -261,7 +281,9 @@ public class ReferralsReportService {
         return ds;
     }
 
-    public JRDataSource referralsSummaryReport(boolean successful, String startDate, String endDate, JSONArray facilities) {
+    public JRDataSource referralsSummaryReport(String referralStatus, String startDate, String endDate, JSONArray facilities) {
+
+        String ids = getFacilityOpenMRSUUIDs(facilities);
         List<ReferralService> referralServices = null;
         try {
             referralServices = referralServiceRepository.getReferralServices("SELECT * FROM " + ReferralService.tbName, null);
@@ -279,7 +301,7 @@ public class ReferralsReportService {
             referralReportDTO.setItemName(referralService.getServiceNameSw());
             long totalMale = 0, totalFemale = 0;
 
-            String lessThan1year = generateReferralsReportSql(startDate, endDate, getDateByYearString(-1), endDate, referralService.getServiceId(), successful);
+            String lessThan1year = generateReferralsReportSql(startDate, endDate, getDateByYearString(-1), endDate, referralService.getServiceId(), referralStatus, ids);
 
             List<MaleFemaleCountObject> lessThan1yearReferralsList = null;
             try {
@@ -295,7 +317,7 @@ public class ReferralsReportService {
             }
 
 
-            String _1to5 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-5), getDateByYearString(-1), referralService.getServiceId(), successful);
+            String _1to5 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-5), getDateByYearString(-1), referralService.getServiceId(), referralStatus, ids);
 
             List<MaleFemaleCountObject> _1to5RegistrationsList = null;
             try {
@@ -311,7 +333,7 @@ public class ReferralsReportService {
             }
 
 
-            String _6to9 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-9), getDateByYearString(-5), referralService.getServiceId(), successful);
+            String _6to9 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-9), getDateByYearString(-5), referralService.getServiceId(), referralStatus, ids);
 
             List<MaleFemaleCountObject> _6to9RegistrationsList = null;
             try {
@@ -326,7 +348,7 @@ public class ReferralsReportService {
             }
 
 
-            String _10To14 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-14), getDateByYearString(-9), referralService.getServiceId(), successful);
+            String _10To14 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-14), getDateByYearString(-9), referralService.getServiceId(), referralStatus, ids);
 
             List<MaleFemaleCountObject> _10To14RegistrationsList = null;
             try {
@@ -341,7 +363,7 @@ public class ReferralsReportService {
             }
 
 
-            String _15To19 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-19), getDateByYearString(-14), referralService.getServiceId(), successful);
+            String _15To19 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-19), getDateByYearString(-14), referralService.getServiceId(), referralStatus, ids);
             List<MaleFemaleCountObject> _15To19RegistrationsList = null;
             try {
                 _15To19RegistrationsList = clientsRepository.getMaleFemaleCountReports(_15To19, null);
@@ -355,7 +377,7 @@ public class ReferralsReportService {
             }
 
 
-            String _20To24 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-24), getDateByYearString(-19), referralService.getServiceId(), successful);
+            String _20To24 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-24), getDateByYearString(-19), referralService.getServiceId(), referralStatus, ids);
             List<MaleFemaleCountObject> _20To24RegistrationsList = null;
             try {
                 _20To24RegistrationsList = clientsRepository.getMaleFemaleCountReports(_20To24, null);
@@ -370,7 +392,7 @@ public class ReferralsReportService {
             }
 
 
-            String _25To49 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-49), getDateByYearString(-24), referralService.getServiceId(), successful);
+            String _25To49 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-49), getDateByYearString(-24), referralService.getServiceId(), referralStatus, ids);
 
             List<MaleFemaleCountObject> _25To49RegistrationsList = null;
             try {
@@ -386,7 +408,7 @@ public class ReferralsReportService {
             }
 
 
-            String _50To59 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-59), getDateByYearString(-49), referralService.getServiceId(), successful);
+            String _50To59 = generateReferralsReportSql(startDate, endDate, getDateByYearString(-59), getDateByYearString(-49), referralService.getServiceId(), referralStatus, ids);
 
             List<MaleFemaleCountObject> _50To59RegistrationsList = null;
             try {
@@ -401,7 +423,7 @@ public class ReferralsReportService {
             }
 
 
-            String _60Above = generateReferralsReportSql(startDate, endDate, "", getDateByYearString(-59), referralService.getServiceId(), successful);
+            String _60Above = generateReferralsReportSql(startDate, endDate, "", getDateByYearString(-59), referralService.getServiceId(), referralStatus, ids);
 
             List<MaleFemaleCountObject> _60AboveRegistrationsList = null;
             try {
@@ -428,8 +450,68 @@ public class ReferralsReportService {
         return ds;
     }
 
+    public JRDataSource successfulMalariaReferralsReport(String startDate, String endDate, JSONArray facilities) {
+        String ids = getFacilityOpenMRSUUIDs(facilities);
+        List<ReferralService> referralServices = null;
+        try {
+            referralServices = referralServiceRepository.getReferralServices("SELECT * FROM " + ReferralService.tbName + " WHERE " + ReferralService.COL_CATEGORY_NAME + " = 'malaria'", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int sn = 0;
+        List<MalariaReportDTO> malariaReportDTOS = new ArrayList<>();
+
+
+        int totalMale = 0, totalFemale = 0;
+
+        MalariaReportDTO malariaReportDTO = new MalariaReportDTO();
+
+        String lessThan5years = generateReferralsReportSql(startDate, endDate, getDateByYearString(-5), endDate, referralServices.get(0).getServiceId(), "1", ids);
+
+        List<MaleFemaleCountObject> lessThan5yearsReferralsList = null;
+        try {
+
+            logger.info("Less than 5 years SQL = " + lessThan5years);
+            lessThan5yearsReferralsList = clientsRepository.getMaleFemaleCountReports(lessThan5years, null);
+            malariaReportDTO.setLessThanFiveMale(lessThan5yearsReferralsList.get(0).getMale());
+            malariaReportDTO.setLessThanFiveFemale(lessThan5yearsReferralsList.get(0).getFemale());
+
+            totalMale += Integer.parseInt(lessThan5yearsReferralsList.get(0).getMale());
+            totalFemale += Integer.parseInt(lessThan5yearsReferralsList.get(0).getFemale());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        String greaterThan5years = generateReferralsReportSql(startDate, endDate, "1900/01/01", getDateByYearString(-5), referralServices.get(0).getServiceId(), "1", ids);
+        List<MaleFemaleCountObject> greaterThan5yearsReferralsList = null;
+        try {
+            logger.info("greater than 5 years SQL = " + greaterThan5years);
+
+            greaterThan5yearsReferralsList = clientsRepository.getMaleFemaleCountReports(greaterThan5years, null);
+            malariaReportDTO.setGreaterThan5Male(greaterThan5yearsReferralsList.get(0).getMale());
+            malariaReportDTO.setGreaterThan5Female(greaterThan5yearsReferralsList.get(0).getFemale());
+
+            totalMale += Integer.parseInt(greaterThan5yearsReferralsList.get(0).getMale());
+            totalFemale += Integer.parseInt(greaterThan5yearsReferralsList.get(0).getFemale());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        malariaReportDTO.setTotalMale(totalMale + "");
+        malariaReportDTO.setTotalFemale(totalFemale + "");
+
+        malariaReportDTOS.add(malariaReportDTO);
+
+        logger.info("Report data source = " + new Gson().toJson(malariaReportDTOS));
+
+        JRDataSource ds = new JRBeanCollectionDataSource(malariaReportDTOS);
+        return ds;
+    }
 
     public JRDataSource totalIssuedLTFsSummaryReport(String startDate, String endDate, JSONArray facilities) {
+        String ids = getFacilityOpenMRSUUIDs(facilities);
         List<AppointmentType> appointmentTypes = null;
 
         try {
@@ -447,7 +529,7 @@ public class ReferralsReportService {
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
             genderReportsDTO.setSn(sn + "");
             genderReportsDTO.setItemName(appointmentType.getName());
-            String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(), endDate, startDate);
+            String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(), endDate, startDate, ids);
 
             List<MaleFemaleCountObject> lftIssuedList = null;
             try {
@@ -472,6 +554,7 @@ public class ReferralsReportService {
     }
 
     public JRDataSource lTFsFeedbacksReport(String startDate, String endDate, JSONArray facilities) {
+        String ids = getFacilityOpenMRSUUIDs(facilities);
         List<ReferralFeedback> referralFeedbacks = null;
         try {
             referralFeedbacks = referralFeedbackRepository.getReferralFeedback("SELECT * FROM " + ReferralFeedback.tbName + " WHERE " + ReferralFeedback.COL_REFERRAL_TYPE_ID + " = 1", null);
@@ -487,7 +570,7 @@ public class ReferralsReportService {
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
             genderReportsDTO.setSn(sn + "");
             genderReportsDTO.setItemName(referralFeedback.getDescSw());
-            String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(), endDate, startDate);
+            String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(), endDate, startDate, ids);
 
             List<MaleFemaleCountObject> lftFoundList = null;
             try {
@@ -520,69 +603,88 @@ public class ReferralsReportService {
         return dateString;
     }
 
-    private String generateRegistationReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long reasons_for_registration) {
+    private String generateRegistationReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long reasons_for_registration, String facilityIds) {
         return "SELECT (SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
-                ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
-                ReferralClient.COL_CREATED_AT + "<'" + endDate + "'" +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + "<'" + endDate + "'" +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (reasons_for_registration != 0 ? " AND " + ReferralClient.COL_REGISTRATION_REASON + " = " + reasons_for_registration : "") +
+                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
                 ") as Male, " +
                 "(SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
-                ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
-                ReferralClient.COL_CREATED_AT + "<'" + endDate + "' " +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + ">='" + startDate + "' AND " +
+                ReferralClient.tbName+"."+ReferralClient.COL_CREATED_AT + "<'" + endDate + "' " +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
-                (reasons_for_registration != 0 ? " AND " + ReferralClient.COL_REGISTRATION_REASON + " = " + reasons_for_registration : "")
+                (reasons_for_registration != 0 ? " AND " + ReferralClient.COL_REGISTRATION_REASON + " = " + reasons_for_registration : "") +
+                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")
                 + ") as Female FROM " + ReferralClient.tbName + " Limit 1";
     }
 
-    public String generateReferralsReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long referral_service, boolean referralStatus) {
+    public String generateReferralsReportSql(String startDate, String endDate, String startBirthDate, String endBirthDate, long referral_service, String referralStatus, String facilityIds) {
         return "SELECT (SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientReferrals.tbName + "." + ClientReferrals.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "'" +
-                (referralStatus ? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = 1 " : "") +
+                (!referralStatus.equals("0")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
                 (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "") +
+                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
                 ") as Male, " +
                 "(SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientReferrals.tbName + "." + ClientReferrals.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "' " +
-                (referralStatus ? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = 1 " : "") +
+                (!referralStatus.equals("0")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
                 (!startBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " >= '" + startBirthDate + "'" : "") +
                 (!endBirthDate.equals("") ? " AND " + ReferralClient.COL_DATE_OF_BIRTH + " < '" + endBirthDate + "'" : "") +
-                (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "")
-                + ") as Female FROM " + ReferralClient.tbName + " Limit 1";
+                (referral_service != 0 ? " AND " + ClientReferrals.COL_SERVICE_ID + " = " + referral_service : "") +
+                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
+                ") as Female FROM " + ReferralClient.tbName + " Limit 1";
     }
 
-    public String getLTFCountsReportSQL(long appointmentType, String startDate, String endDate) {
+    public String getLTFCountsReportSQL(long appointmentType, String startDate, String endDate, String facilityIds) {
         return "SELECT (" +
                 "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
-                " WHERE status = -1 AND " + ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " + ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " + ClientAppointments.COL_APPOINTMENT_TYPE + " = " + appointmentType + " AND " + ReferralClient.COL_GENDER + " = 'male'" +
+                " WHERE status = -1 AND " +
+                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
+                ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
+                ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
+                ClientAppointments.COL_APPOINTMENT_TYPE + " = " + appointmentType + " AND " +
+                ReferralClient.COL_GENDER + " = 'male'" +
                 ") as Male, (" +
                 "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
-                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ") " +
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
-                " WHERE status = -1 AND " + ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " + ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " + ClientAppointments.COL_APPOINTMENT_TYPE + " = " + appointmentType + " AND " + ReferralClient.COL_GENDER + " = 'female'" +
+                " WHERE status = -1 AND " +
+                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
+                ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
+                ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
+                ClientAppointments.COL_APPOINTMENT_TYPE + " = " + appointmentType + " AND " +
+                ReferralClient.COL_GENDER + " = 'female'" +
                 ") as female FROM " + ClientAppointments.tbName + " Limit 1";
     }
 
-    public String getFoundLTFCountsReportSQL(long referralFeedbackId, String startDate, String endDate) {
+    public String getFoundLTFCountsReportSQL(long referralFeedbackId, String startDate, String endDate, String facilityIds) {
         return "SELECT (" +
                 "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientAppointments.tbName + "." + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = " + ClientReferrals.tbName + "." + ClientReferrals.COL_REFERRAL_ID +
                 " WHERE status = -1 AND " +
+                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
                 ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
                 ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
                 ClientReferrals.COL_REFERRAL_FEEDBACK_ID + " = " + referralFeedbackId + " AND " +
@@ -594,6 +696,7 @@ public class ReferralsReportService {
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientAppointments.tbName + "." + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = " + ClientReferrals.tbName + "." + ClientReferrals.COL_REFERRAL_ID +
                 " WHERE status = -1 AND " +
+                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
                 ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
                 ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
                 ClientReferrals.COL_REFERRAL_FEEDBACK_ID + " = " + referralFeedbackId + " AND " +

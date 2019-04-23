@@ -34,8 +34,9 @@ public class HealthFacilitiesReferralClients {
 	@Column(name = COL_CTC_NUMBER)
 	private String ctcNumber;
 
-	@Column(name = COL_FACILITY_ID)
-	private Long facilityId;
+	@ManyToOne
+	@JoinColumn(name= COL_FACILITY_ID, referencedColumnName = "_id")
+	private HealthFacilities healthFacilities;
 
 	@Column(name = COL_CREATED_AT, columnDefinition = "TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -69,12 +70,12 @@ public class HealthFacilitiesReferralClients {
 		this.ctcNumber = ctcNumber;
 	}
 
-	public Long getFacilityId() {
-		return facilityId;
+	public HealthFacilities getHealthFacilities() {
+		return healthFacilities;
 	}
 
-	public void setFacilityId(Long facilityId) {
-		this.facilityId = facilityId;
+	public void setHealthFacilities(HealthFacilities healthFacilities) {
+		this.healthFacilities = healthFacilities;
 	}
 
 	public Date getCreatedAt() {

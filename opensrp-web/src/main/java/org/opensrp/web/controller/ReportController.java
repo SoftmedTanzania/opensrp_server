@@ -393,8 +393,8 @@ public class ReportController {
 
 
     @RequestMapping(value = "/reports/{reportName}/{reportType}", method = RequestMethod.POST)
-    public void totalSuccessfulReferrals(@PathVariable("reportName") String reportName,@PathVariable("reportType") String reportType, @RequestBody String json, HttpServletRequest request,
-                                         HttpServletResponse response) {
+    public void reportLauncher(@PathVariable("reportName") String reportName, @PathVariable("reportType") String reportType, @RequestBody String json, HttpServletRequest request,
+                               HttpServletResponse response) {
         JSONObject object = null;
         try {
             object = new JSONObject(json);
@@ -450,8 +450,8 @@ public class ReportController {
      * @return
      */
     @RequestMapping(value = "/reports/{reportName}/{reportType}", method = RequestMethod.GET)
-    public void totalSuccessfulReferrals(@PathVariable("reportName") String reportName,@PathVariable("reportType") String reportType, HttpServletRequest request,
-                                     HttpServletResponse response) {
+    public void reportLauncher(@PathVariable("reportName") String reportName, @PathVariable("reportType") String reportType, HttpServletRequest request,
+                               HttpServletResponse response) {
         response.setContentType("text/html");
 
         LocalDate firstDateOfTheMonth = LocalDate.now();
@@ -485,7 +485,7 @@ public class ReportController {
                 case "total_successful_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalSuccessfulReferrals.jasper");
 
-                    datasource = referralsReportService.referralsSummaryReport(true,startDate,endDate,facilities);
+                    datasource = referralsReportService.referralsSummaryReport("1",startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Successful Referrals", "Address Report");
 
@@ -493,7 +493,7 @@ public class ReportController {
                 case "total_referrals_issued":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssued.jasper");
 
-                    datasource = referralsReportService.referralsSummaryReport(false,startDate,endDate,facilities);
+                    datasource = referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Referrals Issued", "Address Report");
 
@@ -514,6 +514,33 @@ public class ReportController {
                     datasource = referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities);
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Issued LTFs", "Address Report");
+
+                    break;
+
+                case "successful_malaria_referrals":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/SuccessfulMalariaReferrals.jasper");
+
+                    datasource = referralsReportService.successfulMalariaReferralsReport(startDate,endDate,facilities);
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Successful Malaria Referrals", "Address Report");
+
+                    break;
+
+                case "total_failed_referrals":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalFailedReferrals.jasper");
+
+                    datasource = referralsReportService.referralsSummaryReport("-1",startDate,endDate,facilities);
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Failed Referrals", "Address Report");
+
+                    break;
+
+                case "inter_facility_referrals":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/InterFacilityReferrals.jasper");
+
+                    datasource = referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities);
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Inter-Facility Referrals", "Address Report");
 
                     break;
 

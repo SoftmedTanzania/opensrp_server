@@ -54,8 +54,8 @@ public class ServiceController {
         this.feedbackRepository = feedbackRepository;
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-services")
-    public ResponseEntity<HttpStatus> saveReferralServices(@RequestBody String json) {
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/create-referral-services")
+    public ResponseEntity<HttpStatus> createReferralServices(@RequestBody String json) {
         try {
 	        List<ReferralServiceDTO> afyaServiceDTOS = new Gson().fromJson(json, new TypeToken<List<ReferralServiceDTO>>() {
 	        }.getType());
@@ -72,7 +72,7 @@ public class ServiceController {
                 public ReferralService convert(ReferralServiceDTO boreshaAfyaServiceDTO) {
                     ReferralService referralService = new ReferralService();
                     referralService.setServiceName(boreshaAfyaServiceDTO.getServiceName());
-                    referralService.setServiceNameSw(boreshaAfyaServiceDTO.getReferralServiceNameSw());
+                    referralService.setServiceNameSw(boreshaAfyaServiceDTO.getServiceNameSw());
                     referralService.setCategoryName(boreshaAfyaServiceDTO.getCategory());
                     referralService.setActive(boreshaAfyaServiceDTO.isActive());
                     return referralService;
@@ -94,28 +94,16 @@ public class ServiceController {
         return new ResponseEntity<>(CREATED);
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-indicators")
-    public ResponseEntity<HttpStatus> saveReferralIndicators(@RequestBody String json) {
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/create-referral-indicators")
+    public ResponseEntity<HttpStatus> createReferralIndicators(@RequestBody String json) {
         try {
-            List<IndicatorDTO> indicatorDTOS = new Gson().fromJson(json, new TypeToken<List<IndicatorDTO>>() {
+            List<Indicator> indicators = new Gson().fromJson(json, new TypeToken<List<Indicator>>() {
             }.getType());
 
-            if (indicatorDTOS.isEmpty()) {
+            if (indicators.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
             }
 
-            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, indicatorDTOS));
-
-            List<Indicator> indicators =  with(indicatorDTOS).convert(new Converter<IndicatorDTO, Indicator>() {
-                @Override
-                public Indicator convert(IndicatorDTO referralIndicatorDTO) {
-                    Indicator indicator = new Indicator();
-                    indicator.setIndicatorName(referralIndicatorDTO.getIndicatorName());
-                    indicator.setIndicatorNameSw(referralIndicatorDTO.getIndicatorNameSw());
-                    indicator.setActive(referralIndicatorDTO.isActive());
-                    return indicator;
-                }
-            });
 
             Exception exp = null;
             for (Indicator indicator : indicators) {
@@ -130,7 +118,7 @@ public class ServiceController {
             if(exp!=null)
                 throw  exp;
 
-            logger.debug(format("Saved Referral Indicator to queue.\nSubmissions: {0}", indicatorDTOS));
+            logger.debug(format("Saved Referral Indicator to queue.\nSubmissions: {0}", indicators));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(format("Referral Indicators processing failed with exception {0}.\nSubmissions: {1}", e, json));
@@ -139,8 +127,8 @@ public class ServiceController {
         return new ResponseEntity<>(CREATED);
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-types")
-    public ResponseEntity<HttpStatus> saveReferralType(@RequestBody String json) {
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/create-referral-types")
+    public ResponseEntity<HttpStatus> createReferralType(@RequestBody String json) {
         try {
             List<ReferralTypeDTO> referralTypeDTOS = new Gson().fromJson(json, new TypeToken<List<ReferralTypeDTO>>() {
             }.getType());
@@ -183,8 +171,8 @@ public class ServiceController {
         return new ResponseEntity<>(CREATED);
     }
 
-    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/add-referral-services-indicators")
-    public ResponseEntity<HttpStatus> saveReferralServiceIndicators(@RequestBody String json) {
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/create-referral-services-indicators")
+    public ResponseEntity<HttpStatus> createReferralServiceIndicators(@RequestBody String json) {
         try {
             List<ReferralServiceIndicatorDTO> referralServiceIndicators = new Gson().fromJson(json, new TypeToken<List<ReferralServiceIndicatorDTO>>() {
             }.getType());
@@ -258,6 +246,28 @@ public class ServiceController {
         return new ResponseEntity<>(CREATED);
     }
 
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/create-referral-feedback")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> createReferralFeedback(@RequestBody String json) {
+        List<ReferralFeedback> referralFeedbacks = new Gson().fromJson(json, new TypeToken<List<ReferralFeedback>>() {
+        }.getType());
+
+
+        try {
+            for(ReferralFeedback referralFeedback:referralFeedbacks) {
+                try {
+                    feedbackRepository.save(referralFeedback);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            return new ResponseEntity<>(CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/boresha-afya-services")
     @ResponseBody
     public List<ReferralServiceIndicatorsDTO> getBoreshaAfyaServices() {
@@ -328,22 +338,6 @@ public class ServiceController {
         return referralServiceIndicatorsDTOS;
     }
 
-    @RequestMapping("delete-referral-service-indicator/{referralServiceIndicatorId}")
-    @ResponseBody
-    private ResponseEntity<ServiceIndicator>  deleteReferralServiceIndicatorId(@PathVariable("referralServiceIndicatorId") String referralServiceIndicatorId) {
-        if(referralServiceIndicatorId.equals("")){
-            return new ResponseEntity<ServiceIndicator>(BAD_REQUEST);
-        }
-
-        try {
-            serviceIndicatorRepository.executeQuery("DELETE  FROM "+ ServiceIndicator.tbName+" WHERE "+ ServiceIndicator.COL_SERVICE_INDICATOR_ID +" = "+referralServiceIndicatorId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<ServiceIndicator>(NOT_FOUND);
-        }
-        return new ResponseEntity<ServiceIndicator>(OK);
-    }
-
 	@RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/referral-types")
 	@ResponseBody
 	public List<ReferralType> getReferralTypes() {
@@ -372,8 +366,7 @@ public class ServiceController {
         return referralServices;
     }
 
-
-    @RequestMapping("get-referral-service/{serviceId}")
+    @RequestMapping("/get-referral-service/{serviceId}")
     @ResponseBody
     private ResponseEntity<ReferralService>  getReferralService(@PathVariable("serviceId") String serviceId) {
         if(serviceId.equals("")){
@@ -392,23 +385,6 @@ public class ServiceController {
         return new ResponseEntity<ReferralService>(referralServices,OK);
     }
 
-    @RequestMapping("delete-referral-service/{serviceId}")
-    @ResponseBody
-    private ResponseEntity<ReferralService>  deleteReferralService(@PathVariable("serviceId") String serviceId) {
-        if(serviceId.equals("")){
-            return new ResponseEntity<ReferralService>(BAD_REQUEST);
-        }
-
-        try {
-            referralServiceRepository.executeQuery("DELETE  FROM "+ ReferralService.tbName+" WHERE "+ReferralService.COL_SERVICE_ID +" = "+serviceId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<ReferralService>(NOT_FOUND);
-        }
-        return new ResponseEntity<ReferralService>(OK);
-    }
-
-
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/get-indicators")
     @ResponseBody
     public List<Indicator> getIndicators() {
@@ -423,8 +399,7 @@ public class ServiceController {
         return indicators;
     }
 
-
-    @RequestMapping("get-indicator/{indicatorId}")
+    @RequestMapping("/get-indicator/{indicatorId}")
     @ResponseBody
     private ResponseEntity<Indicator>  getIndicator(@PathVariable("indicatorId") String indicatorId) {
         if(indicatorId.equals("")){
@@ -441,22 +416,6 @@ public class ServiceController {
             return new ResponseEntity<Indicator>(NOT_FOUND);
         }
         return new ResponseEntity<Indicator>(indicator,OK);
-    }
-
-    @RequestMapping("delete-indicator/{indicatorId}")
-    @ResponseBody
-    private ResponseEntity<Indicator>  deleteIndicator(@PathVariable("indicatorId") String indicatorId) {
-        if(indicatorId.equals("")){
-            return new ResponseEntity<Indicator>(BAD_REQUEST);
-        }
-
-        try {
-            indicatorRepository.executeQuery("DELETE  FROM "+ Indicator.tbName+" WHERE "+Indicator.COL_INDICATOR_ID +" = "+indicatorId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<Indicator>(NOT_FOUND);
-        }
-        return new ResponseEntity<Indicator>(OK);
     }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/save-tb-patient-type")
@@ -527,6 +486,37 @@ public class ServiceController {
        return referralFeedbacks;
     }
 
+    @RequestMapping("/delete-referral-feedback/{feedBackId}")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> deleteReferralFeedback(@PathVariable("feedBackId") String feedBackId ) {
+        try {
+            feedbackRepository.executeQuery("DELETE FROM "+ReferralFeedback.tbName+" WHERE _id = "+feedBackId);
+            return new ResponseEntity<>(CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/update-referral-feedback")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> updateReferralFeedback(@RequestBody String json) {
+        ReferralFeedback referralFeedback = new Gson().fromJson(json,ReferralFeedback.class);
+        try {
+            feedbackRepository.executeQuery("UPDATE "+ReferralFeedback.tbName+" SET  "+
+                    ReferralFeedback.COL_DESC+" = '"+referralFeedback.getDesc()+"',"+
+                    ReferralFeedback.COL_DESC_SW+" = '"+referralFeedback.getDescSw()+"',"+
+                    ReferralFeedback.COL_REFERRAL_TYPE_ID+" = "+referralFeedback.getReferralType().getReferralTypeId()+
+                    " WHERE _id = "+referralFeedback.getId()
+
+            );
+            return new ResponseEntity<>(OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/registration-reasons")
     @ResponseBody
     public List<ClientRegistrationReason> getRegistrationReasons() {
@@ -538,6 +528,105 @@ public class ServiceController {
             e.printStackTrace();
         }
 
-       return clientRegistrationReasons;
+        return clientRegistrationReasons;
+    }
+
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/create-registration-reasons")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> createRegistrationReason(@RequestBody String json ) {
+        List<ClientRegistrationReason> clientRegistrationReasons = new Gson().fromJson(json, new TypeToken<List<ClientRegistrationReason>>() {
+        }.getType());
+
+        try {
+            for(ClientRegistrationReason clientRegistrationReason:clientRegistrationReasons) {
+                registrationReasonRepository.save(clientRegistrationReason);
+            }
+            return new ResponseEntity<>(CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
+    @RequestMapping("/delete-registration-reasons/{reasonId}")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> deleteRegistrationReason(@PathVariable("reasonId") String reasonId) {
+        try {
+            registrationReasonRepository.executeQuery("DELETE FROM "+ClientRegistrationReason.tbName+" WHERE "+ClientRegistrationReason.COL_REGISTRATION__ID+" = "+reasonId);
+            return new ResponseEntity<>(CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/update-registration-reason")
+    @ResponseBody
+    public ResponseEntity<HttpStatus> updateRegistrationReason(@RequestBody String json ) {
+        ClientRegistrationReason clientRegistrationReason = new Gson().fromJson(json,ClientRegistrationReason.class);
+        try {
+            registrationReasonRepository.executeQuery("UPDATE "+ClientRegistrationReason.tbName+" SET  "+
+                    ClientRegistrationReason.COL_DESC_EN+" = '"+clientRegistrationReason.getDescEn()+"',"+
+                    ClientRegistrationReason.COL_DESC_SW+" = '"+clientRegistrationReason.getDescSw()+"',"+
+                    ClientRegistrationReason.COL_APPLICABLE_TO_MEN+" = "+clientRegistrationReason.isApplicableToMen()+","+
+                    ClientRegistrationReason.COL_APPLICABLE_TO_WOMEN+" = "+clientRegistrationReason.isApplicableToWomen()+" WHERE "+ClientRegistrationReason.COL_REGISTRATION__ID+" = "+clientRegistrationReason.getRegistrationId()
+
+            );
+            return new ResponseEntity<>(OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(NOT_ACCEPTABLE);
+        }
+    }
+
+
+    @RequestMapping("/delete-referral-service-indicator/{referralServiceIndicatorId}")
+    @ResponseBody
+    private ResponseEntity<ServiceIndicator>  deleteReferralServiceIndicatorId(@PathVariable("referralServiceIndicatorId") String referralServiceIndicatorId) {
+        if(referralServiceIndicatorId.equals("")){
+            return new ResponseEntity<ServiceIndicator>(BAD_REQUEST);
+        }
+
+        try {
+            serviceIndicatorRepository.executeQuery("DELETE  FROM "+ ServiceIndicator.tbName+" WHERE "+ ServiceIndicator.COL_SERVICE_INDICATOR_ID +" = "+referralServiceIndicatorId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<ServiceIndicator>(NOT_FOUND);
+        }
+        return new ResponseEntity<ServiceIndicator>(OK);
+    }
+
+
+    @RequestMapping("/delete-referral-service/{serviceId}")
+    @ResponseBody
+    private ResponseEntity<ReferralService>  deleteReferralService(@PathVariable("serviceId") String serviceId) {
+        if(serviceId.equals("")){
+            return new ResponseEntity<ReferralService>(BAD_REQUEST);
+        }
+
+        try {
+            referralServiceRepository.executeQuery("DELETE  FROM "+ ReferralService.tbName+" WHERE "+ReferralService.COL_SERVICE_ID +" = "+serviceId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<ReferralService>(NOT_FOUND);
+        }
+        return new ResponseEntity<ReferralService>(OK);
+    }
+
+    @RequestMapping("delete-indicator/{indicatorId}")
+    @ResponseBody
+    private ResponseEntity<Indicator>  deleteIndicator(@PathVariable("indicatorId") String indicatorId) {
+        if(indicatorId.equals("")){
+            return new ResponseEntity<Indicator>(BAD_REQUEST);
+        }
+
+        try {
+            indicatorRepository.executeQuery("DELETE  FROM "+ Indicator.tbName+" WHERE "+Indicator.COL_INDICATOR_ID +" = "+indicatorId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<Indicator>(NOT_FOUND);
+        }
+        return new ResponseEntity<Indicator>(OK);
     }
 }
