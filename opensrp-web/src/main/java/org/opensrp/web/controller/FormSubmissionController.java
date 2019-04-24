@@ -335,7 +335,7 @@ public class FormSubmissionController {
                     }catch (Exception e){
                         e.printStackTrace();
 
-                        Object[] args = new Object[]{clientId,clientId};
+                        Object[] args = new Object[]{clientId};
                         patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " +ReferralClient.COL_TEMP_ID+" = ? ", args).get(0);
                     }
 
