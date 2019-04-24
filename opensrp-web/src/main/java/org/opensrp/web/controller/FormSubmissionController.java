@@ -327,8 +327,17 @@ public class FormSubmissionController {
 
                     logger.info("saveFormToOpenSRP : saving referral.  Client Id = " + clientId);
 
-                    Object[] args = new Object[]{clientId,clientId};
-                    ReferralClient patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " + ReferralClient.COL_CLIENT_ID + " = ? OR "+ReferralClient.COL_TEMP_ID+" = ? ", args).get(0);
+                    ReferralClient patient = null;
+                    try{
+                        Integer.parseInt(clientId);
+                        Object[] args = new Object[]{clientId};
+                        patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " + ReferralClient.COL_CLIENT_ID + " = ? ", args).get(0);
+                    }catch (Exception e){
+                        e.printStackTrace();
+
+                        Object[] args = new Object[]{clientId,clientId};
+                        patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " +ReferralClient.COL_TEMP_ID+" = ? ", args).get(0);
+                    }
 
                     //checking if the clientId is a temporal Id
                     try {
