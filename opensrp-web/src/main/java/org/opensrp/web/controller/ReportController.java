@@ -1,5 +1,6 @@
 package org.opensrp.web.controller;
 
+import com.google.gson.Gson;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.*;
@@ -443,8 +444,6 @@ public class ReportController {
     }
 
 
-
-        //Total Successful Referrals
     /**
      * Retrieves Report in HTML & PDF format
      *
@@ -473,11 +472,12 @@ public class ReportController {
             Map<String, Object> parameters = new HashMap<String, Object>();
             JasperReport jasperReport=null;
             JRDataSource datasource =null;
+            String data = null;
 
             switch (reportName) {
                 case "total_registered_clients":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
-
+                    data = new Gson().toJson(referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities));
                     datasource =  new JRBeanCollectionDataSource(referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Registered Clients", "Address Report");
@@ -486,6 +486,7 @@ public class ReportController {
                 case "total_successful_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalSuccessfulReferrals.jasper");
 
+                    data = new Gson().toJson(referralsReportService.referralsSummaryReport("1",startDate,endDate,facilities));
                     datasource =  new JRBeanCollectionDataSource(referralsReportService.referralsSummaryReport("1",startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Successful Referrals", "Address Report");
@@ -494,6 +495,7 @@ public class ReportController {
                 case "total_referrals_issued":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssued.jasper");
 
+                    data = new Gson().toJson(referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities));
                     datasource = new JRBeanCollectionDataSource(referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Referrals Issued", "Address Report");
@@ -503,6 +505,7 @@ public class ReportController {
                 case "ltfs_feedback":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/LTFFeedbackReport.jasper");
 
+                    data = new Gson().toJson(referralsReportService.lTFsFeedbacksReport(startDate,endDate,facilities));
                     datasource = new JRBeanCollectionDataSource(referralsReportService.lTFsFeedbacksReport(startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("LTFs Feedback", "Address Report");
@@ -512,6 +515,7 @@ public class ReportController {
                 case "total_issued_ltfs":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalNumberOfLTFSToCBHSReport.jasper");
 
+                    data = new Gson().toJson(referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities));
                     datasource = new JRBeanCollectionDataSource(referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Issued LTFs", "Address Report");
@@ -521,6 +525,7 @@ public class ReportController {
                 case "successful_malaria_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/SuccessfulMalariaReferrals.jasper");
 
+                    data = new Gson().toJson(referralsReportService.successfulMalariaReferralsReport(startDate,endDate,facilities));
                     datasource = new JRBeanCollectionDataSource(referralsReportService.successfulMalariaReferralsReport(startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Successful Malaria Referrals", "Address Report");
@@ -530,6 +535,7 @@ public class ReportController {
                 case "total_failed_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalFailedReferrals.jasper");
 
+                    data = new Gson().toJson(referralsReportService.referralsSummaryReport("-1",startDate,endDate,facilities));
                     datasource = new JRBeanCollectionDataSource(referralsReportService.referralsSummaryReport("-1",startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Failed Referrals", "Address Report");
@@ -539,9 +545,58 @@ public class ReportController {
                 case "inter_facility_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/InterFacilityReferrals.jasper");
 
+                    data = new Gson().toJson(referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities));
                     datasource = new JRBeanCollectionDataSource(referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Inter-Facility Referrals", "Address Report");
+
+                    break;
+
+                case "summary_total_registrations":
+                    List<AgeGroupReportsReportDTO> totalRegistrationsList = referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities);
+                    int total=0;
+                    for(AgeGroupReportsReportDTO reportDTO:totalRegistrationsList){
+                        total += Integer.parseInt(reportDTO.getTotalFemale())+Integer.parseInt(reportDTO.getTotalMale());
+                    }
+                    JSONObject totalRegistrations = new JSONObject();
+                    try {
+                        totalRegistrations.put("Total Registrations",total);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    data = totalRegistrations.toString();
+
+                    break;
+
+                case "summary_total_referrals":
+                    List<AgeGroupReportsReportDTO> totalReferralsList = referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities);
+                    int totalReferrals=0;
+                    for(AgeGroupReportsReportDTO reportDTO:totalReferralsList){
+                        totalReferrals += Integer.parseInt(reportDTO.getTotalFemale())+Integer.parseInt(reportDTO.getTotalMale());
+                    }
+                    JSONObject totalReferralsObject = new JSONObject();
+                    try {
+                        totalReferralsObject.put("Total Referrals",totalReferrals);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    data = totalReferralsObject.toString();
+
+                    break;
+
+                case "summary_total_LTFS":
+                    List<GenderReportsDTO> totalLTFsList = referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities);
+                    int totalLTFs=0;
+                    for(GenderReportsDTO reportDTO:totalLTFsList){
+                        totalLTFs += Integer.parseInt(reportDTO.getTotal());
+                    }
+                    JSONObject totalLTFsObject = new JSONObject();
+                    try {
+                        totalLTFsObject.put("Total LTFs",totalLTFs);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    data = totalLTFsObject.toString();
 
                     break;
 
@@ -559,17 +614,33 @@ public class ReportController {
 
             }
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
-            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+            JasperPrint jasperPrint = null;
+            try{
+                jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
+                request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
             Exporter exporter = null;
             if (reportType.equalsIgnoreCase("html")) {
                 exporter = export(jasperPrint, 1, response);
+                exporter.exportReport();
             } else if (reportType.equalsIgnoreCase("pdf")) {
                 exporter = export(jasperPrint, 5, response);
+                exporter.exportReport();
+            }else if(reportType.equalsIgnoreCase("json")){
+                response.setContentType("application/json");
+                PrintWriter out = null;
+                try {
+                    out = response.getWriter();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                out.print(data);
+                out.flush();
             }
 
-            exporter.exportReport();
 
         } catch (Exception e) {
             e.printStackTrace();
