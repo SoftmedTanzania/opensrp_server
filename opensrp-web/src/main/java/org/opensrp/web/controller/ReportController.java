@@ -483,6 +483,47 @@ public class ReportController {
                     parameters.put("Total Registered Clients", "Address Report");
 
                     break;
+                case "summary_total_registrations":
+                    List<AgeGroupReportsReportDTO> totalRegistrationsList = referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities);
+                    int total=0;
+                    for(AgeGroupReportsReportDTO reportDTO:totalRegistrationsList){
+                        total += Integer.parseInt(reportDTO.getTotalFemale())+Integer.parseInt(reportDTO.getTotalMale());
+                    }
+                    JSONObject totalRegistrations = new JSONObject();
+                    try {
+                        totalRegistrations.put("Total Registrations",total);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    data = totalRegistrations.toString();
+
+                    break;
+
+                case "dashboard_total_registrations":
+                    List<AgeGroupReportsReportDTO> registrationsReportData = referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities);
+
+                    List<DashboardDatabeanDTO> dashboardDatabeanDTOS = new ArrayList<>();
+
+                    DashboardDatabeanDTO othersDashboardDatabeanDTO = new DashboardDatabeanDTO();
+                    othersDashboardDatabeanDTO.setItemName("Others");
+                    othersDashboardDatabeanDTO.setValue(0);
+
+                    for(int i=0;i<registrationsReportData.size();i++){
+                        if(i<=5){
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(registrationsReportData.get(i).getItemName(),Integer.parseInt(registrationsReportData.get(i).getTotalMale())+Integer.parseInt(registrationsReportData.get(i).getTotalFemale()));
+                            dashboardDatabeanDTOS.add(dashboardDatabeanDTO);
+                        }else{
+                            int value = othersDashboardDatabeanDTO.getValue()+Integer.parseInt(registrationsReportData.get(i).getTotalMale())+Integer.parseInt(registrationsReportData.get(i).getTotalFemale());
+                            othersDashboardDatabeanDTO.setValue(value);
+                        }
+                    }
+
+                    dashboardDatabeanDTOS.add(othersDashboardDatabeanDTO);
+
+                    data = new Gson().toJson(dashboardDatabeanDTOS);
+                    datasource =  new JRBeanCollectionDataSource(dashboardDatabeanDTOS);
+                    break;
+
                 case "total_successful_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalSuccessfulReferrals.jasper");
 
@@ -501,7 +542,44 @@ public class ReportController {
                     parameters.put("Total Referrals Issued", "Address Report");
 
                     break;
+                case "summary_total_referrals":
+                    List<AgeGroupReportsReportDTO> totalReferralsList = referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities);
+                    int totalReferrals=0;
+                    for(AgeGroupReportsReportDTO reportDTO:totalReferralsList){
+                        totalReferrals += Integer.parseInt(reportDTO.getTotalFemale())+Integer.parseInt(reportDTO.getTotalMale());
+                    }
+                    JSONObject totalReferralsObject = new JSONObject();
+                    try {
+                        totalReferralsObject.put("Total Referrals",totalReferrals);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    data = totalReferralsObject.toString();
 
+                    break;
+                case "dashboard_total_referrals_issued":
+                    List<AgeGroupReportsReportDTO> issuedReferralsReportData = referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities);
+
+                    List<DashboardDatabeanDTO> issuedReferralsDataBeanDTOS = new ArrayList<>();
+
+                    DashboardDatabeanDTO othersServicesDataBeanDTO = new DashboardDatabeanDTO();
+                    othersServicesDataBeanDTO.setItemName("Others");
+                    othersServicesDataBeanDTO.setValue(0);
+
+                    for(int i=0;i<issuedReferralsReportData.size();i++){
+                        if(i<6){
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(issuedReferralsReportData.get(i).getItemName(),Integer.parseInt(issuedReferralsReportData.get(i).getTotalMale())+Integer.parseInt(issuedReferralsReportData.get(i).getTotalFemale()));
+                            issuedReferralsDataBeanDTOS.add(dashboardDatabeanDTO);
+                        }else{
+                            int value = othersServicesDataBeanDTO.getValue()+Integer.parseInt(issuedReferralsReportData.get(i).getTotalMale())+Integer.parseInt(issuedReferralsReportData.get(i).getTotalFemale());
+                            othersServicesDataBeanDTO.setValue(value);
+                        }
+                    }
+
+                    issuedReferralsDataBeanDTOS.add(othersServicesDataBeanDTO);
+                    data = new Gson().toJson(issuedReferralsDataBeanDTOS);
+                    datasource = new JRBeanCollectionDataSource(issuedReferralsDataBeanDTOS);
+                    break;
                 case "ltfs_feedback":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/LTFFeedbackReport.jasper");
 
@@ -510,6 +588,20 @@ public class ReportController {
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("LTFs Feedback", "Address Report");
 
+                    break;
+
+                case "dashboard_ltf_feedbacks":
+                    List<GenderReportsDTO> ltfsFeedbackReportData = referralsReportService.lTFsFeedbacksReport(startDate,endDate,facilities);
+
+                    List<DashboardDatabeanDTO> ltfFeedbacksDataBeanDTOS = new ArrayList<>();
+
+                    for(int i=0;i<ltfsFeedbackReportData.size();i++){
+                        DashboardDatabeanDTO dashboardDatabeanDTO = produce(ltfsFeedbackReportData.get(i).getItemName(),Integer.parseInt(ltfsFeedbackReportData.get(i).getTotal()));
+                        ltfFeedbacksDataBeanDTOS.add(dashboardDatabeanDTO);
+                    }
+
+                    data = new Gson().toJson(ltfFeedbacksDataBeanDTOS);
+                    datasource = new JRBeanCollectionDataSource(ltfFeedbacksDataBeanDTOS);
                     break;
 
                 case "total_issued_ltfs":
@@ -539,6 +631,30 @@ public class ReportController {
                     datasource = new JRBeanCollectionDataSource(referralsReportService.referralsSummaryReport("-1",startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Failed Referrals", "Address Report");
+                    break;
+
+                case "dashboard_total_failed_referrals":
+                    List<AgeGroupReportsReportDTO> failedReferralsReportData = referralsReportService.referralsSummaryReport("-1",startDate,endDate,facilities);
+
+                    List<DashboardDatabeanDTO> failedReferralsDataBeanDTOS = new ArrayList<>();
+
+                    DashboardDatabeanDTO othersFailedReferralsServicesDataBeanDTO = new DashboardDatabeanDTO();
+                    othersFailedReferralsServicesDataBeanDTO.setItemName("Others");
+                    othersFailedReferralsServicesDataBeanDTO.setValue(0);
+
+                    for(int i=0;i<failedReferralsReportData.size();i++){
+                        if(i<7){
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(failedReferralsReportData.get(i).getItemName(),Integer.parseInt(failedReferralsReportData.get(i).getTotalMale())+Integer.parseInt(failedReferralsReportData.get(i).getTotalFemale()));
+                            failedReferralsDataBeanDTOS.add(dashboardDatabeanDTO);
+                        }else{
+                            int value = othersFailedReferralsServicesDataBeanDTO.getValue()+Integer.parseInt(failedReferralsReportData.get(i).getTotalMale())+Integer.parseInt(failedReferralsReportData.get(i).getTotalFemale());
+                            othersFailedReferralsServicesDataBeanDTO.setValue(value);
+                        }
+                    }
+
+                    failedReferralsDataBeanDTOS.add(othersFailedReferralsServicesDataBeanDTO);
+                    data = new Gson().toJson(failedReferralsDataBeanDTOS);
+                    datasource = new JRBeanCollectionDataSource(failedReferralsDataBeanDTOS);
 
                     break;
 
@@ -549,38 +665,6 @@ public class ReportController {
                     datasource = new JRBeanCollectionDataSource(referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Inter-Facility Referrals", "Address Report");
-
-                    break;
-
-                case "summary_total_registrations":
-                    List<AgeGroupReportsReportDTO> totalRegistrationsList = referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities);
-                    int total=0;
-                    for(AgeGroupReportsReportDTO reportDTO:totalRegistrationsList){
-                        total += Integer.parseInt(reportDTO.getTotalFemale())+Integer.parseInt(reportDTO.getTotalMale());
-                    }
-                    JSONObject totalRegistrations = new JSONObject();
-                    try {
-                        totalRegistrations.put("Total Registrations",total);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    data = totalRegistrations.toString();
-
-                    break;
-
-                case "summary_total_referrals":
-                    List<AgeGroupReportsReportDTO> totalReferralsList = referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities);
-                    int totalReferrals=0;
-                    for(AgeGroupReportsReportDTO reportDTO:totalReferralsList){
-                        totalReferrals += Integer.parseInt(reportDTO.getTotalFemale())+Integer.parseInt(reportDTO.getTotalMale());
-                    }
-                    JSONObject totalReferralsObject = new JSONObject();
-                    try {
-                        totalReferralsObject.put("Total Referrals",totalReferrals);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    data = totalReferralsObject.toString();
 
                     break;
 
@@ -746,6 +830,19 @@ public class ReportController {
 
 
         return exporter;
+    }
+
+    /*
+     * This method returns a DataBean object, with itemName ,
+     * and values set in it.
+     */
+    private DashboardDatabeanDTO produce(String itemName, Integer value) {
+        DashboardDatabeanDTO dataBean = new DashboardDatabeanDTO();
+
+        dataBean.setItemName(itemName);
+        dataBean.setValue(value);
+
+        return dataBean;
     }
 
 }
