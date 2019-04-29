@@ -500,6 +500,7 @@ public class ReportController {
                     break;
 
                 case "dashboard_total_registrations":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClientsPieChart.jasper");
                     List<AgeGroupReportsReportDTO> registrationsReportData = referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities);
 
                     List<DashboardDatabeanDTO> dashboardDatabeanDTOS = new ArrayList<>();
@@ -522,6 +523,10 @@ public class ReportController {
 
                     data = new Gson().toJson(dashboardDatabeanDTOS);
                     datasource =  new JRBeanCollectionDataSource(dashboardDatabeanDTOS);
+
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Registered Clients Pie Chart", "Pie Chart");
+
                     break;
 
                 case "total_successful_referrals":
