@@ -13,6 +13,7 @@ import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opensrp.common.util.HttpResponse;
 import org.opensrp.connector.openmrs.service.OpenmrsReportingService;
 import org.opensrp.connector.openmrs.service.OpenmrsUserService;
 import org.opensrp.domain.ClientReferrals;
@@ -500,7 +501,7 @@ public class ReportController {
                     break;
 
                 case "dashboard_total_registrations":
-                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClientsPieChart.jasper");
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/testpiechart.jasper");
                     List<AgeGroupReportsReportDTO> registrationsReportData = referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities);
 
                     List<DashboardDatabeanDTO> dashboardDatabeanDTOS = new ArrayList<>();
@@ -563,6 +564,7 @@ public class ReportController {
 
                     break;
                 case "dashboard_total_referrals_issued":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssuedBarGraph.jasper");
                     List<AgeGroupReportsReportDTO> issuedReferralsReportData = referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities);
 
                     List<DashboardDatabeanDTO> issuedReferralsDataBeanDTOS = new ArrayList<>();
@@ -584,6 +586,11 @@ public class ReportController {
                     issuedReferralsDataBeanDTOS.add(othersServicesDataBeanDTO);
                     data = new Gson().toJson(issuedReferralsDataBeanDTOS);
                     datasource = new JRBeanCollectionDataSource(issuedReferralsDataBeanDTOS);
+
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Referrals Issued Bar Graph", "Bar graph");
+
+
                     break;
                 case "ltfs_feedback":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/LTFFeedbackReport.jasper");
@@ -639,6 +646,7 @@ public class ReportController {
                     break;
 
                 case "dashboard_total_failed_referrals":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalFailedReferralsLineGraph.jasper");
                     List<AgeGroupReportsReportDTO> failedReferralsReportData = referralsReportService.referralsSummaryReport("-1",startDate,endDate,facilities);
 
                     List<DashboardDatabeanDTO> failedReferralsDataBeanDTOS = new ArrayList<>();
@@ -660,6 +668,9 @@ public class ReportController {
                     failedReferralsDataBeanDTOS.add(othersFailedReferralsServicesDataBeanDTO);
                     data = new Gson().toJson(failedReferralsDataBeanDTOS);
                     datasource = new JRBeanCollectionDataSource(failedReferralsDataBeanDTOS);
+
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Failed Referrals Line Graph", "Line Graph");
 
                     break;
 
