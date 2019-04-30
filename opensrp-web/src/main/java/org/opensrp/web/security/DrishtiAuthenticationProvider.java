@@ -91,4 +91,22 @@ public class DrishtiAuthenticationProvider implements AuthenticationProvider {
         }
         return user;
     }
+
+    public boolean deleteCurrentUserSession(Authentication authentication, String username){
+        boolean response=false;
+        try {
+            if(openmrsUserService.authenticate(authentication.getName(), authentication.getCredentials().toString())){
+                response = openmrsUserService.deleteSession(authentication.getName(),authentication.getCredentials().toString());
+                if(!response){
+                    logger.error(format("{0}. Exception: {1}", INTERNAL_ERROR, "Unable to clear session"));
+
+                }
+            }
+        } catch (Exception e) {
+            logger.error(format("{0}. Exception: {1}", INTERNAL_ERROR, e));
+            e.printStackTrace();
+            throw new BadCredentialsException(INTERNAL_ERROR);
+        }
+        return response;
+    }
 }

@@ -135,6 +135,16 @@ public class UserController {
 		map.put("time", t);
         return new ResponseEntity<>(new Gson().toJson(map), allowOrigin(opensrpSiteUrl), OK);
 	}
+
+	@RequestMapping("/security/delete_session")
+	@ResponseBody
+	public ResponseEntity<String> deleteSession(HttpServletRequest request) throws JSONException {
+		Authentication a = getAuthenticationAdvisor (request);
+
+		Boolean b = getAuthenticationProvider().deleteCurrentUserSession(a, a.getName());
+
+		return new ResponseEntity<>(new Gson().toJson(b), allowOrigin(opensrpSiteUrl), OK);
+	}
 	
 	@RequestMapping("/security/configuration")
 	@ResponseBody
