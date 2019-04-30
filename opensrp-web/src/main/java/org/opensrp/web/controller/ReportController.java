@@ -483,7 +483,7 @@ public class ReportController {
                     break;
 
                 case "dashboard_total_registrations":
-                    sourceFile = ResourceUtils.getFile("classpath:/jasper/testpiechart.jasper");
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
                     List<AgeGroupReportsReportDTO> registrationsReportData = referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities);
 
                     List<DashboardDatabeanDTO> dashboardDatabeanDTOS = new ArrayList<>();
