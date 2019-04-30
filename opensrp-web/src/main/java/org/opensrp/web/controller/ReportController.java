@@ -459,7 +459,7 @@ public class ReportController {
 
             switch (reportName) {
                 case "total_registered_clients":
-                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClientsPieChart.jasper");
                     data = new Gson().toJson(referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities));
                     datasource = new JRBeanCollectionDataSource(referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
