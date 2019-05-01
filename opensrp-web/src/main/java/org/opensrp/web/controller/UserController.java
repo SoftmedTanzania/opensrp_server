@@ -198,4 +198,18 @@ public class UserController {
 
 		return new ResponseEntity<>(jsonArray.toString(), OK);
 	}
+
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-team-members-by-facility-uuid")
+	public ResponseEntity<String> getCHWsCount(@RequestBody String jsonData) {
+
+		try {
+			JSONArray allLocations = openmrsLocationService.getAllLocations();
+			System.out.println("Location Tree : "+allLocations);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+
+		return new ResponseEntity<>("", OK);
+	}
 }

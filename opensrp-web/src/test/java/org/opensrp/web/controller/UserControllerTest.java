@@ -83,4 +83,10 @@ public class UserControllerTest {
 		
 		controller.authenticate(Mockito.mock(HttpServletRequest.class));
 	}
+
+	@Test
+	public void getCHWsCount() {
+		UserController userController = new UserController(new OpenmrsLocationService("http://23.92.25.157:8080/openmrs","lizzy","Admin123."),new OpenmrsUserService("http://23.92.25.157:8080/openmrs","lizzy","Admin123."),null,null);
+		userController.getCHWsCount("ed787525-d770-11e8-ba9c-f23c917bb7ec");
+	}
 }
