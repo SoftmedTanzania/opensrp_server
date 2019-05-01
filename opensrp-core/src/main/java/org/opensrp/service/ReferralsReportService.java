@@ -59,7 +59,7 @@ public class ReferralsReportService {
         return openmrsUuids;
     }
 
-    public JRDataSource newRegistrationByReasonsReport(String startDate, String endDate, JSONArray facilities) {
+    public List<AgeGroupReportsReportDTO> newRegistrationByReasonsReport(String startDate, String endDate, JSONArray facilities) {
         String ids = getFacilityOpenMRSUUIDs(facilities);
 
         List<ClientRegistrationReason> clientRegistrationReasons = null;
@@ -277,11 +277,10 @@ public class ReferralsReportService {
 
         logger.info("Report data source = " + new Gson().toJson(ageGroupReportsReportDTOS));
 
-        JRDataSource ds = new JRBeanCollectionDataSource(ageGroupReportsReportDTOS);
-        return ds;
+        return ageGroupReportsReportDTOS;
     }
 
-    public JRDataSource referralsSummaryReport(String referralStatus, String startDate, String endDate, JSONArray facilities) {
+    public List<AgeGroupReportsReportDTO> referralsSummaryReport(String referralStatus, String startDate, String endDate, JSONArray facilities) {
 
         String ids = getFacilityOpenMRSUUIDs(facilities);
         List<ReferralService> referralServices = null;
@@ -446,11 +445,10 @@ public class ReferralsReportService {
 
         logger.info("Report data source = " + new Gson().toJson(ageGroupReportsReportDTOS));
 
-        JRDataSource ds = new JRBeanCollectionDataSource(ageGroupReportsReportDTOS);
-        return ds;
+        return ageGroupReportsReportDTOS;
     }
 
-    public JRDataSource successfulMalariaReferralsReport(String startDate, String endDate, JSONArray facilities) {
+    public  List<MalariaReportDTO> successfulMalariaReferralsReport(String startDate, String endDate, JSONArray facilities) {
         String ids = getFacilityOpenMRSUUIDs(facilities);
         List<ReferralService> referralServices = null;
         try {
@@ -505,12 +503,10 @@ public class ReferralsReportService {
         malariaReportDTOS.add(malariaReportDTO);
 
         logger.info("Report data source = " + new Gson().toJson(malariaReportDTOS));
-
-        JRDataSource ds = new JRBeanCollectionDataSource(malariaReportDTOS);
-        return ds;
+        return malariaReportDTOS;
     }
 
-    public JRDataSource totalIssuedLTFsSummaryReport(String startDate, String endDate, JSONArray facilities) {
+    public List<GenderReportsDTO> totalIssuedLTFsSummaryReport(String startDate, String endDate, JSONArray facilities) {
         String ids = getFacilityOpenMRSUUIDs(facilities);
         List<AppointmentType> appointmentTypes = null;
 
@@ -548,12 +544,10 @@ public class ReferralsReportService {
         }
 
         logger.info("Report data source = " + new Gson().toJson(genderReportsDTOS));
-
-        JRDataSource ds = new JRBeanCollectionDataSource(genderReportsDTOS);
-        return ds;
+        return genderReportsDTOS;
     }
 
-    public JRDataSource lTFsFeedbacksReport(String startDate, String endDate, JSONArray facilities) {
+    public List<GenderReportsDTO> lTFsFeedbacksReport(String startDate, String endDate, JSONArray facilities) {
         String ids = getFacilityOpenMRSUUIDs(facilities);
         List<ReferralFeedback> referralFeedbacks = null;
         try {
@@ -588,9 +582,7 @@ public class ReferralsReportService {
         }
 
         logger.info("Report data source = " + new Gson().toJson(genderReportsDTOS));
-
-        JRDataSource ds = new JRBeanCollectionDataSource(genderReportsDTOS);
-        return ds;
+        return genderReportsDTOS;
     }
 
     public String getDateByYearString(int year) {

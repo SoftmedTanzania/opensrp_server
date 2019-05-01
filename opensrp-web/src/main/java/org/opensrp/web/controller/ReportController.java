@@ -1,12 +1,13 @@
 package org.opensrp.web.controller;
 
+import com.google.gson.Gson;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.*;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.*;
 import net.sf.jasperreports.j2ee.servlets.ImageServlet;
-import net.sf.jasperreports.web.util.WebHtmlResourceHandler;
 import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,13 +32,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.ektorp.util.Base64.encodeBytes;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -51,28 +52,12 @@ public class ReportController {
     private ReferralReportRepository referralReportRepository;
 
     @Autowired
-    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService, ReferralsReportService referralsReportService,ReferralReportRepository referralReportRepository) {
+    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService, ReferralsReportService referralsReportService, ReferralReportRepository referralReportRepository) {
         this.reportService = reportService;
         this.openmrsUserService = openmrsUserService;
         this.clientReferralRepository = clientReferralRepository;
         this.referralsReportService = referralsReportService;
         this.referralReportRepository = referralReportRepository;
-    }
-
-    public static byte[] exportReportToHtmlStream(JasperPrint jasperPrint) throws JRException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        HtmlExporter exporter = new HtmlExporter();
-
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
-        exporter.setParameter(JRHtmlExporterParameter.CHARACTER_ENCODING, "ISO-8859-1");
-        exporter.setParameter(JRHtmlExporterParameter.IMAGES_MAP, new HashMap());
-        exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image?image=");
-
-        exporter.exportReport();
-
-        return baos.toByteArray();
     }
 
     @RequestMapping(method = GET, value = "/report/report-definitions")
@@ -426,14 +411,14 @@ public class ReportController {
             e.printStackTrace();
         }
         response.setContentType("text/html");
-        generateReport(reportName,reportType,fromDate,toDate,facilitiesArray,request,response);
+        generateReport(reportName, reportType, fromDate, toDate, facilitiesArray, request, response);
     }
 
 
     @RequestMapping(value = "/available_reports", method = RequestMethod.GET)
     public ResponseEntity<List<ReferralReport>> availableReports() {
         try {
-            List<ReferralReport>referralReports=  referralReportRepository.referralReports("SELECT * FROM "+ ReferralReport.tbName,null);
+            List<ReferralReport> referralReports = referralReportRepository.referralReports("SELECT * FROM " + ReferralReport.tbName, null);
             return new ResponseEntity<List<ReferralReport>>(referralReports, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -442,8 +427,6 @@ public class ReportController {
     }
 
 
-
-        //Total Successful Referrals
     /**
      * Retrieves Report in HTML & PDF format
      *
@@ -460,32 +443,80 @@ public class ReportController {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String currentDate = formatter.format(c.getTime());
 
-        generateReport(reportName,reportType,firstDateOfTheMonth.withDayOfMonth(1).toString(),currentDate,new JSONArray(),request,response);
+        generateReport(reportName, reportType, firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate, new JSONArray(), request, response);
     }
 
-    private void generateReport(String reportName,String reportType,String startDate, String endDate, JSONArray facilities,HttpServletRequest request,
-                                HttpServletResponse response){
+    private void generateReport(String reportName, String reportType, String startDate, String endDate, JSONArray facilities, HttpServletRequest request,
+                                HttpServletResponse response) {
         File sourceFile = null;
 
         try {
 
             Map<String, Object> parameters = new HashMap<String, Object>();
-            JasperReport jasperReport=null;
-            JRDataSource datasource =null;
+            JasperReport jasperReport = null;
+            JRDataSource datasource = null;
+            String data = null;
 
             switch (reportName) {
                 case "total_registered_clients":
-                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
-
-                    datasource = referralsReportService.newRegistrationByReasonsReport(startDate,endDate,facilities);
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClientsPieChart.jasper");
+                    data = new Gson().toJson(referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities));
+                    datasource = new JRBeanCollectionDataSource(referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Registered Clients", "Address Report");
 
                     break;
+                case "summary_total_registrations":
+                    List<AgeGroupReportsReportDTO> totalRegistrationsList = referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities);
+                    int total = 0;
+                    for (AgeGroupReportsReportDTO reportDTO : totalRegistrationsList) {
+                        total += Integer.parseInt(reportDTO.getTotalFemale()) + Integer.parseInt(reportDTO.getTotalMale());
+                    }
+                    JSONObject totalRegistrations = new JSONObject();
+                    try {
+                        totalRegistrations.put("Total Registrations", total);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    data = totalRegistrations.toString();
+
+                    break;
+
+                case "dashboard_total_registrations":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClientsPieChart.jasper");
+                    List<AgeGroupReportsReportDTO> registrationsReportData = referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities);
+
+                    List<DashboardDatabeanDTO> dashboardDatabeanDTOS = new ArrayList<>();
+
+                    DashboardDatabeanDTO othersDashboardDatabeanDTO = new DashboardDatabeanDTO();
+                    othersDashboardDatabeanDTO.setItemName("Others");
+                    othersDashboardDatabeanDTO.setValue(0);
+
+                    for (int i = 0; i < registrationsReportData.size(); i++) {
+                        if (i <= 5) {
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(registrationsReportData.get(i).getItemName(), Integer.parseInt(registrationsReportData.get(i).getTotalMale()) + Integer.parseInt(registrationsReportData.get(i).getTotalFemale()));
+                            dashboardDatabeanDTOS.add(dashboardDatabeanDTO);
+                        } else {
+                            int value = othersDashboardDatabeanDTO.getValue() + Integer.parseInt(registrationsReportData.get(i).getTotalMale()) + Integer.parseInt(registrationsReportData.get(i).getTotalFemale());
+                            othersDashboardDatabeanDTO.setValue(value);
+                        }
+                    }
+
+                    dashboardDatabeanDTOS.add(othersDashboardDatabeanDTO);
+
+                    data = new Gson().toJson(dashboardDatabeanDTOS);
+                    datasource = new JRBeanCollectionDataSource(dashboardDatabeanDTOS);
+
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Registered Clients Pie Chart", "Pie Chart");
+
+                    break;
+
                 case "total_successful_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalSuccessfulReferrals.jasper");
 
-                    datasource = referralsReportService.referralsSummaryReport("1",startDate,endDate,facilities);
+                    data = new Gson().toJson(referralsReportService.referralsSummaryReport("1", startDate, endDate, facilities));
+                    datasource = new JRBeanCollectionDataSource(referralsReportService.referralsSummaryReport("1", startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Successful Referrals", "Address Report");
 
@@ -493,25 +524,90 @@ public class ReportController {
                 case "total_referrals_issued":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssued.jasper");
 
-                    datasource = referralsReportService.referralsSummaryReport("0",startDate,endDate,facilities);
+                    data = new Gson().toJson(referralsReportService.referralsSummaryReport("0", startDate, endDate, facilities));
+                    datasource = new JRBeanCollectionDataSource(referralsReportService.referralsSummaryReport("0", startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Referrals Issued", "Address Report");
 
                     break;
+                case "summary_total_referrals":
+                    List<AgeGroupReportsReportDTO> totalReferralsList = referralsReportService.referralsSummaryReport("0", startDate, endDate, facilities);
+                    int totalReferrals = 0;
+                    for (AgeGroupReportsReportDTO reportDTO : totalReferralsList) {
+                        totalReferrals += Integer.parseInt(reportDTO.getTotalFemale()) + Integer.parseInt(reportDTO.getTotalMale());
+                    }
+                    JSONObject totalReferralsObject = new JSONObject();
+                    try {
+                        totalReferralsObject.put("Total Referrals", totalReferrals);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    data = totalReferralsObject.toString();
 
+                    break;
+                case "dashboard_total_referrals_issued":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalReferralsIssuedBarGraph.jasper");
+                    List<AgeGroupReportsReportDTO> issuedReferralsReportData = referralsReportService.referralsSummaryReport("0", startDate, endDate, facilities);
+
+                    List<DashboardDatabeanDTO> issuedReferralsDataBeanDTOS = new ArrayList<>();
+
+                    DashboardDatabeanDTO othersServicesDataBeanDTO = new DashboardDatabeanDTO();
+                    othersServicesDataBeanDTO.setItemName("Others");
+                    othersServicesDataBeanDTO.setValue(0);
+
+                    for (int i = 0; i < issuedReferralsReportData.size(); i++) {
+                        if (i < 6) {
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(issuedReferralsReportData.get(i).getItemName(), Integer.parseInt(issuedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(issuedReferralsReportData.get(i).getTotalFemale()));
+                            issuedReferralsDataBeanDTOS.add(dashboardDatabeanDTO);
+                        } else {
+                            int value = othersServicesDataBeanDTO.getValue() + Integer.parseInt(issuedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(issuedReferralsReportData.get(i).getTotalFemale());
+                            othersServicesDataBeanDTO.setValue(value);
+                        }
+                    }
+
+                    issuedReferralsDataBeanDTOS.add(othersServicesDataBeanDTO);
+                    data = new Gson().toJson(issuedReferralsDataBeanDTOS);
+                    datasource = new JRBeanCollectionDataSource(issuedReferralsDataBeanDTOS);
+
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Referrals Issued Bar Graph", "Bar graph");
+
+
+                    break;
                 case "ltfs_feedback":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/LTFFeedbackReport.jasper");
 
-                    datasource = referralsReportService.lTFsFeedbacksReport(startDate,endDate,facilities);
+                    data = new Gson().toJson(referralsReportService.lTFsFeedbacksReport(startDate, endDate, facilities));
+                    datasource = new JRBeanCollectionDataSource(referralsReportService.lTFsFeedbacksReport(startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("LTFs Feedback", "Address Report");
+
+                    break;
+
+                case "dashboard_ltf_feedbacks":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/LTFFeedbackLineGraph.jasper");
+                    List<GenderReportsDTO> ltfsFeedbackReportData = referralsReportService.lTFsFeedbacksReport(startDate, endDate, facilities);
+
+                    List<DashboardDatabeanDTO> ltfFeedbacksDataBeanDTOS = new ArrayList<>();
+
+                    for (int i = 0; i < ltfsFeedbackReportData.size(); i++) {
+                        DashboardDatabeanDTO dashboardDatabeanDTO = produce(ltfsFeedbackReportData.get(i).getItemName(), Integer.parseInt(ltfsFeedbackReportData.get(i).getTotal()));
+                        ltfFeedbacksDataBeanDTOS.add(dashboardDatabeanDTO);
+                    }
+
+                    data = new Gson().toJson(ltfFeedbacksDataBeanDTOS);
+                    datasource = new JRBeanCollectionDataSource(ltfFeedbacksDataBeanDTOS);
+
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("LTF Feedback Line Graph", "Line Graph");
 
                     break;
 
                 case "total_issued_ltfs":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalNumberOfLTFSToCBHSReport.jasper");
 
-                    datasource = referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities);
+                    data = new Gson().toJson(referralsReportService.totalIssuedLTFsSummaryReport(startDate, endDate, facilities));
+                    datasource = new JRBeanCollectionDataSource(referralsReportService.totalIssuedLTFsSummaryReport(startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Issued LTFs", "Address Report");
 
@@ -520,7 +616,8 @@ public class ReportController {
                 case "successful_malaria_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/SuccessfulMalariaReferrals.jasper");
 
-                    datasource = referralsReportService.successfulMalariaReferralsReport(startDate,endDate,facilities);
+                    data = new Gson().toJson(referralsReportService.successfulMalariaReferralsReport(startDate, endDate, facilities));
+                    datasource = new JRBeanCollectionDataSource(referralsReportService.successfulMalariaReferralsReport(startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Successful Malaria Referrals", "Address Report");
 
@@ -529,18 +626,64 @@ public class ReportController {
                 case "total_failed_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalFailedReferrals.jasper");
 
-                    datasource = referralsReportService.referralsSummaryReport("-1",startDate,endDate,facilities);
+                    data = new Gson().toJson(referralsReportService.referralsSummaryReport("-1", startDate, endDate, facilities));
+                    datasource = new JRBeanCollectionDataSource(referralsReportService.referralsSummaryReport("-1", startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Total Failed Referrals", "Address Report");
+                    break;
+
+                case "dashboard_total_failed_referrals":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalFailedReferralsLineGraph.jasper");
+                    List<AgeGroupReportsReportDTO> failedReferralsReportData = referralsReportService.referralsSummaryReport("-1", startDate, endDate, facilities);
+
+                    List<DashboardDatabeanDTO> failedReferralsDataBeanDTOS = new ArrayList<>();
+
+                    DashboardDatabeanDTO othersFailedReferralsServicesDataBeanDTO = new DashboardDatabeanDTO();
+                    othersFailedReferralsServicesDataBeanDTO.setItemName("Others");
+                    othersFailedReferralsServicesDataBeanDTO.setValue(0);
+
+                    for (int i = 0; i < failedReferralsReportData.size(); i++) {
+                        if (i < 7) {
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(failedReferralsReportData.get(i).getItemName(), Integer.parseInt(failedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(failedReferralsReportData.get(i).getTotalFemale()));
+                            failedReferralsDataBeanDTOS.add(dashboardDatabeanDTO);
+                        } else {
+                            int value = othersFailedReferralsServicesDataBeanDTO.getValue() + Integer.parseInt(failedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(failedReferralsReportData.get(i).getTotalFemale());
+                            othersFailedReferralsServicesDataBeanDTO.setValue(value);
+                        }
+                    }
+
+                    failedReferralsDataBeanDTOS.add(othersFailedReferralsServicesDataBeanDTO);
+                    data = new Gson().toJson(failedReferralsDataBeanDTOS);
+                    datasource = new JRBeanCollectionDataSource(failedReferralsDataBeanDTOS);
+
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("Total Failed Referrals Line Graph", "Line Graph");
 
                     break;
 
                 case "inter_facility_referrals":
                     sourceFile = ResourceUtils.getFile("classpath:/jasper/InterFacilityReferrals.jasper");
 
-                    datasource = referralsReportService.totalIssuedLTFsSummaryReport(startDate,endDate,facilities);
+                    data = new Gson().toJson(referralsReportService.totalIssuedLTFsSummaryReport(startDate, endDate, facilities));
+                    datasource = new JRBeanCollectionDataSource(referralsReportService.totalIssuedLTFsSummaryReport(startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
                     parameters.put("Inter-Facility Referrals", "Address Report");
+
+                    break;
+
+                case "summary_total_LTFS":
+                    List<GenderReportsDTO> totalLTFsList = referralsReportService.totalIssuedLTFsSummaryReport(startDate, endDate, facilities);
+                    int totalLTFs = 0;
+                    for (GenderReportsDTO reportDTO : totalLTFsList) {
+                        totalLTFs += Integer.parseInt(reportDTO.getTotal());
+                    }
+                    JSONObject totalLTFsObject = new JSONObject();
+                    try {
+                        totalLTFsObject.put("Total LTFs", totalLTFs);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    data = totalLTFsObject.toString();
 
                     break;
 
@@ -558,17 +701,33 @@ public class ReportController {
 
             }
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
-            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+            JasperPrint jasperPrint = null;
+            try {
+                jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, datasource);
+                request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             Exporter exporter = null;
             if (reportType.equalsIgnoreCase("html")) {
                 exporter = export(jasperPrint, 1, response);
+                exporter.exportReport();
             } else if (reportType.equalsIgnoreCase("pdf")) {
                 exporter = export(jasperPrint, 5, response);
+                exporter.exportReport();
+            } else if (reportType.equalsIgnoreCase("json")) {
+                response.setContentType("application/json");
+                PrintWriter out = null;
+                try {
+                    out = response.getWriter();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                out.print(data);
+                out.flush();
             }
 
-            exporter.exportReport();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -583,7 +742,7 @@ public class ReportController {
         }
     }
 
-    private void errorPage(PrintWriter out, String message){
+    private void errorPage(PrintWriter out, String message) {
 
         out.println("<html>");
         out.println("<head>");
@@ -593,7 +752,7 @@ public class ReportController {
 
         out.println("<body bgcolor=\"white\">");
 
-        out.println("<span class=\"bnew\"> "+message+" :</span>");
+        out.println("<span class=\"bnew\"> " + message + " :</span>");
         out.println("<pre>");
 
         out.println("</pre>");
@@ -603,33 +762,48 @@ public class ReportController {
 
     }
 
-    private Exporter export(final JasperPrint print,int printType,HttpServletResponse response) throws JRException {
+    private Exporter export(final JasperPrint print, int printType, HttpServletResponse response) throws JRException {
         final Exporter exporter;
-        boolean html = false;
 
         switch (printType) {
             case 1:
                 exporter = new HtmlExporter();
+                SimpleExporterInput exporterInput = new SimpleExporterInput(print);
+                exporter.setExporterInput(exporterInput);
+
                 PrintWriter out = null;
                 try {
                     out = response.getWriter();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                SimpleHtmlExporterOutput output = new SimpleHtmlExporterOutput(out);
-                output.setImageHandler(new WebHtmlResourceHandler("image?image={0}"));
-                exporter.setExporterOutput(output);
 
+                SimpleHtmlExporterOutput exporterOutput = new SimpleHtmlExporterOutput(out);
+                final Map<String, String> images = new HashMap<>();
+                exporterOutput.setImageHandler(new HtmlResourceHandler() {
 
-                SimpleHtmlExporterConfiguration exporterConfig = new SimpleHtmlExporterConfiguration();
-                exporterConfig.setBetweenPagesHtml("");
-                exporter.setConfiguration(exporterConfig);
+                    @Override
+                    public void handleResource(String id, byte[] data) {
+                        System.err.println("id" + id);
+                        images.put(id, "data:image/jpg;base64," + encodeBytes(data));
+                    }
 
-                SimpleHtmlReportConfiguration reportConfig = new SimpleHtmlReportConfiguration();
-                reportConfig.setRemoveEmptySpaceBetweenRows(true);
-                exporter.setConfiguration(reportConfig);
+                    @Override
+                    public String getResourcePath(String id) {
+                        return images.get(id);
+                    }
+                });
 
-                html = true;
+                SimpleHtmlExporterConfiguration htmlConfig = new SimpleHtmlExporterConfiguration();
+                SimpleHtmlReportConfiguration htmlReportConfiguration = new SimpleHtmlReportConfiguration();
+                htmlConfig.setHtmlFooter("");
+                htmlConfig.setHtmlHeader("");
+                htmlConfig.setBetweenPagesHtml("");
+                htmlReportConfiguration.setPageIndex(0);
+
+                exporter.setConfiguration(htmlConfig);
+                exporter.setExporterOutput(exporterOutput);
+                exporter.setConfiguration(htmlReportConfiguration);
                 break;
 
             case 2:
@@ -656,12 +830,11 @@ public class ReportController {
                 }
                 exporter = new HtmlExporter();
                 exporter.setExporterOutput(new SimpleHtmlExporterOutput(out2));
-                html = true;
                 break;
         }
 
         if (printType != 1) {
-            ServletOutputStream out1=null;
+            ServletOutputStream out1 = null;
             try {
                 out1 = response.getOutputStream();
             } catch (IOException e) {
@@ -674,6 +847,19 @@ public class ReportController {
 
 
         return exporter;
+    }
+
+    /*
+     * This method returns a DataBean object, with itemName ,
+     * and values set in it.
+     */
+    private DashboardDatabeanDTO produce(String itemName, Integer value) {
+        DashboardDatabeanDTO dataBean = new DashboardDatabeanDTO();
+
+        dataBean.setItemName(itemName);
+        dataBean.setValue(value);
+
+        return dataBean;
     }
 
 }

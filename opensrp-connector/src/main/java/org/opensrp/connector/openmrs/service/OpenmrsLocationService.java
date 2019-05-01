@@ -63,10 +63,15 @@ public class OpenmrsLocationService extends OpenmrsService{
 	private Location makeLocation(JSONObject location) throws JSONException{
 		return makeLocation(location.toString());
 	}
+
+	public JSONArray getAllLocations()throws JSONException{
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+LOCATION_URL, "v=full&limit=1000", OPENMRS_USER, OPENMRS_PWD);
+		return new JSONObject(op.body()).getJSONArray("results");
+	}
 	
 	public LocationTree getLocationTree() throws JSONException {
 		LocationTree ltr = new LocationTree();
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+LOCATION_URL, "v=full", OPENMRS_USER, OPENMRS_PWD);
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+LOCATION_URL, "v=full&limit=1000", OPENMRS_USER, OPENMRS_PWD);
 		
 		JSONArray res = new JSONObject(op.body()).getJSONArray("results");
 		if(res.length() == 0){
