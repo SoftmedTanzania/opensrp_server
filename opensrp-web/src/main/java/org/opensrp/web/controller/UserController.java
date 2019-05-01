@@ -199,17 +199,76 @@ public class UserController {
 		return new ResponseEntity<>(jsonArray.toString(), OK);
 	}
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-team-members-by-facility-uuid")
-	public ResponseEntity<String> getCHWsCount(@RequestBody String jsonData) {
-
+	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-team-members-count/{facilityUUID}")
+	public ResponseEntity<String> getCHWsCount(@PathVariable("facilityUUID")  String facilityUUID) {
+		List<String> facilityUUIDs = new ArrayList<>();
 		try {
 			JSONArray allLocations = openmrsLocationService.getAllLocations();
 			System.out.println("Location Tree : "+allLocations);
+
+
+
+			for(int i=0;i<allLocations.length();i++){
+				JSONObject facilityObject = allLocations.getJSONObject(i);
+				if(facilityObject.getString("uuid").equalsIgnoreCase(facilityUUID)){
+					facilityUUIDs = getChildrenFacilities(facilityObject,allLocations);
+				}
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
+		return getTeamMembers(new Gson().toJson(facilityUUIDs));
 
-		return new ResponseEntity<>("", OK);
+	}
+
+	public List<String> getChildrenFacilities(JSONObject facilityObject, JSONArray allFacilities){
+    	List<String> uuids = new ArrayList<>();
+
+		JSONArray childrenLocations = null;
+		try {
+			childrenLocations = facilityObject.getJSONArray("childLocations");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		if(childrenLocations.length()==0){
+			try {
+				uuids.add(facilityObject.getString("uuid"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+		for(int i=0;i<childrenLocations.length();i++){
+			JSONObject childLocation = null;
+			try {
+				childLocation = childrenLocations.getJSONObject(i);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			for(int j=0;j<allFacilities.length();j++){
+				JSONObject childFacility = null;
+				try {
+					childFacility = allFacilities.getJSONObject(j);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					if(childFacility.getString("uuid").equalsIgnoreCase(childLocation.getString("uuid"))){
+						List<String> childLocationsUUIDs = getChildrenFacilities(childFacility,allFacilities);
+						uuids.addAll(childLocationsUUIDs);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+
+		return uuids;
+
 	}
 }
