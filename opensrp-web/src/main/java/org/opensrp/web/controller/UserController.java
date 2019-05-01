@@ -2,6 +2,7 @@ package org.opensrp.web.controller;
 
 import static org.opensrp.web.HttpHeaderFactory.allowOrigin;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.nio.charset.Charset;
@@ -53,7 +54,7 @@ public class UserController {
         this.facilityRepository = facilityRepository;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/authenticate-user")
+    @RequestMapping(method = GET, value = "/authenticate-user")
     public ResponseEntity<HttpStatus> authenticateUser() {
         return new ResponseEntity<>(null, allowOrigin(opensrpSiteUrl), OK);
     }
@@ -85,7 +86,7 @@ public class UserController {
     	return new Time(Calendar.getInstance().getTime(), TimeZone.getDefault());
 	}
 
-    @RequestMapping(method = RequestMethod.GET, value = "/user-details")
+    @RequestMapping(method = GET, value = "/user-details")
     public ResponseEntity<UserDetail> userDetail(@RequestParam("anm-id") String anmIdentifier, HttpServletRequest request) {
     	Authentication a = getAuthenticationAdvisor(request);
         User user = opensrpAuthenticationProvider.getDrishtiUser(a, anmIdentifier);
@@ -199,7 +200,7 @@ public class UserController {
 		return new ResponseEntity<>(jsonArray.toString(), OK);
 	}
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-team-members-count/{facilityUUID}")
+	@RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/get-team-members-by-facility-hierarchy/{facilityUUID}")
 	public ResponseEntity<String> getCHWsCount(@PathVariable("facilityUUID")  String facilityUUID) {
 		List<String> facilityUUIDs = new ArrayList<>();
 		try {
