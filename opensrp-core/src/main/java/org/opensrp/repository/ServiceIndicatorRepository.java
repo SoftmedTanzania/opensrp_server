@@ -32,8 +32,6 @@ public class ServiceIndicatorRepository {
 		insert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(ServiceIndicator.tbName);
 
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put(ServiceIndicator.COL_SERVICE_INDICATOR_ID, serviceIndicator.getServiceIndicatorId());
-
 		parameters.put(ServiceIndicator.COL_INDICATOR_ID, serviceIndicator.getPkReferralServiceIndicator().getIndicatorId());
 		parameters.put(ServiceIndicator.COL_SERVICE_ID, serviceIndicator.getPkReferralServiceIndicator().getServiceId());
 
