@@ -189,7 +189,7 @@ public class ServiceController {
                     for (Long indicatorId:referralServiceIndicatorDTO.getReferralIndicatorId()) {
 
                         ServiceIndicator serviceIndicator = new ServiceIndicator();
-                        PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(referralServiceIndicatorDTO.getReferralServiceId(), indicatorId);
+                        PKReferralServiceIndicator pkReferralServiceIndicator = new PKReferralServiceIndicator(indicatorId,referralServiceIndicatorDTO.getReferralServiceId());
                         serviceIndicator.setPkReferralServiceIndicator(pkReferralServiceIndicator);
 
                         referralIndicators.add(serviceIndicator);
