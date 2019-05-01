@@ -459,7 +459,7 @@ public class ReportController {
 
             switch (reportName) {
                 case "total_registered_clients":
-                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClients.jasper");
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClientsPieChart.jasper");
                     data = new Gson().toJson(referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities));
                     datasource = new JRBeanCollectionDataSource(referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities));
                     jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
@@ -483,7 +483,7 @@ public class ReportController {
                     break;
 
                 case "dashboard_total_registrations":
-                    sourceFile = ResourceUtils.getFile("classpath:/jasper/testpiechart.jasper");
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/TotalRegisteredClientsPieChart.jasper");
                     List<AgeGroupReportsReportDTO> registrationsReportData = referralsReportService.newRegistrationByReasonsReport(startDate, endDate, facilities);
 
                     List<DashboardDatabeanDTO> dashboardDatabeanDTOS = new ArrayList<>();
@@ -585,6 +585,7 @@ public class ReportController {
                     break;
 
                 case "dashboard_ltf_feedbacks":
+                    sourceFile = ResourceUtils.getFile("classpath:/jasper/LTFFeedbackLineGraph.jasper");
                     List<GenderReportsDTO> ltfsFeedbackReportData = referralsReportService.lTFsFeedbacksReport(startDate, endDate, facilities);
 
                     List<DashboardDatabeanDTO> ltfFeedbacksDataBeanDTOS = new ArrayList<>();
@@ -596,6 +597,10 @@ public class ReportController {
 
                     data = new Gson().toJson(ltfFeedbacksDataBeanDTOS);
                     datasource = new JRBeanCollectionDataSource(ltfFeedbacksDataBeanDTOS);
+
+                    jasperReport = (JasperReport) JRLoader.loadObjectFromFile(sourceFile.getPath());
+                    parameters.put("LTF Feedback Line Graph", "Line Graph");
+
                     break;
 
                 case "total_issued_ltfs":
