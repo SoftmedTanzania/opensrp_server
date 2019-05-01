@@ -207,8 +207,6 @@ public class UserController {
 			JSONArray allLocations = openmrsLocationService.getAllLocations();
 			System.out.println("Location Tree : "+allLocations);
 
-
-
 			for(int i=0;i<allLocations.length();i++){
 				JSONObject facilityObject = allLocations.getJSONObject(i);
 				if(facilityObject.getString("uuid").equalsIgnoreCase(facilityUUID)){
@@ -219,7 +217,16 @@ public class UserController {
 			e.printStackTrace();
 		}
 
-		return getTeamMembers(new Gson().toJson(facilityUUIDs));
+		String chws =  getTeamMembers(new Gson().toJson(facilityUUIDs)).getBody();
+		JSONArray jsonArray = new JSONArray();
+		try {
+			jsonArray = new JSONArray(chws);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+
+		return new ResponseEntity<>(jsonArray.length()+"", OK);
 
 	}
 
