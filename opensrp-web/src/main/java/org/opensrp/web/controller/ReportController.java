@@ -492,12 +492,19 @@ public class ReportController {
                     othersDashboardDatabeanDTO.setItemName("Others");
                     othersDashboardDatabeanDTO.setValue(0);
 
-                    for (int i = 0; i < registrationsReportData.size(); i++) {
-                        if (i <= 5) {
-                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(registrationsReportData.get(i).getItemName(), Integer.parseInt(registrationsReportData.get(i).getTotalMale()) + Integer.parseInt(registrationsReportData.get(i).getTotalFemale()));
+                    for (AgeGroupReportsReportDTO reportDTO: registrationsReportData) {
+                        if (reportDTO.getSn().equals("1") ||
+                                reportDTO.getSn().equals("4") ||
+                                reportDTO.getSn().equals("15") ||
+                                reportDTO.getSn().equals("16") ||
+                                reportDTO.getSn().equals("18") ||
+                                reportDTO.getSn().equals("19")
+
+                        ) {
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(reportDTO.getItemName(), Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale()));
                             dashboardDatabeanDTOS.add(dashboardDatabeanDTO);
                         } else {
-                            int value = othersDashboardDatabeanDTO.getValue() + Integer.parseInt(registrationsReportData.get(i).getTotalMale()) + Integer.parseInt(registrationsReportData.get(i).getTotalFemale());
+                            int value = othersDashboardDatabeanDTO.getValue() + Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale());
                             othersDashboardDatabeanDTO.setValue(value);
                         }
                     }
@@ -555,15 +562,23 @@ public class ReportController {
                     othersServicesDataBeanDTO.setItemName("Others");
                     othersServicesDataBeanDTO.setValue(0);
 
-                    for (int i = 0; i < issuedReferralsReportData.size(); i++) {
-                        if (i < 6) {
-                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(issuedReferralsReportData.get(i).getItemName(), Integer.parseInt(issuedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(issuedReferralsReportData.get(i).getTotalFemale()));
+                    for (AgeGroupReportsReportDTO reportDTO: issuedReferralsReportData) {
+                        if (reportDTO.getSn().equals("1") ||
+                                reportDTO.getSn().equals("2") ||
+                                reportDTO.getSn().equals("4") ||
+                                reportDTO.getSn().equals("14") ||
+                                reportDTO.getSn().equals("15") ||
+                                reportDTO.getSn().equals("16")
+
+                        ) {
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(reportDTO.getItemName(), Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale()));
                             issuedReferralsDataBeanDTOS.add(dashboardDatabeanDTO);
                         } else {
-                            int value = othersServicesDataBeanDTO.getValue() + Integer.parseInt(issuedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(issuedReferralsReportData.get(i).getTotalFemale());
+                            int value = othersServicesDataBeanDTO.getValue() + Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale());
                             othersServicesDataBeanDTO.setValue(value);
                         }
                     }
+
 
                     issuedReferralsDataBeanDTOS.add(othersServicesDataBeanDTO);
                     data = new Gson().toJson(issuedReferralsDataBeanDTOS);
@@ -642,12 +657,19 @@ public class ReportController {
                     othersFailedReferralsServicesDataBeanDTO.setItemName("Others");
                     othersFailedReferralsServicesDataBeanDTO.setValue(0);
 
-                    for (int i = 0; i < failedReferralsReportData.size(); i++) {
-                        if (i < 7) {
-                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(failedReferralsReportData.get(i).getItemName(), Integer.parseInt(failedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(failedReferralsReportData.get(i).getTotalFemale()));
+
+                    for (AgeGroupReportsReportDTO reportDTO: failedReferralsReportData) {
+                        if (reportDTO.getSn().equals("1") ||
+                                reportDTO.getSn().equals("2") ||
+                                reportDTO.getSn().equals("4") ||
+                                reportDTO.getSn().equals("14") ||
+                                reportDTO.getSn().equals("15") ||
+                                reportDTO.getSn().equals("16")
+                        ) {
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(reportDTO.getItemName(), Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale()));
                             failedReferralsDataBeanDTOS.add(dashboardDatabeanDTO);
                         } else {
-                            int value = othersFailedReferralsServicesDataBeanDTO.getValue() + Integer.parseInt(failedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(failedReferralsReportData.get(i).getTotalFemale());
+                            int value = othersFailedReferralsServicesDataBeanDTO.getValue() + Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale());
                             othersFailedReferralsServicesDataBeanDTO.setValue(value);
                         }
                     }
