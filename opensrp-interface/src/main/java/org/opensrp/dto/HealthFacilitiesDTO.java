@@ -27,9 +27,6 @@ public class HealthFacilitiesDTO {
 	@JsonProperty
 	private String hfrCode;
 
-    @JsonProperty
-    private String parentHFRCode;
-
 
 	public String getFacilityId() {
 		return facilityId;
@@ -77,14 +74,6 @@ public class HealthFacilitiesDTO {
 
 	public void setHfrCode(String hfrCode) {
 		this.hfrCode = hfrCode;
-	}
-
-	public String getParentHFRCode() {
-		return parentHFRCode;
-	}
-
-	public void setParentHFRCode(String parentHFRCode) {
-		this.parentHFRCode = parentHFRCode;
 	}
 
 	@Override
