@@ -648,7 +648,7 @@ public class ReferralsReportService {
     public String getLTFCountsReportSQL(long appointmentType, String startDate, String endDate, String facilityIds) {
         return "SELECT (" +
                 "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
-                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID + ")\n" +
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE status = -1 AND " +
                 (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
@@ -658,7 +658,7 @@ public class ReferralsReportService {
                 ReferralClient.COL_GENDER + " = 'male'" +
                 ") as Male, (" +
                 "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
-                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ") " +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID + ") " +
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE status = -1 AND " +
                 (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
@@ -672,7 +672,7 @@ public class ReferralsReportService {
     public String getFoundLTFCountsReportSQL(long referralFeedbackId, String startDate, String endDate, String facilityIds) {
         return "SELECT (" +
                 "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
-                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID + ")\n" +
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientAppointments.tbName + "." + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = " + ClientReferrals.tbName + "." + ClientReferrals.COL_REFERRAL_ID +
                 " WHERE status = -1 AND " +
@@ -684,7 +684,7 @@ public class ReferralsReportService {
                 ReferralClient.COL_GENDER + " = 'male'" +
                 ") as Male, (" +
                 "    SELECT COUNT(" + ClientAppointments.tbName + "." + ClientAppointments.COL_APPOINTMENT_ID + ")as count FROM " + ClientAppointments.tbName +
-                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_CLIENT_ID + ")\n" +
+                " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID + ")\n" +
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientAppointments.tbName + "." + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = " + ClientReferrals.tbName + "." + ClientReferrals.COL_REFERRAL_ID +
                 " WHERE status = -1 AND " +
