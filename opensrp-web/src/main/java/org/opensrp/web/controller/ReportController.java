@@ -193,10 +193,10 @@ public class ReportController {
                             ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
                             ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
                             ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
-                            " GROUP BY "+ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+","+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+","+HealthFacilities.tbName+"._id, "+ClientReferrals.tbName+"."+ ClientReferrals.COL_REFERRAL_STATUS,null);
+                            " GROUP BY "+ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+","+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+","+HealthFacilities.tbName+"._id, "+ClientReferrals.tbName+"."+ ClientReferrals.COL_REFERRAL_STATUS+", "+HealthFacilities.tbName+"."+HealthFacilities.COL_FACILITY_NAME,null);
 
 
-            System.out.println("SQL QUERRY = "+"  SELECT "
+            System.out.println("SQL QUERY = "+"  SELECT "
                     + ClientReferrals.tbName+"."+ ClientReferrals.COL_SERVICE_PROVIDER_UIID+", "
                     + ReferralClient.tbName+"."+ ReferralClient.COL_PATIENT_FIRST_NAME+", "
                     + ReferralClient.tbName+"."+ ReferralClient.COL_PATIENT_SURNAME+", "
@@ -209,7 +209,7 @@ public class ReportController {
                     ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
                     ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
                     ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
-                    " GROUP BY "+ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+","+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+","+HealthFacilities.tbName+"._id");
+                    " GROUP BY "+ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+","+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+","+HealthFacilities.tbName+"._id, "+ClientReferrals.tbName+"."+ ClientReferrals.COL_REFERRAL_STATUS+", "+HealthFacilities.tbName+"."+HealthFacilities.COL_FACILITY_NAME);
 
             return new ResponseEntity<List<CHWReferralsListDTO>>(chwReferralsSummaryDTOS,HttpStatus.OK);
         }catch (Exception e){
