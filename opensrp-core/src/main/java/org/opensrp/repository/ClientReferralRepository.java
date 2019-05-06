@@ -288,7 +288,7 @@ public class ClientReferralRepository {
 
 			chwReferralsSummaryDTO.setReferral_status(referralStatus);
 			chwReferralsSummaryDTO.setFacility_name(rs.getString(rs.findColumn("facility_name")));
-			chwReferralsSummaryDTO.setService_provider_uuid(rs.getString(rs.findColumn("service_provider_uuid")));
+			chwReferralsSummaryDTO.setService_provider_uuid(rs.getString(rs.findColumn("service_provider_uiid")));
 			chwReferralsSummaryDTO.setClient_name(
 					rs.getString(rs.findColumn("first_name"))+"  "+
 							rs.getString(rs.findColumn("surname")));
