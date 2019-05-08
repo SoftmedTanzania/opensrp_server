@@ -568,6 +568,8 @@ public class ReferralsReportService {
             genderReportsDTO.setItemName(referralFeedback.getDescSw());
             String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(),  startDate,endDate,ids);
 
+            System.out.println(" LFT FOUND SQL = "+lftFoundSql);
+
             List<MaleFemaleCountObject> lftFoundList = null;
             try {
                 lftFoundList = appointmentTypeRepository.getMaleFemaleCountReports(lftFoundSql, null);

@@ -17,6 +17,7 @@ import org.opensrp.connector.openmrs.service.OpenmrsUserService;
 import org.opensrp.domain.*;
 import org.opensrp.dto.*;
 import org.opensrp.repository.ClientReferralRepository;
+import org.opensrp.repository.HealthFacilityRepository;
 import org.opensrp.repository.ReferralReportRepository;
 import org.opensrp.service.ReferralsReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,14 +48,16 @@ public class ReportController {
     private OpenmrsUserService openmrsUserService;
     private ReferralsReportService referralsReportService;
     private ReferralReportRepository referralReportRepository;
+    private HealthFacilityRepository healthFacilityRepository;
 
     @Autowired
-    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService, ReferralsReportService referralsReportService, ReferralReportRepository referralReportRepository) {
+    public ReportController(OpenmrsReportingService reportService, ClientReferralRepository clientReferralRepository, OpenmrsUserService openmrsUserService, ReferralsReportService referralsReportService, ReferralReportRepository referralReportRepository,HealthFacilityRepository healthFacilityRepository) {
         this.reportService = reportService;
         this.openmrsUserService = openmrsUserService;
         this.clientReferralRepository = clientReferralRepository;
         this.referralsReportService = referralsReportService;
         this.referralReportRepository = referralReportRepository;
+        this.healthFacilityRepository = healthFacilityRepository;
     }
 
     @RequestMapping(method = GET, value = "/report/report-definitions")
@@ -279,8 +282,6 @@ public class ReportController {
         int size = array.length();
         for (int i = 0; i < size; i++) {
             try {
-
-                String facilityName = array.getJSONObject(i).getString("facility_name");
                 String facilityId = array.getJSONObject(i).getString("facility_id");
 
                 List<FacilityDepartmentReferralSummaryDTO> facilityReferralsSummaryDTOS = clientReferralRepository.getFacilityDepartmentReferralsSummary(
@@ -298,7 +299,9 @@ public class ReportController {
 
                 FacilityReferralsSummaryDTO facilityReferralsSummaryDTO = new FacilityReferralsSummaryDTO();
 
-                facilityReferralsSummaryDTO.setFacilityName(facilityName);
+                List<HealthFacilities> healthFacilities = healthFacilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE "+HealthFacilities.COL_OPENMRS_UUID+" = '"+facilityId+"'",null);
+
+                facilityReferralsSummaryDTO.setFacilityName(healthFacilities.get(0).getFacilityName());
                 facilityReferralsSummaryDTO.setDepartmentReferralSummaryDTOList(facilityReferralsSummaryDTOS);
 
                 referralsSummaryDTOS.add(facilityReferralsSummaryDTO);
@@ -426,7 +429,6 @@ public class ReportController {
         List<InterFacilityReferralsSummaryReport> referralsSummaryDTOS = new ArrayList<>();
         for (int i = 0; i < facilitiesArray.length(); i++) {
             try {
-                String facilityName = facilitiesArray.getJSONObject(i).getString("facility_name");
                 String facilityId = facilitiesArray.getJSONObject(i).getString("facility_id");
 
                 List<InterFacilityReferralSummaryDTO> facilityProvidersReferralsSummaries = clientReferralRepository.getInterFacilityReferralsSummary(
@@ -444,7 +446,10 @@ public class ReportController {
 
                 InterFacilityReferralsSummaryReport interFacilityReferralsSummaryReport = new InterFacilityReferralsSummaryReport();
 
-                interFacilityReferralsSummaryReport.setFacilityName(facilityName);
+                List<HealthFacilities> healthFacilities = healthFacilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE "+HealthFacilities.COL_OPENMRS_UUID+" = '"+facilityId+"'",null);
+
+
+                interFacilityReferralsSummaryReport.setFacilityName(healthFacilities.get(0).getFacilityName());
                 interFacilityReferralsSummaryReport.setSummaryDTOS(facilityProvidersReferralsSummaries);
 
                 referralsSummaryDTOS.add(interFacilityReferralsSummaryReport);
