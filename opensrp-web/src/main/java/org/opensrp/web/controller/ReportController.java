@@ -282,7 +282,7 @@ public class ReportController {
         int size = array.length();
         for (int i = 0; i < size; i++) {
             try {
-                String facilityId = array.getJSONObject(i).getString("facility_id");
+                String facilityId = array.getString(i);
 
                 List<FacilityDepartmentReferralSummaryDTO> facilityReferralsSummaryDTOS = clientReferralRepository.getFacilityDepartmentReferralsSummary(
                         "SELECT COUNT(" + ClientReferrals.tbName + "." + ClientReferrals.COL_SERVICE_ID + ") as count, " +
@@ -353,8 +353,7 @@ public class ReportController {
         List<IntraFacilityReferralsProvidersSummaryReport> referralsSummaryDTOS = new ArrayList<>();
         for (int i = 0; i < facilitiesArray.length(); i++) {
             try {
-                String facilityName = facilitiesArray.getJSONObject(i).getString("facility_name");
-                String facilityId = facilitiesArray.getJSONObject(i).getString("facility_id");
+                String facilityId = facilitiesArray.getString(i);
 
                 List<FacilityProvidersReferralSummaryDTO> facilityProvidersReferralsSummaries = clientReferralRepository.getFacilityProvidersReferralsSummary(
                         "SELECT COUNT(" + ClientReferrals.tbName + "." + ClientReferrals.COL_SERVICE_ID + ") as count, " +
@@ -374,8 +373,9 @@ public class ReportController {
                 }
 
                 IntraFacilityReferralsProvidersSummaryReport facilityReferralsSummaryDTO = new IntraFacilityReferralsProvidersSummaryReport();
+                List<HealthFacilities> healthFacilities = healthFacilityRepository.getHealthFacility("SELECT * FROM "+HealthFacilities.tbName+" WHERE "+HealthFacilities.COL_OPENMRS_UUID+" = '"+facilityId+"'",null);
 
-                facilityReferralsSummaryDTO.setFacilityName(facilityName);
+                facilityReferralsSummaryDTO.setFacilityName(healthFacilities.get(0).getFacilityName());
                 facilityReferralsSummaryDTO.setSummaryDTOS(facilityProvidersReferralsSummaries);
 
                 referralsSummaryDTOS.add(facilityReferralsSummaryDTO);
@@ -429,7 +429,7 @@ public class ReportController {
         List<InterFacilityReferralsSummaryReport> referralsSummaryDTOS = new ArrayList<>();
         for (int i = 0; i < facilitiesArray.length(); i++) {
             try {
-                String facilityId = facilitiesArray.getJSONObject(i).getString("facility_id");
+                String facilityId = facilitiesArray.getString(i);
 
                 List<InterFacilityReferralSummaryDTO> facilityProvidersReferralsSummaries = clientReferralRepository.getInterFacilityReferralsSummary(
                         "SELECT COUNT(" + ClientReferrals.tbName + "." + ClientReferrals.COL_REFERRAL_ID + ") as count, " +
