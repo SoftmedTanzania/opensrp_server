@@ -525,7 +525,9 @@ public class ReferralsReportService {
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
             genderReportsDTO.setSn(sn + "");
             genderReportsDTO.setItemName(appointmentType.getName());
-            String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(), endDate, startDate, ids);
+            String lftIssuedSql = getLTFCountsReportSQL(appointmentType.getId(), startDate, endDate, ids);
+
+            System.out.println("LTF SQLs = "+lftIssuedSql);
 
             List<MaleFemaleCountObject> lftIssuedList = null;
             try {
@@ -564,7 +566,7 @@ public class ReferralsReportService {
             GenderReportsDTO genderReportsDTO = new GenderReportsDTO();
             genderReportsDTO.setSn(sn + "");
             genderReportsDTO.setItemName(referralFeedback.getDescSw());
-            String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(), endDate, startDate, ids);
+            String lftFoundSql = getFoundLTFCountsReportSQL(referralFeedback.getId(),  startDate,endDate,ids);
 
             List<MaleFemaleCountObject> lftFoundList = null;
             try {
@@ -651,7 +653,7 @@ public class ReferralsReportService {
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID + ")\n" +
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE status = -1 AND " +
-                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
+                (!facilityIds.equals("") ? HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ") AND " : "")+
                 ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
                 ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
                 ClientAppointments.COL_APPOINTMENT_TYPE + " = " + appointmentType + " AND " +
@@ -661,7 +663,7 @@ public class ReferralsReportService {
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " USING (" + HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID + ") " +
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " WHERE status = -1 AND " +
-                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
+                (!facilityIds.equals("") ? HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ") AND " : "")+
                 ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
                 ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
                 ClientAppointments.COL_APPOINTMENT_TYPE + " = " + appointmentType + " AND " +
@@ -676,9 +678,9 @@ public class ReferralsReportService {
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientAppointments.tbName + "." + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = " + ClientReferrals.tbName + "." + ClientReferrals.COL_REFERRAL_ID +
                 " WHERE status = -1 AND " +
-                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
-                ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
-                ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
+                (!facilityIds.equals("") ? HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ") AND " : "")+
+                ClientAppointments.tbName + ".created_at > '" + startDate + "' AND " +
+                ClientAppointments.tbName + ".created_at < '" + endDate + "'  AND " +
                 ClientReferrals.COL_REFERRAL_FEEDBACK_ID + " = " + referralFeedbackId + " AND " +
                 ClientReferrals.COL_REFERRAL_STATUS + " = 1 AND " +
                 ReferralClient.COL_GENDER + " = 'male'" +
@@ -688,7 +690,7 @@ public class ReferralsReportService {
                 " INNER JOIN " + ReferralClient.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientAppointments.tbName + "." + ClientAppointments.COL_FOLLOWUP_REFERRAL_ID + " = " + ClientReferrals.tbName + "." + ClientReferrals.COL_REFERRAL_ID +
                 " WHERE status = -1 AND " +
-                (!facilityIds.equals("") ? " AND " + HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ")" : "")+
+                (!facilityIds.equals("") ? HealthFacilitiesReferralClients.tbName+"."+HealthFacilitiesReferralClients.COL_FACILITY_ID + " IN (" + facilityIds + ") AND " : "")+
                 ClientAppointments.tbName + ".created_at>'" + startDate + "' AND " +
                 ClientAppointments.tbName + ".created_at<'" + endDate + "'  AND " +
                 ClientReferrals.COL_REFERRAL_FEEDBACK_ID + " = " + referralFeedbackId + " AND " +
