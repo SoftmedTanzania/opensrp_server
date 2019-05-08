@@ -57,8 +57,8 @@ public class ServiceController {
     @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/create-referral-services")
     public ResponseEntity<HttpStatus> createReferralServices(@RequestBody String json) {
         try {
-	        List<ReferralServiceDTO> afyaServiceDTOS = new Gson().fromJson(json, new TypeToken<List<ReferralServiceDTO>>() {
-	        }.getType());
+            List<ReferralServiceDTO> afyaServiceDTOS = new Gson().fromJson(json, new TypeToken<List<ReferralServiceDTO>>() {
+            }.getType());
 
             if (afyaServiceDTOS.isEmpty()) {
                 return new ResponseEntity<>(BAD_REQUEST);
@@ -87,7 +87,7 @@ public class ServiceController {
 
             logger.debug(format("Saved Boresha Afya Service to queue.\nSubmissions: {0}", afyaServiceDTOS));
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             logger.error(format("Boresha Afya Service processing failed with exception {0}.\nSubmissions: {1}", e, json));
             return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
@@ -314,19 +314,19 @@ public class ServiceController {
         return referralServiceIndicatorsDTOS;
     }
 
-	@RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/referral-types")
-	@ResponseBody
-	public List<ReferralType> getReferralTypes() {
+    @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/referral-types")
+    @ResponseBody
+    public List<ReferralType> getReferralTypes() {
 
-		List<ReferralType> allReferralType = null;
-		try {
-			allReferralType = referralTypeRepository.getReferralType("Select * from "+ ReferralType.tbName,null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        List<ReferralType> allReferralType = null;
+        try {
+            allReferralType = referralTypeRepository.getReferralType("Select * from "+ ReferralType.tbName,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		return allReferralType;
-	}
+        return allReferralType;
+    }
 
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/get-referral-services")
     @ResponseBody
@@ -353,7 +353,7 @@ public class ServiceController {
                 serviceId
         };
         try {
-             referralServices = referralServiceRepository.getReferralServices("Select * from "+ ReferralService.tbName+" WHERE "+ReferralService.COL_SERVICE_ID +" =?",arg).get(0);
+            referralServices = referralServiceRepository.getReferralServices("Select * from "+ ReferralService.tbName+" WHERE "+ReferralService.COL_SERVICE_ID +" =?",arg).get(0);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<ReferralService>(NOT_FOUND);
@@ -459,7 +459,7 @@ public class ServiceController {
             e.printStackTrace();
         }
 
-       return referralFeedbacks;
+        return referralFeedbacks;
     }
 
     @RequestMapping("/delete-referral-feedback/{feedBackId}")

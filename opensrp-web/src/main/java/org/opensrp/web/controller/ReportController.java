@@ -14,10 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.opensrp.connector.openmrs.service.OpenmrsReportingService;
 import org.opensrp.connector.openmrs.service.OpenmrsUserService;
-import org.opensrp.domain.ClientReferrals;
-import org.opensrp.domain.HealthFacilities;
-import org.opensrp.domain.ReferralReport;
-import org.opensrp.domain.ReferralService;
+import org.opensrp.domain.*;
 import org.opensrp.dto.*;
 import org.opensrp.repository.ClientReferralRepository;
 import org.opensrp.repository.ReferralReportRepository;
@@ -131,6 +128,93 @@ public class ReportController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<List<CHWReferralsSummaryDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @RequestMapping(headers = {"Accept=application/json"}, method = POST, value = "/get-chw-referrals-list")
+    @ResponseBody
+    public ResponseEntity<List<CHWReferralsListDTO>> getCHWANCReferralsLists(@RequestBody String json) {
+        JSONObject object = null;
+        try {
+            object = new JSONObject(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JSONArray array = null;
+        try {
+            array = object.getJSONArray("chw_uuid");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //Default dates if the date range is not passed
+        String fromDate = "2017-01-01";
+        String toDate = "2020-01-01";
+        try {
+            toDate = object.getString("to_date");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            fromDate = object.getString("from_date");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        int size = array.length();
+        String chwUIIDs = "";
+        for(int i=0;i<size;i++){
+            try {
+                chwUIIDs+="'"+array.getString(i)+"',";
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        if ( chwUIIDs.length() > 0 && chwUIIDs.charAt(chwUIIDs.length() - 1) == ',') {
+            chwUIIDs = chwUIIDs.substring(0, chwUIIDs.length() - 1);
+        }
+
+        try {
+            List<CHWReferralsListDTO> chwReferralsSummaryDTOS = clientReferralRepository.getCHWReferralsList(
+                    "  SELECT "
+                            + ClientReferrals.tbName+"."+ ClientReferrals.COL_SERVICE_PROVIDER_UIID+", "
+                            + ReferralClient.tbName+"."+ ReferralClient.COL_PATIENT_FIRST_NAME+", "
+                            + ReferralClient.tbName+"."+ ReferralClient.COL_PATIENT_SURNAME+", "
+                            + HealthFacilities.tbName+"."+ HealthFacilities.COL_FACILITY_NAME+", "
+                            + ClientReferrals.tbName+"."+ ClientReferrals.COL_REFERRAL_STATUS+
+                            " FROM "+ ClientReferrals.tbName +
+                            " INNER JOIN "+ReferralClient.tbName+" ON "+ClientReferrals.tbName+"."+ClientReferrals.COL_CLIENT_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
+                            " INNER JOIN "+HealthFacilities.tbName+" ON "+ClientReferrals.tbName+"."+ClientReferrals.COL_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UUID+
+                            " WHERE "+ ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_TYPE+"=1 AND " +
+                            ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
+                            ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+                            ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+                            " GROUP BY "+ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+","+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+","+HealthFacilities.tbName+"._id, "+ClientReferrals.tbName+"."+ ClientReferrals.COL_REFERRAL_STATUS+", "+HealthFacilities.tbName+"."+HealthFacilities.COL_FACILITY_NAME,null);
+
+
+            System.out.println("SQL QUERY = "+"  SELECT "
+                    + ClientReferrals.tbName+"."+ ClientReferrals.COL_SERVICE_PROVIDER_UIID+", "
+                    + ReferralClient.tbName+"."+ ReferralClient.COL_PATIENT_FIRST_NAME+", "
+                    + ReferralClient.tbName+"."+ ReferralClient.COL_PATIENT_SURNAME+", "
+                    + HealthFacilities.tbName+"."+ HealthFacilities.COL_FACILITY_NAME+", "
+                    + ClientReferrals.tbName+"."+ ClientReferrals.COL_REFERRAL_STATUS+
+                    " FROM "+ ClientReferrals.tbName +
+                    " INNER JOIN "+ReferralClient.tbName+" ON "+ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_ID+" = "+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+
+                    " INNER JOIN "+HealthFacilities.tbName+" ON "+ClientReferrals.tbName+"."+ClientReferrals.COL_FACILITY_ID+" = "+HealthFacilities.tbName+"."+HealthFacilities.COL_OPENMRS_UUID+
+                    " WHERE "+ ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_TYPE+"=1 AND " +
+                    ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+" IN ("+chwUIIDs+") AND "+
+                    ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_DATE+" > '"+fromDate+"' AND "+
+                    ClientReferrals.tbName+"."+ClientReferrals.COL_REFERRAL_DATE+" <= '"+toDate+"' "+
+                    " GROUP BY "+ClientReferrals.tbName+"."+ClientReferrals.COL_SERVICE_PROVIDER_UIID+","+ReferralClient.tbName+"."+ReferralClient.COL_CLIENT_ID+","+HealthFacilities.tbName+"._id, "+ClientReferrals.tbName+"."+ ClientReferrals.COL_REFERRAL_STATUS+", "+HealthFacilities.tbName+"."+HealthFacilities.COL_FACILITY_NAME);
+
+            return new ResponseEntity<List<CHWReferralsListDTO>>(chwReferralsSummaryDTOS,HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<List<CHWReferralsListDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -492,12 +576,19 @@ public class ReportController {
                     othersDashboardDatabeanDTO.setItemName("Others");
                     othersDashboardDatabeanDTO.setValue(0);
 
-                    for (int i = 0; i < registrationsReportData.size(); i++) {
-                        if (i <= 5) {
-                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(registrationsReportData.get(i).getItemName(), Integer.parseInt(registrationsReportData.get(i).getTotalMale()) + Integer.parseInt(registrationsReportData.get(i).getTotalFemale()));
+                    for (AgeGroupReportsReportDTO reportDTO: registrationsReportData) {
+                        if (reportDTO.getSn().equals("1") ||
+                                reportDTO.getSn().equals("4") ||
+                                reportDTO.getSn().equals("15") ||
+                                reportDTO.getSn().equals("16") ||
+                                reportDTO.getSn().equals("18") ||
+                                reportDTO.getSn().equals("19")
+
+                        ) {
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(reportDTO.getItemName(), Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale()));
                             dashboardDatabeanDTOS.add(dashboardDatabeanDTO);
                         } else {
-                            int value = othersDashboardDatabeanDTO.getValue() + Integer.parseInt(registrationsReportData.get(i).getTotalMale()) + Integer.parseInt(registrationsReportData.get(i).getTotalFemale());
+                            int value = othersDashboardDatabeanDTO.getValue() + Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale());
                             othersDashboardDatabeanDTO.setValue(value);
                         }
                     }
@@ -555,15 +646,23 @@ public class ReportController {
                     othersServicesDataBeanDTO.setItemName("Others");
                     othersServicesDataBeanDTO.setValue(0);
 
-                    for (int i = 0; i < issuedReferralsReportData.size(); i++) {
-                        if (i < 6) {
-                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(issuedReferralsReportData.get(i).getItemName(), Integer.parseInt(issuedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(issuedReferralsReportData.get(i).getTotalFemale()));
+                    for (AgeGroupReportsReportDTO reportDTO: issuedReferralsReportData) {
+                        if (reportDTO.getSn().equals("1") ||
+                                reportDTO.getSn().equals("2") ||
+                                reportDTO.getSn().equals("4") ||
+                                reportDTO.getSn().equals("14") ||
+                                reportDTO.getSn().equals("15") ||
+                                reportDTO.getSn().equals("16")
+
+                        ) {
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(reportDTO.getItemName(), Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale()));
                             issuedReferralsDataBeanDTOS.add(dashboardDatabeanDTO);
                         } else {
-                            int value = othersServicesDataBeanDTO.getValue() + Integer.parseInt(issuedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(issuedReferralsReportData.get(i).getTotalFemale());
+                            int value = othersServicesDataBeanDTO.getValue() + Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale());
                             othersServicesDataBeanDTO.setValue(value);
                         }
                     }
+
 
                     issuedReferralsDataBeanDTOS.add(othersServicesDataBeanDTO);
                     data = new Gson().toJson(issuedReferralsDataBeanDTOS);
@@ -642,12 +741,19 @@ public class ReportController {
                     othersFailedReferralsServicesDataBeanDTO.setItemName("Others");
                     othersFailedReferralsServicesDataBeanDTO.setValue(0);
 
-                    for (int i = 0; i < failedReferralsReportData.size(); i++) {
-                        if (i < 7) {
-                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(failedReferralsReportData.get(i).getItemName(), Integer.parseInt(failedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(failedReferralsReportData.get(i).getTotalFemale()));
+
+                    for (AgeGroupReportsReportDTO reportDTO: failedReferralsReportData) {
+                        if (reportDTO.getSn().equals("1") ||
+                                reportDTO.getSn().equals("2") ||
+                                reportDTO.getSn().equals("4") ||
+                                reportDTO.getSn().equals("14") ||
+                                reportDTO.getSn().equals("15") ||
+                                reportDTO.getSn().equals("16")
+                        ) {
+                            DashboardDatabeanDTO dashboardDatabeanDTO = produce(reportDTO.getItemName(), Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale()));
                             failedReferralsDataBeanDTOS.add(dashboardDatabeanDTO);
                         } else {
-                            int value = othersFailedReferralsServicesDataBeanDTO.getValue() + Integer.parseInt(failedReferralsReportData.get(i).getTotalMale()) + Integer.parseInt(failedReferralsReportData.get(i).getTotalFemale());
+                            int value = othersFailedReferralsServicesDataBeanDTO.getValue() + Integer.parseInt(reportDTO.getTotalMale()) + Integer.parseInt(reportDTO.getTotalFemale());
                             othersFailedReferralsServicesDataBeanDTO.setValue(value);
                         }
                     }

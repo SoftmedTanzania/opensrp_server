@@ -336,6 +336,11 @@ public class ReferralPatientsController {
                                             //Issuing referrals to specific CHWs
                                             googleFCMService.SendPushNotification(msg, tokens, false);
 
+                                            //Updating the referral to save the CHW that the LTF was sent to
+                                            for(ReferralsDTO referralsDTO:patientReferralsDTO.getPatientReferralsList()) {
+                                                clientReferralRepository.executeQuery("UPDATE " + ClientReferrals.tbName + " SET " + ClientReferrals.COL_FACILITY_ID + " = '" + person.getString("uuid") + "' WHERE " + ClientReferrals.COL_REFERRAL_ID + " = " +referralsDTO.getReferralId());
+                                            }
+
                                             //removing the successful notified LTF from list
                                             iterator.remove();
                                             sentReferral = true;
@@ -370,7 +375,7 @@ public class ReferralPatientsController {
                 }
             }
 
-            Map<String, List<String>> chwsInAWard = new HashMap<>();
+            Map<String, List<List<GooglePushNotificationsUsers>>> chwsInAWard = new HashMap<>();
 
             //Looping through the LTFs wards and for each ward, identify the CHWs involved.
             for (Map.Entry<String, List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
@@ -393,16 +398,14 @@ public class ReferralPatientsController {
                                     Object[] facilityParams = new Object[]{person.getString("uuid")};
                                     List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UUID + " = ?", facilityParams);
                                     try {
-                                        if (chwsInAWard.get(entry.getKey()) != null) {
-                                            for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
-                                                chwsInAWard.get(entry.getKey()).add(pushNotificationsUsers.getGooglePushNotificationToken());
+                                        if(!googlePushNotificationsUsers.isEmpty()) {
+                                            if (chwsInAWard.get(entry.getKey()) != null) {
+                                                chwsInAWard.get(entry.getKey()).add(googlePushNotificationsUsers);
+                                            } else {
+                                                List<List<GooglePushNotificationsUsers>> chwFCMTokensUUIDs = new ArrayList<>();
+                                                chwFCMTokensUUIDs.add(googlePushNotificationsUsers);
+                                                chwsInAWard.put(entry.getKey(), chwFCMTokensUUIDs);
                                             }
-                                        } else {
-                                            List<String> chwFCMTokensUUIDs = new ArrayList<>();
-                                            for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
-                                                chwFCMTokensUUIDs.add(pushNotificationsUsers.getGooglePushNotificationToken());
-                                            }
-                                            chwsInAWard.put(entry.getKey(), chwFCMTokensUUIDs);
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -432,7 +435,7 @@ public class ReferralPatientsController {
                 Map.Entry<String, List<PatientReferralsDTO>> entry = iter.next();
                 try {
                     List<PatientReferralsDTO> ltfsReferralsDTOs = entry.getValue();
-                    List<String> chwsFCMIds = chwsInAWard.get(entry.getKey());
+                    List<List<GooglePushNotificationsUsers>> chwsFCMIds = chwsInAWard.get(entry.getKey());
                     int size = chwsFCMIds.size();
 
                     if(size>0){
@@ -449,8 +452,18 @@ public class ReferralPatientsController {
                         try {
                             //Issuing referrals to specific CHWs
                             JSONArray tokens = new JSONArray();
-                            tokens.put(chwsFCMIds.get(i % size));
+
+                            List<GooglePushNotificationsUsers> pushNotificationsUsers = chwsFCMIds.get(i % size);
+                            for(GooglePushNotificationsUsers user:pushNotificationsUsers){
+                                tokens.put(user.getGooglePushNotificationToken());
+                            }
                             googleFCMService.SendPushNotification(msg, tokens, false);
+
+                            //Updating the referral to save the CHW that the LTF was sent to
+                            for(ReferralsDTO referralsDTO:patientReferralsDTO.getPatientReferralsList()) {
+                                clientReferralRepository.executeQuery("UPDATE " + ClientReferrals.tbName + " SET " + ClientReferrals.COL_FACILITY_ID + " = '" + pushNotificationsUsers.get(0).getUserUuid()+ "' WHERE " + ClientReferrals.COL_REFERRAL_ID + " = " +referralsDTO.getReferralId());
+                            }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -484,6 +497,9 @@ public class ReferralPatientsController {
                                 tokens.put(pushNotificationsUsers.getGooglePushNotificationToken());
                             }
                             googleFCMService.SendPushNotification(msg, tokens, false);
+                            for(ReferralsDTO referralsDTO:patientReferralsDTO.getPatientReferralsList()) {
+                                clientReferralRepository.executeQuery("UPDATE " + ClientReferrals.tbName + " SET " + ClientReferrals.COL_FACILITY_ID + " = '" + person.getString("uuid")+ "' WHERE " + ClientReferrals.COL_REFERRAL_ID + " = " +referralsDTO.getReferralId());
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

@@ -34,7 +34,7 @@ public class ReferralFeedbackRepository {
 		parameters.put("_id", referralFeedback.getId());
 		parameters.put(ReferralFeedback.COL_DESC, referralFeedback.getDesc());
 		parameters.put(ReferralFeedback.COL_DESC_SW, referralFeedback.getDescSw());
-		parameters.put(ReferralFeedback.COL_REFERRAL_TYPE_ID, referralFeedback.getReferralType());
+		parameters.put(ReferralFeedback.COL_REFERRAL_TYPE_ID, referralFeedback.getReferralType().getReferralTypeId());
 		parameters.put(ReferralFeedback.COL_CREATED_AT, referralFeedback.getCreatedAt());
 		parameters.put(ReferralFeedback.COL_UPDATED_AT, referralFeedback.getCreatedAt());
 
