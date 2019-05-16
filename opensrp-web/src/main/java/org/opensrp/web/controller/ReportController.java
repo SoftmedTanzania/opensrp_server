@@ -284,7 +284,7 @@ public class ReportController {
             try {
                 String facilityId = array.getString(i);
 
-                List<FacilityDepartmentReferralSummaryDTO> facilityReferralsSummaryDTOS = clientReferralRepository.getFacilityDepartmentReferralsSummary(
+                String sql =
                         "SELECT COUNT(" + ClientReferrals.tbName + "." + ClientReferrals.COL_SERVICE_ID + ") as count, " +
                                 ClientReferrals.COL_REFERRAL_SOURCE + " as referral_source, " +
                                 ClientReferrals.COL_REFERRAL_STATUS + " as referral_status " +
@@ -294,7 +294,10 @@ public class ReportController {
                                 HealthFacilities.COL_OPENMRS_UUID + " = '" + facilityId + "' AND " +
                                 ClientReferrals.COL_REFERRAL_DATE + " > '" + fromDate + "' AND " +
                                 ClientReferrals.COL_REFERRAL_DATE + " <= '" + toDate + "' " +
-                                " GROUP BY " + ClientReferrals.COL_REFERRAL_SOURCE + " , " + ClientReferrals.COL_REFERRAL_STATUS, null);
+                                " GROUP BY " + ClientReferrals.COL_REFERRAL_SOURCE + " , " + ClientReferrals.COL_REFERRAL_STATUS;
+                System.out.println("Intra-department SQL : "+sql);
+
+                List<FacilityDepartmentReferralSummaryDTO> facilityReferralsSummaryDTOS = clientReferralRepository.getFacilityDepartmentReferralsSummary(sql, null);
 
 
                 FacilityReferralsSummaryDTO facilityReferralsSummaryDTO = new FacilityReferralsSummaryDTO();
