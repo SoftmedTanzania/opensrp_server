@@ -44,7 +44,7 @@ public class ApplicationStartupListener implements ApplicationListener<ContextRe
         // TODO openmrsScheduleSyncerScheduler = new RepeatingSchedule(OpenmrsConstants.SCHEDULER_TRACKER_SYNCER_SUBJECT, 2, TimeUnit.MINUTES, openmrsSchSyncerMin, TimeUnit.MINUTES);
         atomfeedSchedule = new RepeatingSchedule(OpenmrsConstants.SCHEDULER_OPENMRS_ATOMFEED_SYNCER_SUBJECT, 5, TimeUnit.MINUTES, 1, TimeUnit.MINUTES);
         encounterSchedule = new RepeatingSchedule(OpenmrsConstants.SCHEDULER_OPENMRS_DATA_PUSH_SUBJECT, 5, TimeUnit.MINUTES, 1, TimeUnit.MINUTES);
-        checkReferralStatusSchedule = new RepeatingSchedule(AllConstants.OpenSRPEvent.CHECK_REFERRAL_STATUS, 5, TimeUnit.MINUTES, 1, TimeUnit.MINUTES);
+        checkReferralStatusSchedule = new RepeatingSchedule(AllConstants.OpenSRPEvent.CHECK_REFERRAL_STATUS, 5, TimeUnit.MINUTES, 720, TimeUnit.MINUTES);
         dhis2Schedule = new RepeatingSchedule(DHIS2DatasetPush.SCHEDULER_DHIS2_DATA_PUSH_SUBJECT, 5, TimeUnit.MINUTES, 1, TimeUnit.MINUTES);
     }
 
