@@ -110,7 +110,7 @@ public class HttpUtil {
             HttpGet request = (HttpGet) makeConnection(url, payload, RequestMethod.GET, authType, authString);
 
             HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, 3000000);
+            HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
 
             request.setParams(httpParams);
             org.apache.http.HttpResponse response = httpClient.execute(request);
