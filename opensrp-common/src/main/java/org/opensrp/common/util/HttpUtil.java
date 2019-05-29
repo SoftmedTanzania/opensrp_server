@@ -13,6 +13,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.springframework.stereotype.Component;
 
@@ -107,6 +108,11 @@ public class HttpUtil {
     public static HttpResponse get(String url, String payload, AuthType authType, String authString) {
         try {
             HttpGet request = (HttpGet) makeConnection(url, payload, RequestMethod.GET, authType, authString);
+
+            HttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, 3000000);
+
+            request.setParams(httpParams);
             org.apache.http.HttpResponse response = httpClient.execute(request);
             return createCustomResponseFrom(response);
         } catch (Exception e) {
