@@ -626,7 +626,7 @@ public class ReferralsReportService {
         return "SELECT (SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientReferrals.tbName + "." + ClientReferrals.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
-                " WHERE " + ReferralClient.COL_GENDER + "='Male' AND " +
+                " WHERE referral_type = 1 AND " + ReferralClient.COL_GENDER + "='Male' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "'" +
                 (!referralStatus.equals("0")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +
@@ -638,7 +638,7 @@ public class ReferralsReportService {
                 "(SELECT COUNT(" + ReferralClient.COL_CLIENT_ID + ") FROM " + ReferralClient.tbName +
                 " INNER JOIN " + ClientReferrals.tbName + " ON " + ClientReferrals.tbName + "." + ClientReferrals.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
                 " INNER JOIN " + HealthFacilitiesReferralClients.tbName + " ON " + HealthFacilitiesReferralClients.tbName + "." + HealthFacilitiesReferralClients.COL_CLIENT_ID + " = " + ReferralClient.tbName + "." + ReferralClient.COL_CLIENT_ID +
-                " WHERE " + ReferralClient.COL_GENDER + "='Female' AND " +
+                " WHERE referral_type = 1 AND " + ReferralClient.COL_GENDER + "='Female' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + ">='" + startDate + "' AND " +
                 ClientReferrals.COL_REFERRAL_DATE + "<'" + endDate + "' " +
                 (!referralStatus.equals("0")? " AND " + ClientReferrals.COL_REFERRAL_STATUS + " = "+referralStatus : "") +

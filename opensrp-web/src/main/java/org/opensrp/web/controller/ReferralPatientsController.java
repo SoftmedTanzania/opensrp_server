@@ -195,6 +195,8 @@ public class ReferralPatientsController {
             }
 
             List<PatientReferralsDTO> successfullySavedLTFs = new ArrayList<>();
+            clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_IS_CANCELLED + " = 1 WHERE " + ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID  + " IN (SELECT "+HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID+" FROM "+HealthFacilitiesReferralClients.tbName+" WHERE "+HealthFacilitiesReferralClients.COL_FACILITY_ID+" = '"+healthFacilitiesCheck.get(0).getOpenMRSUUID()+"' ) ");
+
             for (CTCPatientsDTO dto : patientsDTOS) {
                 try {
                     System.out.println("saving patient");
@@ -252,8 +254,12 @@ public class ReferralPatientsController {
                             e.printStackTrace();
 
                             try {
+
                                 Object[] clientAppointmentParams = new Object[]{patientAppointment.getAppointmentDate(), healthFacilityPatientId};
                                 List<ClientAppointments> clientAppointments = clientsAppointmentsRepository.getAppointments("SELECT * FROM " + ClientAppointments.tbName + " WHERE " + ClientAppointments.COL_APPOINTMENT_DATE + " =? AND " + ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID + " =?", clientAppointmentParams);
+
+                                clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_IS_CANCELLED + " = 0 WHERE " + ClientAppointments.COL_APPOINTMENT_ID + " = " + clientAppointments.get(0).getAppointment_id());
+
 
                                 Object[] referralParams = new Object[]{0, clientAppointments.get(0).getClientReferrals().getId()};
                                 List<ClientReferrals> clientReferrals = clientReferralRepository.getReferrals("SELECT * FROM " + ClientReferrals.tbName + " WHERE " + ClientReferrals.COL_REFERRAL_STATUS + " = ? AND " + ClientReferrals.COL_REFERRAL_ID + " = ?", referralParams);
