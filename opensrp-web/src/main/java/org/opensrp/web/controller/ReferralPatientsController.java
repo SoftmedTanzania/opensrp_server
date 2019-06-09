@@ -195,6 +195,23 @@ public class ReferralPatientsController {
             }
 
             List<PatientReferralsDTO> successfullySavedLTFs = new ArrayList<>();
+            clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_IS_CANCELLED + " = 1 WHERE " + ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID  + " IN (SELECT "+HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID+" FROM "+HealthFacilitiesReferralClients.tbName+" WHERE "+HealthFacilitiesReferralClients.COL_FACILITY_ID+" = '"+healthFacilitiesCheck.get(0).getId()+"' ) ");
+
+            //Sending Notification to facility application to update appointment statuses
+            try {
+                JSONObject msg = new JSONObject();
+                msg.put("type", "updateAppointmentStatus");
+                Object[] facilityParams = new Object[]{healthFacilitiesCheck.get(0).getOpenMRSUUID()};
+                List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UUID + " = ?", facilityParams);
+                JSONArray tokens = new JSONArray();
+                for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
+                    tokens.put(pushNotificationsUsers.getGooglePushNotificationToken());
+                }
+                googleFCMService.SendPushNotification(msg, tokens, true);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
             for (CTCPatientsDTO dto : patientsDTOS) {
                 try {
                     System.out.println("saving patient");
@@ -202,14 +219,14 @@ public class ReferralPatientsController {
 
                     long healthFacilityPatientId = referralPatientService.savePatient(p, healthFacilitiesCheck.get(0).getHfrCode(), dto.getCtcNumber());
 
-
                     ReferralClient patient = referralPatientService.getPatientsByHealthFacilityPatientId(healthFacilityPatientId);
 
-
-                    List<ClientAppointments> appointments = PatientsConverter.toPatientsAppointments(dto);
+                    List<ClientAppointments> appointments;
+                    appointments = PatientsConverter.toPatientsAppointments(dto);
                     int savedAppointmentsCount = 0;
 
 
+                    List<PatientsAppointmentsDTO> patientsAppointmentsDTOS = new ArrayList<>();
                     List<ReferralsDTO> referralsDTOS = new ArrayList<>();
                     for (ClientAppointments patientAppointment : appointments) {
                         System.out.println("saving appointment");
@@ -222,6 +239,7 @@ public class ReferralPatientsController {
                         try {
                             //saving LTFs appointments
                             long appointmentId = clientsAppointmentsRepository.save(patientAppointment);
+                            patientAppointment.setAppointment_id(appointmentId);
 
                             ClientReferrals referral = new ClientReferrals();
                             referral.setReferralUUID(UUID.randomUUID().toString());
@@ -251,8 +269,13 @@ public class ReferralPatientsController {
                             e.printStackTrace();
 
                             try {
+
                                 Object[] clientAppointmentParams = new Object[]{patientAppointment.getAppointmentDate(), healthFacilityPatientId};
                                 List<ClientAppointments> clientAppointments = clientsAppointmentsRepository.getAppointments("SELECT * FROM " + ClientAppointments.tbName + " WHERE " + ClientAppointments.COL_APPOINTMENT_DATE + " =? AND " + ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID + " =?", clientAppointmentParams);
+
+                                patientAppointment.setAppointment_id(clientAppointments.get(0).getAppointment_id());
+                                clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_IS_CANCELLED + " = 0 WHERE " + ClientAppointments.COL_APPOINTMENT_ID + " = " + clientAppointments.get(0).getAppointment_id());
+
 
                                 Object[] referralParams = new Object[]{0, clientAppointments.get(0).getClientReferrals().getId()};
                                 List<ClientReferrals> clientReferrals = clientReferralRepository.getReferrals("SELECT * FROM " + ClientReferrals.tbName + " WHERE " + ClientReferrals.COL_REFERRAL_STATUS + " = ? AND " + ClientReferrals.COL_REFERRAL_ID + " = ?", referralParams);
@@ -266,17 +289,33 @@ public class ReferralPatientsController {
                                 e1.printStackTrace();
                             }
 
+                            patientsAppointmentsDTOS.add(PatientsConverter.toPatientAppointmentsDTO(patientAppointment,patient.getClientId()));
                         }
-
-
                     }
-                    if (savedAppointmentsCount > 0) {
+                    PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
+                    PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
+                    patientReferralsDTO.setPatientsDTO(patientsDTO);
+                    patientReferralsDTO.setPatientReferralsList(referralsDTOS);
+                    patientReferralsDTO.setPatientsAppointmentsDTOS(patientsAppointmentsDTOS);
 
-                        PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
-                        PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
-                        patientReferralsDTO.setPatientsDTO(patientsDTO);
-                        patientReferralsDTO.setPatientReferralsList(referralsDTOS);
+                    if (savedAppointmentsCount > 0) {
                         successfullySavedLTFs.add(patientReferralsDTO);
+                    }
+
+                    //Sending the LTF to facility application
+                    try {
+                        String jsonString = new Gson().toJson(patientReferralsDTO);
+                        JSONObject msg = new JSONObject(jsonString);
+                        msg.put("type", "LTFClient");
+                        Object[] facilityParams = new Object[]{healthFacilitiesCheck.get(0).getOpenMRSUUID()};
+                        List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UUID + " = ?", facilityParams);
+                        JSONArray tokens = new JSONArray();
+                        for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
+                            tokens.put(pushNotificationsUsers.getGooglePushNotificationToken());
+                        }
+                        googleFCMService.SendPushNotification(msg, tokens, true);
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
 
                 } catch (Exception e) {
@@ -306,59 +345,61 @@ public class ReferralPatientsController {
             Iterator<PatientReferralsDTO> iterator = successfullySavedLTFs.iterator();
             while(iterator.hasNext()){
                 PatientReferralsDTO patientReferralsDTO = iterator.next();
-                for (int i = 0; i < allCHWsArray.length(); i++) {
-                    try {
-                        JSONObject object = allCHWsArray.getJSONObject(i);
-                        JSONArray location = object.getJSONArray("locations");
-                        JSONObject person = object.getJSONObject("person");
-                        boolean sentReferral = false;
-                        for (int j = 0; j < location.length(); j++) {
-                            try {
-                                //checking if the chw location or parent location is equal to the ctc client's ward
-                                String locationName = location.getJSONObject(j).getString("display");
-                                String parentLocationName = location.getJSONObject(j).getJSONObject("parentLocation").getString("display");
+                if (allCHWsArray != null) {
+                    for (int i = 0; i < allCHWsArray.length(); i++) {
+                        try {
+                            JSONObject object = allCHWsArray.getJSONObject(i);
+                            JSONArray location = object.getJSONArray("locations");
+                            JSONObject person = object.getJSONObject("person");
+                            boolean sentReferral = false;
+                            for (int j = 0; j < location.length(); j++) {
+                                try {
+                                    //checking if the chw location or parent location is equal to the ctc client's ward
+                                    String locationName = location.getJSONObject(j).getString("display");
+                                    String parentLocationName = location.getJSONObject(j).getJSONObject("parentLocation").getString("display");
 
-                                if (locationName.toLowerCase().contains(patientReferralsDTO.getPatientsDTO().getVillage().toLowerCase()) ||
-                                        parentLocationName.toLowerCase().contains(patientReferralsDTO.getPatientsDTO().getVillage().toLowerCase())) {
-                                    Object[] facilityParams = new Object[]{person.getString("uuid")};
-                                    List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UUID + " = ?", facilityParams);
+                                    if (locationName.toLowerCase().contains(patientReferralsDTO.getPatientsDTO().getVillage().toLowerCase()) ||
+                                            parentLocationName.toLowerCase().contains(patientReferralsDTO.getPatientsDTO().getVillage().toLowerCase())) {
+                                        Object[] facilityParams = new Object[]{person.getString("uuid")};
+                                        List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UUID + " = ?", facilityParams);
 
-                                    JSONArray tokens = new JSONArray();
-                                    for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
-                                        tokens.put(pushNotificationsUsers.getGooglePushNotificationToken());
-                                    }
+                                        JSONArray tokens = new JSONArray();
+                                        for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
+                                            tokens.put(pushNotificationsUsers.getGooglePushNotificationToken());
+                                        }
 
-                                    if (tokens.length() > 0) {
-                                        String jsonString = new Gson().toJson(patientReferralsDTO);
-                                        JSONObject msg = new JSONObject(jsonString);
-                                        msg.put("type", "PatientReferral");
-                                        try {
-                                            //Issuing referrals to specific CHWs
-                                            googleFCMService.SendPushNotification(msg, tokens, false);
+                                        if (tokens.length() > 0) {
+                                            String jsonString = new Gson().toJson(patientReferralsDTO);
+                                            JSONObject msg = new JSONObject(jsonString);
+                                            msg.put("type", "PatientReferral");
+                                            try {
+                                                //Issuing referrals to specific CHWs
+                                                googleFCMService.SendPushNotification(msg, tokens, false);
 
-                                            //Updating the referral to save the CHW that the LTF was sent to
-                                            for(ReferralsDTO referralsDTO:patientReferralsDTO.getPatientReferralsList()) {
-                                                clientReferralRepository.executeQuery("UPDATE " + ClientReferrals.tbName + " SET " + ClientReferrals.COL_FACILITY_ID + " = '" + person.getString("uuid") + "' WHERE " + ClientReferrals.COL_REFERRAL_ID + " = " +referralsDTO.getReferralId());
+                                                //Updating the referral to save the CHW that the LTF was sent to
+                                                for(ReferralsDTO referralsDTO:patientReferralsDTO.getPatientReferralsList()) {
+                                                    clientReferralRepository.executeQuery("UPDATE " + ClientReferrals.tbName + " SET " + ClientReferrals.COL_FACILITY_ID + " = '" + person.getString("uuid") + "' WHERE " + ClientReferrals.COL_REFERRAL_ID + " = " +referralsDTO.getReferralId());
+                                                }
+
+                                                //removing the successful notified LTF from list
+                                                iterator.remove();
+                                                sentReferral = true;
+                                                break;
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
-
-                                            //removing the successful notified LTF from list
-                                            iterator.remove();
-                                            sentReferral = true;
-                                            break;
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
                                         }
                                     }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
-                        }
 
-                        if(sentReferral)
-                            break;
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                            if(sentReferral)
+                                break;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -381,47 +422,49 @@ public class ReferralPatientsController {
             for (Map.Entry<String, List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
                 System.out.println("ward = " + entry.getKey());
                 //for each ward loop through the CHWs obtain wards respective chws
-                for (int i = 0; i < allCHWsArray.length(); i++) {
-                    try {
-                        JSONObject object = allCHWsArray.getJSONObject(i);
-                        JSONObject person = object.getJSONObject("person");
-                        JSONArray location = object.getJSONArray("locations");
-                        for (int j = 0; j < location.length(); j++) {
-                            try {
-                                //checking if the chw location or parent location is equal to the ctc client's ward
-                                String locationName = location.getJSONObject(j).getString("display");
-                                String parentLocationName = location.getJSONObject(j).getJSONObject("parentLocation").getString("display");
+                if (allCHWsArray != null) {
+                    for (int i = 0; i < allCHWsArray.length(); i++) {
+                        try {
+                            JSONObject object = allCHWsArray.getJSONObject(i);
+                            JSONObject person = object.getJSONObject("person");
+                            JSONArray location = object.getJSONArray("locations");
+                            for (int j = 0; j < location.length(); j++) {
+                                try {
+                                    //checking if the chw location or parent location is equal to the ctc client's ward
+                                    String locationName = location.getJSONObject(j).getString("display");
+                                    String parentLocationName = location.getJSONObject(j).getJSONObject("parentLocation").getString("display");
 
-                                if (locationName.toLowerCase().contains(entry.getKey().toLowerCase()) ||
-                                        parentLocationName.toLowerCase().equals(entry.getKey().toLowerCase())) {
+                                    if (locationName.toLowerCase().contains(entry.getKey().toLowerCase()) ||
+                                            parentLocationName.toLowerCase().equals(entry.getKey().toLowerCase())) {
 
-                                    Object[] facilityParams = new Object[]{person.getString("uuid")};
-                                    List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UUID + " = ?", facilityParams);
-                                    try {
-                                        if(!googlePushNotificationsUsers.isEmpty()) {
-                                            if (chwsInAWard.get(entry.getKey()) != null) {
-                                                chwsInAWard.get(entry.getKey()).add(googlePushNotificationsUsers);
-                                            } else {
-                                                List<List<GooglePushNotificationsUsers>> chwFCMTokensUUIDs = new ArrayList<>();
-                                                chwFCMTokensUUIDs.add(googlePushNotificationsUsers);
-                                                chwsInAWard.put(entry.getKey(), chwFCMTokensUUIDs);
+                                        Object[] facilityParams = new Object[]{person.getString("uuid")};
+                                        List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_USER_UUID + " = ?", facilityParams);
+                                        try {
+                                            if(!googlePushNotificationsUsers.isEmpty()) {
+                                                if (chwsInAWard.get(entry.getKey()) != null) {
+                                                    chwsInAWard.get(entry.getKey()).add(googlePushNotificationsUsers);
+                                                } else {
+                                                    List<List<GooglePushNotificationsUsers>> chwFCMTokensUUIDs = new ArrayList<>();
+                                                    chwFCMTokensUUIDs.add(googlePushNotificationsUsers);
+                                                    chwsInAWard.put(entry.getKey(), chwFCMTokensUUIDs);
+                                                }
                                             }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+
+                                        break;
                                     }
-
-                                    break;
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+
                             }
-
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
+                    }
                 }
             }
 
@@ -487,8 +530,14 @@ public class ReferralPatientsController {
                             //Issuing referrals to specific CHWs
                             JSONArray tokens = new JSONArray();
 
-                            int size = facilityCHWsArray.length();
-                            JSONObject object = facilityCHWsArray.getJSONObject(i%size);
+                            int size = 0;
+                            if (facilityCHWsArray != null) {
+                                size = facilityCHWsArray.length();
+                            }
+                            JSONObject object = null;
+                            if (facilityCHWsArray != null) {
+                                object = facilityCHWsArray.getJSONObject(i%size);
+                            }
 
                             JSONObject person = object.getJSONObject("person");
                             Object[] facilityParams = new Object[]{person.getString("uuid")};
@@ -509,7 +558,6 @@ public class ReferralPatientsController {
                 }
             }
 
-            //TODO send push notifications to facility apps
             logger.debug(format("Added  ReferralClient and their appointments from CTC to queue.\nSubmissions: {0}", patientsDTOS));
         } catch (Exception e) {
             e.printStackTrace();
@@ -1168,25 +1216,27 @@ public class ReferralPatientsController {
 
 
         int i = 1;
-        for (ClientAppointments patientAppointment : clientAppointments) {
-            logger.info("Checking previous patient appointments");
-            if (patientAppointment.getAppointment_id() > appointmentId) {
+        if (clientAppointments != null) {
+            for (ClientAppointments patientAppointment : clientAppointments) {
+                logger.info("Checking previous patient appointments");
+                if (patientAppointment.getAppointment_id() > appointmentId) {
 
-                logger.info("updating previous patient appointments date from " + patientAppointment.getAppointmentDate());
-                Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(appointmentDate);
-                c.add(Calendar.MONTH, +i);
-                c.add(Calendar.DAY_OF_MONTH, +checkIfWeekend(c.getTime()));
-                patientAppointment.setAppointmentDate(c.getTime());
+                    logger.info("updating previous patient appointments date from " + patientAppointment.getAppointmentDate());
+                    Calendar c = Calendar.getInstance();
+                    c.setTimeInMillis(appointmentDate);
+                    c.add(Calendar.MONTH, +i);
+                    c.add(Calendar.DAY_OF_MONTH, +checkIfWeekend(c.getTime()));
+                    patientAppointment.setAppointmentDate(c.getTime());
 
-                logger.info("updating to new  patient appointments date  " + c.getTime());
+                    logger.info("updating to new  patient appointments date  " + c.getTime());
 
-                try {
-                    logger.info("Coze:update appointment");
-                    clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_APPOINTMENT_DATE + " = '" + c.getTime() + "' WHERE " + ClientAppointments.COL_APPOINTMENT_ID + " = " + patientAppointment.getAppointment_id());
-                    logger.info("Coze:update appointment query : UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_APPOINTMENT_DATE + " = '" + c.getTime() + "' WHERE " + ClientAppointments.COL_APPOINTMENT_ID + " = " + patientAppointment.getAppointment_id());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    try {
+                        logger.info("Coze:update appointment");
+                        clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_APPOINTMENT_DATE + " = '" + c.getTime() + "' WHERE " + ClientAppointments.COL_APPOINTMENT_ID + " = " + patientAppointment.getAppointment_id());
+                        logger.info("Coze:update appointment query : UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_APPOINTMENT_DATE + " = '" + c.getTime() + "' WHERE " + ClientAppointments.COL_APPOINTMENT_ID + " = " + patientAppointment.getAppointment_id());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
