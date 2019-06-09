@@ -195,7 +195,22 @@ public class ReferralPatientsController {
             }
 
             List<PatientReferralsDTO> successfullySavedLTFs = new ArrayList<>();
-            clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_IS_CANCELLED + " = 1 WHERE " + ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID  + " IN (SELECT "+HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID+" FROM "+HealthFacilitiesReferralClients.tbName+" WHERE "+HealthFacilitiesReferralClients.COL_FACILITY_ID+" = '"+healthFacilitiesCheck.get(0).getOpenMRSUUID()+"' ) ");
+            clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_IS_CANCELLED + " = 1 WHERE " + ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID  + " IN (SELECT "+HealthFacilitiesReferralClients.COL_HEALTH_FACILITY_CLIENT_ID+" FROM "+HealthFacilitiesReferralClients.tbName+" WHERE "+HealthFacilitiesReferralClients.COL_FACILITY_ID+" = '"+healthFacilitiesCheck.get(0).getId()+"' ) ");
+
+            //Sending Notification to facility application to update appointment statuses
+            try {
+                JSONObject msg = new JSONObject();
+                msg.put("type", "updateAppointmentStatus");
+                Object[] facilityParams = new Object[]{healthFacilitiesCheck.get(0).getOpenMRSUUID()};
+                List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UUID + " = ?", facilityParams);
+                JSONArray tokens = new JSONArray();
+                for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
+                    tokens.put(pushNotificationsUsers.getGooglePushNotificationToken());
+                }
+                googleFCMService.SendPushNotification(msg, tokens, true);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
             for (CTCPatientsDTO dto : patientsDTOS) {
                 try {
@@ -204,15 +219,14 @@ public class ReferralPatientsController {
 
                     long healthFacilityPatientId = referralPatientService.savePatient(p, healthFacilitiesCheck.get(0).getHfrCode(), dto.getCtcNumber());
 
-
                     ReferralClient patient = referralPatientService.getPatientsByHealthFacilityPatientId(healthFacilityPatientId);
-
 
                     List<ClientAppointments> appointments;
                     appointments = PatientsConverter.toPatientsAppointments(dto);
                     int savedAppointmentsCount = 0;
 
 
+                    List<PatientsAppointmentsDTO> patientsAppointmentsDTOS = new ArrayList<>();
                     List<ReferralsDTO> referralsDTOS = new ArrayList<>();
                     for (ClientAppointments patientAppointment : appointments) {
                         System.out.println("saving appointment");
@@ -225,6 +239,7 @@ public class ReferralPatientsController {
                         try {
                             //saving LTFs appointments
                             long appointmentId = clientsAppointmentsRepository.save(patientAppointment);
+                            patientAppointment.setAppointment_id(appointmentId);
 
                             ClientReferrals referral = new ClientReferrals();
                             referral.setReferralUUID(UUID.randomUUID().toString());
@@ -258,6 +273,7 @@ public class ReferralPatientsController {
                                 Object[] clientAppointmentParams = new Object[]{patientAppointment.getAppointmentDate(), healthFacilityPatientId};
                                 List<ClientAppointments> clientAppointments = clientsAppointmentsRepository.getAppointments("SELECT * FROM " + ClientAppointments.tbName + " WHERE " + ClientAppointments.COL_APPOINTMENT_DATE + " =? AND " + ClientAppointments.COL_HEALTH_FACILITY_CLIENT_ID + " =?", clientAppointmentParams);
 
+                                patientAppointment.setAppointment_id(clientAppointments.get(0).getAppointment_id());
                                 clientsAppointmentsRepository.executeQuery("UPDATE " + ClientAppointments.tbName + " SET " + ClientAppointments.COL_IS_CANCELLED + " = 0 WHERE " + ClientAppointments.COL_APPOINTMENT_ID + " = " + clientAppointments.get(0).getAppointment_id());
 
 
@@ -273,17 +289,33 @@ public class ReferralPatientsController {
                                 e1.printStackTrace();
                             }
 
+                            patientsAppointmentsDTOS.add(PatientsConverter.toPatientAppointmentsDTO(patientAppointment,patient.getClientId()));
                         }
-
-
                     }
-                    if (savedAppointmentsCount > 0) {
+                    PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
+                    PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
+                    patientReferralsDTO.setPatientsDTO(patientsDTO);
+                    patientReferralsDTO.setPatientReferralsList(referralsDTOS);
+                    patientReferralsDTO.setPatientsAppointmentsDTOS(patientsAppointmentsDTOS);
 
-                        PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
-                        PatientsDTO patientsDTO = PatientsConverter.toPatientsDTO(patient);
-                        patientReferralsDTO.setPatientsDTO(patientsDTO);
-                        patientReferralsDTO.setPatientReferralsList(referralsDTOS);
+                    if (savedAppointmentsCount > 0) {
                         successfullySavedLTFs.add(patientReferralsDTO);
+                    }
+
+                    //Sending the LTF to facility application
+                    try {
+                        String jsonString = new Gson().toJson(patientReferralsDTO);
+                        JSONObject msg = new JSONObject(jsonString);
+                        msg.put("type", "LTFClient");
+                        Object[] facilityParams = new Object[]{healthFacilitiesCheck.get(0).getOpenMRSUUID()};
+                        List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UUID + " = ?", facilityParams);
+                        JSONArray tokens = new JSONArray();
+                        for (GooglePushNotificationsUsers pushNotificationsUsers : googlePushNotificationsUsers) {
+                            tokens.put(pushNotificationsUsers.getGooglePushNotificationToken());
+                        }
+                        googleFCMService.SendPushNotification(msg, tokens, true);
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
 
                 } catch (Exception e) {
@@ -526,7 +558,6 @@ public class ReferralPatientsController {
                 }
             }
 
-            //TODO send push notifications to facility apps
             logger.debug(format("Added  ReferralClient and their appointments from CTC to queue.\nSubmissions: {0}", patientsDTOS));
         } catch (Exception e) {
             e.printStackTrace();
