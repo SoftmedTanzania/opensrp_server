@@ -84,7 +84,7 @@ public class FormSubmissionController {
                                     ErrorTraceService errorTraceService, HealthFacilitiesClientsRepository healthFacilitiesClientsRepository, ClientReferralRepository clientReferralRepository,
                                     GooglePushNotificationsUsersRepository googlePushNotificationsUsersRepository, GoogleFCMService googleFCMService,
                                     ClientReferralIndicatorRepository clientReferralIndicatorRepository,
-                                    ReferralPatientsService referralPatientService, RapidProServiceImpl rapidProService,ServiceIndicatorRepository serviceIndicatorRepository) {
+                                    ReferralPatientsService referralPatientService, RapidProServiceImpl rapidProService, ServiceIndicatorRepository serviceIndicatorRepository) {
         this.formSubmissionService = formSubmissionService;
         this.scheduler = scheduler;
         this.errorTraceService = errorTraceService;
@@ -279,7 +279,7 @@ public class FormSubmissionController {
                 formSubmissionService.update(savedSubmission);
 
                 //updating any existing referrals with the correct clientId
-                updateReferralFormsWithSystemGenerateClientId(temporallyClientId,client);
+                updateReferralFormsWithSystemGenerateClientId(temporallyClientId, client);
 
                 try {
                     String userUUIDString = formEntityConverter.getFieldValueFromFormSubmission(formSubmission, "service_provider_uuid");
@@ -328,24 +328,24 @@ public class FormSubmissionController {
                     logger.info("saveFormToOpenSRP : saving referral.  Client Id = " + clientId);
 
                     ReferralClient patient = null;
-                    try{
+                    try {
                         Integer.parseInt(clientId);
                         Object[] args = new Object[]{clientId};
                         patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " + ReferralClient.COL_CLIENT_ID + " = ? ", args).get(0);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
 
                         Object[] args = new Object[]{clientId};
-                        patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " +ReferralClient.COL_TEMP_ID+" = ? ", args).get(0);
+                        patient = referralPatientService.getPatients("SELECT * FROM " + ReferralClient.tbName + " WHERE " + ReferralClient.COL_TEMP_ID + " = ? ", args).get(0);
                     }
 
                     //checking if the clientId is a temporal Id
                     try {
                         Integer.parseInt(clientId);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                         //updating any existing referrals with the correct clientId
-                        updateReferralFormsWithSystemGenerateClientId(clientId,patient);
+                        updateReferralFormsWithSystemGenerateClientId(clientId, patient);
                     }
 
                     saveReferralData(patient, clientReferrals, updatedFormSubmission);
@@ -414,7 +414,7 @@ public class FormSubmissionController {
         });
     }
 
-    private void updateReferralFormsWithSystemGenerateClientId(String temporallyClientId, ReferralClient client){
+    private void updateReferralFormsWithSystemGenerateClientId(String temporallyClientId, ReferralClient client) {
         //updating any existing referrals with the correct clientId
         List<FormSubmission> referralSubmissions = formSubmissionService.findByFormName("referral_form", 4);
         for (FormSubmission submission : referralSubmissions) {
@@ -422,6 +422,7 @@ public class FormSubmissionController {
             formSubmissionService.update(submission);
         }
     }
+
     public String reformatPhoneNumber(String phoneNumber) {
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         try {
@@ -473,7 +474,7 @@ public class FormSubmissionController {
 
                 referralIndicators.setClientReferrals(referral);
 
-                ServiceIndicator serviceIndicator = serviceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM "+ServiceIndicator.tbName+" WHERE "+ServiceIndicator.COL_SERVICE_INDICATOR_ID+"=?",
+                ServiceIndicator serviceIndicator = serviceIndicatorRepository.getReferralServicesIndicators("SELECT * FROM " + ServiceIndicator.tbName + " WHERE " + ServiceIndicator.COL_SERVICE_INDICATOR_ID + "=?",
                         new Object[]{indicatorIds.getLong(i)}).get(0);
 
                 referralIndicators.setServiceIndicator(serviceIndicator);
@@ -504,7 +505,7 @@ public class FormSubmissionController {
             Object[] facilityParams = new Object[]{clientReferrals.getFacilityId(), 1};
             List<GooglePushNotificationsUsers> googlePushNotificationsUsers = googlePushNotificationsUsersRepository.getGooglePushNotificationsUsers("SELECT * FROM " + GooglePushNotificationsUsers.tbName + " WHERE " + GooglePushNotificationsUsers.COL_FACILITY_UUID + " = ? AND " + GooglePushNotificationsUsers.COL_USER_TYPE + " = ?", facilityParams);
             JSONArray tokens = new JSONArray();
-            for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers){
+            for (GooglePushNotificationsUsers googlePushNotificationsUsers1 : googlePushNotificationsUsers) {
                 tokens.put(googlePushNotificationsUsers1.getGooglePushNotificationToken());
             }
 
