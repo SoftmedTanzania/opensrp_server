@@ -53,8 +53,16 @@ public class UserController {
     }
 
     @RequestMapping(method = GET, value = "/authenticate-user")
-    public ResponseEntity<HttpStatus> authenticateUser() {
-        return new ResponseEntity<>(null, allowOrigin(opensrpSiteUrl), OK);
+    public ResponseEntity<String> authenticateUser(HttpServletRequest request) {
+        User u = currentUser(request);
+        JSONObject tm = null;
+        try {
+            tm = openmrsUserService.getTeamMemberMinimum(u.getAttribute("_PERSON_UUID").toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(tm.toString(), allowOrigin(opensrpSiteUrl), OK);
     }
 
     public Authentication getAuthenticationAdvisor(HttpServletRequest request) {
