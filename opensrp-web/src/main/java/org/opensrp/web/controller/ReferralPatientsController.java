@@ -247,9 +247,15 @@ public class ReferralPatientsController {
                             referral.setOtherNotes("");
                             referral.setServiceProviderUIID("CTC2 Extractor");
                             referral.setFromFacilityId(healthFacilitiesCheck.get(0).getOpenMRSUUID());
-                            referral.setAppointmentDate(Calendar.getInstance().getTime());
+                            referral.setAppointmentDate(patientAppointment.getAppointmentDate());
                             referral.setReferralDate(Calendar.getInstance().getTime());
-                            referral.setReferralReason("Lost follow up");
+
+                            if(patientAppointment.getStatus().getName().contains("LTF")) {
+                                referral.setReferralReason("Lost follow up");
+                            }else{
+                                referral.setReferralReason("Missed Appointment");
+                            }
+
                             referral.setEmergency(false);
                             referral.setInstanceId(UUID.randomUUID().toString());
                             referral.setPatient(patient);
