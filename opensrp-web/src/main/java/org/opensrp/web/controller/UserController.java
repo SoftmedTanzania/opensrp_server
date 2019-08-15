@@ -57,7 +57,7 @@ public class UserController {
         User u = currentUser(request);
         JSONObject tm = null;
         try {
-            tm = openmrsUserService.getTeamMemberMinimum(u.getAttribute("_PERSON_UUID").toString());
+            tm = openmrsUserService.getTeamMember(u.getAttribute("_PERSON_UUID").toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
