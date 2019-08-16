@@ -224,6 +224,7 @@ public class PatientsConverter {
             patientsDTO.setWard(referralClient.getWard());
             patientsDTO.setVillage(referralClient.getVillage());
             patientsDTO.setHamlet(referralClient.getHamlet());
+            patientsDTO.setVeo(referralClient.getVeo());
 
             patientsDTO.setCareTakerName(referralClient.getCareTakerName());
 
