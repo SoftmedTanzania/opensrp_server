@@ -118,15 +118,8 @@ public class OpenmrsUserService extends OpenmrsService{
 		JSONArray teamMembers = new JSONArray();
 
 		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL,"v=custom:(uuid,display,person:(uuid),teamRole:(display,identifier),team:(location:(uuid)))&limit=6000");
-
-		System.out.println("USERNAME: "+OPENMRS_USER);
-		System.out.println("PASSWORD: "+OPENMRS_PWD);
-		System.out.println("All CHWS Object : "+op.body());
-
 		JSONObject object =  new JSONObject(op.body());
 		JSONArray results = object.getJSONArray("results");
-
-		System.out.println("All CHWS Object : "+results.toString());
 
 		int size = results.length();
 		for(int i=0;i<size;i++){
