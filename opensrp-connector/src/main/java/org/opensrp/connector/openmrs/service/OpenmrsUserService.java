@@ -120,6 +120,8 @@ public class OpenmrsUserService extends OpenmrsService{
 		JSONObject object =  new JSONObject(op.body());
 		JSONArray results = object.getJSONArray("results");
 
+		System.out.println("All CHWS Object : "+results.toString());
+
 		int size = results.length();
 		for(int i=0;i<size;i++){
 			try {
