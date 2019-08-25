@@ -63,6 +63,9 @@ public class PatientsDTO {
     @JsonProperty
     private String healthFacilityCode;
 
+    @JsonProperty
+    private String veo;
+
 
     @JsonProperty
     private String ctcNumber;
@@ -230,6 +233,13 @@ public class PatientsDTO {
         this.currentOnTbTreatment = currentOnTbTreatment;
     }
 
+    public String getVeo() {
+        return veo;
+    }
+
+    public void setVeo(String veo) {
+        this.veo = veo;
+    }
 
     public Long getUpdatedAt() {
         return updatedAt;

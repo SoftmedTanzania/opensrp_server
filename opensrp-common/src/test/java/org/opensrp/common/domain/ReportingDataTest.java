@@ -1,6 +1,5 @@
 package org.opensrp.common.domain;
 
-import com.sun.org.apache.regexp.internal.RE;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.Test;
 

@@ -73,14 +73,18 @@ public class HealthFacilitiesController {
     public ResponseEntity<HttpStatus> saveHealthFacility(@RequestBody String json) {
         try {
             System.out.println("Coze:save health facility");
-            HealthFacilitiesDTO healthFacilitiesDTOS = new Gson().fromJson(json, new TypeToken<List<HealthFacilitiesDTO>>() {}.getType());
-            scheduler.notifyEvent(new SystemEvent<>(AllConstants.OpenSRPEvent.HEALTH_FACILITY_SUBMISSION, healthFacilitiesDTOS));
+            List<HealthFacilitiesDTO> healthFacilitiesDTOSs = new Gson().fromJson(json, new TypeToken<List<HealthFacilitiesDTO>>() {}.getType());
 
-            HealthFacilities healthFacility =  HealthFacilitiesConverter.toHealthFacilities(healthFacilitiesDTOS);
+            for(HealthFacilitiesDTO healthFacilitiesDTO:healthFacilitiesDTOSs) {
+                try {
+                    HealthFacilities healthFacility = HealthFacilitiesConverter.toHealthFacilities(healthFacilitiesDTO);
+                    healthFacilitiesService.storeHealthFacilities(healthFacility);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
 
-            healthFacilitiesService.storeHealthFacilities(healthFacility);
-
-            logger.debug(format("Saved Health Facility to queue.\nSubmissions: {0}", healthFacilitiesDTOS));
+            logger.debug(format("Saved Health Facilities.\nSubmissions: {0}", healthFacilitiesDTOSs));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(format("Health Facility processing failed with exception {0}.\nSubmissions: {1}", e, json));

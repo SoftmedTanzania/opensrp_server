@@ -4,10 +4,7 @@ import org.opensrp.domain.ClientReferrals;
 import org.opensrp.domain.ReferralClient;
 import org.opensrp.domain.ReferralFeedback;
 import org.opensrp.domain.ReferralType;
-import org.opensrp.dto.CHWReferralsSummaryDTO;
-import org.opensrp.dto.FacilityDepartmentReferralSummaryDTO;
-import org.opensrp.dto.FacilityProvidersReferralSummaryDTO;
-import org.opensrp.dto.InterFacilityReferralSummaryDTO;
+import org.opensrp.dto.*;
 import org.opensrp.dto.report.TotalCountObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -90,6 +87,11 @@ public class ClientReferralRepository {
 
 	public List<CHWReferralsSummaryDTO> getCHWReferralsSummary(String sql, Object[] args) throws Exception {
 		return this.jdbcTemplate.query(sql, args, new CHWReferralsSummaryRowMapper());
+	}
+
+
+	public List<CHWReferralsListDTO> getCHWReferralsList(String sql, Object[] args) throws Exception {
+		return this.jdbcTemplate.query(sql, args, new CHWReferralsListRowMapper());
 	}
 
 
@@ -266,6 +268,32 @@ public class ClientReferralRepository {
 			countObject.setCount(rs.getInt(rs.findColumn("count")));
 
 			return countObject;
+		}
+
+	}
+
+
+	public class CHWReferralsListRowMapper implements RowMapper<CHWReferralsListDTO> {
+		public CHWReferralsListDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+			CHWReferralsListDTO chwReferralsSummaryDTO =new CHWReferralsListDTO();
+
+			String referralStatus = "";
+			if(rs.getInt(rs.findColumn("referral_status"))==0){
+				referralStatus="PENDING";
+			}else if(rs.getInt(rs.findColumn("referral_status"))==1){
+				referralStatus="SUCCESS";
+			}else if(rs.getInt(rs.findColumn("referral_status"))==2){
+				referralStatus="FAILED";
+			}
+
+			chwReferralsSummaryDTO.setReferral_status(referralStatus);
+			chwReferralsSummaryDTO.setFacility_name(rs.getString(rs.findColumn("facility_name")));
+			chwReferralsSummaryDTO.setService_provider_uuid(rs.getString(rs.findColumn("service_provider_uiid")));
+			chwReferralsSummaryDTO.setClient_name(
+					rs.getString(rs.findColumn("first_name"))+"  "+
+							rs.getString(rs.findColumn("surname")));
+
+			return  chwReferralsSummaryDTO;
 		}
 
 	}

@@ -33,7 +33,7 @@ public class ReferralsReportServiceTest {
 
     @Test
     public void getLTFCountsReportSQL() {
-        String sql = referralsReportService.getLTFCountsReportSQL(1,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate,null);
+        String sql = referralsReportService.getLTFCountsReportSQL(1,firstDateOfTheMonth.withDayOfMonth(1).toString(), currentDate,"");
 
         System.out.println("SQL : "+sql);
     }
