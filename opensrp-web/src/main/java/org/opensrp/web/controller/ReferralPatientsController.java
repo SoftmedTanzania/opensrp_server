@@ -830,8 +830,16 @@ public class ReferralPatientsController {
             PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
             patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients.get(0)));
 
+
             List<ReferralsDTO> patientReferrals = new ArrayList<>();
-            patientReferrals.add(PatientsConverter.toPatientDTO(savedClientReferrals.get(0)));
+
+            JSONObject tm = openmrsUserService.getTeamMemberByPersonUUID(clientReferrals.getServiceProviderUIID());
+
+            ReferralsDTO dto = PatientsConverter.toPatientDTO(savedClientReferrals.get(0));
+            dto.setServiceProviderUIID(tm.getJSONObject("person").getString("display"));
+
+
+            patientReferrals.add(dto);
 
             for (ReferralsDTO refDTO : patientReferrals) {
                 Object[] args2 = new Object[1];
@@ -886,12 +894,6 @@ public class ReferralPatientsController {
 
                 try {
                     if (healthFacilities != null) {
-
-                        JSONObject tm = null;
-                        tm = openmrsUserService.getTeamMemberByPersonUUID(clientReferrals.getServiceProviderUIID());
-                        clientReferrals.setServiceProviderUIID(tm.getJSONObject("person").getString("display"));
-
-
                         saveReferralFollowup(clientReferrals, healthFacilities.get(0).getId() + "");
                     }
                 } catch (Exception e) {
