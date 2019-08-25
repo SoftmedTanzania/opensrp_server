@@ -1183,7 +1183,7 @@ public class ReferralPatientsController {
 
                 FormSubmission formSubmission = new FormSubmission(tm.getString("identifier"), uuid + "", "client_follow_up_form", clientReferrals.getReferralUUID() + "", "1", 4, formInstance);
 
-                logger.info("Coze : saving referral form submission");
+                logger.info("Coze : saving referral form submission : "+new Gson().toJson(formSubmission));
                 formSubmissionService.submit(formSubmission);
             }
         } catch (Exception e) {
