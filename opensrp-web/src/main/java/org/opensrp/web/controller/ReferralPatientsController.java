@@ -892,7 +892,7 @@ public class ReferralPatientsController {
                         clientReferrals.setServiceProviderUIID(tm.getJSONObject("person").getString("display"));
 
 
-                        saveReferralFollowup(clientReferrals, healthFacilities.get(0).getId() + "",tm);
+                        saveReferralFollowup(clientReferrals, healthFacilities.get(0).getId() + "");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1121,7 +1121,7 @@ public class ReferralPatientsController {
         }
     }
 
-    public void saveReferralFollowup(ClientReferrals clientReferrals, String facilityId,JSONObject teamMember) {
+    public void saveReferralFollowup(ClientReferrals clientReferrals, String facilityId) {
         logger.info("saveReferralFollowup : saving referral Form data for followup = " + new Gson().toJson(clientReferrals));
         logger.info("saveReferralFollowup : saving referral Form data for facilityId = " + facilityId);
 
@@ -1173,15 +1173,15 @@ public class ReferralPatientsController {
 
 
 
+
+            formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", clientReferrals.getServiceProviderUIID(), "followup_client.service_provider_uiid"));
+
+
+            JSONObject teamMember = null;
+            teamMember = openmrsUserService.getTeamMemberByPersonUUID(clientReferrals.getFacilityId());
+
+
             logger.info("Coze : team member: "+teamMember);
-
-            if(teamMember!=null){
-                formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", teamMember.getJSONObject("person").getString("display"), "followup_client.service_provider_uiid"));
-            }else{
-                formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", "", "followup_client.service_provider_uiid"));
-            }
-
-
 
             FormData formData = new FormData("followup_client", "/model/instance/follow_up_form/", formFields, null);
             FormInstance formInstance = new FormInstance(formData);
