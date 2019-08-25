@@ -103,10 +103,31 @@ public class OpenmrsUserService extends OpenmrsService{
 
 
 	public JSONObject getTeamMemberMinimum(String uuid) throws JSONException{
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL+"/"+uuid, "v=custom:(uuid,display,team:(teamName,location:(uuid,display,name)),person:(uuid,display))", OPENMRS_USER, OPENMRS_PWD);
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL+"/"+uuid, "v=custom:(uuid,display,team:(teamName,location:(uuid,display,name)),person:(uuid,display))");
 		return new JSONObject(op.body());
 	}
 
+
+	public JSONObject getTeamMemberByPersonUUID(String uuid) throws JSONException{
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL+"/"+uuid, "v=custom:(uuid,identifier,display,team:(teamName,location:(uuid,display,name)),person:(uuid,display))");
+
+		JSONObject object =  new JSONObject(op.body());
+		JSONArray results = object.getJSONArray("results");
+
+		int size = results.length();
+		for(int i=0;i<size;i++){
+			try {
+				JSONObject teamMember = results.getJSONObject(i);
+				String teamMembersPersonUUID = (teamMember.getJSONObject("person")).getString("uuid");
+				if (teamMembersPersonUUID.equals(uuid)) {
+					return  teamMember;
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 
 	public JSONArray getTeamMembers() throws JSONException{
 		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=default&limit=6000", OPENMRS_USER, OPENMRS_PWD);
