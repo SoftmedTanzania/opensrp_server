@@ -1156,7 +1156,6 @@ public class ReferralPatientsController {
             formFields.add(new org.opensrp.form.domain.FormField("phone_number", patient.getPhoneNumber() == null ? "" : patient.getPhoneNumber(), "followup_client.phone_number"));
             formFields.add(new org.opensrp.form.domain.FormField("comment", "", "followup_client.comment"));
             formFields.add(new org.opensrp.form.domain.FormField("referral_status", "0", "followup_client.referral_status"));
-            formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", "", "followup_client.service_provider_uiid"));
             formFields.add(new org.opensrp.form.domain.FormField("visit_date", "", "followup_client.visit_date"));
             formFields.add(new org.opensrp.form.domain.FormField("referral_date", clientReferrals.getReferralDate().getTime() + "", "followup_client.referral_date"));
             formFields.add(new org.opensrp.form.domain.FormField("village", patient.getVillage() == null ? "" : patient.getVillage(), "followup_client.village"));
@@ -1164,13 +1163,29 @@ public class ReferralPatientsController {
             formFields.add(new org.opensrp.form.domain.FormField("is_valid", "true", "followup_client.is_valid"));
             formFields.add(new org.opensrp.form.domain.FormField("id", uuid, "followup_client.id"));
 
+
+
+            JSONObject tm = null;
+            tm = openmrsUserService.getTeamMemberByPersonUUID(clientReferrals.getServiceProviderUIID());
+
+            if(tm!=null){
+                formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", tm.getJSONObject("person").getString("display"), "followup_client.service_provider_uiid"));
+            }else{
+                formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", "", "followup_client.service_provider_uiid"));
+            }
+
+
+
             FormData formData = new FormData("followup_client", "/model/instance/follow_up_form/", formFields, null);
             FormInstance formInstance = new FormInstance(formData);
-            FormSubmission formSubmission = new FormSubmission(clientReferrals.getFromFacilityId() + "", uuid + "", "client_follow_up_form", clientReferrals.getReferralUUID() + "", "1", 4, formInstance);
 
+            if(tm!=null) {
 
-            logger.info("Coze : saving referral form submission");
-            formSubmissionService.submit(formSubmission);
+                FormSubmission formSubmission = new FormSubmission(tm.getString("identifier"), uuid + "", "client_follow_up_form", clientReferrals.getReferralUUID() + "", "1", 4, formInstance);
+
+                logger.info("Coze : saving referral form submission");
+                formSubmissionService.submit(formSubmission);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
