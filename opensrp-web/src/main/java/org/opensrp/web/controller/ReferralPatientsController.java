@@ -885,8 +885,15 @@ public class ReferralPatientsController {
                 }
 
                 try {
-                    if (healthFacilities != null)
-                        saveReferralFollowup(clientReferrals, healthFacilities.get(0).getId() + "");
+                    if (healthFacilities != null) {
+
+                        JSONObject tm = null;
+                        tm = openmrsUserService.getTeamMemberByPersonUUID(clientReferrals.getServiceProviderUIID());
+                        clientReferrals.setServiceProviderUIID(tm.getJSONObject("person").getString("display"));
+
+
+                        saveReferralFollowup(clientReferrals, healthFacilities.get(0).getId() + "",tm);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1114,7 +1121,7 @@ public class ReferralPatientsController {
         }
     }
 
-    public void saveReferralFollowup(ClientReferrals clientReferrals, String facilityId) {
+    public void saveReferralFollowup(ClientReferrals clientReferrals, String facilityId,JSONObject teamMember) {
         logger.info("saveReferralFollowup : saving referral Form data for followup = " + new Gson().toJson(clientReferrals));
         logger.info("saveReferralFollowup : saving referral Form data for facilityId = " + facilityId);
 
@@ -1165,14 +1172,11 @@ public class ReferralPatientsController {
 
 
 
-            JSONObject tm = null;
-            tm = openmrsUserService.getTeamMemberByPersonUUID(clientReferrals.getServiceProviderUIID());
 
+            logger.info("Coze : team member: "+teamMember);
 
-            logger.info("Coze : team member: "+tm);
-
-            if(tm!=null){
-                formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", tm.getJSONObject("person").getString("display"), "followup_client.service_provider_uiid"));
+            if(teamMember!=null){
+                formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", teamMember.getJSONObject("person").getString("display"), "followup_client.service_provider_uiid"));
             }else{
                 formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", "", "followup_client.service_provider_uiid"));
             }
@@ -1182,9 +1186,9 @@ public class ReferralPatientsController {
             FormData formData = new FormData("followup_client", "/model/instance/follow_up_form/", formFields, null);
             FormInstance formInstance = new FormInstance(formData);
 
-            if(tm!=null) {
+            if(teamMember!=null) {
 
-                FormSubmission formSubmission = new FormSubmission(tm.getString("identifier"), uuid + "", "client_follow_up_form", clientReferrals.getReferralUUID() + "", "1", 4, formInstance);
+                FormSubmission formSubmission = new FormSubmission(teamMember.getString("identifier"), uuid + "", "client_follow_up_form", clientReferrals.getReferralUUID() + "", "1", 4, formInstance);
 
                 logger.info("Coze : saving referral form submission : "+new Gson().toJson(formSubmission));
                 formSubmissionService.submit(formSubmission);

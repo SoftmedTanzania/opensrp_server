@@ -114,12 +114,17 @@ public class OpenmrsUserService extends OpenmrsService{
 		JSONObject object =  new JSONObject(op.body());
 		JSONArray results = object.getJSONArray("results");
 
+
+		System.out.println("tms by person UUID = "+results.toString());
+		System.out.println("person UUID = "+uuid);
+
 		int size = results.length();
 		for(int i=0;i<size;i++){
 			try {
 				JSONObject teamMember = results.getJSONObject(i);
 				String teamMembersPersonUUID = (teamMember.getJSONObject("person")).getString("uuid");
 				if (teamMembersPersonUUID.equals(uuid)) {
+					System.out.println("tm = "+teamMember.toString());
 					return  teamMember;
 				}
 			}catch (Exception e){
