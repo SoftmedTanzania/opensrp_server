@@ -109,7 +109,7 @@ public class OpenmrsUserService extends OpenmrsService{
 
 
 	public JSONObject getTeamMemberByPersonUUID(String uuid) throws JSONException{
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL+"/"+uuid, "v=custom:(uuid,identifier,display,team:(teamName,location:(uuid,display,name)),person:(uuid,display))");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=custom:(uuid,identifier,display,team:(teamName,location:(uuid,display,name)),person:(uuid,display))");
 
 		JSONObject object =  new JSONObject(op.body());
 		JSONArray results = object.getJSONArray("results");
