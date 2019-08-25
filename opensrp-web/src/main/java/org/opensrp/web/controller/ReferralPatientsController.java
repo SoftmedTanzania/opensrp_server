@@ -1168,6 +1168,9 @@ public class ReferralPatientsController {
             JSONObject tm = null;
             tm = openmrsUserService.getTeamMemberByPersonUUID(clientReferrals.getServiceProviderUIID());
 
+
+            logger.info("Coze : team member: "+tm);
+
             if(tm!=null){
                 formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", tm.getJSONObject("person").getString("display"), "followup_client.service_provider_uiid"));
             }else{
