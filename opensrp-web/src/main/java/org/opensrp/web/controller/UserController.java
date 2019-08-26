@@ -182,13 +182,6 @@ public class UserController {
     @RequestMapping(headers = {"Accept=application/json"}, method = GET, value = "/get-team-members-by-facility-hierarchy/{facilityUUID}")
     public ResponseEntity<String> getCHWsCount(@PathVariable("facilityUUID") String facilityUUID) {
 
-        JSONArray allChwsJsonArray = new JSONArray();
-        try {
-            allChwsJsonArray = openmrsUserService.getAllCHWs();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         List<String> facilityUUIDs = new ArrayList<>();
         try {
             JSONArray allLocations = openmrsLocationService.getAllLocations();
@@ -202,22 +195,15 @@ public class UserController {
             e.printStackTrace();
         }
 
-        int chwCount = 0;
-
-        System.out.println("Location Tree : " + new Gson().toJson(facilityUUIDs));
-        for(int i=0;i<allChwsJsonArray.length();i++){
-            try {
-                JSONObject tm = allChwsJsonArray.getJSONObject(i);
-                String teamMembersFacilityUUID = (tm.getJSONObject("team")).getJSONObject("location").getString("uuid");
-                if (facilityUUIDs.contains(teamMembersFacilityUUID)) {
-                    chwCount++;
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+        System.out.println("FACILITY-UUID-LIST : " + new Gson().toJson(facilityUUIDs));
+        JSONArray jsonArray = new JSONArray();
+        try {
+            jsonArray = openmrsUserService.getCHWsByFacilityId(facilityUUIDs);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        return new ResponseEntity<>(chwCount + "", OK);
+        return new ResponseEntity<>(String.valueOf(jsonArray.length()), OK);
 
     }
 
