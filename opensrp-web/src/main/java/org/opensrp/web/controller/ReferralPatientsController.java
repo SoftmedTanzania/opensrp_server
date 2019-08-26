@@ -330,6 +330,8 @@ public class ReferralPatientsController {
             }
 
 
+            logger.info("successfullySavedLTFs = "+new Gson().toJson(successfullySavedLTFs));
+
             List<String> facilityUuids = new ArrayList<>();
             facilityUuids.add(healthFacilitiesCheck.get(0).getOpenMRSUUID());
             JSONArray facilityCHWsArray = null;
