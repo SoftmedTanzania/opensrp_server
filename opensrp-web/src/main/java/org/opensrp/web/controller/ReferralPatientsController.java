@@ -335,6 +335,8 @@ public class ReferralPatientsController {
             JSONArray facilityCHWsArray = null;
             try {
                 facilityCHWsArray = openmrsUserService.getCHWsByFacilityId(facilityUuids);
+
+                logger.info("facilityCHWs = "+facilityCHWsArray.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -342,6 +344,8 @@ public class ReferralPatientsController {
             JSONArray allCHWsArray = null;
             try {
                 allCHWsArray = openmrsUserService.getAllCHWs();
+
+                logger.info("All CHWs = "+facilityCHWsArray.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
