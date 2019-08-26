@@ -250,9 +250,9 @@ public class ReferralPatientsController {
                             referral.setAppointmentDate(patientAppointment.getAppointmentDate());
                             referral.setReferralDate(Calendar.getInstance().getTime());
 
-                            if(patientAppointment.getStatus().getName().equalsIgnoreCase("LOST_TO_FOLLOWUP")) {
+                            if(patientAppointment.getStatus().getStatusId()==2) {
                                 referral.setReferralReason("Lost follow up");
-                            }else{
+                            }else if(patientAppointment.getStatus().getStatusId()==3) {
                                 referral.setReferralReason("Missed Appointment");
                             }
 
