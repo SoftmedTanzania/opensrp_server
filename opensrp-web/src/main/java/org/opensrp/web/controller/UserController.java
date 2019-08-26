@@ -184,8 +184,6 @@ public class UserController {
         List<String> facilityUUIDs = new ArrayList<>();
         try {
             JSONArray allLocations = openmrsLocationService.getAllLocations();
-            System.out.println("Location Tree : " + allLocations);
-
             for (int i = 0; i < allLocations.length(); i++) {
                 JSONObject facilityObject = allLocations.getJSONObject(i);
                 if (facilityObject.getString("uuid").equalsIgnoreCase(facilityUUID)) {
@@ -197,6 +195,7 @@ public class UserController {
         }
 
 
+        System.out.println("Location Tree : " + new Gson().toJson(facilityUUIDs));
         JSONArray jsonArray = new JSONArray();
         try {
             jsonArray = openmrsUserService.getCHWsByFacilityId(facilityUUIDs);
