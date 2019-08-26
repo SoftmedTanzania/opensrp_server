@@ -529,6 +529,8 @@ public class ReferralPatientsController {
             }
 
 
+
+            logger.info("Sending referrals to facility chws");
             //Sharing remaining LTFs between facility CHWs
             for (Map.Entry<String, List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
                 try {
