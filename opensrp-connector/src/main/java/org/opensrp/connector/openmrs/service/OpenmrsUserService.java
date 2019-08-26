@@ -103,7 +103,7 @@ public class OpenmrsUserService extends OpenmrsService{
 
 
 	public JSONObject getTeamMemberMinimum(String uuid) throws JSONException{
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL+"/"+uuid, "v=custom:(uuid,display,team:(teamName,location:(uuid,display,name)),person:(uuid,display))");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL+"/"+uuid, "v=custom:(uuid,display,team:(teamName,location:(uuid,display,name)),person:(uuid,display))", OPENMRS_USER, OPENMRS_PWD);
 		return new JSONObject(op.body());
 	}
 
@@ -146,6 +146,8 @@ public class OpenmrsUserService extends OpenmrsService{
 		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL,"v=custom:(uuid,display,person:(uuid),teamRole:(display,identifier),team:(location:(uuid)))&limit=6000");
 		JSONObject object =  new JSONObject(op.body());
 		JSONArray results = object.getJSONArray("results");
+
+		logger.info("Results : "+results);
 
 		int size = results.length();
 		for(int i=0;i<size;i++){
