@@ -250,9 +250,9 @@ public class ReferralPatientsController {
                             referral.setAppointmentDate(patientAppointment.getAppointmentDate());
                             referral.setReferralDate(Calendar.getInstance().getTime());
 
-                            if(patientAppointment.getStatus().getName().equalsIgnoreCase("LOST_TO_FOLLOWUP")) {
+                            if(patientAppointment.getStatus().getStatusId()==2) {
                                 referral.setReferralReason("Lost follow up");
-                            }else{
+                            }else if(patientAppointment.getStatus().getStatusId()==3) {
                                 referral.setReferralReason("Missed Appointment");
                             }
 
@@ -330,11 +330,15 @@ public class ReferralPatientsController {
             }
 
 
+            logger.info("successfullySavedLTFs = "+new Gson().toJson(successfullySavedLTFs));
+
             List<String> facilityUuids = new ArrayList<>();
             facilityUuids.add(healthFacilitiesCheck.get(0).getOpenMRSUUID());
             JSONArray facilityCHWsArray = null;
             try {
                 facilityCHWsArray = openmrsUserService.getCHWsByFacilityId(facilityUuids);
+
+                logger.info("facilityCHWs = "+facilityCHWsArray.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -342,11 +346,14 @@ public class ReferralPatientsController {
             JSONArray allCHWsArray = null;
             try {
                 allCHWsArray = openmrsUserService.getAllCHWs();
+
+                logger.info("All CHWs = "+allCHWsArray.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
 
+            logger.info("Sending referrals to chws with matching village names");
             //sending referrals to chws with matching village names to LTF clients
             Iterator<PatientReferralsDTO> iterator = successfullySavedLTFs.iterator();
             while(iterator.hasNext()){
@@ -478,6 +485,7 @@ public class ReferralPatientsController {
             System.out.println("Sorted CTCPatients by wards = " + new Gson().toJson(wardsCTCPatients));
             System.out.println("Sorted CHWs by wards = " + new Gson().toJson(chwsInAWard));
 
+            logger.info("Sending referrals to chws");
 
             Iterator<Map.Entry<String, List<PatientReferralsDTO>>> iter = wardsCTCPatients.entrySet().iterator();
             while (iter.hasNext()) {
@@ -523,6 +531,8 @@ public class ReferralPatientsController {
             }
 
 
+
+            logger.info("Sending referrals to facility chws");
             //Sharing remaining LTFs between facility CHWs
             for (Map.Entry<String, List<PatientReferralsDTO>> entry : wardsCTCPatients.entrySet()) {
                 try {
