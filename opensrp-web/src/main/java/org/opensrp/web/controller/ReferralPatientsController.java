@@ -345,7 +345,7 @@ public class ReferralPatientsController {
             try {
                 allCHWsArray = openmrsUserService.getAllCHWs();
 
-                logger.info("All CHWs = "+facilityCHWsArray.toString());
+                logger.info("All CHWs = "+allCHWsArray.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
