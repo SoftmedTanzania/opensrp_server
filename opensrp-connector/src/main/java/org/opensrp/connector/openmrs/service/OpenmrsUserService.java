@@ -147,6 +147,8 @@ public class OpenmrsUserService extends OpenmrsService{
 		JSONObject object =  new JSONObject(op.body());
 		JSONArray results = object.getJSONArray("results");
 
+		logger.info("Results : "+results);
+
 		int size = results.length();
 		for(int i=0;i<size;i++){
 			try {
