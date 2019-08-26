@@ -166,39 +166,12 @@ public class UserController {
         List<String> facilitiesOPENMRSUUids = new Gson().fromJson(jsonData, new TypeToken<List<String>>() {
         }.getType());
 
-        String facilitiesUUIDs = "";
-        for (String facilityHFR : facilitiesOPENMRSUUids) {
-            facilitiesUUIDs += "'" + facilityHFR + "',";
-        }
-
-        if (facilitiesUUIDs.length() > 0 && facilitiesUUIDs.charAt(facilitiesUUIDs.length() - 1) == ',') {
-            facilitiesUUIDs = facilitiesUUIDs.substring(0, facilitiesUUIDs.length() - 1);
-        }
-
-        System.out.println("FACILITY-HFR : " + facilitiesUUIDs);
 
 
-        List<HealthFacilities> healthFacilities = null;
-        try {
-            String sql = "SELECT * FROM " + HealthFacilities.tbName + " WHERE " + HealthFacilities.COL_OPENMRS_UUID + " IN (" + facilitiesUUIDs + ")";
-            healthFacilities = facilityRepository.getHealthFacility(sql, null);
-
-            System.out.println("FACILITY-HFR-SQL : " + sql);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        List<String> healthFacilitiesOpenMRSUUIDS = new ArrayList<>();
-        for (HealthFacilities healthFacility : healthFacilities) {
-            healthFacilitiesOpenMRSUUIDS.add(healthFacility.getOpenMRSUUID());
-            System.out.println("FACILITY-UUID : " + healthFacility.getOpenMRSUUID());
-        }
-
-        System.out.println("FACILITY-UUID-LIST : " + new Gson().toJson(healthFacilitiesOpenMRSUUIDS));
+        System.out.println("FACILITY-UUID-LIST : " + new Gson().toJson(facilitiesOPENMRSUUids));
         JSONArray jsonArray = new JSONArray();
         try {
-            jsonArray = openmrsUserService.getCHWsByFacilityId(healthFacilitiesOpenMRSUUIDS);
+            jsonArray = openmrsUserService.getCHWsByFacilityId(facilitiesOPENMRSUUids);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -223,14 +196,13 @@ public class UserController {
             e.printStackTrace();
         }
 
-        String chws = getTeamMembers(new Gson().toJson(facilityUUIDs)).getBody();
+
         JSONArray jsonArray = new JSONArray();
         try {
-            jsonArray = new JSONArray(chws);
+            jsonArray = openmrsUserService.getCHWsByFacilityId(facilityUUIDs);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         return new ResponseEntity<>(jsonArray.length() + "", OK);
 
