@@ -18,7 +18,7 @@ public class GoogleFCMService {
 				//Facility client app FCM server key
 				androidFcmKey = "AAAAEgpJVug:APA91bGCXo-2ut2gyxSmvOmSYSV_0W_RenJO-nkvqmD8wI-39LB0PQzRCMJxqtHKv0lyK22LrEwM3S4V8YJYlC3xKfqLo8pobONQ0fV9WNRqeJhvxe5F19-ql24THsqQ2ePVmp73mlyb";
 			}else{
-				//Facility CHW app FCM server key
+				//CHW app FCM server key
 				androidFcmKey = "AAAAEgpJVug:APA91bGCXo-2ut2gyxSmvOmSYSV_0W_RenJO-nkvqmD8wI-39LB0PQzRCMJxqtHKv0lyK22LrEwM3S4V8YJYlC3xKfqLo8pobONQ0fV9WNRqeJhvxe5F19-ql24THsqQ2ePVmp73mlyb";
 			}
 			String androidFcmUrl="https://fcm.googleapis.com/fcm/send";

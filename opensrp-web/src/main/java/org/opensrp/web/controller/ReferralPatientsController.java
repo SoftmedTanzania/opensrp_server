@@ -247,9 +247,15 @@ public class ReferralPatientsController {
                             referral.setOtherNotes("");
                             referral.setServiceProviderUIID("CTC2 Extractor");
                             referral.setFromFacilityId(healthFacilitiesCheck.get(0).getOpenMRSUUID());
-                            referral.setAppointmentDate(Calendar.getInstance().getTime());
+                            referral.setAppointmentDate(patientAppointment.getAppointmentDate());
                             referral.setReferralDate(Calendar.getInstance().getTime());
-                            referral.setReferralReason("Lost follow up");
+
+                            if(patientAppointment.getStatus().getName().equalsIgnoreCase("LOST_TO_FOLLOWUP")) {
+                                referral.setReferralReason("Lost follow up");
+                            }else{
+                                referral.setReferralReason("Missed Appointment");
+                            }
+
                             referral.setEmergency(false);
                             referral.setInstanceId(UUID.randomUUID().toString());
                             referral.setPatient(patient);
@@ -824,8 +830,16 @@ public class ReferralPatientsController {
             PatientReferralsDTO patientReferralsDTO = new PatientReferralsDTO();
             patientReferralsDTO.setPatientsDTO(PatientsConverter.toPatientsDTO(patients.get(0)));
 
+
             List<ReferralsDTO> patientReferrals = new ArrayList<>();
-            patientReferrals.add(PatientsConverter.toPatientDTO(savedClientReferrals.get(0)));
+
+            JSONObject tm = openmrsUserService.getTeamMemberByPersonUUID(clientReferrals.getServiceProviderUIID());
+
+            ReferralsDTO dto = PatientsConverter.toPatientDTO(savedClientReferrals.get(0));
+            dto.setServiceProviderUIID(tm.getJSONObject("person").getString("display"));
+
+
+            patientReferrals.add(dto);
 
             for (ReferralsDTO refDTO : patientReferrals) {
                 Object[] args2 = new Object[1];
@@ -879,8 +893,9 @@ public class ReferralPatientsController {
                 }
 
                 try {
-                    if (healthFacilities != null)
+                    if (healthFacilities != null) {
                         saveReferralFollowup(clientReferrals, healthFacilities.get(0).getId() + "");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1150,7 +1165,6 @@ public class ReferralPatientsController {
             formFields.add(new org.opensrp.form.domain.FormField("phone_number", patient.getPhoneNumber() == null ? "" : patient.getPhoneNumber(), "followup_client.phone_number"));
             formFields.add(new org.opensrp.form.domain.FormField("comment", "", "followup_client.comment"));
             formFields.add(new org.opensrp.form.domain.FormField("referral_status", "0", "followup_client.referral_status"));
-            formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", "", "followup_client.service_provider_uiid"));
             formFields.add(new org.opensrp.form.domain.FormField("visit_date", "", "followup_client.visit_date"));
             formFields.add(new org.opensrp.form.domain.FormField("referral_date", clientReferrals.getReferralDate().getTime() + "", "followup_client.referral_date"));
             formFields.add(new org.opensrp.form.domain.FormField("village", patient.getVillage() == null ? "" : patient.getVillage(), "followup_client.village"));
@@ -1158,13 +1172,29 @@ public class ReferralPatientsController {
             formFields.add(new org.opensrp.form.domain.FormField("is_valid", "true", "followup_client.is_valid"));
             formFields.add(new org.opensrp.form.domain.FormField("id", uuid, "followup_client.id"));
 
+
+
+
+
+            formFields.add(new org.opensrp.form.domain.FormField("service_provider_uiid", clientReferrals.getServiceProviderUIID(), "followup_client.service_provider_uiid"));
+
+
+            JSONObject teamMember = null;
+            teamMember = openmrsUserService.getTeamMemberByPersonUUID(clientReferrals.getFacilityId());
+
+
+            logger.info("Coze : team member: "+teamMember);
+
             FormData formData = new FormData("followup_client", "/model/instance/follow_up_form/", formFields, null);
             FormInstance formInstance = new FormInstance(formData);
-            FormSubmission formSubmission = new FormSubmission(clientReferrals.getFromFacilityId() + "", uuid + "", "client_follow_up_form", clientReferrals.getReferralUUID() + "", "1", 4, formInstance);
 
+            if(teamMember!=null) {
 
-            logger.info("Coze : saving referral form submission");
-            formSubmissionService.submit(formSubmission);
+                FormSubmission formSubmission = new FormSubmission(teamMember.getString("identifier"), uuid + "", "client_follow_up_form", clientReferrals.getReferralUUID() + "", "1", 4, formInstance);
+
+                logger.info("Coze : saving referral form submission : "+new Gson().toJson(formSubmission));
+                formSubmissionService.submit(formSubmission);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
