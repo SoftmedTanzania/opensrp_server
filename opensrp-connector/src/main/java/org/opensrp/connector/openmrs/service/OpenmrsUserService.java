@@ -147,8 +147,6 @@ public class OpenmrsUserService extends OpenmrsService{
 		JSONObject object =  new JSONObject(op.body());
 		JSONArray results = object.getJSONArray("results");
 
-		logger.info("Results : "+results);
-
 		int size = results.length();
 		for(int i=0;i<size;i++){
 			try {
@@ -167,11 +165,14 @@ public class OpenmrsUserService extends OpenmrsService{
 		return teamMembers;
 	}
 	public JSONArray getAllCHWs() throws JSONException{
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=custom:(uuid,display,locations:(display,parentLocation:(display)),person:(uuid),teamRole:(display,identifier))&limit=6000");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL)+"/"+TEAM_MEMBER_URL, "v=custom:(uuid,display,person:(uuid),teamRole:(display,identifier),team:(location:(uuid)))&limit=6000");
 		JSONObject object =  new JSONObject(op.body());
 
 		JSONArray teamMembers = new JSONArray();
 		JSONArray results = object.getJSONArray("results");
+
+
+		logger.info("Results : "+results);
 
 		int size = results.length();
 		for(int i=0;i<size;i++){
