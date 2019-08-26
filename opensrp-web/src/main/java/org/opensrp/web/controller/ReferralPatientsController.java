@@ -347,6 +347,7 @@ public class ReferralPatientsController {
             }
 
 
+            logger.info("Sending referrals to chws with matching village names");
             //sending referrals to chws with matching village names to LTF clients
             Iterator<PatientReferralsDTO> iterator = successfullySavedLTFs.iterator();
             while(iterator.hasNext()){
@@ -478,6 +479,7 @@ public class ReferralPatientsController {
             System.out.println("Sorted CTCPatients by wards = " + new Gson().toJson(wardsCTCPatients));
             System.out.println("Sorted CHWs by wards = " + new Gson().toJson(chwsInAWard));
 
+            logger.info("Sending referrals to chws");
 
             Iterator<Map.Entry<String, List<PatientReferralsDTO>>> iter = wardsCTCPatients.entrySet().iterator();
             while (iter.hasNext()) {
