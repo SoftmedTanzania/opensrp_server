@@ -15,7 +15,6 @@ public class GoogleFCMService {
         try {
             String androidFcmKey;
             androidFcmKey = "AAAA4qLMiVw:APA91bE99vHoRdUA2anZPz2oHM3zqO2uLcM02cqdQKfb9MvdR4yaSqVtaU2H3piCH2a7IT5yyS1KbvEeV_XJotDgB4beWphJDu8Txx0eaB4iSBQRf3Ki8oBCuIKR7vQFbHzyGED4sNLK";
-
             String androidFcmUrl = "https://fcm.googleapis.com/fcm/send";
 
             RestTemplate restTemplate = new RestTemplate();
