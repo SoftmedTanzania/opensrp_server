@@ -212,7 +212,15 @@ public class ReferralPatientsController {
                 e.printStackTrace();
             }
 
+            int counter = 0;
             for (CTCPatientsDTO dto : patientsDTOS) {
+                counter++;
+                //This is to slow down the sending of push notifications to devices to allow enough time for the devices to process
+                if(counter==50){
+                    Thread.sleep(30000);
+                    counter=0;
+                }
+
                 try {
                     System.out.println("saving patient");
                     ReferralClient p = PatientsConverter.toPatients(dto);
